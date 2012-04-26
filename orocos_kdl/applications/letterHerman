@@ -1,0 +1,126 @@
+Dear Herman,
+I managed to perform the experiments we discussed last time. There are some good news and not so good ones :).
+I start with good ones:
+
+For all the described cases below I use 3-order polynomial interpolation.
+
+(1) after introducing appropriate transformation for external forces, I can perform a motion control using only external forces.
+We could use for such cases as potential fields or elastic strips. Currently, the external forces are applied at the tips of each link and
+for the experiments I applied an external force at the tip of end-effector and tried to move along a path between to points. In this case there are _no constraints_ yet.
+Initial configuration of the end-effector in cartesian space is given as:
+x = 0.44992, y = 0.58636 (for j0= 120 deg, j1= 45deg)
+
+and final is
+ x = 0.44992, y = 0.1
+
+so it corresponds to a vertical line.
+
+The idea was to use external forces to perform motion tracking control. The plots _externalForce-plot1/2.eps_ correspond to this case.
+in the plot1 you can see the tracking error on position. It is not that great but better parameters for PID gains could solve the issue.
+Currently I use the following configuration for the external force regulator and its respective gains.
+* Controller:
+   externalNetForceTip.X = XDotDot_des.X + ((Kv[0]) * XDot_error.X + (Kp[0]) * X_error.X + (Ki[0]) * Sum_X_error.X);
+   externalNetForceTip.Y = XDotDot_des.Y + ((Kv[1]) * XDot_error.Y + (Kp[1]) * X_error.Y + (Ki[1]) * Sum_X_error.Y);
+
+* Gains:
+//For cartesian space control without constraints using external forces
+    double ksi[2] = {1.0, 1.0}; //damping factor
+    double Kp[2];
+    Kp[0] = 7000.0/(taskTimeConstant*taskTimeConstant);
+    Kp[1] = 12000.0/(taskTimeConstant*taskTimeConstant);
+    double Kv[2];
+    Kv[0] = 130*ksi[0]/taskTimeConstant;
+    Kv[1] = 160*ksi[1]/taskTimeConstant;
+    double Ki[2] = {-5.01, -5.1};
+
+
+(2) I used similar approach as in case (1) but using computed joint torques. Here I used different initial configuration and interpolation in joint space.
+This case I already showed you once, just did it again for completeness.
+Initial configuration corresponds to
+ j0=0.0, j1=pi/6.0 and corresponding cartesian x = 0.2, y = -0.7464
+
+and final is
+j0= 120 deg, j1= 45deg and corresponding cartesian x = 0.44992, y = 0.58636
+
+So, unlike (1) where we drove from top to bottom, here we drive from bottom to top.
+Data corresponding to this configuration are plotted in _computedTorque_plot1/2/3.eps_
+As you can see the dynamics of tracking error in position is not that great but again can be fixed and in plot3 one can see
+the correspondence between desired and actual joint positions. Here again _no constraints_ yet. The controller and gains in this case are given as
+*Controller:
+//computed joint torque control without constraints
+        feedforwardJointTorque0 = jointAccelerations_des(0) + (Kp[0])*jointPoses_error(0) + (Kv[0])*jointRates_error(0) + (Ki[0])*jointPoses_errorsum(0);
+        feedforwardJointTorque1 = jointAccelerations_des(1) + (Kp[1])*jointPoses_error(1) + (Kv[1])*jointRates_error(1)+ (Ki[1])*jointPoses_errorsum(1);
+        jointTorques[0](0) = jointTorques[0](0) + feedforwardJointTorque0;
+        jointTorques[0](1) = jointTorques[0](1) + feedforwardJointTorque1;
+
+*Gains
+
+ //For joint space control without constraints using computed torque
+    double ksi[2] = {1.0, 1.0}; //damping factor
+    double Kp[2];
+    Kp[0] = 4000.0/(taskTimeConstant*taskTimeConstant);
+    Kp[1] = 3200.0/(taskTimeConstant*taskTimeConstant);
+    double Kv[2];
+    Kv[0] = 20*ksi[0]/taskTimeConstant;
+    Kv[1] = 30*ksi[1]/taskTimeConstant;
+    double Ki[2] = {33.5, 10.5};
+    double Ka[2] = {0.0, 0.0};
+
+
+
+
+(3) Now interesting part comes and usual in such cases problems also creep in :).
+In this use case I wanted to have motion control using external forces, but additionally having end-effector under the constraint in X direction.
+The configuration and the structure of the controller is the same as those in the use case (1). The only things that change are A constraint matrix
+and gains for the PID. These are given below.
+
+Gains:
+ //For cartesian space control with constraints and using external forces
+    double ksi[2] = {1.0, 1.0}; //damping factor
+    double Kp[2];
+    Kp[0] = 6000.0/(taskTimeConstant*taskTimeConstant);
+    Kp[1] = 11000.0/(taskTimeConstant*taskTimeConstant);
+    double Kv[2];
+    Kv[0] = 130*ksi[0]/taskTimeConstant;
+    Kv[1] = 160*ksi[1]/taskTimeConstant;
+    double Ki[2] = {-5.01, -5.1};
+
+
+The corresponding data are presented in externalForce-X-const-plot1/2/3.eps. As it can be seen in plot1 tracking error dynamics is not bad at the beginning
+but at some joint configuration it goes havoc. When one analysis joint values, one can observe that the situation worsens as the joint values get closer to each
+other and as soon as they are equal, the controller breaks. I did not analyze it further yet, but this is not a singular configuration.
+It corresponds more when the first link almost horizontal, whereas the second link is almost vertical. Does this correspond to the definition of singularity?
+well, the structure becomes like the single link manipulator pivoted at the end of the first link. In short, the tracking motion works fine under constraints before this configuration is reached.
+
+(4) This is even more interesting configuration. Here I have the same conditions as in (1) and (3) but I tried to use to different controllers. The end-effector is still constrained in X.
+One of the controllers is around Y component of external forces and the second controller is around acceleration energy, beta, trying to minimize deviations in X.
+The results I got are very similar to that of use case (3). That is, as the angles start getting closer to each other (q0=q1) the control breaks. But before that everything looks "fine".
+Even better news is that there are _no more oscillations_, when we use control around beta! The problem before was that cartesian velocities and acc were not transformed properly.
+They were given in link tip coordinates, whereas we required them with respect to base.  There was also a small bug in algorithm itself. In calculation of R a parenthesis was misplaced.
+After correcting these issues the problem seemed to disappear.  The plots corresponding to this last use case are in externalForce-beta-X-const-plot-1/2.eps
+The controller and gains are given below.
+
+ //Regulator or controller
+  //acceleration energy control
+  betha(0) = alpha(0, 0)*(K*cartXDotDot_error.X + (Kv[0]) * cartXDot_error.X + (Kp[0]) * cart_errorX.X+ Ki[1] * cartX_errorsum.X);
+ externalNetForceTip.Y = XDotDot_des.Y + ((Kv[1]) * XDot_error.Y + (Kp[1]) * X_error.Y + (Ki[1]) * Sum_X_error.Y);
+
+
+*Gains:
+
+double ksi[2] = {1.0, 1.0}; //damping factor
+    double Kp[2];
+    Kp[0] = 0.0005/(taskTimeConstant*taskTimeConstant);
+    Kp[1] = 11000.0/(taskTimeConstant*taskTimeConstant);
+    double Kv[2];
+    Kv[0] = 1.0*ksi[0]/taskTimeConstant;
+    Kv[1] = 160.0*ksi[1]/taskTimeConstant;
+    double Ki[2] = {0.0, 0.0};
+    double K = 0.005;
+
+
+So far, that is what I managed. After you feedback and if you give "green light"
+
+
+
+   

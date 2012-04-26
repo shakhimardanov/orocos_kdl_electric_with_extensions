@@ -1,0 +1,577 @@
+* It allows  any type of --interaction pattern--  be implemented among
+nodes.  Peer-to-peer (exclusive  pair), pub-sub, req-rep, pipeline (as
+in high  performance computing).   * It allows  any type  of transport
+protocols be used, tcp, in-proccess, inter-process, reliable multicast
+over  openPGM  *  The  simplest  API  ever  (check  documentation  for
+references) * Persistent,  transient and semi-persistent communication
+through extended socket types,  which rely on well-defined policies on
+receiver/sender side buffers and  network i/o buffer and eventually if
+one is picky about buffers then he/she can swap info into a swap file
+
+* ONE SOCKET DOES IT ALL, as  long as you don't change its interaction
+type. That is, you can create several end-points (ports with different
+port numbers, of course)  using different transport protocols, sending
+different data through one socket to any receiver
+
+* ONE THREAD DOES  IT ALL, you often only need one  context (as in ROS
+often  it  is  the case  too)  attached  to  your main  program  which
+allocates  all  communication  related  resources.  All  the  incoming
+connections are taken  care by background threads that  you won't ever
+see (as  in ROS).   But again, DO  WHATEVER you  want and in  stead of
+passing threadNumber=1  to context constructor  pass threadNumber=N to
+it and continue doing whatever you want.
+
+* Binary message transfer, zero copy  message transfer etc etc I don't
+want to mention all the details here. If you like we can discuss.
+
+* Building any network topology through ZeroMQ devices (proxy, broker,
+queue etc).   That is, you  can, for example, create  brokered req-rep
+topology for one  part of your system (say 30  nodes) and then connect
+it through a proxy  or a queue to pub-sub part of  your system (say 50
+nodes). So, you can scale, predict and see what is happening
+
+* And  the most  important thing  is that  everything is  EXPLICIT and
+SIMPLE to modify/set/get  etc. Imagine using ROS data  ports and "just
+ADMIT" that  it is going to  be pub-sub, with  fixed buffering policy.
+Now  imagine  ZeroMQ sockets/ports  based  on  pub-sub and  "KNOW/SEE"
+explicitly   what   you    can   get/set/modify   on   pub-sub   based
+interaction. Do  BIG or  SMALL, do  CLEAN or DIRTY,  do FAST  OR SLOW,
+literally anything (this is valid for most socket types)
+
+* so on, so on, etc etc...
+
+
+
+Of course, there are still some  issues which ZeroMQ does not solve or
+provide.  For instance, * we might need at some point naming/directory
+services, which  it does not  have yet *  since it is socket  API, one
+needs to  do serialization  of binary  data oneself. But  it is  not a
+problem, because there are some  examples and comparisons how to do it
+with IDL, Boost Serialization, Google Protocol Buffers. We are looking
+into  this and  actually  it may  be  very useful  for  our data  type
+mappings and generation. Need to discuss how to proceed.
+
+* Some other, I don't remember but they are there. No rejecting it.
+
+=========================================================================================
+ZeroConf features and implementation list:
+
+The core underlying Zeroconf technology enablers:
+
+* First layer:Link-local  addressing Three ways in which  a device may
+obtain  an  IP address:  manually  assigned,  DHCP, and  self-assigned
+(link-local)
+
+Zeroconf  allows you  to automatically  select  an IP  address in  the
+absence  of a  DHCP  server or  network  administrator.  The  Zeroconf
+technique  for  obtaining  a  unique   IP  address  is  as  simple  as
+practically possible.  Choose an IP address and check that no one else
+has already claimed it.  If  someone has, then choose another address.
+If the address has not yet been claimed, then claim and defend it.
+
+Link local  address range 169.254.1.0  to 169.254.254.255 (not  all of
+the range  of 169.254.0.0 to 169.254.255.255 is  available for general
+use today. The first 256 and last 256 addresses have been reserved for
+future use  ).  This set  of numbers is  the range that  Zeroconf uses
+when no  DHCP server  is available.  With  Zeroconf, the  selection of
+addresses is done in a distributed manner.  Each device is responsible
+for choosing  its own address and  then verifying that it  can use the
+selected  address  Link-local  addressing  is intended  for  two  main
+scenarios:  for  tiny ad-hoc  local  networks  where communication  is
+desired  without the  overhead of  setting up  a DHCP  server,  and to
+provide  a  minimum safety-net  level  of  service  on networks  where
+there's  supposed to be  a DHCP  server but  it's failed.   Because no
+central  authority is  maintaining a  list of  available  addresses, a
+device joining the network must  handle possible conflicts with all of
+the existing  hosts. Link-local  addressing is primarily  intended for
+networks of 2 devices, 10 devices, or perhaps even 100 devices, though
+analysis in  RFC 3927  shows that  even on a  network with  over 1,000
+devices, it still works reasonably well
+
+One can use an ARP protocol  to probe whether the chosen ip address is
+being used  by anyone else.  After determining  and self-assigning the
+address the node  needs to broadcast this information,  using the same
+ARP protocol with  two ARP requests. This will  notify other hosts who
+are probing for the given address.
+
+When there are  conflicts such as What if some  hosts have software or
+hardware bugs that mean they  don't perform probing properly?  What if
+two  hosts do  perform probing  properly on  two  separate unconnected
+Ethernet  segments (so,  at the  time, there's  no harm  in  them both
+assigning  themselves  the same  address),  but  then, without  either
+host's  knowledge, those  two  Ethernet segments  are later  connected
+together?   What  if  a  human  user  decides  to  manually  assign  a
+169.254.x.x  address  on  a  device  that  doesn't  implement  address
+conflict detection for  manual addresses? Or does it  on a device that
+does implement  address conflict  detection for manual  addresses, but
+the human  user, for some  reason, has disabled that  address conflict
+detection?,   Zeroconf   link-address    layer   takes   a   pragmatic
+approach. Hosts do not fight  over an IP address with different hosts,
+after several unsuccessful attempts  original host just assigns itself
+another ip and just continues.
+
+
+RFC 3927 allows a  machine to handle a conflict in one  of two ways: *
+It can gracefully  back down and let the other  host have the address.
+It picks a new address and  begins the probing process all over again.
+* If it has open TCP connections that it doesn't want to lose, then it
+can respond  by broadcasting a  single ARP announcement  asserting its
+own  ownership of  that address.  However, if  this doesn't  solve the
+problem,  then it  must back  down  and let  the other  host have  the
+address.  There's nothing to  be gained  by two  hosts getting  into a
+fistfight over an address.  When two hosts think they have the same IP
+address, any open TCP connections  are not likely to survive for long,
+so, pretty  soon, the thing the  hosts were each  fighting to preserve
+will be gone anyway.
+
+
+
+* Second layer:  Multicast DNS  - after obtaining  an IP  address, the
+next  step  is  to  obtain  unique  name which  can  resolve  to  this
+address. This  is indepented of  how IP was obtained  (static/DHCP/ or
+self-link).  To obtain at least locally unique name in situation where
+there is  no DNS  server present, Zeroconf  uses multicast  DNS.  This
+stage may feel unnecessary. After all, why not just use the IP address
+obtained in the last step as  the device name? IP addresses may change
+over time, and network location  and IP addresses are not a convenient
+form for people to remember  or recognize devices. In other words, you
+need  to assign  locally unique  names and  not use  the automatically
+assigned IP addresses for the following reasons:
+
+* The IP address provided may  be temporary . If you are communicating
+  with a  device at a given address,  it is quite possible  that, at a
+  later time, the  device may have a different  address. Attempting to
+  contact  the  device by  connecting  to  its  old address  will  not
+  succeed. Even  worse, that  address could be  reused by  a different
+  device, so  when you  attempt to connect  to it, you  may apparently
+  succeed, except  you're not  actually communicating with  the device
+  you intended.
+
+* With  mobile devices  and devices  connected to  many  networks, the
+  device cannot expect  to keep the same IP  address in every location
+  and on  every different network. In  a world where  IP addresses are
+  fluid  and changeable,  having a  persistent name  that's relatively
+  much more stable is a big  benefit. Of course, names also have to be
+  uniquetwo devices cannot have exactly  the same namebut the space of
+  all possible names  is so much larger than the  space of possible IP
+  addresses  that  coming up  with  unique  names  is relatively  much
+  easier.
+
+* An  IP  address is  not  a human-friendly  way  to  locate a  device
+  providing a  service. When  we want  to use a  web browser  to visit
+  Apple  Computer's  web  page,   we  type  www.apple.com  and  not  a
+  dotted-decimal IP address. As the  world moves to IPv6, this problem
+  becomes  even more  acute.  An  IPv4 address  is  just four  decimal
+  numbers,  such as  17.112.152.32, which  is just  about  possible to
+  remember, if absolutely necessary. An IPv6 address is 32 hexadecimal
+  characters, which is a different story altogether. Most people don't
+  pick secret passwords that are  hard to remember, not even for their
+  most important financial accounts.
+
+* If you  need to select  a device from  a list of  available devices,
+  this is  easier to do if  the list is presented  as text-based names
+  and  not  a collection  of  IP addresses.  This  is  similar to  the
+  previous point but  is the other direction of  recognizing a device,
+  as opposed to requesting that device
+
+Instead  of  relying on  a  centralized  authority,  mDNS allows  each
+machine to  answer for  itself. When  a client wishes  to do  a query,
+instead of sending it to a  particular DNS server, the client sends it
+using IP Multicast, which means that,  a bit like a broadcast, it goes
+to every interested  machine on the local network.  Each device on the
+network runs  a little  piece of software  that's listening  for these
+multicast queries,  and, when  it sees  a query for  its own  name (or
+other  mDNS  data  it  knows),  it  answers  that  query,  much  as  a
+conventional  DNS server would  have done.  On Mac  OS X,  this little
+piece  of  software  is   called  mDNSResponder  .  On  Windows,  it's
+mDNSResponder.exe.  On Linux  and similar  Unix systems,  it's usually
+called mdnsd.
+
+In  order  to distinguish  local  names  from  existing domain  names,
+Zeroconf uses .local.  as a pseudo-top-level domain (TLD).  Just as IP
+addresses  beginning with  169.254  are deemed  special, not  globally
+unique, and therefore  only meaningful on the local  link, names under
+the  pseudo-TLD "local"  are  similarly deemed  special, not  globally
+unique, and  only meaningful on the  local link. The  benefit of local
+names is  that you don't need an  arbiter who hands out  names and you
+don't have to pay money for  them. The drawback of local names is that
+because there's no arbiter and you didn't pay any money for your name,
+you can't  claim unique ownership  and prevent others from  using that
+same name  if they  want. Instead, devices  using local names  have to
+follow  a set  of cooperative  rules  (i.e., protocol)  by which  they
+detect if two devices try to use  the same name at the same time, and,
+if  this  happens,  one  of  them voluntarily  selects  a  new  unique
+name. You cannot assume, if you see the name example.local. on a given
+link, that it  has any relationship to an  example.local. that you see
+on a different  link, nor can you assume that  it has any relationship
+to  an example.local.  you  may have  seen  before on  the same  link.
+There's no end  of names that can  be chosen as a TLD  for private DNS
+namespaces.  For  example,  you  could  choose  .intranet,  .internal,
+.private, .corp,  or .home. Author D.J. Bernstein  recommends using .0
+through  .9   as  safe  top-level   local  names.  You   should  avoid
+.local. because it has  been used in Mac OS 9 and Mac  OS X for a long
+time to identify a name as  being link-local, and now with Bonjour for
+Windows and  Multicast DNS  for Linux, .local  has special  meaning on
+those platforms also.
+
+
+Names in the  pseudo-TLD local are always looked  up using multicast ,
+but what about other names?  Standard DNS names are normally looked up
+using unicast queries  sent to a normal DNS  server. However, when the
+Internet link  is down, or the  DNS server is not  responding for some
+other reason,  this leaves  all these names  unresolvable. You  may be
+trying  to   connect  to   tim.oreilly.com,  sitting  right   next  to
+tim.oreilly.com, but  you can't connect because your  Internet link is
+down and you  can't reach the global DNS. In  this situation, a client
+could choose to multicast its query locally, so that the two computers
+can  communicate  directly,  peer-to-peer,  and set  up  a  connection
+without reliance  on the  external DNS. Even  though the  peers cannot
+communicate with the global DNS, they would still be using their usual
+global DNS names  to refer to each other. While  it is clearly useful,
+it also makes spoofing easier. The machine next to you may claim to be
+tim.oreilly.com, but how can you be sure? This risk could be mitigated
+by using  cryptographic techniques like the ones  described above used
+by  ssh, but much  of today's  application software  doesn't implement
+such  strong security measures.  In the  future, when  better security
+mechanisms are in place, it  may become practical to begin using local
+mDNS as  a fallback  mechanism to  look up global  DNS names  when the
+global DNS is inaccessible, but for now, it is safest to restrict mDNS
+for use with dot-local names
+
+Any  DNS query for  a name  ending in  .local is  sent to  the address
+224.0.0.251,  which is  the IPv4  address that  has been  reserved for
+mDNS.  The IPv6  mDNS link-local  multicast address  is  FF02::FB. The
+concepts of Multicast  DNS apply equally, whether the  data is sent in
+IPv4 multicast packets or IPv6 multicast packets.  Because 224.0.0.251
+and FF02::FB are in the link-local multicast ranges for IPv4 and IPv6,
+respectively,  packets sent  to  these addresses  are never  forwarded
+outside  the  local  link  nor  forwarded onto  the  local  link  from
+outside. A device can therefore  be sure that any link-local multicast
+packets  it  sends  remain  on  the local  link,  and  any  link-local
+multicast packets it receives must  have originated on the local link.
+Queries  to determine  the  hostname for  a  particular link-local  IP
+address ("reverse lookups") can also be sent to 224.0.0.251. For IPv4,
+this reverse  address mapping is  any DNS query  for a name  ending in
+254.169.in-addr.arpa,  and   for  IPv6,  it   is  a  name   ending  in
+0.8.e.f.ip6.arpa.
+
+Multicast  DNS Queries  fall into  three categories:  one-shot  with a
+single answer, one-shot with multiple answers, and ongoing (chp 3.3.2)
+
+
+* Third  layer: DNS  serivce discovery  in WAN  DNS  Service Discovery
+(DNS-SD),  the  mechanism in  Zeroconf  that  lets  you discover  what
+services are available on the network without having to know device or
+service names in  advance via some other means.  DNS Service Discovery
+is  accomplished by  building  on existing  standard  DNS queries  and
+resource record types, not by  creating a new set of technologies This
+requires the  availability of  working DNS-like functionality,  but it
+could be link-local Multicast DNS, global Unicast DNS, or both.
+
+Regardless of whether Multicast DNS  or Unicast DNS is being used, new
+services coming onto the network announce their presence via Multicast
+DNS, or  they use DNS  Dynamic Update to  update a Unicast  DNS server
+with  their information; thus,  clients looking  for services  of that
+type are  all informed that  a new instance  is now available.  When a
+service  goes away  gracefully  (as opposed  to  crashing, having  the
+network cable cut, or suffering a power failure), it sends a Multicast
+DNS  goodbye  packet  or  uses   DNS  Dynamic  Update  to  remove  its
+information  from the  Unicast  DNS  server, so  that  clients can  be
+informed  that that  particular named  service instance  is  no longer
+available.    The   service    discovery   software   has   two   main
+responsibilities:  enumerating the list  of names  of services  on the
+network of  a given type  and translating from  any given name  on the
+list to the IP address  and other information necessary to connect and
+use it.  The service instance names  should be under  user control but
+relatively  persistent, so  that tomorrow,  the same  service instance
+name logically  identifies the same conceptual  service being offered,
+even if the  IP address has changed or the TCP  port number the server
+is listening on has changed. Even if the hardware has been replaced or
+the  software has  been  upgraded,  clients should  still  be able  to
+connect to that service using the same name.
+
+When designing a service  discovery system, it's important to remember
+that  what network  software  clients need  to  discover are  software
+entities with which they can  communicate, not pieces of hardware. The
+difference between  discovering services and  discovering hardware may
+seem small and subtle, but it makes all the difference in actual use.
+
+A scalable  service discovery  mechanism needs to  work both  on small
+networks, operating peer-to-peer with  no infrastructure, and on large
+networks, where  peer-to-peer multicast would be  too inefficient and,
+instead, service  discovery data  needs to be  stored at  some central
+aggregation point. As pointed out in the Internet Draft on DNS Service
+Discovery,  DNS   and  its  related  protocols   already  provide  the
+properties we need:
+
+
+
+Service discovery requires a central aggregation server
+
+DNS already has one: it's called a DNS server.
+
+
+
+Service discovery requires a service registration protocol
+
+DNS already has one: it's called DNS Dynamic Update.
+
+
+
+Service discovery requires a query protocol
+
+DNS already has one: it's called DNS.
+
+
+
+Service discovery requires security mechanisms
+
+DNS already has security mechanisms: they're called DNSSEC.
+
+
+
+Service discovery requires a multicast mode for ad-hoc networks
+
+Zeroconf environments already require a multicast-based, DNS-like name
+lookup protocol for mapping hostnames  to addresses, so it makes sense
+to let one multicast-based protocol do both jobs.
+
+
+
+
+
+======================================================================
+Container      concept     for      components      and     middleware
+-----------------------------------------------------
+
+In general the main issue  with components is to make their functional
+base independent  from platforms specific  primitives. In most  of the
+cases these  specifics come into  view during deployment  time because
+one  needs to  make decisions  concerning runtime  which  are platform
+specific and do consist of
+
+* Platform specific execution, i.e. threading mechanism which is often
+tied to specific OS threading.  It is virtually impossible to decouple
+this (because  eventually an application needs to  execute which means
+use  OS   specific  resources),  but   for  the  operation/programming
+interface related to threading (through introducing a standard similar
+to POSIX or write your  own thread allocation interface and provide OS
+specific implementations)  - for openRTM this is  done through omniORB
+threading which then relays it to OS - for OROCOS this is done through
+abstract   RunnableInterface  which   interfaces   with  specific   OS
+threading?  - for ROS this is achieved through Spinner interface which
+uses  Boost thread  interface underneath  In ICE  this  abstraction is
+icethread.
+
+* Platform  specific networking -  how different  networking resources
+	are implmented on different platforms
+
+* Platform specific data  representation involves serialization issues
+on OS level, mapping on framework level.
+
+These issues are often taken  care of through introducing a middleware
+layer.  Layered structure then will be composed of HW|OS|Middleware.
+
+Often component oriented  systems have to rely on  Middleware layer to
+achieve  platform (HW,  OS) independece  interms of  the  three points
+mentioned above.  But often there is downside to this middleware based
+solution, that  is, components are  locked in to the  given middleware
+solution and are not reusable outside it (the same situation holds for
+component frameworks,  where lockin is on framework  level).  So while
+trying  to   solve  one  problem  we  introduced   different  type  of
+dependecies.
+
+Before suggesting any possible solution to this problem let us analyze
+the  way middleware  achieves  its  so called  "platform  (OS, HW  and
+Language) independence":
+
+* Execution  - programs  on OS  can execute  to the  extent HW  and OS
+threading/scheduling mechanisms allow them. All the threading concepts
+coming  from  languages,  middleware  are  nothing  else  but  another
+abstraction layer on top of  OS/HW execution resources to make life of
+a developer simpler. So whenever a component has some active execution
+concept  like a  thread,  it is  automatically,  though implicitly  is
+coupled to OS  or middleware. The only thing  the middleware solves in
+this respect  is that it  harmonizes interfaces which allow  to access
+these OS resources.   This is done so that every  time a program using
+threading need not to be re-implemented on different OS because of the
+different threading interface.
+
+* Networking - also similar to the one above (fill in later)
+
+* Data representation - also similar to the one above (fill in later)
+
+So in  short, middleware harmonizes interfaces  between specific lower
+level of OS  and higher level of component  through providing specific
+implementations for  these interfaces on each  platform.  For example:
+if creating a thread on  linux OS has 'thread_create()' and on windows
+OS   'create_thread()'  then   middleware   provides  'threadCreate()'
+interface  which uses/sits on  top/is implemented  through the  use of
+each of the  os specific interfaces.  One can view  also this from the
+'incoming'(API) and 'outgoing' interfaces  which are used by a program
+and provided to other programs respectively.
+
+Another example  is communication between two programs  written in two
+different languages  (let them be Python and  C++).  The communication
+between   these   two  is   possible   only   when   they  both   have
+compatible/matching interfaces that both languages can provide. It can
+be for  instance, a socket, a file  etc (of course, to  make any sense
+the packets of information from these programs should map to some data
+types(serialization and deserialization))
+
+Therefore one can  conclude that there is no  such thing as 'complete'
+independence but rather 'harmonized interfaces' with platform specific
+implementations.
+
+So how such concepts can be brought to the level of component oriented
+programs,  which have  so far  been middleware  specific  mostly.  The
+answer  is  decoupling  of  the component  code-base  into  middleware
+specific and  application context (robotics  functional code) specific
+code-bases. This is achieved  through dividing what is currently/often
+referred to as a component into  concepts of a 'container' and a 'core
+component'. This is not yet  another 'thick' abstraction layer, on the
+contrary this can/should/must  be achievable through introduction very
+little  'glue' code between  application context  specific functional,
+core component  and middleware specific,  container. Additionally, the
+main  point which  makes  the core  component  reusable acros  various
+containers, middlewares,  OSes, is that  the core component(functional
+base, code which performs computation needed by others external to the
+component)    should    never    make    a    call    to    underlying
+container/middleware.  This comes with several important implications,
+which actually allow true platform independence.  These are:
+
+* core component  should have harmonized interfaces  to the underlying
+	container, and vice-versa
+
+* core  component should  never directly/indirectly  use  os dependent
+	resources,  which  includes  threads   and  I/O.   That  is,  core
+	component should be passive  unit dependent on language constructs
+	only. Example: a class, a  class * library, a function, a function
+	library etc.?
+
+* core component and container  __may__ have only language dependency.
+	Following from the points above  and IoC principle user code, core
+	component, should only be invoked through container.
+
+
+In terms  of layered  approach container  does not sit  on top  of the
+middleware, but rather part of it.
+
+
+---------------------------------------------------------------------
+For component model to consider:
+
+-- component  execution context should  consider having  the following
+attributes: --- execution priority --- component scheduling policy ---
+whether a component should be  preemtable or not -- whether BCM should
+provide a very  generic/flexible FSM which can be  used to model other
+framework specific FSMs  Or -- whether BCM should  not have such thing
+because  of   the  fact  that  future   framework  specific  component
+containers __may__  contain such information  -- related to  the point
+above is  the question whether BCM  should have fixed  FSM Azamat says
+that would  have made  sense if we  use BCM  to generate code  for BCM
+framework only.   But this is  not the goal  of BCM -- We  should make
+clear differences  between PIM and  PSM, refer to the  presentation in
+Augsburg from 07.2009. Is BCM plays  the role of PIM and ROS or OROCOS
+play role of the PSM
+
+-- Some aspects of  the model are too specific  and redundant: --- too
+many  specific  port  instances  --- Inconsistent  implementation  for
+bodies of provided and required services ---
+
+
+-----------------------------------------------------------------------
+OpenRTM: The  relationship between RTCs and execution  contexts may be
+many-to-many in  the general case:  multiple RTCs may be  invoked from
+the  same execution  context, and  a single  RTC may  be  invoked from
+multiple contexts.  In  the case where multiple RTCs  are invoked from
+the same context, starting or stopping the context shall result in the
+corresponding lifecycle transitions for all of those components.
+
+Although an execution context  represents a logical thread of control,
+the choice of  how it maps to  a physical thread shall be  left to the
+application's  deployment environment.   Implementations may  elect to
+associate contexts  with threads with  a one-to-one mapping,  to serve
+multiple contexts from a single thread, or by any other means
+
+
+Genom3:
+
+
+
+ROS:
+
+
+\section{References}
+
+http://static.springsource.org/spring/docs/2.5.x/reference/beans.html
+http://docs.codehaus.org/display/YAN/Spring%2C+Pico+and+Nuts+Compared
+http://c2.com/cgi/wiki?IocContainerComparison
+http://www.sturmnet.org/blog/2010/03/04/poll-results-ioc-containers-for-net
+
+
+=====================================================================
+ENTERPRISE INTEGRATION PATTERNS
+
+In the context of messaging "channel" is equivalent to "buffer".
+
+Observation: queues/channels are  shared resource betwenn programs. As
+for  instance a shared  database, A  message can  be interpreted  as a
+data, a  description of a  command to invoked  or a description  of an
+event   which   occured   (so   a   message   can   convey   different
+semantics). Message  consists of two  parts: header containing  a meta
+information  and  message   body  containing  data.  Messaging  system
+coordinates  and manages  sending and  delivery of  messages  from one
+location to another.
+
+Observation:  Some  paradigms  are  by  default  async,  for  instance
+messaging sysems,  whereas most of  the programs that might  use those
+async  paradigms  to  communicate   with  each  other  are  inherently
+synchronous  in terms  of execution  (consist of  synchronous function
+calls, one method  calling another, subprocedure call ).  So, there is
+an inconsistency between two models how to bridge them
+
+Observation: There  are two things  that any application  can exchange
+"data" and "functionality" Basically, one of the most important aspect
+to pay attention to is "synchronization".
+
+One  can   categorize  four  main   patterns  to  exchange   data  and
+functionality. These  are, in order of  increasing sofistication, file
+transfer,  shared database,  remote procedure  call,  messaging.  File
+transfer   lacks   timeliness   (unsynchronized/old/stale  files   are
+problem).
+
+To make data available more  quickly and enforce an agreed-upon set of
+data  formats,  use a  Shared  Database.   To integrate  applications'
+functionality   rather   than  their   data,   use  Remote   Procedure
+Invocation.  To enbale frequent  exchanges of  small amounts  of data,
+perhaps used to invoke remote functionality, use Messaging.
+
+
+Multiple applications  using a Shared Database to  frequently read and
+modify  the  same  data  can  turn the  database  into  a  performance
+bottleneck and  can cause deadlocks  as each application  locks others
+out of the data. Shared Database provides a large, unencapsulated data
+structure, which makes it much  harder to intercept changes to data to
+perform  some  action/fuctionality.  While  File  Transfer  allows  an
+application  to react to  changes as  it processes  the file,  but the
+process is delayed.  The  fact that Shared Database has unencapsulated
+data also makes  it more difficult to maintain  a family of integrated
+applications. Many changes in any  application can trigger a change in
+the database,  and database changes have a  considerable ripple effect
+through every application. In such cases, what is actually needed is a
+mechanism  for  one  application  to  invoke  a  function  in  another
+application, passing the data that needs to be shared and invoking the
+function that tells receiver application how to process the data. That
+is  what RPC  does.  RPC  applies the  principle  of encapsulation  to
+integrating  applications. If  an application  needs  some information
+that  is  owned  by  another  application, it  asks  that  application
+directly. If one  application needs to modify the  data of another, it
+does so  by making a call  to the other application.  This allows each
+application to maintain its  data intergrity. Applications can provide
+multiple interfaces to the same data, allowing some clients to see one
+style  and  others a  different  style.  However,  it is  awkward  for
+integrators to add transformation  components, so each application has
+to negotiate its interface with its neighbors.
+
+

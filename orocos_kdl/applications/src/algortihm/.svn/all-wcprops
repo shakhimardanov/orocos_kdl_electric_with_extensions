@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/papers/!svn/ver/158/testExamples/src/vereshagintests/src/algortihm
+END
+chainidsolver_vereshchagin.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/papers/!svn/ver/154/testExamples/src/vereshagintests/src/algortihm/chainidsolver_vereshchagin.cpp
+END
+treeidsolver_vereshchagin.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/papers/!svn/ver/158/testExamples/src/vereshagintests/src/algortihm/treeidsolver_vereshchagin.hpp
+END
+chainidsolver_constraint_vereshchagin.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/papers/!svn/ver/140/testExamples/src/vereshagintests/src/algortihm/chainidsolver_constraint_vereshchagin.cpp
+END
+chainidsolver_vereshchagin.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/papers/!svn/ver/154/testExamples/src/vereshagintests/src/algortihm/chainidsolver_vereshchagin.hpp
+END
+chainidsolver_constraint_vereshchagin.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/papers/!svn/ver/135/testExamples/src/vereshagintests/src/algortihm/chainidsolver_constraint_vereshchagin.hpp
+END
+treeidsolver_vereshchagin.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/papers/!svn/ver/157/testExamples/src/vereshagintests/src/algortihm/treeidsolver_vereshchagin.cpp
+END

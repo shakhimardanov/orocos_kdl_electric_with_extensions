@@ -1,0 +1,138 @@
+* TwistArray, WrenchArray instead of or in addition to Jacobian( for kinematic/dynamics solvers)
+* Different variations of Vershchagin and other solvers (i.e. ID, FD, HD)
+* TwistVel refactor/rename
+* Documentation about trajectories/interpolators
+* some solvers implicitly include control, interpolator (IKPose_NR)
+* Documentation of different kind of intertia (Rotational, RigidBodyInertia)
+* Documentation for the tree
+* Extensions for mobile platforms (multi DoF Joints)
+
+
+
+
+
+
+Just some notes for further discussions  :-)
+
+Herman
+
+Sweeps/recursions:
+====================
+Out-I ("state" recursion): Cartesian position, velocity and acceleration of
+all segments; bias acceleration due to velocity.
+Inputs: current joint positions and velocities.
+
+In ("(external) force/(joint) torque input"): mass matrix, constraint basis
+matrix, constraint acceleration energy, accumulated acceleration energy.
+Inputs for evaluation are: (i) "null space" joint torques, (ii) external
+forces.
+Outputs: bias forces, bias torques, joint torques due to external forces,
+singularities in chain, singularities in constraint matrix,
+violations in maximum total joint torques. The matrices are best stored and
+propagated in decomposed form (QR!), so that: no full matrices must be
+computed or stored, and, more importantly, their singularities can easily
+be computed (= sum of squared diagonal terms of R part in QR
+decomposition).
+Multiple "force/torque evaluations" can be done after one single "state"
+recursion; e.g., to try out which inputs violate the joint torque
+constraints.
+
+Out-II ("constraint evaluation"): joint and segment accelerations.
+Inputs: constraint "right-hand side".
+Outputs: constraint violations.
+Multiple "constraint evaluations" can be done after one single
+"force/torque evaluation"; e.g., to try out which constraint input fits
+best.
+
+
+Constraint monitoring:
+======================
+- Cartesian "proprio" constraints: Cartesian segment position, velocity,
+  accelerations.
+- Cartesian "extero" constraints: position, velocity and/or accelerations
+  between feature frame on segment(s) and feature frames in the
+  environment.
+- joint torque, accelerations, velocity, position.
+- mass matrix rank at each joint.
+- acceleration matrix at each joint.
+- acceleration energy matrix at each joint.
+The three former can be "solved" (to some extent) by continuous adaptation
+of various input parameters; the latter three require discrete changes in
+task specification.
+
+
+Configuration parameters:
+=========================
+- tolerances in matrix rank computation
+- tolerances in constraint violations
+- control gains for all controllers
+
+
+Controllers around Vereshchagin's algorithm:
+============================================
+- Cartesian proprio + extero control: "\beta_N" (= right-hand side of
+  acceleration constraint at end-effector)
+- joint: torque, position, velocity, acceleration: idem.
+- Cartesian force/impedance control: external forces
+For the constraint-based controllers: Baumgarte stabilization (or variant);
+its control gains can change depending on how large the constraint
+violation (still) is (= stiffer when closer to desired goal).
+A "Jacobian transpose" control can be used to start to move, far away from
+desired end position constraint; = external force in the right direction,
+_or_ Cartesian "unit" acceleration in the desired direction; the magnitudes
+of force/acceleration can be tuned via multiple "evaluations" with
+controller around the magnitude.
+
+
+Miscellaneous:
+=============
+- "Jacobian": "TwistArray", "WrenchArray"
+- integrator needed, as SCL component: Euler, Euler semi-implicit,
+  Runge-Kutta,
+
+
+Full version of Vereshchagin:
+============================
+- tree chains
+- (partial) acceleration constraints on any segment
+- joint inertia, damping, elasticity _functions_
+- multi-DOF joints
+
+
+
+
+
+
+The refactoring that is needed is as follows, in my opinion:
+- export more "state": all M, E, U, G, etc, in order to allow to follow the
+  internals of the algorithm, when one wants to do so.
+
+- split up the calculations of the joint torques due to: 
+  - null space input,
+  - external forces, 
+  - bias forces, 
+  - constraint forces.
+
+- keep (and update) all matrices in factored form, such that it is easier
+  to check when they become singular.
+
+- add constraint monitor checks (and output variables that reflect the
+  constraint violations).
+
+
+//Todo for itasc and vereshchagin's solver.
+
+- identify how a particular component is implemented (solver, constraint controllers, scene, virtual chains, robot structure) (by inheriting
+from rtt context)
+- identify all the necessary components. rtt components
+- identify their relations (component-component connections)
+- identify rfsm/coordination lua scripts
+- map vereshchagin's primitives to iTaSC primitives.
+
+Questions to iTasc
+
+1)How are the Wq and Wy values are chosen. Wq comes from pr2robot but what about values.
+2) is control around ydot taking place in Solver? why not constraintcontroller?
+3) Priority struct , does it contain subtask specific A, Wy, ydot? which are then calculated in calculateA for each loop/subtask generating vector of As,Wys ydots for
+each VKC? There are two such structs one solver side and one scene side but they are different.
+4) so solver takes these As, Wys and ydots based on their priorities and generates a set of qDots for the robot (so sequentially satisfying each subtask?)

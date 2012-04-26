@@ -1,0 +1,73 @@
+KUKA youBot 5-degree-of-freedom arm
+
+    * arm base frame
+            Parent joint = “base”;
+            Relative positionXYZ = “143mm 0mm 46mm”;
+            Joint type = “fixed”;
+            Mass = “0.961kg”.
+            Note: If the KUKA youBot arm system is operated without a mobile platform, the arm base frame is the origin frame. In this case, its relative positionXYZ is “0,0,0”. If the arm is mounted on the mobile platform, the arm base frame represents a coordinate transformation with respect to the mobile platform base frame.
+
+    * arm joint 1
+            Parent joint = “arm base frame”;
+            Relative positionXYZ = “24mm 0mm 115mm”;
+            OrientationZYX = “0° 0° 180°”;
+            Joint type = “revolute”;
+            Joint axis = “0 0 1”;
+            Joint limits = “-169° 169°”;
+            Mass = “1.390kg”, max. torque = “9.5Nm”;
+            Principal axis of inertia:
+                  positionXYZ = “15.16mm 3.59mm 31.05mm”;
+                  orientationZYX = “180° 20° 0°”;
+                  inertia = “xx = 0.0029525kg·m² yy = 0.0060091kg·m² zz=0.0058821kg·m²”.
+
+    * arm joint 2
+            Parent joint = “arm joint 1”;
+            Relative positionXYZ = “33mm 0mm 0mm”;
+            Orientation ZYX = “-90° 0° 90°”;
+            Joint type = “revolute”;
+            Joint axis = “0 0 1”;
+            Joint limits = “-65° 90°”;
+            Mass = “1.318kg”, max. torque = “9.5Nm”;
+            Principal axis of inertia:
+                  positionXYZ = “113.97mm 15.0mm -19.03mm”;
+                  orientationZYX = “-90° 0° -90°”;
+                  inertia = “xx = 0.0031145kg·m² yy = 0.0005843kg·m² zz=0.0031631kg·m²”.
+
+    * arm joint 3
+            Parent joint = “arm joint 2”;
+            Relative positionXYZ = “155mm 0mm 0mm”;
+            OrientationZYX = “-90° 0° 0°”;
+            Joint type = “revolute”;
+            Joint axis = “0 0 1”;
+            Joint limits = “-151° 146°”;
+            Mass = “0.821kg”, max. torque = “6.0Nm”;
+            Principal axis of inertia:
+                  positionXYZ = “0.13mm 104.41mm 20.22mm”;
+                  orientationZYX = “0° 0° 90°”;
+                  inertia = “xx = 0.00172767kg·m² yy = 0.00041967kg·m² zz=0.0018468kg·m²”.
+
+    * arm joint 4
+            Parent joint = “arm joint 3”;
+            Relative positionXYZ = “0mm 135mm 0mm”;
+            OrientationZYX = “0° 0° 0°”;
+            Joint type = “revolute”;
+            Joint axis = “0 0 1”;
+            Joint limits = “-102.5° 102.5°”;
+            Mass = “0.769kg”, max. torque = “2.0Nm”;
+            Principal axis of inertia:
+                  positionXYZ = “0.15mm 53.53mm -24.64mm”;
+                  orientationZYX = “0° 180° 40°”;
+                  inertia = “xx = 0.0006764kg·m² yy = 0.0010573kg·m² zz=0.0006610kg·m²”.
+
+    * arm joint 5
+            Parent joint = “arm joint 4”;
+            Relative positionXYZ = “0mm 113.6mm 0mm”;
+            OrientationZYX = “0° 0° -90°”;
+            Joint type = “revolute”;
+            Joint axis = “0 0 -1”;
+            Joint limits = “-165° 165°”;
+            Mass = “0.687kg”, max. torque = “1.0Nm”;
+            Principal axis of inertia:
+                  positionXYZ = “0mm 1.2mm –16.48mm”;
+                  orientationZYX = “0°90°0°”;
+                  inertia = “xx = 0.0001934kg·m² yy = 0.0001602kg·m² zz=0.0000689kg·m²”.

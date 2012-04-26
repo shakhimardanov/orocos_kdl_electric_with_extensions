@@ -1,0 +1,199 @@
+
+Separation  of concerns
+-------------------------------------------------------------------------
+To isolate  the coordination elements  we can split  the specification
+and  implementation  into   four  parts:  communication,  computation,
+configuration and coordination.  Communication deals with the exchange
+of  data  with  a   foundation  of  communication  paradigms  such  as
+request/reply  synchronous and  asynchronous Computation  is concerned
+with the data processing algorithms  required by an application with a
+foundation in traditional paradigms such as functional programming and
+object-oriented  programming.  Configuration  determines  which system
+components should exist and how  they are inter-connected and is based
+on  principles  of   software  architecture  Finally  coordination  is
+concerned with the interaction of the various system components and is
+founded on recent paradigms such  as process calculi and the notion of
+interaction machines.
+
+* The  communication part  defines  how agents  communicate with  each
+* other  The  computation  part  defines  the  implementation  of  the
+* behavior  of individual  agents  It thus  determines  what is  being
+* communicated   The  configuration   part  defines   the  interaction
+* structure  or configuration.  It states  which agents  exist  in the
+* system and which agents can  communicate with each other. as well as
+* the method of communication.  Basically it is a description of where
+* information comes from and where it is sent to The coordination part
+* defines  patterns  of  interaction  ie it  determines  when  certain
+* communications take place
+
+Static and dynamic configuration
+
+
+
+Policy vs Mechanism
+
+ Most programming problems  can indeed be split into  two parts: “what
+capabilities  are  to be  provided”  (the  mechanism)  and “how  those
+capabilities can be used” (the policy).
+
+
+
+Kernel drivers
+-----------------------------------------------------------------------------
+When writing drivers, a  programmer should pay particular attention to
+this fundamental  concept: write kernel  code to access  the hardware,
+but don’t force particular policies on the user, since different users
+have different needs. The driver  should deal with making the hardware
+available, leaving all the issues about how to use the hardware to the
+applications. A driver,  then, is flexible if it  offers access to the
+hardware capabilities without  adding constraints. Sometimes, however,
+some policy decisions must be  made. For example, a digital I/O driver
+may only offer byte-wide access to  the hardware in order to avoid the
+extra code needed to handle individual bits.
+
+ Policy-free drivers  have a number of  typical characteristics. These
+include support  for both synchronous and  asynchronous operation, the
+ability to be  opened multiple times, the ability  to exploit the full
+capabilities  of the  hardware, and  the  lack of  software layers  to
+“simplify  things” or  provide policy-related  operations.  Drivers of
+this sort not only work better  for their end users, but also turn out
+to  be easier  to write  and maintain  as well.  Being policy  free is
+actually a common target for software designers
+
+
+ Each piece  of code  that can be  added to  the kernel at  runtime is
+called a  module .  The  Linux kernel offers  support for quite  a few
+different types  (or classes) of  modules, including, but  not limited
+to, device drivers. Each module is  made up of object code (not linked
+into  a complete  executable) that  can be  dynamically linked  to the
+running  kernel by the  'insmod' program  and can  be unlinked  by the
+'rmmod' program.
+
+ The Unix way of looking at devices distinguishes between three device
+types.  Each module usually implements one of these types, and thus is
+classifiable as a  char module , a block module ,  or a network module
+. This division of modules into  different types, or classes, is not a
+rigid  one;   the  programmer  can   choose  to  build   huge  modules
+implementing different drivers in a single chunk of code.
+
+
+ Character  devices A  character  (char)  device is  one  that can  be
+accessed  as  a stream  of  bytes  (cameras  are implemented  as  char
+devices) (like  a file);  a char driver  is in charge  of implementing
+this behavior.  Such a  driver usually implements  at least  the open,
+close, read, and write system  calls. The text console (/dev/console )
+and the  serial ports  (/dev/ttyS0 and friends)  are examples  of char
+devices, as they are well represented by the stream abstraction.  Char
+devices are accessed  by means of filesystem nodes,  such as /dev/tty1
+and /dev/lp0 . The only  relevant difference between a char device and
+a  regular file is  that you  can always  move back  and forth  in the
+regular file, whereas most char  devices are just data channels, which
+you  can  only access  sequentially.  There  exist, nonetheless,  char
+devices that look like data areas,  and you can move back and forth in
+them; for instance, this usually  applies to frame grabbers, where the
+applications can access the whole acquired image using mmap or lseek .
+
+
+Block  devices  Like  char  devices,  block devices  are  accessed  by
+ filesystem nodes in the /dev  dir ectory. A block device is something
+ that can host  a filesystem, such as a disk. In  most Unix systems, a
+ block device  can be accessed only  as multiples of a  block, where a
+ block is  usually one kilobyte of  data or another power  of 2. Linux
+ allows the application  to read and write a block  device like a char
+ device — it permits the transfer of any number of bytes at a time. As
+ a  result, BLOCK  AND CHAR  DEVICES DIFFER  ONLY in  THE WAY  DATA IS
+ MANAGED  internally by  the  kernel, and  thus  in the  kernel/driver
+ software interface. Like a char device, each block device is accessed
+ through  a  filesystem  node  and  the  difference  between  them  is
+ transparent to  the user. A block  driver offers the  kernel the same
+ interface as a  char driver, as well as  an additional block-oriented
+ interface that is  invisible to the user or  applications opening the
+ /dev entry points.  That block  interface, though, is essential to be
+ able to mount a filesystem.
+
+Network  interfaces  Any  network   transaction  is  made  through  an
+ interface, that is, a device that is able to exchange data with other
+ hosts. Usually, an interface is  a hardware device, but it might also
+ be a  pure software device,  like the loopback interface.   A network
+ interface is in charge of  sending and receiving data packets, driven
+ by  the  network  subsystem   of  the  kernel,  without  knowing  how
+ individual   transactions   map   to   the   actual   packets   being
+ transmitted.  Though  both  Telnet  and FTP  connections  are  stream
+ oriented, they transmit using the same device; the device doesn’t see
+ the individual streams, but only the data packets.
+
+NOT BEING  A STREAM-ORIENTED DEVICE, a network  interface isn’t easily
+mapped to a  node in the filesystem, as /dev/tty1 is.  The Unix way to
+provide access  to interfaces is still  by assigning a  unique name to
+them (such as eth0 ), but that name DOESN’T HAVE A CORRESPONDING ENTRY
+IN  THE FILESYSTEM.  Communication between  the kernel  and  a network
+device driver  is completely  different from that  used with  char and
+block drivers. INSTEAD OF READ  AND WRITE , THE KERNEL CALLS FUNCTIONS
+RELATED TO PACKET TRANSMISSION.
+
+Other classes  of driver modules exist  in Linux. The  modules in each
+class exploit public services the  kernel offers to deal with specific
+types  of devices.  Therefore, one  can talk  of universal  serial bus
+(USB) modules, serial modules, and  so on. The most common nonstandard
+class of devices  is that of SCSI* drivers.  Although every peripheral
+connected to the SCSI bus appears in /dev as either a char device or a
+block device, the internal organization of the software is different.
+
+Just  as network interface  cards provide  the network  subsystem with
+hardware related functionality, so a SCSI controller provides the SCSI
+subsystem  with  access to  the  actual  interface  cable. SCSI  is  a
+communication  protocol between the  computer and  peripheral devices,
+and every SCSI device responds  to the same protocol, independently of
+what controller board  is plugged into the computer.  The Linux kernel
+therefore  embeds a  SCSI implementation  (i.e., the  mapping  of file
+operations to the SCSI  communication protocol). The driver writer has
+to implement the mapping between the SCSI abstraction and the physical
+cable. This mapping depends on  the SCSI controller and is independent
+of the devices attached to the SCSI cable.
+
+ Beyond  device drivers,  filesystems are  perhaps the  most important
+class of modules in the Linux system. A filesystem type determines how
+information is  organized on  a block device  in order to  represent a
+tree of directories and files. Such  an entity is not a device driver,
+in  that  there’s no  explicit  device  associated  with the  way  the
+information is  laid down; the  filesystem type is instead  a software
+driver, because  it maps the low-level data  structures to higherlevel
+data structures.
+
+ The filesystem module  must implement the lowest level  of the system
+calls  that access  directories and  files, by  mapping  filenames and
+paths (as  well as  other information, such  as access modes)  to data
+structures  stored in  data blocks.  Such an  interface  is completely
+independent of the actual data transfer to and from the disk (or other
+medium), which is accomplished by a block device driver.
+
+ Linux  supports the concept  of a  filesystem module,  whose software
+interface declares the different operations that can be performed on a
+filesystem inode, directory, file,  and superblock. It’s quite unusual
+for  a programmer  to  actually  need to  write  a filesystem  module,
+because  the  official  kernel  already  includes code  for  the  most
+important filesystem types.
+
+
+ A  module is just  as powerful  as a  superuser shell.   Any security
+check in  the system  is enforced  by kernel code.  If the  kernel has
+security  holes, then  the system  has holes.  In the  official kernel
+distribution,  only an authorized  user can  load modules;  the system
+call "create_module"  checks if the invoking process  is authorized to
+load a module into the  kernel. Thus, when running an official kernel,
+only  the superuser,*  or an  intruder who  has succeeded  in becoming
+privileged, can exploit the  power of privileged code.  When possible,
+DRIVER WRITERS  SHOULD AVOID ENCODING  SECURITY POLICY IN  THEIR CODE.
+Security is a policy issue that is often best handled at higher levels
+within    the   kernel,    under   the    control   of    the   system
+administrator.  There  are always  exceptions,  however.  As a  device
+driver writer, you  should be aware of situations  in which some types
+of device  access could  adversely affect the  system as a  whole, and
+should provide adequate  controls.  Note that the Linux  kernel can be
+compiled  to  have no  module  support  whatsoever,  thus closing  any
+related security  holes. In this  case, of course, all  needed drivers
+must be  built directly into the  kernel itself. It  is also possible,
+with 2.2 and  later kernels, to disable the  loading of kernel modules
+after system boot, via the capability mechanism.
+
+
