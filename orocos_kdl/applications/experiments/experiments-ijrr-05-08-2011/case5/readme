@@ -1,0 +1,48 @@
+Experimental setup, case5:
+
+In this set of experiments, we work with 1-dof 1-link arm.
+The following conventions for frames and rotations are used:
+
+*Global frames and rotations
+^ +Y
+|
+|
+|
+|--------> +X
+
++Z axis is pointing out of the page (right hand rule).
+Positive rotations are in counter-clockwise directions.
+
+*Local frames
+External force wrenches and link distal frames have
+their +Y axis always along the link length.
+Check enclosed figure (frameConvention.pdf)
+
+
+The following set of external and internal forces are present:
+
+* gravitational force is present
+* virtual constraint forces are present
+* internal joint torque is NOT present
+* external forces on a link are NOT present
+
+
+Initial configuration:
+q = pi/2.0 rads, qDot = 0.0 rad/sec, qDotDot = 0.0 rad/sec*sec
+
+
+Summary:
+
+In this setup, one would like to keep the link in state of equilibrium.
+In this state all forces and moments are balanced. This can be achieved
+in two ways:
+* Gravitational force is balanced by an external force applied on the link
+* active joint torques (in the context of the algorithm, these torques can be
+calculated by introducing virtual EE constraints or by FD of the link).
+
+In this setup the equilibrium is achieved by introducing virtual constraint forces
+at EE, which are then used to calculate respective joint torques. To achieve
+the equilibrium all of DOFs of the system should be constrained. In case of 1-dof
+link, this DOF comes from the rotational component around Z-axis. Therefore, the constraint
+force at EE should be  applied along this DOF. Additionally, for 1-dof link system
+this equilibrium is equivalent to null space configuration of the system.

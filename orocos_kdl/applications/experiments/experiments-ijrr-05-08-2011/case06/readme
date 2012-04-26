@@ -1,0 +1,49 @@
+Experimental setup, case6:
+
+In this set of experiments, we work with 1-dof 1-link arm.
+The following conventions for frames and rotations are used:
+
+*Global frames and rotations
+^ +Y
+|
+|
+|
+|--------> +X
+
++Z axis is pointing out of the page (right hand rule).
+Positive rotations are in counter-clockwise directions.
+
+*Local frames
+External force wrenches and link distal frames have
+their +Y axis always along the link length.
+Check enclosed figure (frameConvention.pdf)
+
+
+The following set of external and internal forces are present:
+
+* gravitational force is present
+* external forces on a link are present
+* virtual constraint forces are NOT present
+* internal joint torque is NOT present
+
+
+
+Initial configuration:
+q = pi/2.0 rads, qDot = 0.0 rad/sec, qDotDot = 0.0 rad/sec*sec
+
+
+Summary:
+This setup will generate motion similar to that in case4, where constant
+joint torque and gravity were present. Depending on the magnitude
+of the external force, its effects
+* could be negligible
+* could lead to equilibrium
+* could excite the system and increase its amplitude and frequency.
+
+The external force is applied at the center of geometry (in the middle)
+of the link. Therefore, to achieve equilibrium its magnitude should be
+twice as big as of the gravitational force at the point mass (equivalently
+the moment it generates should be twice as much).
+If the magnitude of the external force satisfied |Fext| > 2*|Weight_object|
+than the motion will have excited character and will continue with growing
+amplitude and frequency.

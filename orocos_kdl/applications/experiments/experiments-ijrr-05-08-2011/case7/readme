@@ -1,0 +1,46 @@
+Experimental setup, case7:
+
+In this set of experiments, we work with 2-dof (in joint space) 2-link arm.
+The following conventions for frames and rotations are used:
+
+*Global frames and rotations
+^ +Y
+|
+|
+|
+|--------> +X
+
++Z axis is pointing out of the page (right hand rule).
+Positive rotations are in counter-clockwise directions.
+
+*Local frames
+External force wrenches and link distal frames have
+their +Y axis always along the link length.
+Check enclosed figure (frameConventions.pdf)
+
+
+The following set of external and internal forces are present:
+* gravitational force is present and is in -Y
+* internal joint torques are NOT present
+* external forces on a link are NOT present
+* virtual constraint forces are NOT present
+
+
+Initial configuration:
+q0 = pi/2.0 rads, q1 = 0.0 rads,
+qDot0 = 0.0 rad/sec, qDot1 = 0.0 rad/sec
+qDotDot0 = 0.0 rad/sec*sec, qDotDot1 = 0.0 rad/sec*sec
+
+Summary:
+The motion generated in this case could be viewed as two
+harmonic motions superimposed on each other( or is it a chaotic motion ?!).
+This system configuration is also referred to as double compound pendulum
+(http://en.wikipedia.org/wiki/Double_pendulum)
+(http://upload.wikimedia.org/wikipedia/commons/4/45/Double-compound-pendulum.gif)
+
+Since there are no any non-conservative forces affecting the system, it will
+oscillate eternally. The interesting aspect is that in its initial configuration
+EE Cartesian pose in X has highest value, but later on it decreases.
+The reason is that, most of the total potential energy of the system is converted
+into kinetic energy of the second link. Therefore, one can observe higher values for
+joint1 pose(q), rate(qDot1) and acceleration(qDotDot1). 

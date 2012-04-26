@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<jGNUplot_config>
+    <version>0.1.2</version>
+    <plot_tile/>
+    <plot_type>TWO_DIM</plot_type>
+    <max_x_range>1.5</max_x_range>
+    <min_x_range/>
+    <max_y_range/>
+    <min_y_range/>
+    <min_z_range/>
+    <min_z_range/>
+    <x_label>time (sec)</x_label>
+    <y_label>position (m)</y_label>
+    <z_label>position (m)</z_label>
+    <logscale_x_axis>false</logscale_x_axis>
+    <logscale_y_axis>false</logscale_y_axis>
+    <logscale_z_axis>false</logscale_z_axis>
+    <pre_plot_string>#set term post enh color  "Helvetica" 16
+#set output 'plot.eps'
+set grid
+#set key bottom left
+set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
+    <datasets>
+        <dataset id="0">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataError</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>j0 pose error</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="1">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataError</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>j1 pose error</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="2">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataError</filename>
+            <datastring>1:4</datastring>
+            <dataset_title>j0 vel error</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="3">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataError</filename>
+            <datastring>1:5</datastring>
+            <dataset_title>j1 vel error</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="4">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataError</filename>
+            <datastring>1:6</datastring>
+            <dataset_title>j0 acc error</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="5">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataError</filename>
+            <datastring>1:7</datastring>
+            <dataset_title>j1 acc error</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="6">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataError</filename>
+            <datastring>1:8</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="7">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataError</filename>
+            <datastring>1:9</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="8">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataActual</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>j0 pose actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="9">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataActual</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>j1 pose actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="10">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataActual</filename>
+            <datastring>1:4</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="11">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataActual</filename>
+            <datastring>1:5</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="12">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataActual</filename>
+            <datastring>1:6</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="13">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataActual</filename>
+            <datastring>1:7</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="14">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataActual</filename>
+            <datastring>1:8</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="15">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataActual</filename>
+            <datastring>1:9</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="16">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataDesired</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>j0 pose desired</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="17">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataDesired</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>j1 pose desired</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="18">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataDesired</filename>
+            <datastring>1:4</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="19">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataDesired</filename>
+            <datastring>1:5</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="20">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataDesired</filename>
+            <datastring>1:6</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="21">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataDesired</filename>
+            <datastring>1:7</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="22">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataDesired</filename>
+            <datastring>1:8</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="23">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataDesired</filename>
+            <datastring>1:9</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="24">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>x pose actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="25">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y pose actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="26">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataDesired-extForce</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>x desired</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="27">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataDesired-extForce</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y desired</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="28">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataDesired-extForce</filename>
+            <datastring>1:4</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="29">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataDesired-extForce</filename>
+            <datastring>1:5</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="30">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataDesired-extForce</filename>
+            <datastring>1:6</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="31">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataDesired-extForce</filename>
+            <datastring>1:7</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="32">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-extForce</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>x-f-ext actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="33">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-extForce</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-f-ext actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="34">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-extForce</filename>
+            <datastring>1:4</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="35">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-extForce</filename>
+            <datastring>1:5</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="36">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-extForce</filename>
+            <datastring>1:6</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="37">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-extForce</filename>
+            <datastring>1:7</datastring>
+            <dataset_title/>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="38">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataError-extForce</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>x err-no-const</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="39">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataError-extForce</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y err-no-const</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="40">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataError-extForce-x-const</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>x err-f-ext-x-const</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="41">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataError-extForce-x-const</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y err-f-ext-x-const</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="42">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-extForce-x-const</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>x-f-ext-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="43">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-extForce-x-const</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-f-ext-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="44">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataActual-extForce-x-const</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>j0 pose actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="45">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempJointDataActual-extForce-x-const</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>j1 pose actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="46">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataError-extForceYcomp-betaXcomp-x-const</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>x err-beta-x-const</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="47">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataError-extForceYcomp-betaXcomp-x-const</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y err-beta-x-const</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="48">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-extForceYcomp-betaXcomp-x-const</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>x-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="49">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-extForceYcomp-betaXcomp-x-const</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+    </datasets>
+    <labels/>
+    <variables/>
+</jGNUplot_config>

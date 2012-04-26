@@ -1,0 +1,45 @@
+Experimental setup, case2:
+
+In this set of experiments, we work with 1-dof 1-link arm.
+The following conventions for frames and rotations are used:
+
+*Global frames and rotations
+^ +Y
+|
+|
+|
+|--------> +X
+
++Z axis is pointing out of the page (right hand rule).
+Positive rotations are in counter-clockwise directions.
+
+*Local frames
+External force wrenches and link distal frames have
+their +Y axis always along the link length.
+Check enclosed figure (frameConvention.pdf)
+
+
+The following set of external and internal forces are present:
+
+* internal joint torque is present and has constant value
+* external forces on a link are NOT present
+* virtual constraint forces are NOT present
+* gravitational force is NOT present
+
+Initial configuration:
+q = pi/2.0 rads, qDot = 0.0 rad/sec, qDotDot = 0.0 rad/sec*sec
+qTorque = +1 Nm
+Summary:
+
+Under these conditions the motion of the link is similar to that of a rigid body on the plane
+under the affect of constant linear force. In the later case the object will accelerate with constant
+acceleration, while its velocity will increase linearly (Newton's second law).
+In case of the link, this motion will have rotational character and will follow Euler's equation of motion,
+where the torque applied on the link is constant. This constant torque generates constant angular acceleration.
+This acceleration causes a linear increase in joint rate and a parabolic increase in joint position.
+These effects can be observed in enclosed plots. At the same time constant torque
+cause EE to accelerate. EE Cartesian space acceleration are related to joint space counterparts
+through the Jacobian transpose. Therefore, as it was in "case1" , Z component
+of EE acceleration is equal in magnitude and direction to that of qDotDot, while
+Y component becomes zero. This happens because of the fact that there are no
+any forces (neither external nor reaction) in this direction.

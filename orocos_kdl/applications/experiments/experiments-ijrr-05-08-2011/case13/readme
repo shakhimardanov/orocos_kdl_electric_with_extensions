@@ -1,0 +1,48 @@
+Experimental setup, case13
+
+In this set of experiments, we work with 2-dof (in joint space) 2-link arm.
+The following conventions for frames and rotations are used:
+
+*Global frames and rotations
+^ +Y
+|
+|
+|
+|--------> +X
+
++Z axis is pointing out of the page (right hand rule).
+Positive rotations are in counter-clockwise directions.
+
+*Local frames
+External force wrenches and link distal frames have
+their +Y axis always along the link length.
+Check enclosed figure (frameConventions.pdf)
+
+
+The following set of external and internal forces are present:
+* gravitational force is present
+* virtual constraint forces are present in X defined in global inertial frame (user level).
+* internal joint torques are NOT present
+* external forces on a link are NOT present
+* m1=m2=0.3kg, l1=l2=0.4m
+
+
+Integrator type:
+*Euler=AB1 and use h=0.001
+
+
+Compensator:
+On cartesian errors. This is done through betha set point.
+
+-plot-conf1.pdf
+Initial configuration:
+q0 = 0.0 rads, q1 = pi/6.0 rads,
+qDot0 = 0.0 rad/sec, qDot1 = 0.0 rad/sec
+qDotDot0 = 0.0 rad/sec*sec, qDotDot1 = 0.0 rad/sec*sec
+Kp = 150, Kv = 10, Ki= 10
+
+//betha(0) = alpha(0, 0)*((Kp / 2000.0) * cartXDotDot[2][1].vel[0] + (Kv / 400.0) * cartXDot[2][1].vel[0] + (Kp) * cartX[2][1].p[0]); // 0.5xgain
+//betha(1) = alpha(1, 1)*((Kp / 1000.0) * cartXDotDot[2][1].vel[1] + (Kv / 250.0) * cartXDot[2][1].vel[1] + (1.5 * Kp) * cartX[2][1].p[1] + Ki * cartX[3][1].p[0]);
+
+
+Summary:

@@ -1,0 +1,38 @@
+Experimental setup, case3:
+
+In this set of experiments, we work with 1-dof 1-link arm.
+The following conventions for frames and rotations are used:
+
+*Global frames and rotations
+^ +Y
+|
+|
+|
+|--------> +X
+
++Z axis is pointing out of the page (right hand rule).
+Positive rotations are in counter-clockwise directions.
+
+*Local frames
+External force wrenches and link distal frames have
+their +Y axis always along the link length.
+Check enclosed figure (frameConvention.pdf)
+
+
+The following set of external and internal forces are present:
+
+* the joint is moving at a constant rate
+* internal joint torque is NOT present
+* external forces on a link are NOT present
+* virtual constraint forces are NOT present
+* gravitational force is NOT present
+
+
+Initial configuration:
+q = pi/2.0 rads, qDot = 0.5 rad/sec, qDotDot = 0.0 rad/sec*sec
+
+Summary:
+In this setup a joint rotates with constant velocity. Therefore, neither joint space
+nor Cartesian space acceleration are generated. The joint position changes (in this case increases)
+linearly. Such motion is similar to that of a rigid body in a plance moving with a constant
+velocity (Newton's first law is applicable in this case.). 

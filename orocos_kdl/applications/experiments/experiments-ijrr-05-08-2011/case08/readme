@@ -1,0 +1,36 @@
+Experimental setup, case8:
+
+In this set of experiments, we work with 2-dof (in joint space) 2-link arm.
+The following conventions for frames and rotations are used:
+
+*Global frames and rotations
+^ +Y
+|
+|
+|
+|--------> +X
+
++Z axis is pointing out of the page (right hand rule).
+Positive rotations are in counter-clockwise directions.
+
+*Local frames
+External force wrenches and link distal frames have
+their +Y axis always along the link length.
+Check enclosed figure (frameConventions.pdf)
+
+
+The following set of external and internal forces are present:
+* gravitational force is NOT present
+* internal joint torques are present and constant (qTorque0 = 0.0, qTorque1 = 1.0),
+(qTorque0 = 1.0, qTorque1 = 0.0), (qTorque0 = 1.0, qTorque1 = 1.0), (qTorque0 = 1.0, qTorque1 = -1.0)
+* external forces on a link are NOT present
+* virtual constraint forces are NOT present
+* m1=m2=0.3kg
+
+
+Initial configuration:
+q0 = pi/2.0 rads, q1 = 0.0 rads,
+qDot0 = 0.0 rad/sec, qDot1 = 0.0 rad/sec
+qDotDot0 = 0.0 rad/sec*sec, qDotDot1 = 0.0 rad/sec*sec
+
+Summary:

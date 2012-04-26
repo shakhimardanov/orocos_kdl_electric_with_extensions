@@ -1,0 +1,49 @@
+Experimental setup, case12
+
+In this set of experiments, we work with 2-dof (in joint space) 2-link arm.
+The following conventions for frames and rotations are used:
+
+*Global frames and rotations
+^ +Y
+|
+|
+|
+|--------> +X
+
++Z axis is pointing out of the page (right hand rule).
+Positive rotations are in counter-clockwise directions.
+
+*Local frames
+External force wrenches and link distal frames have
+their +Y axis always along the link length.
+Check enclosed figure (frameConventions.pdf)
+
+
+The following set of external and internal forces are present:
+* gravitational force is present
+* virtual constraint forces are present in X defined in global inertial frame (user level).
+* internal joint torques are NOT present
+* external forces on a link are NOT present
+* m1=m2=0.3kg, l1=l2=0.4m
+
+
+Solver type:
+* Predictor-corrector Adam Bashforth order 2 - Adam Moulton order 3 (AB2-AM3) with h=0.001
+* All the other cases (01-11) use Euler=AB1 and use h=0.002
+
+-plot1.pdf
+Initial configuration:
+q0 = pi/2.0 rads, q1 = 0.0 rads,
+qDot0 = 0.0 rad/sec, qDot1 = 0.0 rad/sec
+qDotDot0 = 0.0 rad/sec*sec, qDotDot1 = 0.0 rad/sec*sec
+
+
+-plot2.pdf
+Initial configuration:
+q0 = pi/6.0 rads, q1 = pi/4.0 rads,
+qDot0 = 0.0 rad/sec, qDot1 = 0.0 rad/sec
+qDotDot0 = 0.0 rad/sec*sec, qDotDot1 = 0.0 rad/sec*sec
+
+
+Summary:
+Here we compare AB2-AM3 and AB1 approach with h=0.001

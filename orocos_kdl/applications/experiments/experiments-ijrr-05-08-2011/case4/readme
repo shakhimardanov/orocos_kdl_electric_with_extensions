@@ -1,0 +1,50 @@
+Experimental setup, case4:
+
+In this set of experiments, we work with 1-dof 1-link arm.
+The following conventions for frames and rotations are used:
+
+*Global frames and rotations
+^ +Y
+|
+|
+|
+|--------> +X
+
++Z axis is pointing out of the page (right hand rule).
+Positive rotations are in counter-clockwise directions.
+
+*Local frames
+External force wrenches and link distal frames have
+their +Y axis always along the link length.
+Check enclosed figure (frameConvention.pdf)
+
+
+The following set of external and internal forces are present:
+
+* internal joint torque is present and constant
+* gravitational force is present
+* external forces on a link are NOT present
+* virtual constraint forces are NOT present
+
+
+Initial configuration:
+q = pi/2.0 rads, qDot = 0.0 rad/sec, qDotDot = 0.0 rad/sec*sec
+qTorque = +20 Nm
+
+Summary:
+
+In this setup in addition to gravitational force on the point mass, a joint
+applies a constant torque on the link. If there were not for joint torque, then
+the link would oscillate eternally under the affect of the gravity, as it happens
+in case1. But applied joint torque, depending on its magnitude, adds
+exciting motion. Such motion is similar to that
+of the spring-mass system with negative damping factor, 
+where amplitude and frequency increase with time (?!).
+
+Depending on in which quadrant the link is (either IV (+X,-Y) or III (-X,-Y))
+the torque works either with the gravity (quad. III) or against it (quad. IV).
+Therefore, the effects of the applied constant torque are neutralized (negligible).
+But as soon as the magnitude of the torque becomes bigger than that of total gravitational
+force, the motion becomes excited and continues with growing amplitude and oscillation frequency.
+This can be well observed from enclosed plots. All physical quantities both in
+joint and Cartesian space will increase gradually.
