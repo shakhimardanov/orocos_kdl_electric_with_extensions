@@ -83,7 +83,7 @@ void ChainIdSolver_Vereshchagin::initial_upwards_sweep(const JntArray &q, const 
     for (unsigned int i = 0; i < ns; i++)
     {
         const Segment& segment = chain.getSegment(i);
-	if (segment.getJoint().getType() != Joint::None && i>0 )
+	if (segment.getJoint().getType() != Joint::None && i>0 ) // This is the correction from RUBEN
             j++;        
         //Express everything in the segments reference frame (body coordinates)
         //which is at the segments tip, i.e. where the next joint is attached.
