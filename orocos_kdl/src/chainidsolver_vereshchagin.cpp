@@ -116,7 +116,7 @@ void ChainIdSolver_Vereshchagin::initial_upwards_sweep(const JntArray &q, const 
 	std::cout<< i <<" Link acceleration 000: "<<results[i].A<<std::endl;
 	std::cout<< i <<" Link bias acceleration: "<<s.C<<std::endl;
         //Put C in the joint root reference frame
-        s.C = s.F * s.C; //+F_total.M.Inverse(acc_root)); ???? why in different frame (joint's frame) again
+        //s.C = s.F * s.C; //+F_total.M.Inverse(acc_root)); ???? why in different frame (joint's frame) again
 	std::cout<< i <<" Link bias acceleration in joint coor: "<<s.C<<std::endl;
         //The rigid body inertia of the segment, expressed in the segments reference frame (tip)
         s.H = segment.getInertia();
@@ -126,14 +126,6 @@ void ChainIdSolver_Vereshchagin::initial_upwards_sweep(const JntArray &q, const 
         Wrench FextLocal = F_total.M.Inverse() * f_ext[i];
         s.U = s.v * (s.H * s.v) - FextLocal; 
 	std::cout << i << " U "<< s.U << std::endl;
-#ifdef DEBUGGER
-        std::cout << "f_ext" << i << ": " << f_ext[i] << std::endl;
-        std::cout << "FextLocal" << i << ": " << FextLocal << std::endl;
-
-        std::cout << "FTotal " << s.F_base << std::endl << std::endl;
-
-#endif DEBUGGER
-
         if (segment.getJoint().getType() != Joint::None)
             j++;
     }
@@ -193,10 +185,10 @@ void ChainIdSolver_Vereshchagin::downwards_sweep(const Jacobian& alfa, const Jnt
 
             //equation a) (see Vereshchagin89) PZDPZt=[I,H;H',M]
             //Azamat:articulated body inertia as in Featherstone (7.19)
-            s.P_tilde = s.H + child.P - ArticulatedBodyInertia(PZDPZt.corner < 3, 3 > (BottomRight), PZDPZt.corner < 3, 3 > (TopRight), PZDPZt.corner < 3, 3 > (TopLeft));
+            s.P_tilde = s.H + child.P; //- ArticulatedBodyInertia(PZDPZt.corner < 3, 3 > (BottomRight), PZDPZt.corner < 3, 3 > (TopRight), PZDPZt.corner < 3, 3 > (TopLeft)); //Azamat changed on 04.05
             //equation b) (see Vereshchagin89)
             //Azamat: bias force as in Featherstone (7.20)
-            s.R_tilde = s.U + child.R + child.PC + (child.PZ / child.D) * child.u;
+	    s.R_tilde = s.U + child.R + child.PC;// + (child.PZ / child.D) * child.u; //Azamat changed on 04.05
             //equation c) (see Vereshchagin89)
             s.E_tilde = child.E;
 
@@ -221,11 +213,9 @@ void ChainIdSolver_Vereshchagin::downwards_sweep(const Jacobian& alfa, const Jnt
         {
             //Transform all results to joint root coordinates of segment i (== body coordinates segment i-1)
             //equation a)
-            //s.P = s.F * s.P_tilde ; From Ruben
-	    s.P = s.F.transpose()*s.P_tilde*s.F;
+            s.P = s.F * s.P_tilde ;
             //equation b)
-            s.R = s.F.transpose()*s.R_tilde;
-            //s.R = s.F* s.R_tilde; from Ruben
+            s.R = s.F*s.R_tilde;
             //equation c), in matrix: torques above forces, so switch and switch back
             for (unsigned int c = 0; c < nc; c++)
             {
@@ -392,6 +382,7 @@ void ChainIdSolver_Vereshchagin::final_upwards_sweep(JntArray &q_dotdot, JntArra
         Wrench parent_force = s.P*a_p;
 	std::cout << i << " s.R/parent force in final recur " << parent_force << std::endl;
         double parent_forceProjection = -dot(s.Z, parent_force);
+	std::cout << i << " s.R/parent projection in final recur " << parent_forceProjection << std::endl;
         double parentAccComp = parent_forceProjection / s.D;
 
         //The constraint force and acceleration force projected on the joint axes -> axis torque/force
@@ -414,7 +405,7 @@ void ChainIdSolver_Vereshchagin::final_upwards_sweep(JntArray &q_dotdot, JntArra
         //equation h) acc[i] = Fi*(acc[i-1] + Z[i]*qdotdot[i] + c[i]                        //Azamat: here torques variable represents constraint forces, check lines above
         std::cout<< i <<" s.C "<<s.C<<std::endl;
         std::cout<< i <<" s.F "<<s.F<<std::endl;
-	s.acc = s.F.Inverse(a_p) + s.Z * q_dotdot(j) + s.C;//Azamat: returns acceleration in link distal tip coordinates. For use needs to be transformed
+	s.acc = s.F.Inverse(a_p); //+ s.Z * q_dotdot(j) + s.C;//Azamat: returns acceleration in link distal tip coordinates. For use needs to be transformed
 	std::cout << i << " s.acc/current " << s.acc << std::endl;
 
         if (chain.getSegment(i - 1).getJoint().getType() != Joint::None)
