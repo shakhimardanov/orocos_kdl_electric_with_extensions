@@ -65,9 +65,11 @@ namespace KDL{
                 v[i]=X[i].Inverse(v[i-1])+vj;
                 a[i]=X[i].Inverse(a[i-1])+S[i]*qdotdot_+v[i]*vj;
             }
+	    std::cout <<i <<" F " << X[i] << std::endl;
 	    std::cout <<i << " Velocity of link" << v[i] << std::endl;
 	    std::cout <<i <<" Acceleration of link" << a[i] << std::endl;
 	    std::cout <<i <<" S[i]" << S[i] << std::endl;
+
             //Calculate the force for the joint
             //Collect RigidBodyInertia and external forces
             RigidBodyInertia Ii=chain.getSegment(i).getInertia();

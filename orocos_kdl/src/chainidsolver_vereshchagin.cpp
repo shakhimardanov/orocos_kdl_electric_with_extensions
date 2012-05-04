@@ -80,9 +80,6 @@ void ChainIdSolver_Vereshchagin::initial_upwards_sweep(const JntArray &q, const 
         s.F = segment.pose(q(j)); // Azamat: X pose of each link in link coord system
         std::cout<< i <<" s.F "<<s.F<<std::endl;
         F_total = F_total * s.F; // Azamat: X pose of the each link in root coord system
-        //std::cout << "F_total:  " << F_total << std::endl;
-        //std::cout << "F_total_inverse:  " << F_total.Inverse() << std::endl;
-        //std::cout << "F_total_M_inverse:  " << F_total.M.Inverse() << std::endl;
         s.F_base = F_total; // Azamat: X pose of the each link in root coord system for getter functions
 
         //The velocity due to the joint motion of the segment expressed in the segments reference frame (tip)
@@ -113,8 +110,10 @@ void ChainIdSolver_Vereshchagin::initial_upwards_sweep(const JntArray &q, const 
         //The velocity product acceleration
         
         s.C = s.v*vj; //This is a cross product Azamat: cartesian space BIAS acceleration in local link coord.
-	std::cout << i << " Link velocity " << s.v << std::endl;
+	std::cout << i << " Link velocity " << s.v << std::endl;	
+	std::cout << i << " aj " << aj << std::endl;
 	std::cout<< i <<" Link acceleration: "<<s.A<<std::endl;
+	std::cout<< i <<" Link acceleration 000: "<<results[i].A<<std::endl;
 	std::cout<< i <<" Link bias acceleration: "<<s.C<<std::endl;
         //Put C in the joint root reference frame
         s.C = s.F * s.C; //+F_total.M.Inverse(acc_root)); ???? why in different frame (joint's frame) again
@@ -125,7 +124,7 @@ void ChainIdSolver_Vereshchagin::initial_upwards_sweep(const JntArray &q, const 
         //wrench of the rigid body bias forces and the external forces on the segment (in body coordinates, tip)
         //Azamat: external forces are taken into account through s.U. Check why s.U is given as below
         Wrench FextLocal = F_total.M.Inverse() * f_ext[i];
-        s.U = s.v * (s.H * s.v) - FextLocal; //f_ext[i];
+        s.U = s.v * (s.H * s.v) - FextLocal; 
 	std::cout << i << " U "<< s.U << std::endl;
 #ifdef DEBUGGER
         std::cout << "f_ext" << i << ": " << f_ext[i] << std::endl;
@@ -222,9 +221,11 @@ void ChainIdSolver_Vereshchagin::downwards_sweep(const Jacobian& alfa, const Jnt
         {
             //Transform all results to joint root coordinates of segment i (== body coordinates segment i-1)
             //equation a)
-            s.P = s.F * s.P_tilde;
+            //s.P = s.F * s.P_tilde ; From Ruben
+	    s.P = s.F.transpose()*s.P_tilde*s.F;
             //equation b)
-            s.R = s.F * s.R_tilde;
+            s.R = s.F.transpose()*s.R_tilde;
+            //s.R = s.F* s.R_tilde; from Ruben
             //equation c), in matrix: torques above forces, so switch and switch back
             for (unsigned int c = 0; c < nc; c++)
             {
