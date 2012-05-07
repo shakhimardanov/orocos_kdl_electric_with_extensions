@@ -82,6 +82,8 @@ namespace KDL{
 	{
             if(chain.getSegment(i).getJoint().getType()!=Joint::None)
 	    {
+		std::cout <<i <<" S[i] in inward sweep " << S[i] << std::endl;
+		std::cout <<i <<" F[i] in inward sweep " << f[i] << std::endl;
                 torques(j--)=dot(S[i],f[i]);
 	    }
             if(i!=0)
