@@ -260,30 +260,8 @@ void ChainIdSolver_Vereshchagin::downwards_sweep(const Jacobian& alfa, const Jnt
 	std::cout << i << " totalBias "<< s.totalBias << std::endl;
 	std::cout << i << " s.u "<< s.u << std::endl;
 	std::cout << i << " s.R "<< s.R << std::endl;
-	//std::cout << "s.PC = " << s.PC << std::endl;
-        //std::cout<<"E~ "<<i<<": "<<s.E_tilde<<std::endl;
         std::cout<< i << " R~ "<<s.R_tilde<<std::endl;
-        //std::cout<<"M  "<<i<<": "<<s.M<<std::endl;
-        //std::cout<<"G  "<<i<<": "<<s.G<<std::endl;
-        
-        //std::cout<<"E"<<i<<": "<<s.E<<std::endl;
-        //std::cout<<"Z: "<<s.Z<<std::endl;
-        //std::cout<<"D: "<<s.D<<std::endl;
-        //std::cout<<"PZ: "<<s.PZ<<std::endl;
-        //std::cout<<"E'Z: "<<s.EZ<<std::endl;
-        //std::cout<<"G: "<<s.G<<std::endl;
-        //std::cout<<"M: "<<s.M<<std::endl;
-        
-        /*
-        std::cout<<"For segment "<<i<<std::endl;
-        std::cout<<"D: "<<s.D<<std::endl;
-        std::cout<<"E~: "<<s.E_tilde<<std::endl;
-        std::cout<<"E: "<<s.E<<std::endl;
 
-        std::cout<<"E: "<<s.E<<std::endl;
-        std::cout<<"Z: "<<s.Z.rot<<s.Z.vel<<std::endl;
-      
-         */
 	Matrix6d tmp;
         tmp<<s.P_tilde.I,s.P_tilde.H,s.P_tilde.H.transpose(),s.P_tilde.M;
         std::cout<<i << " P~: \n"<<tmp<<std::endl;
@@ -381,15 +359,21 @@ void ChainIdSolver_Vereshchagin::final_upwards_sweep(JntArray &q_dotdot, JntArra
 	std::cout << i << " s.u in final recur " << s.u << std::endl;
         Wrench parent_force = s.P*a_p;
 	std::cout << i << " s.R/parent force in final recur " << parent_force << std::endl;
-        double parent_forceProjection = -dot(s.Z, parent_force);
+
+        //double parent_forceProjection = -dot(s.Z, parent_force); // Azamat 07.05.12 This is the version for FD
+        double parent_forceProjection = dot(s.Z, parent_force); // Azamat 07.05.12 This is the version for ID
+
 	std::cout << i << " s.R/parent projection in final recur " << parent_forceProjection << std::endl;
         double parentAccComp = parent_forceProjection / s.D;
 
         //The constraint force and acceleration force projected on the joint axes -> axis torque/force
-        double constraint_torque = -dot(s.Z, constraint_force);
+        double constraint_torque = -dot(s.Z, constraint_force); 
+
+
 	//std::cout << " constraint torque in final recur" << constraint_torque << std::endl;
         //The result should be the torque at this joint
-	torques(j) = s.u + parent_forceProjection + constraint_torque;
+	//torques(j) = s.u + parent_forceProjection + constraint_torque; Azamat 07.05.12. This is the version for FD. Check this once again.
+	torques(j) = dot(s.Z,s.R) + parent_forceProjection; // Azamat 07.05.12. This is the version for ID, check Featherstone
         //torques(j) = constraint_torque;
         //s.constAccComp = torques(j) / s.D;
         s.constAccComp = constraint_torque / s.D;
@@ -405,7 +389,8 @@ void ChainIdSolver_Vereshchagin::final_upwards_sweep(JntArray &q_dotdot, JntArra
         //equation h) acc[i] = Fi*(acc[i-1] + Z[i]*qdotdot[i] + c[i]                        //Azamat: here torques variable represents constraint forces, check lines above
         std::cout<< i <<" s.C "<<s.C<<std::endl;
         std::cout<< i <<" s.F "<<s.F<<std::endl;
-	s.acc = s.F.Inverse(a_p); //+ s.Z * q_dotdot(j) + s.C;//Azamat: returns acceleration in link distal tip coordinates. For use needs to be transformed
+	//s.acc = s.F.Inverse(a_p)+ s.Z * q_dotdot(j) + s.C;//Azamat: returns acceleration in link dist tip coord. For use in impedance needs to be transformed. This is for FD
+	s.acc = s.F.Inverse(a_p) + s.C;//Azamat: returns acceleration in link distal tip coordinates. For use needs to be transformed. This is for ID
 	std::cout << i << " s.acc/current " << s.acc << std::endl;
 
         if (chain.getSegment(i - 1).getJoint().getType() != Joint::None)
@@ -472,7 +457,7 @@ void ChainIdSolver_Vereshchagin::getLinkAcceleration(Twists& xDotdot_local)
     return;
 
 }
-
+/*
 void ChainIdSolver_Vereshchagin::getJointBiasAcceleration(JntArray& bias_q_dotdot)
 {
     for (int i = 0; i < ns; i++)
@@ -574,6 +559,6 @@ void ChainIdSolver_Vereshchagin::getLinkUnitForceMatrix(Matrix6Xd& E_tilde)
 
 }
 
-
+*/
 
 }//namespace
