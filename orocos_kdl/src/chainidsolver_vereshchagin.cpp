@@ -90,7 +90,7 @@ void ChainIdSolver_Vereshchagin::initial_upwards_sweep(const JntArray &q, const 
         s.Z = s.F.M.Inverse(segment.twist(q(j), 1.0));
 	std::cout << i << " Z in segment "<< s.Z << std::endl;
         //Put Z in the joint root reference frame:
-        //s.Z = s.F * s.Z;??????????
+        s.Z = s.F * s.Z;??????????
 	//std::cout << i << " Z in joint coor " << s.Z << std::endl;
         //  std::cout<<"q: "<<q(j)<<std::endl;
         //The total velocity of the segment expressed in the the segments reference frame (tip)
@@ -372,7 +372,7 @@ void ChainIdSolver_Vereshchagin::final_upwards_sweep(JntArray &q_dotdot, JntArra
 
 	//std::cout << " constraint torque in final recur" << constraint_torque << std::endl;
         //The result should be the torque at this joint
-	//torques(j) = s.u + parent_forceProjection + constraint_torque; Azamat 07.05.12. This is the version for FD. Check this once again.
+	//torques(j) = s.u + parent_forceProjection + constraint_torque; Azamat 07.05.12. This is the version for FD. Check this one again
 	torques(j) = dot(s.Z,s.R) + parent_forceProjection; // Azamat 07.05.12. This is the version for ID, check Featherstone
         //torques(j) = constraint_torque;
         //s.constAccComp = torques(j) / s.D;
