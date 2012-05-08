@@ -163,6 +163,7 @@ private:
         double biasAccComp; //Azamat: constribution of joint space bias forces to joint space acceleration
         double totalBias; //Azamat: R+PC (centrepital+coriolis) in joint subspace
         double u; //vector u[i] = torques(i) - S[i]^T*(p_A[i] + I_A[i]*C[i]) in joint subspace. Azamat: In code u[i] = torques(i) - s[i].totalBias
+	unsigned int jointindex;
 
         segment_info(unsigned int nc)
         {
@@ -176,6 +177,7 @@ private:
             M.setZero();
             G.setZero();
             EZ.setZero();
+	    jointindex = 0;
         };
     };
 
