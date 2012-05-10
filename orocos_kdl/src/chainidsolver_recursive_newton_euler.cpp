@@ -65,15 +65,17 @@ namespace KDL{
                 v[i]=X[i].Inverse(v[i-1])+vj;
                 a[i]=X[i].Inverse(a[i-1])+S[i]*qdotdot_+v[i]*vj;
             }
-	    //std::cout <<i <<" F " << X[i] << std::endl;
+	    std::cout <<i <<" F " << X[i] << std::endl;
+	    std::cout << i << " S " <<  S[i] <<std::endl;
 	    //std::cout <<i << " Velocity of link" << v[i] << std::endl;
-	    //std::cout <<i <<" Acceleration of link" << a[i] << std::endl;
+	    std::cout <<i <<" Acceleration of link" << a[i] << std::endl;
 	    //std::cout <<i <<" S[i]" << S[i] << std::endl;
 
             //Calculate the force for the joint
             //Collect RigidBodyInertia and external forces
             RigidBodyInertia Ii=chain.getSegment(i).getInertia();
             f[i]=Ii*a[i]+v[i]*(Ii*v[i])-f_ext[i];
+	    std::cout << i << " f_ext_link" << f_ext[i] << std::endl;
 	    //std::cout << i << " Force at link" << f[i] << std::endl;
         }
         //Sweep from leaf to root
@@ -82,13 +84,13 @@ namespace KDL{
 	{
             if(chain.getSegment(i).getJoint().getType()!=Joint::None)
 	    {
-		//std::cout <<i <<" S[i] in inward sweep " << S[i] << std::endl;
+		std::cout <<i <<" S[i] in inward sweep " << S[i] << std::endl;
 		//std::cout <<i <<" F[i] in inward sweep " << f[i] << std::endl;
                 torques(j--)=dot(S[i],f[i]);
 	    }
             if(i!=0)
                 f[i-1]=f[i-1]+X[i]*f[i];
-	    //std::cout << i << " Force in force rec" << f[i] << std::endl;
+	    std::cout << i << " Force in force rec" << f[i] << std::endl;
         }
 	//std::cout << std::endl;
 	return 0;
