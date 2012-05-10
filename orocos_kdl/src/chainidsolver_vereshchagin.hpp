@@ -95,7 +95,8 @@ public:
      void getJointBiasAcceleration(JntArray &bias_q_dotdot);
      */
     void initial_upwards_sweep(const JntArray &q, const JntArray &q_dot, const JntArray &q_dotdot, const Wrenches& f_ext);
-private:
+
+ private:
     /**
      *  This method calculates all cartesian space poses, twists, bias accelerations.
      *  External forces are also taken into account in this outward sweep.

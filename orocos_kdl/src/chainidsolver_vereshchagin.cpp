@@ -72,11 +72,14 @@ void ChainIdSolver_Vereshchagin::initial_upwards_sweep(const JntArray &q, const 
 
         //Calculate segment properties: X,S,vj,cj
         const Segment& segment = chain.getSegment(i);
+
+
         segment_info& s = results[i];
-	if (segment.getJoint().getType() != Joint::None && i >0)
+	if (segment.getJoint().getType() != Joint::None && i>0)
 	{
-	    j++;
+	  j++;
 	}
+	std::cout << "Segment name " << segment.getName() << std::endl;
 	s.jointindex = j;
 
 	//The pose between the joint root and the segment tip (tip expressed in joint root coordinates)
