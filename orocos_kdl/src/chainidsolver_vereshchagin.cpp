@@ -79,7 +79,7 @@ void ChainIdSolver_Vereshchagin::initial_upwards_sweep(const JntArray &q, const 
 	{
 	  j++;
 	}
-	std::cout << "Segment name " << segment.getName() << std::endl;
+	//std::cout << "Segment name " << segment.getName() << std::endl;
 	s.jointindex = j;
 
 	//The pose between the joint root and the segment tip (tip expressed in joint root coordinates)
@@ -94,12 +94,12 @@ void ChainIdSolver_Vereshchagin::initial_upwards_sweep(const JntArray &q, const 
 
         //The unit velocity due to the joint motion of the segment expressed in the segments reference frame (tip)
         s.Z = s.F.M.Inverse(segment.twist(q(s.jointindex), 1.0));
-	std::cout << i << " Joint index " << s.jointindex << std::endl;
-	std::cout << i << " Z in segment "<< s.Z << std::endl;
-	std::cout<< i <<" s.F "<<s.F<<std::endl;
+	//std::cout << i << " Joint index " << s.jointindex << std::endl;
+	//std::cout << i << " Z in segment "<< s.Z << std::endl;
+	//std::cout<< i <<" s.F "<<s.F<<std::endl;
         //Put Z in the joint root reference frame:
         s.Z = s.F * s.Z;// but why does this work, though it is different in RNE. Check semantics in KDL??????????
-	std::cout << i << " Z in joint coor " << s.Z << std::endl;
+	//std::cout << i << " Z in joint coor " << s.Z << std::endl;
         //The total velocity of the segment expressed in the the segments reference frame (tip)
         if (i == 0)
         {
@@ -254,20 +254,20 @@ void ChainIdSolver_Vereshchagin::downwards_sweep(const Jacobian& alfa, const Jnt
             vZ << Vector3d::Map(s.Z.rot.data), Vector3d::Map(s.Z.vel.data);
             s.EZ = (s.E.transpose() * vZ).lazy();
 	    //	}
-	std::cout << i << " s.R "<< s.R << std::endl;
-        std::cout<< i << " R~ "<<s.R_tilde<<std::endl;
+	    //std::cout << i << " s.R "<< s.R << std::endl;
+	    //std::cout<< i << " R~ "<<s.R_tilde<<std::endl;
 
 	/*
 	std::cout << i << " Joint Index "<< s.jointindex << std::endl;
 	std::cout << i << " totalBias "<< s.totalBias << std::endl;
 	std::cout << i << " s.u "<< s.u << std::endl;
-	*/
+
 	Matrix6d tmp;
         //tmp<<s.P_tilde.I,s.P_tilde.H,s.P_tilde.H.transpose(),s.P_tilde.M;
 	// std::cout<<i << " P~: \n"<<tmp<<std::endl;
         tmp<<s.P.I,s.P.H,s.P.H.transpose(),s.P.M;
         std::cout<<i <<" P: \n"<<tmp<<std::endl;
-
+	*/
     }
 }
 
@@ -280,7 +280,7 @@ void ChainIdSolver_Vereshchagin::final_upwards_sweep(JntArray &q_dotdot, JntArra
         segment_info& s = results[i];
 	if (chain.getSegment(i).getJoint().getType() == Joint::None && i>0)
 	{
-	    std::cout << "I am none" << std::endl;
+	    //	    std::cout << "I am none" << std::endl;
 	    s.Z = results[i-1].Z;
 	}
         //    j++;
@@ -309,8 +309,8 @@ void ChainIdSolver_Vereshchagin::final_upwards_sweep(JntArray &q_dotdot, JntArra
 	Matrix6d temp;
         //temp<<s.P_tilde.I,s.P_tilde.H,s.P_tilde.H.transpose(),s.P_tilde.M;
         //std::cout<< i<<" P~ in final recur: \n"<<temp<<std::endl;
-        temp<<s.P.I,s.P.H,s.P.H.transpose(),s.P.M;
-        std::cout<<i<<" P in final recur: \n"<<temp<<std::endl;
+        //temp<<s.P.I,s.P.H,s.P.H.transpose(),s.P.M;
+        //std::cout<<i<<" P in final recur: \n"<<temp<<std::endl;
        	//std::cout <<i<< " s.Z in final recur " << s.Z << std::endl;
 	//std::cout << i << " s.u in final recur " << s.u << std::endl;
         //Wrench parent_force = s.P*a_p;
@@ -340,7 +340,7 @@ void ChainIdSolver_Vereshchagin::final_upwards_sweep(JntArray &q_dotdot, JntArra
 	Wrench parent_force = s.P*a_p;
 	double parent_forceProjection = dot(s.Z, parent_force); // Azamat 07.05.12 This is the version for ID
 	torques(s.jointindex) = dot(s.Z,s.R) + parent_forceProjection; // Azamat 07.05.12. This is the version for ID, check Featherstone
-	
+	/*
 	std::cout << i << " Joint Index "<< s.jointindex << std::endl;
 	std::cout << i << "  s.Z " << s.Z << std::endl;
 	std::cout<< i <<" Current frame "<<s.F<<std::endl;
@@ -351,7 +351,7 @@ void ChainIdSolver_Vereshchagin::final_upwards_sweep(JntArray &q_dotdot, JntArra
 	std::cout << i << " parent force in final recur " << parent_force << std::endl<<std::endl;
 	std::cout << i << " Torque "<< torques(s.jointindex) << std::endl;
 	//std::cout << i << " s.R/parent projection in final recur " << parent_forceProjection << std::endl;
-	
+	*/
     }
 
 }
