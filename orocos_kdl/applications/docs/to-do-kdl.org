@@ -148,5 +148,11 @@ each VKC? There are two such structs one solver side and one scene side but they
      Vereshchagin to Featherstone's HD will be then that Vereshchagin computes constraint torques using Gauss principle in addition 
      to all other FD/ID calculations.
 
+- acceleration is not part of a state. It is calculated from the state(q, qdot) and dynamics model. But one can provided qdotdot_desired
+to the dynamics solver
+
 * TODO Collect all the recent emails on itask, MPC and vereshchagin
 - task scheduling vs stack of task by Mansard how do they relate
+
+* 06.06.12 Leuven
+Todo create ros package for functional composition example and kdl-extensions

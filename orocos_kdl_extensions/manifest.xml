@@ -1,0 +1,16 @@
+<package>
+  <description brief="orocos_kdl_extensions">
+
+     orocos_kdl_extensions
+
+  </description>
+  <author>Azamat</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/orocos_kdl_extensions</url>
+
+  <depend package="orocos_kdl"/>
+
+</package>
+
+
