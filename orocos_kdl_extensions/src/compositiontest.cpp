@@ -22,7 +22,7 @@
 //generates jacobian for a tree given its joint values
 #include <kdl/treejnttojacsolver.hpp>
 #include <kdl/treefksolverpos_recursive.hpp>
-#include <orocos_kdl_extensions/treeid_vereshchagin_composable.hpp>
+#include <kdl_extensions/treeid_vereshchagin_composable.hpp>
 
 
 
@@ -175,7 +175,7 @@ int main(int argc, char** argv)
     //option 2: uses internal iterator, inflexible because difficult to define a closure
     transform(twoBranchTree.getSegments().begin(), twoBranchTree.getSegments().end(), jstate.begin(), lstate.begin(), fkcomputation);
 
-    
+
 
     return 0;
 }
