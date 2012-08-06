@@ -88,8 +88,8 @@ boost::function<SegmentState& (SegmentMap::const_iterator linkIter, JointState& 
 
 // function object adapter which composes primitive ones. compose_f_h(yz)_g(x)
 //f ~= ForwardKinematicsComputationweep
-//g ~=ForwardKinematicsComputation x ~= jointState
-//h ~=ForceComputation y ~= linkState output from g(x) and z ~= external forces/force input
+//g ~= ForwardKinematicsComputation x ~= jointState
+//h ~ =ForceComputation y ~= linkState output from g(x) and z ~= external forces/force input
 template <typename OP1, typename OP2>
 class Composer_f_gx : public std::unary_function<typename OP1::argument_type, typename OP2::result_type>
 {

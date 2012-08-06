@@ -171,8 +171,8 @@ int main(int argc, char** argv)
         force = ForceComputation(iter, lstate[iter->second.q_nr]);
         pose = pose * lstate[iter->second.q_nr].X;
 
-        std::cout << "Loop:: value of returned joint index" << iter->second.q_nr << std::endl;
-        std::cout << "Loop:: value of returned local frame" << lstate[iter->second.q_nr].X << std::endl;
+         std::cout << "Loop:: value of returned joint index" << iter->second.q_nr << std::endl;
+         std::cout << "Loop:: value of returned local frame" << lstate[iter->second.q_nr].X << std::endl;
         std::cout << "Loop:: value of returned global frame" << pose << std::endl;
         std::cout << "Loop:: value of returned link force" << force << std::endl;
     }

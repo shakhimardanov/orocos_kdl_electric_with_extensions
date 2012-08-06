@@ -166,8 +166,8 @@ KDL::Wrench& ForceComputation::operator ()(const std::pair<std::string, const KD
 
 KDL::Wrench& ForceComputation::operator ()(const SegmentMap::const_iterator link,const SegmentState& ls)
 {
-    KDL::RigidBodyInertia I = link->second.segment.getInertia();
-    m_segmentforce = I * ls.Xdotdot + ls.Xdot * (I * ls.Xdot) - ls.Fext;
+     KDL::RigidBodyInertia I = link->second.segment.getInertia();
+     m_segmentforce = I * ls.Xdotdot + ls.Xdot * (I * ls.Xdot) - ls.Fext;
 
     return m_segmentforce;
 }
