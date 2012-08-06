@@ -75,7 +75,7 @@ JointState::~JointState()
 
 }
 
-ForwardKinematics::ForwardKinematics(Twist& gravityAcc)
+ForwardKinematicsComputation::ForwardKinematicsComputation(Twist& gravityAcc)
 {
     m_gravity = gravityAcc;
 
@@ -91,7 +91,7 @@ ForwardKinematics::ForwardKinematics(Twist& gravityAcc)
     m_jointstate.qdotdot = 0;
 }
 
-SegmentState& ForwardKinematics::operator()(SegmentMap::const_iterator link, JointState& js)
+SegmentState& ForwardKinematicsComputation::operator()(const SegmentMap::const_iterator link, const JointState& js)
 {
     m_segmentstate.X = link->second.segment.pose(js.q);
     Twist vj = m_segmentstate.X.M.Inverse(link->second.segment.twist(js.q, js.qdot));
@@ -117,7 +117,7 @@ SegmentState& ForwardKinematics::operator()(SegmentMap::const_iterator link, Joi
     return m_segmentstate;
 }
 
-SegmentState& ForwardKinematics::operator ()(std::pair<std::string, KDL::TreeElement> link, JointState& js)
+SegmentState& ForwardKinematicsComputation::operator ()(const std::pair<std::string, KDL::TreeElement> link, const JointState& js)
 {
     m_segmentstate.X = link.second.segment.pose(js.q);
     Twist vj = m_segmentstate.X.M.Inverse(link.second.segment.twist(js.q, js.qdot));
@@ -145,18 +145,18 @@ SegmentState& ForwardKinematics::operator ()(std::pair<std::string, KDL::TreeEle
 
 }
 
-ForwardKinematics::~ForwardKinematics()
+ForwardKinematicsComputation::~ForwardKinematicsComputation()
 {
 
 }
 
-ForceComputer::ForceComputer()
+ForceComputation::ForceComputation()
 {
 
 
 }
 
-KDL::Wrench& ForceComputer::operator ()(std::pair<std::string, KDL::TreeElement> link, SegmentState& ls)
+KDL::Wrench& ForceComputation::operator ()(const std::pair<std::string, const KDL::TreeElement> link, const SegmentState& ls)
 {
     KDL::RigidBodyInertia I = link.second.segment.getInertia();
     m_segmentforce = I * ls.Xdotdot + ls.Xdot * (I * ls.Xdot) - ls.Fext;
@@ -164,7 +164,7 @@ KDL::Wrench& ForceComputer::operator ()(std::pair<std::string, KDL::TreeElement>
     return m_segmentforce;
 }
 
-KDL::Wrench& ForceComputer::operator ()(SegmentMap::const_iterator link, SegmentState& ls)
+KDL::Wrench& ForceComputation::operator ()(const SegmentMap::const_iterator link,const SegmentState& ls)
 {
     KDL::RigidBodyInertia I = link->second.segment.getInertia();
     m_segmentforce = I * ls.Xdotdot + ls.Xdot * (I * ls.Xdot) - ls.Fext;
@@ -172,17 +172,10 @@ KDL::Wrench& ForceComputer::operator ()(SegmentMap::const_iterator link, Segment
     return m_segmentforce;
 }
 
-ForceComputer::~ForceComputer()
+ForceComputation::~ForceComputation()
 {
 
 
-}
-
-SegmentState& forwardKinematicSweep(SegmentMap::const_iterator first1, SegmentMap::const_iterator second1, JointState& first2, SegmentState& first3)
-{
-    SegmentState result;
-
-    return result;
 }
 
 
