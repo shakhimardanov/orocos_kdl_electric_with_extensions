@@ -140,35 +140,29 @@ int main(int argc, char** argv)
     Vector angularAcc(0.0, 0.0, 0.0);
     Twist rootAcc(linearAcc, angularAcc);
 
+
+
     std::vector<JointState> jstate;
     jstate.resize(twoBranchTree.getNrOfSegments() + 1);
     std::vector<SegmentState> lstate;
     lstate.resize(twoBranchTree.getNrOfSegments() + 1);
-    
-    //computeForwardKinematicsComputation = ForwardKinematicsComputation(rootAcc);
-    // ForceComputation ForceComputation;
-    ForwardKinematicsComputation fkcomputation(rootAcc);
-   
+
+    ForwardKinematics fkcomputation(rootAcc);
+    ForceComputer forcecomputer;
+
     jstate[0].q = 0.0;
     //computation for a single node
     lstate[0] = fkcomputation(twoBranchTree.getSegments().begin(), jstate[0]);
-    /*
-   // std::cout << "Computation with () operator call" << lstate[0].X << std::endl;
-    lstate[0] = computeForwardKinematicsComputation(twoBranchTree.getSegments().begin(), jstate[0]);
-   // std::cout << "Computation with boost::function call" << lstate[0].X << std::endl;
-    boost::bind(computeForwardKinematicsComputation, twoBranchTree.getSegments().begin(), jstate[0]);
-   // std::cout << "Computation with boost::bind and boost::function call" << lstate[0].X << std::endl;
-    KDL::Wrench force = ForceComputation(twoBranchTree.getSegments().begin(), lstate[0]);
+    KDL::Wrench force = forcecomputer(twoBranchTree.getSegments().begin(), lstate[0]);
     //std::cout << "value of returned frame" << lstate[0].X << std::endl;
-    */
+
     //computation for the whole tree
-    /*
     Frame pose;
     //option 1: uses external iterator, user needs to check conditions
     for (SegmentMap::const_iterator iter = twoBranchTree.getSegments().begin(); iter != twoBranchTree.getSegments().end(); iter++)
     {
         lstate[iter->second.q_nr] = fkcomputation(iter, jstate[iter->second.q_nr]);
-        force = ForceComputation(iter, lstate[iter->second.q_nr]);
+        force = forcecomputer(iter, lstate[iter->second.q_nr]);
         pose = pose * lstate[iter->second.q_nr].X;
 
         std::cout << "Loop:: value of returned joint index" << iter->second.q_nr << std::endl;
@@ -177,7 +171,7 @@ int main(int argc, char** argv)
         std::cout << "Loop:: value of returned link force" << force << std::endl;
     }
     std::cout << std::endl << std::endl << "Here, loop is done" << std::endl << std::endl << std::endl;
-    */
+
     //option 2: uses internal iterator, inflexible because difficult to define a closure
     transform(twoBranchTree.getSegments().begin(), twoBranchTree.getSegments().end(), jstate.begin(), lstate.begin(), fkcomputation);
 
