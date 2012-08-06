@@ -12,14 +12,7 @@
 #include <kdl/chainiksolverpos_nr.hpp>
 #include <kdl/chain.hpp>
 #include <kdl/tree.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
 
-
-
-//check Tine's work on semantic library for KDL
-//to decouple these data structures.
-//
 namespace KDL
 {
 
@@ -29,11 +22,11 @@ public:
     SegmentState();
     SegmentState(const SegmentState& copy);
     SegmentState & operator=(const SegmentState& copy);
-    KDL::Frame X;
-    KDL::Twist Xdot;
-    KDL::Twist Xdotdot;
-    KDL::Wrench Fext;
-    KDL::Twist Z; //supporting/driving joint unit twist/projection/Dof
+    Frame X;
+    Twist Xdot;
+    Twist Xdotdot;
+    Wrench Fext;
+    Twist Z; //supporting/driving joint unit twist/projection/Dof
     unsigned int jointIndex; // supporting/driving joint name/index
     std::string jointName;
     std::string segmentName;
@@ -58,33 +51,32 @@ public:
 
 //primitive(atomic) function object
 
-class ForwardKinematicsComputation
+class ForwardKinematics
 {
 public:
-    ForwardKinematicsComputation(KDL::Twist& gravityAcc);
-    SegmentState & operator() (const SegmentMap::const_iterator link,const JointState& js) ; //should declare the function and its arguments as constant
-    SegmentState & operator() (const std::pair<std::string, KDL::TreeElement> link, const JointState& js) ;
-    virtual ~ForwardKinematicsComputation();
+    ForwardKinematics(Twist& gravityAcc);
+    SegmentState & operator() (SegmentMap::const_iterator link, JointState& js);
+    SegmentState & operator() (std::pair<std::string, KDL::TreeElement> link, JointState& js);
+    virtual ~ForwardKinematics();
 private:
     SegmentState m_segmentstate;
     JointState m_jointstate;
     Twist m_gravity;
 };
 
-//primitive(atomic) function object
-class ForceComputation
+class ForceComputer
 {
 public:
-    ForceComputation();
-    KDL::Wrench & operator ()(const std::pair<std::string, const KDL::TreeElement> link, const SegmentState& ls) ;
-    KDL::Wrench & operator ()(const SegmentMap::const_iterator link, const SegmentState& ls) ;
-    virtual ~ForceComputation();
+    ForceComputer();
+    KDL::Wrench & operator ()(std::pair<std::string, KDL::TreeElement> link, SegmentState& ls);
+    KDL::Wrench & operator ()(SegmentMap::const_iterator link, SegmentState& ls);
+    virtual ~ForceComputer();
 private:
     KDL::Wrench m_segmentforce;
 };
 
 
-boost::function<SegmentState& (SegmentMap::const_iterator linkIter, JointState& js)> computeForwardKinematicsComputation;
+
 
 // function object adapter which composes primitive ones. compose_f_h(yz)_g(x)
 //f ~= ForwardKinematicsComputationweep
@@ -107,7 +99,8 @@ private:
     OP1 a_op1;
     OP2 a_op2;
 
-};
+SegmentState& forwardKinematicSweep(SegmentMap::const_iterator first1, SegmentMap::const_iterator second1, JointState& first2, SegmentState& first3);
+
 
 
 
