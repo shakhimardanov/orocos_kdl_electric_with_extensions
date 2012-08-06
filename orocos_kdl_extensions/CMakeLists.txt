@@ -21,10 +21,11 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #uncomment if you have defined services
 #rosbuild_gensrv()
 
+
+rosbuild_add_boost_directories()
 #common commands for building c++ executables and libraries
 rosbuild_add_library(orocos-kdl-extensions src/treeid_vereshchagin_composable.cpp)
 target_link_libraries(orocos-kdl-extensions orocos-kdl)
-#rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 rosbuild_add_executable(compositiontest src/compositiontest.cpp)
 target_link_libraries(compositiontest orocos-kdl-extensions)

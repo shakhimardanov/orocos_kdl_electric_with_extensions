@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="69">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <df name="orocos_kdl_extensions"
+        root="/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions">
+      <df name="bin" kind="SOURCE_LOGICAL_FOLDER">
+      </df>
+      <df name="CMakeFiles" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="clean-test-results.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="CMakeTmp" kind="SOURCE_LOGICAL_FOLDER">
+          <df name="CMakeFiles" kind="SOURCE_LOGICAL_FOLDER">
+            <df name="cmTryCompileExec.dir" kind="SOURCE_LOGICAL_FOLDER">
+            </df>
+          </df>
+        </df>
+        <df name="CompilerIdC" kind="SOURCE_LOGICAL_FOLDER">
+          <in>CMakeCCompilerId.c</in>
+        </df>
+        <df name="CompilerIdCXX" kind="SOURCE_LOGICAL_FOLDER">
+          <in>CMakeCXXCompilerId.cpp</in>
+        </df>
+        <df name="compositiontest.dir" kind="SOURCE_LOGICAL_FOLDER">
+          <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+          </df>
+        </df>
+        <df name="orocos-kdl-extensions.dir" kind="SOURCE_LOGICAL_FOLDER">
+          <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+          </df>
+        </df>
+        <df name="ROSBUILD_genmsg_cpp.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="ROSBUILD_genmsg_lisp.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="ROSBUILD_gensrv_cpp.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="ROSBUILD_gensrv_lisp.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="rosbuild_precompile.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="rosbuild_premsgsrvgen.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="rospack_genmsg.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="rospack_genmsg_libexe.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="rospack_gensrv.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="test-future.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="test-results-run.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="test-results.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="test.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="tests.dir" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+      </df>
+      <df name="include" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="kdl_extensions" kind="SOURCE_LOGICAL_FOLDER">
+          <in>treeid_vereshchagin_composable.hpp</in>
+        </df>
+      </df>
+      <df name="lib" kind="SOURCE_LOGICAL_FOLDER">
+      </df>
+      <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+        <in>compositiontest.cpp</in>
+        <in>treeid_vereshchagin_composable.cpp</in>
+      </df>
+      <df name="vpproject">
+      </df>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeLists.txt</itemPath>
+      <itemPath>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/Makefile</itemPath>
+      <itemPath>Makefile-orocos_kdl_extensions.mk</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile-orocos_kdl_extensions.mk</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions</buildCommandWorkingDir>
+          <buildCommand>$(MAKE) -f Makefile</buildCommand>
+          <cleanCommand>$(MAKE) -f Makefile clean</cleanCommand>
+          <executablePath>bin/compositiontest</executablePath>
+        </makeTool>
+      </makefileType>
+      <folder path="orocos_kdl_extensions/src">
+        <ccTool>
+          <incDir>
+            <pElem>include</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+    </conf>
+  </confs>
+</configurationDescriptor>

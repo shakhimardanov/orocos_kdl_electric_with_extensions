@@ -1,0 +1,17 @@
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/ROSBUILD_genmsg_cpp.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/ROSBUILD_genmsg_lisp.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/ROSBUILD_gensrv_cpp.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/ROSBUILD_gensrv_lisp.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/clean-test-results.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/compositiontest.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/orocos-kdl-extensions.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/rosbuild_precompile.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/rosbuild_premsgsrvgen.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/rospack_genmsg.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/rospack_genmsg_libexe.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/rospack_gensrv.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/test.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/test-future.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/test-results.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/test-results-run.dir
+/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/CMakeFiles/tests.dir
