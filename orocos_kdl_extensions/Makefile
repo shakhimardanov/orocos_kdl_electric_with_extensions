@@ -177,17 +177,17 @@ compositiontest/fast:
 .PHONY : compositiontest/fast
 
 #=============================================================================
-# Target rules for targets named orocos-kdl-extensions
+# Target rules for targets named kdl_extensions
 
 # Build rule for target.
-orocos-kdl-extensions: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 orocos-kdl-extensions
-.PHONY : orocos-kdl-extensions
+kdl_extensions: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 kdl_extensions
+.PHONY : kdl_extensions
 
 # fast build rule for target.
-orocos-kdl-extensions/fast:
-	$(MAKE) -f CMakeFiles/orocos-kdl-extensions.dir/build.make CMakeFiles/orocos-kdl-extensions.dir/build
-.PHONY : orocos-kdl-extensions/fast
+kdl_extensions/fast:
+	$(MAKE) -f CMakeFiles/kdl_extensions.dir/build.make CMakeFiles/kdl_extensions.dir/build
+.PHONY : kdl_extensions/fast
 
 #=============================================================================
 # Target rules for targets named rosbuild_precompile
@@ -336,17 +336,17 @@ src/compositiontest.s:
 
 # target to build an object file
 src/treeid_vereshchagin_composable.o:
-	$(MAKE) -f CMakeFiles/orocos-kdl-extensions.dir/build.make CMakeFiles/orocos-kdl-extensions.dir/src/treeid_vereshchagin_composable.o
+	$(MAKE) -f CMakeFiles/kdl_extensions.dir/build.make CMakeFiles/kdl_extensions.dir/src/treeid_vereshchagin_composable.o
 .PHONY : src/treeid_vereshchagin_composable.o
 
 # target to preprocess a source file
 src/treeid_vereshchagin_composable.i:
-	$(MAKE) -f CMakeFiles/orocos-kdl-extensions.dir/build.make CMakeFiles/orocos-kdl-extensions.dir/src/treeid_vereshchagin_composable.i
+	$(MAKE) -f CMakeFiles/kdl_extensions.dir/build.make CMakeFiles/kdl_extensions.dir/src/treeid_vereshchagin_composable.i
 .PHONY : src/treeid_vereshchagin_composable.i
 
 # target to generate assembly for a file
 src/treeid_vereshchagin_composable.s:
-	$(MAKE) -f CMakeFiles/orocos-kdl-extensions.dir/build.make CMakeFiles/orocos-kdl-extensions.dir/src/treeid_vereshchagin_composable.s
+	$(MAKE) -f CMakeFiles/kdl_extensions.dir/build.make CMakeFiles/kdl_extensions.dir/src/treeid_vereshchagin_composable.s
 .PHONY : src/treeid_vereshchagin_composable.s
 
 # Help Target
@@ -362,7 +362,7 @@ help:
 	@echo "... clean-test-results"
 	@echo "... compositiontest"
 	@echo "... edit_cache"
-	@echo "... orocos-kdl-extensions"
+	@echo "... kdl_extensions"
 	@echo "... rebuild_cache"
 	@echo "... rosbuild_precompile"
 	@echo "... rosbuild_premsgsrvgen"

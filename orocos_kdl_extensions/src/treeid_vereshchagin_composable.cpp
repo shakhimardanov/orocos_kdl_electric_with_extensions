@@ -1,5 +1,5 @@
 #include "kdl_extensions/treeid_vereshchagin_composable.hpp"
-
+//#define CHECK
 namespace KDL
 {
 
@@ -75,6 +75,133 @@ JointState::~JointState()
 
 }
 
+transformPose::transformPose()
+{
+    m_segmentState.X.Identity();
+    m_segmentState.Xdot.Zero();
+    m_segmentState.Xdotdot.Zero();
+}
+
+//transformPose::transformPose(const SegmentState& p_segmentState)
+//{
+//    m_segmentState = p_segmentState;
+//}
+
+transformPose::~transformPose() //for templates this should be handled properly
+{
+
+}
+
+void transformPose::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState)
+{
+    //check for joint type None should be tree serialization function.
+    
+    m_segmentState.X = segmentId->second.segment.pose(p_jointState.q);
+#ifdef CHECK
+    std::cout << p_jointState.q<< std::endl;
+    std::cout << segmentId->first<< std::endl;
+    std::cout << segmentId->second.segment.pose(p_jointState.q) << std::endl;
+#endif
+    return ;
+}
+
+
+transformTwist::transformTwist()
+{
+    m_segmentState.X.Identity();
+    m_segmentState.Xdot.Zero();
+    m_segmentState.Xdotdot.Zero();
+}
+
+transformTwist::~transformTwist()
+{
+
+
+
+}
+
+
+void transformTwist::operator ()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState)
+{
+    m_segmentState.X = segmentId->second.segment.pose(p_jointState.q);
+    a_jointUnitTwist = m_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, 1.0));
+    a_jointTwistVelocity = m_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, p_jointState.qdot));
+    //do we check here for the index of a joint (whether the joint is first in the chain)
+    m_segmentState.Xdot = m_segmentState.X.Inverse(p_segmentState.Xdotdot) + a_jointTwistVelocity;
+    #ifdef CHECK
+    std::cout << p_jointState.qdot<< std::endl;
+    std::cout << "Xdot" << m_segmentState.Xdot << std::endl;
+    #endif
+    return;
+}
+
+
+compose::compose()
+{
+
+}
+
+compose::~compose()
+{
+
+}
+
+
+void compose::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation1, transformTwist& p_computation2)
+{
+
+    return;
+}
+
+
+
+iterateOverSegment::iterateOverSegment()
+{
+
+
+}
+
+
+iterateOverSegment::~iterateOverSegment()
+{
+
+}
+
+
+SegmentState& iterateOverSegment::operator ()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation)
+{
+    p_computation(segmentId, p_jointState, p_segmentState);
+#ifdef CHECK
+    std::cout << p_jointState.q<< std::endl;
+    std::cout << p_computation.m_segmentState.X << std::endl;
+#endif
+    return p_computation.m_segmentState;
+}
+
+
+SegmentState& iterateOverSegment::operator ()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation)
+{
+    p_computation(segmentId, p_jointState, p_segmentState);
+#ifdef CHECK
+    std::cout << p_jointState.qdot<< std::endl;
+    std::cout << "Xdot" << p_computation.m_segmentState.Xdot << std::endl;
+#endif
+    return p_computation.m_segmentState;
+}
+
+
+ SegmentState& iterateOverSegment::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation1, transformTwist& p_computation2)
+ {
+
+     return p_computation1.m_segmentState;
+ }
+
+ SegmentState& iterateOverSegment::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, compose& p_computation)
+ {
+
+     //return
+ }
+/*
 ForwardKinematics::ForwardKinematics(Twist& gravityAcc)
 {
     m_gravity = gravityAcc;
@@ -178,12 +305,7 @@ ForceComputer::~ForceComputer()
 
 }
 
-SegmentState& forwardKinematicSweep(SegmentMap::const_iterator first1, SegmentMap::const_iterator second1, JointState& first2, SegmentState& first3)
-{
-    SegmentState result;
-
-    return result;
-}
+ */
 
 
 

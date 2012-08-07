@@ -22,6 +22,7 @@ public:
     SegmentState();
     SegmentState(const SegmentState& copy);
     SegmentState & operator=(const SegmentState& copy);
+
     Frame X;
     Twist Xdot;
     Twist Xdotdot;
@@ -50,7 +51,7 @@ public:
 };
 
 //primitive(atomic) function object
-
+/*
 class ForwardKinematics
 {
 public:
@@ -76,33 +77,72 @@ private:
 };
 
 
-
-
 // function object adapter which composes primitive ones. compose_f_h(yz)_g(x)
 //f ~= ForwardKinematicsComputationweep
 //g ~= ForwardKinematicsComputation x ~= jointState
 //h ~ =ForceComputation y ~= linkState output from g(x) and z ~= external forces/force input
-template <typename OP1, typename OP2>
-class Composer_f_gx : public std::unary_function<typename OP1::argument_type, typename OP2::result_type>
+
+template <typename Arg1, typename Arg2, typename Arg3, typename Result>
+class ternary_function
+{
+    typedef Arg1 argument1_type;
+    typedef Arg2 argument2_type;
+    typedef Arg3 argument3_type;
+    typedef Result result_type;
+
+};
+ */
+
+// TODO transform function does propagation over single segment from root to tip, so does have initial segment always state zero
+class transformPose
 {
 public:
-    typedef typename OP2::result_type result_type;
-    Composer_f_gx(const OP1& op1,const OP2& op2):a_op1(op1), a_op2(op2)
-    {
 
-    };
-    result_type& operator()()
-    {
-        return;
-    };
+    transformPose();
+    //explicit transformPose(const SegmentState& p_segmentState);
+    virtual ~transformPose(); //for templates this should be handled properly
+    void operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState);
+//private:
+    SegmentState m_segmentState;
+};
+
+class transformTwist
+{
+public:
+    transformTwist();
+    virtual ~transformTwist();
+    void operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState);
+    SegmentState m_segmentState;
 private:
-    OP1 a_op1;
-    OP2 a_op2;
-
-SegmentState& forwardKinematicSweep(SegmentMap::const_iterator first1, SegmentMap::const_iterator second1, JointState& first2, SegmentState& first3);
+    KDL::Twist a_jointTwistVelocity;
+    KDL::Twist a_jointUnitTwist; //motion subspace
 
 
+};
+class compose;
+class iterateOverSegment
+{
+public:
+    iterateOverSegment();
+    virtual ~iterateOverSegment();
+    SegmentState& operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation);
+    SegmentState& operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation);
+    SegmentState& operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation1, transformTwist& p_computation2);
+    SegmentState& operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, compose& p_computation);
 
+};
+
+//composes functional computations/operations and return more complex computational operation
+class compose
+{
+public:
+    compose();
+    virtual ~compose();
+    void operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation1, transformTwist& p_computation2);
+
+};
+
+//there should be another compose operation which composes the results of iterations (so values)
 
 }
 

@@ -5,6 +5,8 @@
  * Created on December 21, 2011, 11:46 AM
  */
 
+
+
 #include <cstdlib>
 #include <list>
 #include <algorithm>
@@ -16,13 +18,11 @@
 #include <kdl/chainiksolverpos_nr.hpp>
 #include <kdl/chain.hpp>
 #include <kdl/tree.hpp>
-//forward pose kinematics solver.
-//defines ik vel level weighted damped least square solver
 #include <kdl/treeiksolvervel_wdls.hpp>
-//generates jacobian for a tree given its joint values
 #include <kdl/treejnttojacsolver.hpp>
 #include <kdl/treefksolverpos_recursive.hpp>
 #include <kdl_extensions/treeid_vereshchagin_composable.hpp>
+#include <kdl_extensions/functionalcomputation.hpp>
 
 
 
@@ -136,21 +136,22 @@ int main(int argc, char** argv)
 
      */
     //arm root acceleration
-    Vector linearAcc(0.0, 10, 0.0); //gravitational acceleration along Y
+    Vector linearAcc(2.0, 1, 0.0); //gravitational acceleration along Y
     Vector angularAcc(0.0, 0.0, 0.0);
     Twist rootAcc(linearAcc, angularAcc);
 
 
-
     std::vector<JointState> jstate;
     jstate.resize(twoBranchTree.getNrOfSegments() + 1);
+    jstate[0].q = PI/4.0;
+    jstate[0].qdot = 0.2;
     std::vector<SegmentState> lstate;
     lstate.resize(twoBranchTree.getNrOfSegments() + 1);
-
+    /*
     ForwardKinematics fkcomputation(rootAcc);
     ForceComputer forcecomputer;
 
-    jstate[0].q = 0.0;
+    
     //computation for a single node
     lstate[0] = fkcomputation(twoBranchTree.getSegments().begin(), jstate[0]);
     KDL::Wrench force = forcecomputer(twoBranchTree.getSegments().begin(), lstate[0]);
@@ -174,8 +175,23 @@ int main(int argc, char** argv)
 
     //option 2: uses internal iterator, inflexible because difficult to define a closure
     transform(twoBranchTree.getSegments().begin(), twoBranchTree.getSegments().end(), jstate.begin(), lstate.begin(), fkcomputation);
+*/
+    transformPose comp1;
+    transformTwist comp2;
+    iterateOverSegment iterator;
 
+    lstate[0] = iterator(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], comp1);
+    lstate[0].Xdot = rootAcc;
+    std::cout << "X0" << lstate[0].X << std::endl;
+    std::cout << "Xdot0"<<lstate[0].Xdot << std::endl;
 
+    lstate[1] = iterator(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], comp2);
+    std::cout << "X1"<<lstate[1].X << std::endl;
+    std::cout << "Xdot1"<<lstate[1].Xdot << std::endl;
+
+    compose composedComp;
+    iterator(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], composedComp);
+    composedComp(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], comp1,comp2);
 
     return 0;
 }

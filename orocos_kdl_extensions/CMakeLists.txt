@@ -10,6 +10,7 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 #set(ROS_BUILD_TYPE RelWithDebInfo)
 
 rosbuild_init()
+project(kdl_extensions)
 
 #set the default path for built executables to the "bin" directory
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
@@ -22,9 +23,13 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_gensrv()
 
 #common commands for building c++ executables and libraries
-rosbuild_add_library(orocos-kdl-extensions src/treeid_vereshchagin_composable.cpp)
-target_link_libraries(orocos-kdl-extensions orocos-kdl)
+rosbuild_add_library(${PROJECT_NAME} include/kdl_extensions/functionalcomputation.hpp src/functionalcomputation.inl 
+                    include/kdl_extensions/treeid_vereshchagin_composable.hpp src/treeid_vereshchagin_composable.cpp )
+
+target_link_libraries(${PROJECT_NAME} orocos-kdl)
+
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
+
 rosbuild_add_executable(compositiontest src/compositiontest.cpp)
-target_link_libraries(compositiontest orocos-kdl-extensions)
+target_link_libraries(compositiontest ${PROJECT_NAME})
