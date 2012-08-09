@@ -5,41 +5,32 @@
  * Created on August 7, 2012, 6:28 PM
  */
 #include <kdl/tree.hpp>
+#include <kdl_extensions/treeid_vereshchagin_composable.hpp>
 
 #ifndef FUNCTIONALCOMPUTATION_HPP
 #define	FUNCTIONALCOMPUTATION_HPP
 //primary template for an iteration over a node(T1)
-template <typename T1, typename T2, typename T3, typename OP1, typename OP2>
+template <typename T_Operation1, typename T_Operation2, typename T_IterationElement = KDL::SegmentMap::const_iterator,
+          typename T_ComputationalState1 = KDL::JointState, typename T_ComputationalState2 = KDL::SegmentState>
 class iterateOver_t
 {
 public:
     iterateOver_t();
-    T3 operator()(T1,T2,T3,OP1, OP2);
-    T3 operator()(T1,T2,T3,OP1);
+    T_ComputationalState2 operator()(T_IterationElement,T_ComputationalState1,T_ComputationalState2 ,T_Operation1, T_Operation2);
+    T_ComputationalState2 operator()(T_IterationElement,T_ComputationalState1,T_ComputationalState2 ,T_Operation1);
 private:
-    T3 a_internalState;
+    T_ComputationalState2 a_internalState;
 
 };
 
 
-template <typename T2, typename T3, typename OP1, typename OP2>
-class iterateOver_t<KDL::SegmentMap::const_iterator, T2, T3, OP1, OP2>
-{
-public:
-    iterateOver_t();
-    T3 operator()(KDL::SegmentMap::const_iterator,T2,T3,OP1, OP2);
-    T3 operator()(KDL::SegmentMap::const_iterator,T2,T3,OP1);
-private:
-    T3 a_internalState;
-
-};
 
 
-template <typename T1>
+template <typename T_TransformationQuantity> //could Pose, Twist, Wrench
 class transform
 {
 public:
-    T1 a_internalState;
+    T_TransformationQuantity a_internalState;
 
 };
 

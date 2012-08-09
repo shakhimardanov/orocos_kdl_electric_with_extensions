@@ -75,11 +75,11 @@ JointState::~JointState()
 
 }
 
-transformPose::transformPose()
+transformPose::transformPose() : BaseOperation()
 {
-    m_segmentState.X.Identity();
-    m_segmentState.Xdot.Zero();
-    m_segmentState.Xdotdot.Zero();
+    a_segmentState.X.Identity();
+    a_segmentState.Xdot.Zero();
+    a_segmentState.Xdotdot.Zero();
 }
 
 //transformPose::transformPose(const SegmentState& p_segmentState)
@@ -92,25 +92,24 @@ transformPose::~transformPose() //for templates this should be handled properly
 
 }
 
-void transformPose::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState)
+SegmentState& transformPose::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState)
 {
     //check for joint type None should be tree serialization function.
-    
-    m_segmentState.X = segmentId->second.segment.pose(p_jointState.q);
+
+    a_segmentState.X = segmentId->second.segment.pose(p_jointState.q);
 #ifdef CHECK
-    std::cout << p_jointState.q<< std::endl;
-    std::cout << segmentId->first<< std::endl;
+    std::cout << p_jointState.q << std::endl;
+    std::cout << segmentId->first << std::endl;
     std::cout << segmentId->second.segment.pose(p_jointState.q) << std::endl;
 #endif
-    return ;
+    return a_segmentState;
 }
 
-
-transformTwist::transformTwist()
+transformTwist::transformTwist() : BaseOperation()
 {
-    m_segmentState.X.Identity();
-    m_segmentState.Xdot.Zero();
-    m_segmentState.Xdotdot.Zero();
+    a_segmentState.X.Identity();
+    a_segmentState.Xdot.Zero();
+    a_segmentState.Xdotdot.Zero();
 }
 
 transformTwist::~transformTwist()
@@ -120,87 +119,92 @@ transformTwist::~transformTwist()
 
 }
 
-
-void transformTwist::operator ()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState)
+SegmentState& transformTwist::operator ()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState)
 {
-    m_segmentState.X = segmentId->second.segment.pose(p_jointState.q);
-    a_jointUnitTwist = m_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, 1.0));
-    a_jointTwistVelocity = m_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, p_jointState.qdot));
+    a_segmentState.X = segmentId->second.segment.pose(p_jointState.q);
+    a_jointUnitTwist = a_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, 1.0));
+    a_jointTwistVelocity = a_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, p_jointState.qdot));
     //do we check here for the index of a joint (whether the joint is first in the chain)
-    m_segmentState.Xdot = m_segmentState.X.Inverse(p_segmentState.Xdotdot) + a_jointTwistVelocity;
-    #ifdef CHECK
-    std::cout << p_jointState.qdot<< std::endl;
+    a_segmentState.Xdot = a_segmentState.X.Inverse(p_segmentState.Xdotdot) + a_jointTwistVelocity;
+#ifdef CHECK
+    std::cout << p_jointState.qdot << std::endl;
     std::cout << "Xdot" << m_segmentState.Xdot << std::endl;
-    #endif
-    return;
+#endif
+    return a_segmentState;
 }
 
-
-compose::compose()
+compose::compose() : BaseOperation()
 {
 
+}
+
+compose::compose(transformTwist& p_op2, transformPose& p_op1) : BaseOperation()
+{
+    a_op1 = p_op1;
+    a_op2 = p_op2;
 }
 
 compose::~compose()
 {
 
 }
-
-
-void compose::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation1, transformTwist& p_computation2)
+/*
+BaseOperation& compose::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation2, transformPose& p_computation1)
 {
 
-    return;
+    p_computation2(segmentId, p_jointState, p_computation1(segmentId, p_jointState, p_segmentState));
+    return p_computation2;
 }
 
-
-
+BaseOperation& compose::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation1, transformTwist& p_computation2)
+{
+    p_computation2(segmentId, p_jointState, p_computation1(segmentId, p_jointState, p_segmentState));
+    return p_computation2;
+}
+*/
 iterateOverSegment::iterateOverSegment()
 {
 
 
 }
 
-
 iterateOverSegment::~iterateOverSegment()
 {
 
 }
 
-
 SegmentState& iterateOverSegment::operator ()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation)
 {
-    p_computation(segmentId, p_jointState, p_segmentState);
+    a_segmentState = p_computation(segmentId, p_jointState, p_segmentState);
 #ifdef CHECK
-    std::cout << p_jointState.q<< std::endl;
+    std::cout << p_jointState.q << std::endl;
     std::cout << p_computation.m_segmentState.X << std::endl;
 #endif
-    return p_computation.m_segmentState;
+    return a_segmentState;
 }
-
 
 SegmentState& iterateOverSegment::operator ()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation)
 {
-    p_computation(segmentId, p_jointState, p_segmentState);
+    a_segmentState = p_computation(segmentId, p_jointState, p_segmentState);
 #ifdef CHECK
-    std::cout << p_jointState.qdot<< std::endl;
+    std::cout << p_jointState.qdot << std::endl;
     std::cout << "Xdot" << p_computation.m_segmentState.Xdot << std::endl;
 #endif
-    return p_computation.m_segmentState;
+    return a_segmentState;
 }
 
+SegmentState& iterateOverSegment::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation2, transformPose& p_computation1)
+{
 
- SegmentState& iterateOverSegment::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation1, transformTwist& p_computation2)
- {
+    a_segmentState = p_computation2(segmentId, p_jointState, p_computation1(segmentId, p_jointState, p_segmentState));
+    return a_segmentState;
+}
 
-     return p_computation1.m_segmentState;
- }
+SegmentState& iterateOverSegment::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, compose& p_computation)
+{
 
- SegmentState& iterateOverSegment::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, compose& p_computation)
- {
-
-     //return
- }
+    return p_computation(segmentId, p_jointState, p_segmentState);
+}
 /*
 ForwardKinematics::ForwardKinematics(Twist& gravityAcc)
 {

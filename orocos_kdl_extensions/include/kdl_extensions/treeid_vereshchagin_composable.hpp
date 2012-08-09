@@ -51,6 +51,7 @@ public:
 };
 
 //primitive(atomic) function object
+
 /*
 class ForwardKinematics
 {
@@ -93,56 +94,116 @@ class ternary_function
 };
  */
 
+
+class BaseOperation
+{
+public:
+
+    BaseOperation()
+    {
+    };
+
+    virtual SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState)
+    {
+        return a_segmentState;
+    };
+
+    virtual ~BaseOperation()
+    {
+    };
+
+    BaseOperation & operator=(const BaseOperation& copy)
+    {
+        if (this != &copy)
+        {
+            a_segmentState = copy.a_segmentState;
+        }
+        return *this;
+    };
+
+protected:
+    SegmentState a_segmentState;
+
+};
+
+
+
 // TODO transform function does propagation over single segment from root to tip, so does have initial segment always state zero
-class transformPose
+
+class transformPose : public BaseOperation
 {
 public:
 
     transformPose();
     //explicit transformPose(const SegmentState& p_segmentState);
     virtual ~transformPose(); //for templates this should be handled properly
-    void operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState);
-//private:
-    SegmentState m_segmentState;
+    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState);
 };
 
-class transformTwist
+class transformTwist : public BaseOperation
 {
 public:
     transformTwist();
     virtual ~transformTwist();
-    void operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState);
-    SegmentState m_segmentState;
-private:
+    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState);
+
+protected:
     KDL::Twist a_jointTwistVelocity;
     KDL::Twist a_jointUnitTwist; //motion subspace
 
 
 };
-class compose;
-class iterateOverSegment
-{
-public:
-    iterateOverSegment();
-    virtual ~iterateOverSegment();
-    SegmentState& operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation);
-    SegmentState& operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation);
-    SegmentState& operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation1, transformTwist& p_computation2);
-    SegmentState& operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, compose& p_computation);
-
-};
 
 //composes functional computations/operations and return more complex computational operation
-class compose
+//helper class should be then hidden
+
+class compose : public BaseOperation
 {
 public:
     compose();
+    compose(transformTwist& p_op2, transformPose& p_op1);
     virtual ~compose();
-    void operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation1, transformTwist& p_computation2);
+
+    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState)
+    {
+        return a_segmentState;
+    };
+//    BaseOperation & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation2, transformPose& p_computation1);
+//    BaseOperation & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation1, transformTwist& p_computation2);
+protected:
+    transformPose a_op1;
+    transformTwist a_op2;
 
 };
 
+typedef compose(*funcPtr)(transformTwist&, transformPose&);
+typedef compose complexComputation;
+
+
+compose compose_unary(transformTwist& op2, transformPose& op1)
+{
+
+    return compose(op2, op1);
+};
 //there should be another compose operation which composes the results of iterations (so values)
+
+
+class iterateOverSegment
+{
+protected:
+    SegmentState a_segmentState;
+
+public:
+    iterateOverSegment();
+    virtual ~iterateOverSegment();
+    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation);
+    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation);
+    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation2, transformPose& p_computation1);
+    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, compose& p_computation);
+
+};
+
+
 
 }
 

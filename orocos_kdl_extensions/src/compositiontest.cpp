@@ -176,8 +176,10 @@ int main(int argc, char** argv)
     //option 2: uses internal iterator, inflexible because difficult to define a closure
     transform(twoBranchTree.getSegments().begin(), twoBranchTree.getSegments().end(), jstate.begin(), lstate.begin(), fkcomputation);
 */
+
     transformPose comp1;
     transformTwist comp2;
+    complexComputation newComplexOperation = compose_unary(comp2, comp1);
     iterateOverSegment iterator;
 
     lstate[0] = iterator(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], comp1);
@@ -189,9 +191,14 @@ int main(int argc, char** argv)
     std::cout << "X1"<<lstate[1].X << std::endl;
     std::cout << "Xdot1"<<lstate[1].Xdot << std::endl;
 
-    compose composedComp;
-    iterator(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], composedComp);
-    composedComp(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], comp1,comp2);
+    lstate[1] = iterator(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], comp2, comp1);
+    std::cout << "X1"<<lstate[1].X << std::endl;
+    std::cout << "Xdot1"<<lstate[1].Xdot << std::endl;
+
+
+  
+    iterator(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], newComplexOperation);
+    compose_unary(comp2, comp1)(twoBranchTree.getSegment("L1"),jstate[0], lstate[0]);
 
     return 0;
 }
