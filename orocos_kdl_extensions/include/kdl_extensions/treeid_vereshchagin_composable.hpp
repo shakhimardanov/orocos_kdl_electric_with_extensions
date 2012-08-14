@@ -28,6 +28,7 @@ public:
     Twist Xdotdot;
     Wrench Fext;
     Twist Z; //supporting/driving joint unit twist/projection/Dof
+    Twist Vj;
     unsigned int jointIndex; // supporting/driving joint name/index
     std::string jointName;
     std::string segmentName;
@@ -101,6 +102,9 @@ public:
 
     BaseOperation()
     {
+        a_segmentState.X.Identity();
+        a_segmentState.Xdot.Zero();
+        a_segmentState.Xdotdot.Zero();
     };
 
     virtual SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState)
@@ -127,17 +131,18 @@ protected:
 };
 
 
-
 // TODO transform function does propagation over single segment from root to tip, so does have initial segment always state zero
 
 class transformPose : public BaseOperation
 {
 public:
-
     transformPose();
     //explicit transformPose(const SegmentState& p_segmentState);
     virtual ~transformPose(); //for templates this should be handled properly
-    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState);
+     //just because KDL chain and tree use two different types one has to implement functions which take either map iterator or vector iterator.
+    SegmentState& operator()(const KDL::Segment& segmentId, const JointState& p_jointState, SegmentState& p_segmentState);
+    SegmentState& operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState);
+   
 };
 
 class transformTwist : public BaseOperation
@@ -145,6 +150,7 @@ class transformTwist : public BaseOperation
 public:
     transformTwist();
     virtual ~transformTwist();
+    SegmentState& operator()(const KDL::Segment& segmentId, const JointState& p_jointState, SegmentState& p_segmentState);
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState);
 
 protected:
@@ -152,6 +158,15 @@ protected:
     KDL::Twist a_jointUnitTwist; //motion subspace
 
 
+};
+
+class transformAccTwist : public BaseOperation
+{
+public:
+    transformAccTwist();
+    virtual ~transformAccTwist();
+    SegmentState& operator()(const KDL::Segment& segmentId, const JointState& p_jointState, SegmentState& p_segmentState);
+    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState);
 };
 
 //composes functional computations/operations and return more complex computational operation
@@ -163,32 +178,48 @@ public:
     compose();
     compose(transformTwist& p_op2, transformPose& p_op1);
     virtual ~compose();
-
+    SegmentState& operator()(const KDL::Segment& segmentId, const JointState& p_jointState, SegmentState& p_segmentState)
+    {
+        a_segmentState = a_op2(segmentId, p_jointState, a_op1(segmentId, p_jointState, p_segmentState));
+        return a_segmentState;
+    }
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState)
     {
+        a_segmentState = a_op2(segmentId, p_jointState, a_op1(segmentId, p_jointState, p_segmentState));
         return a_segmentState;
     };
-//    BaseOperation & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation2, transformPose& p_computation1);
-//    BaseOperation & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation1, transformTwist& p_computation2);
+    //    BaseOperation & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation2, transformPose& p_computation1);
+    //    BaseOperation & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation1, transformTwist& p_computation2);
 protected:
     transformPose a_op1;
     transformTwist a_op2;
 
 };
 
-typedef compose(*funcPtr)(transformTwist&, transformPose&);
-typedef compose complexComputation;
 
-
-compose compose_unary(transformTwist& op2, transformPose& op1)
+class BaseIterationOperation
 {
+public:
 
-    return compose(op2, op1);
+    BaseIterationOperation()
+    {
+    };
+
+    BaseIterationOperation(const BaseIterationOperation& copy)
+    {
+    };
+
+    virtual ~BaseIterationOperation()
+    {
+    };
+
+    BaseIterationOperation & operator=(const BaseIterationOperation& copy)
+    {
+        return *this;
+    };
 };
-//there should be another compose operation which composes the results of iterations (so values)
 
-
-class iterateOverSegment
+class iterateOverSegment : public BaseIterationOperation
 {
 protected:
     SegmentState a_segmentState;
@@ -200,10 +231,36 @@ public:
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation);
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation2, transformPose& p_computation1);
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, compose& p_computation);
+};
+
+class iterateOverTree : public BaseIterationOperation
+{
+public:
+
+    iterateOverTree() : BaseIterationOperation()
+    {
+    };
+
+    virtual ~iterateOverTree()
+    {
+    };
+    //takes in a reference to an input vector of states and returns it modified
+    // the problem with chain vs tree sucks. One uses vector and other map. The best option would be a hashtable which is equal in performance to a vector
+    //for the time being lets use chain version.
+    //we can still decide to parametrize this thing.
+    bool operator()(KDL::Chain&, const std::vector<JointState>&, std::vector<SegmentState>&, transformPose&);
+    bool operator()(KDL::Chain&, const std::vector<JointState>& p_jointState, std::vector<SegmentState>& p_segmentState, transformTwist& p_computation);
+    bool operator()(KDL::Chain&, const std::vector<JointState>& p_jointState, std::vector<SegmentState>& p_segmentState, transformTwist& p_computation2, transformPose& p_computation);
+    bool operator()(KDL::Chain&, const std::vector<JointState>& p_jointState, std::vector<SegmentState>& p_segmentState, compose& p_computation);
+    //returns a vector of segmentstates
+    std::vector<SegmentState> operator()(KDL::Chain&, const std::vector<JointState>& p_jointState, const std::vector<SegmentState>& p_segmentState, transformPose& p_computation);
+
 
 };
 
-
+typedef compose(*funcPtr)(transformTwist&, transformPose&);
+typedef compose complexComputation;
+compose compose_ternary(transformTwist& op2, transformPose& op1);
 
 }
 

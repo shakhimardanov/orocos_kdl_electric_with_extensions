@@ -97,6 +97,8 @@ int main(int argc, char** argv)
     twoBranchTree.addSegment(segment8, "L6");
     twoBranchTree.addSegment(segment9, "L8");
 
+    KDL::Chain a_chain;
+    twoBranchTree.getChain("L0", "L3", a_chain);
     JntArray q(twoBranchTree.getNrOfJoints());
     /*
     std::cout << "Number of joints " << twoBranchTree.getNrOfJoints() << std::endl;
@@ -179,8 +181,9 @@ int main(int argc, char** argv)
 
     transformPose comp1;
     transformTwist comp2;
-    complexComputation newComplexOperation = compose_unary(comp2, comp1);
+    complexComputation newComplexOperation = compose_ternary(comp2, comp1);
     iterateOverSegment iterator;
+    iterateOverTree traverse;
 
     lstate[0] = iterator(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], comp1);
     lstate[0].Xdot = rootAcc;
@@ -197,8 +200,10 @@ int main(int argc, char** argv)
 
 
   
-    iterator(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], newComplexOperation);
-    compose_unary(comp2, comp1)(twoBranchTree.getSegment("L1"),jstate[0], lstate[0]);
+    lstate[2] = iterator(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], newComplexOperation);
+    compose_ternary(comp2, comp1)(twoBranchTree.getSegment("L1"),jstate[0], lstate[0]);
+
+    traverse(a_chain, jstate, lstate, comp1);
 
     return 0;
 }
