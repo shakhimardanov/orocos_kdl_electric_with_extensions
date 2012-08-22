@@ -225,11 +225,7 @@ int main(int argc, char** argv)
     std::cout << "L2 X" << lstate[1].X << std::endl;
     std::cout << "L2 Xdot" << lstate[1].Xdot << std::endl;
     std::cout << "L2 Xdotdot" << lstate[1].Xdotdot << std::endl << std::endl;
-    */
-
-    //SegmentState stateLink = composer(comp2, comp1)(twoBranchTree.getSegment("L1"), jstate[0], lstate[0]);
-    //composer(comp3, comp2);
-    //stateLink = composer(compose(comp3,comp2), comp1)(twoBranchTree.getSegment("L1"), jstate[0], lstate[0]);
+     */
 
     //use case 1,2 with several computations in single iteration
     /*
@@ -252,8 +248,8 @@ int main(int argc, char** argv)
     std::cout << "L2 X" << lstate[1].X << std::endl;
     std::cout << "L2 Xdot" << lstate[1].Xdot << std::endl;
     std::cout << "L2 Xdotdot" << lstate[1].Xdotdot << std::endl<< std::endl;
-    */
-    
+     */
+
     //use case 1,2,3 with several composed and uncomposed computations in single iteration
     /*
     lstate[0] = iterator(twoBranchTree.getSegment("L1"), jstate[0], lstate[0], newComplexOperation2, comp1);
@@ -265,9 +261,10 @@ int main(int argc, char** argv)
     std::cout << "L2 X" << lstate[1].X << std::endl;
     std::cout << "L2 Xdot" << lstate[1].Xdot << std::endl;
     std::cout << "L2 Xdotdot" << lstate[1].Xdotdot << std::endl<< std::endl;
-    */
+     */
 
     //use case
+    /*
     traverse(a_chain, jstate, lstate, newComplexOperation2, comp1);
     for (unsigned int i = 0; i < a_chain.getNrOfSegments(); i++)
     {
@@ -277,6 +274,8 @@ int main(int argc, char** argv)
         std::cout << "Chain Xdotdot" << lstate[i].Xdotdot << std::endl << std::endl;
 
     }
+     */
+
     /*
     traverse(a_chain, jstate, lstate, comp1);
     for (unsigned int i = 0; i < a_chain.getNrOfSegments(); i++)
@@ -295,7 +294,17 @@ int main(int argc, char** argv)
     }
 
     
-    */
+     */
+
+    kdl_extensions::Transform<kdl_extensions::_Pose> _comp1;
+    kdl_extensions::Transform<kdl_extensions::_Twist> _comp2;
+    SegmentState stateLink = kdl_extensions::compose(_comp2, _comp1)(twoBranchTree.getSegment("L1"), jstate[0], lstate[0]);
+    std::cout << lstate[0].X << std::endl;
+    std::cout << lstate[0].Xdot << std::endl;
+    kdl_extensions::compose(_comp2, _comp1);
+    
+
+
     return 0;
 }
 

@@ -109,7 +109,6 @@ transformPose::~transformPose() //for templates this should be handled properly
 SegmentState& transformPose::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState)
 {
     //check for joint type None should be tree serialization function.
-
     //a_segmentState.X =  p_segmentState.X * segmentId->second.segment.pose(p_jointState.q); //in base coordinates
     a_segmentState.Xdot = p_segmentState.Xdot;
     a_segmentState.Xdotdot = p_segmentState.Xdotdot;
