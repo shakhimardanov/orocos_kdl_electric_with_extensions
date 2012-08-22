@@ -138,15 +138,19 @@ int main(int argc, char** argv)
 
      */
     //arm root acceleration
-    Vector linearAcc(2.0, 1, 0.0); //gravitational acceleration along Y
+    Vector linearAcc(0.0, -9.8, 0.0); //gravitational acceleration along Y
     Vector angularAcc(0.0, 0.0, 0.0);
     Twist rootAcc(linearAcc, angularAcc);
 
 
     std::vector<JointState> jstate;
     jstate.resize(twoBranchTree.getNrOfSegments() + 1);
-    jstate[0].q = PI/4.0;
+    jstate[0].q = PI / 3.0;
     jstate[0].qdot = 0.2;
+    jstate[1].q = -PI / 3.0;
+    jstate[1].qdot = 0.4;
+    jstate[2].q = PI / 4.0;
+    jstate[2].qdot = -0.2;
     std::vector<SegmentState> lstate;
     lstate.resize(twoBranchTree.getNrOfSegments() + 1);
     /*
@@ -177,34 +181,121 @@ int main(int argc, char** argv)
 
     //option 2: uses internal iterator, inflexible because difficult to define a closure
     transform(twoBranchTree.getSegments().begin(), twoBranchTree.getSegments().end(), jstate.begin(), lstate.begin(), fkcomputation);
-*/
+     */
 
     transformPose comp1;
     transformTwist comp2;
+    transformAccTwist comp3;
     complexComputation newComplexOperation = compose_ternary(comp2, comp1);
+    complexComputation newComplexOperation2 = compose_ternary(comp3, comp2);
     iterateOverSegment iterator;
     iterateOverTree traverse;
 
-    lstate[0] = iterator(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], comp1);
-    lstate[0].Xdot = rootAcc;
-    std::cout << "X0" << lstate[0].X << std::endl;
-    std::cout << "Xdot0"<<lstate[0].Xdot << std::endl;
+    lstate[0].Xdotdot = rootAcc;
+    //use cases 1, 2
+    /*
+    //rule 1 - order of precedence of computations
+    lstate[0] = iterator(twoBranchTree.getSegment("L1"), jstate[0], lstate[0], comp1);
+    std::cout << "L1 X" << lstate[0].X << std::endl;
+    std::cout << "L1 Xdot" << lstate[0].Xdot << std::endl;
+    std::cout << "L1 Xdotdot" << lstate[0].Xdotdot << std::endl << std::endl;
+    
+    lstate[0] = iterator(twoBranchTree.getSegment("L1"), jstate[0], lstate[0], comp2);
+    std::cout << "L1 X" << lstate[0].X << std::endl;
+    std::cout << "L1 Xdot" << lstate[0].Xdot <<std::endl;
+    std::cout << "L1 Xdotdot" << lstate[0].Xdotdot << std::endl << std::endl;
 
-    lstate[1] = iterator(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], comp2);
-    std::cout << "X1"<<lstate[1].X << std::endl;
-    std::cout << "Xdot1"<<lstate[1].Xdot << std::endl;
+    lstate[0] = iterator(twoBranchTree.getSegment("L1"), jstate[0], lstate[0], comp3);
+    std::cout << "L1 X" << lstate[0].X << std::endl;
+    std::cout << "L1 Xdot" << lstate[0].Xdot <<std::endl;
+    std::cout << "L1 Xdotdot" << lstate[0].Xdotdot << std::endl << std::endl;
 
-    lstate[1] = iterator(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], comp2, comp1);
-    std::cout << "X1"<<lstate[1].X << std::endl;
-    std::cout << "Xdot1"<<lstate[1].Xdot << std::endl;
+    //rule 2 - order of precedence of iterations
+    lstate[1] = iterator(twoBranchTree.getSegment("L2"), jstate[1], lstate[0], comp1);
+    std::cout << "L2 X" << lstate[1].X << std::endl;
+    std::cout << "L2 Xdot" << lstate[1].Xdot << std::endl;
+    std::cout << "L2 Xdotdot" << lstate[1].Xdotdot << std::endl << std::endl;
 
+    lstate[1] = iterator(twoBranchTree.getSegment("L2"), jstate[1], lstate[1], comp2);
+    std::cout << "L2 X" << lstate[1].X << std::endl;
+    std::cout << "L2 Xdot" << lstate[1].Xdot << std::endl;
+    std::cout << "L2 Xdotdot" << lstate[1].Xdotdot << std::endl << std::endl;
 
-  
-    lstate[2] = iterator(twoBranchTree.getSegment("L1"),jstate[0], lstate[0], newComplexOperation);
-    compose_ternary(comp2, comp1)(twoBranchTree.getSegment("L1"),jstate[0], lstate[0]);
+    lstate[1] = iterator(twoBranchTree.getSegment("L2"), jstate[1], lstate[1], comp3);
+    std::cout << "L2 X" << lstate[1].X << std::endl;
+    std::cout << "L2 Xdot" << lstate[1].Xdot << std::endl;
+    std::cout << "L2 Xdotdot" << lstate[1].Xdotdot << std::endl << std::endl;
+    */
 
+    //SegmentState stateLink = composer(comp2, comp1)(twoBranchTree.getSegment("L1"), jstate[0], lstate[0]);
+    //composer(comp3, comp2);
+    //stateLink = composer(compose(comp3,comp2), comp1)(twoBranchTree.getSegment("L1"), jstate[0], lstate[0]);
+
+    //use case 1,2 with several computations in single iteration
+    /*
+    lstate[0] = iterator(twoBranchTree.getSegment("L1"), jstate[0], lstate[0], comp2, comp1);
+    std::cout << "L1 X" << lstate[0].X << std::endl;
+    std::cout << "L1 Xdot" << lstate[0].Xdot << std::endl;
+    std::cout << "L1 Xdotdot" << lstate[0].Xdotdot << std::endl << std::endl;
+
+    lstate[0] = iterator(twoBranchTree.getSegment("L1"), jstate[0], lstate[0], comp3);
+    std::cout << "L1 X" << lstate[0].X << std::endl;
+    std::cout << "L1 Xdot" << lstate[0].Xdot << std::endl;
+    std::cout << "L1 Xdotdot" << lstate[0].Xdotdot << std::endl<< std::endl;
+
+    lstate[1] = iterator(twoBranchTree.getSegment("L2"), jstate[1], lstate[0], comp2, comp1);
+    std::cout << "L2 X" << lstate[1].X << std::endl;
+    std::cout << "L2 Xdot" << lstate[1].Xdot << std::endl;
+    std::cout << "L2 Xdotdot" << lstate[1].Xdotdot << std::endl<< std::endl;
+
+    lstate[1] = iterator(twoBranchTree.getSegment("L2"), jstate[0], lstate[1], comp3);
+    std::cout << "L2 X" << lstate[1].X << std::endl;
+    std::cout << "L2 Xdot" << lstate[1].Xdot << std::endl;
+    std::cout << "L2 Xdotdot" << lstate[1].Xdotdot << std::endl<< std::endl;
+    */
+    
+    //use case 1,2,3 with several composed and uncomposed computations in single iteration
+    /*
+    lstate[0] = iterator(twoBranchTree.getSegment("L1"), jstate[0], lstate[0], newComplexOperation2, comp1);
+    std::cout << "L1 X" << lstate[0].X << std::endl;
+    std::cout << "L1 Xdot" << lstate[0].Xdot << std::endl;
+    std::cout << "L1 Xdotdot" << lstate[0].Xdotdot << std::endl << std::endl;
+
+    lstate[1] = iterator(twoBranchTree.getSegment("L2"), jstate[1], lstate[0], newComplexOperation2, comp1);
+    std::cout << "L2 X" << lstate[1].X << std::endl;
+    std::cout << "L2 Xdot" << lstate[1].Xdot << std::endl;
+    std::cout << "L2 Xdotdot" << lstate[1].Xdotdot << std::endl<< std::endl;
+    */
+
+    //use case
+    traverse(a_chain, jstate, lstate, newComplexOperation2, comp1);
+    for (unsigned int i = 0; i < a_chain.getNrOfSegments(); i++)
+    {
+        std::cout << "Segment Name" << a_chain.getSegment(i).getName() << std::endl;
+        std::cout << "Chain X" << lstate[i].X << std::endl;
+        std::cout << "Chain Xdot" << lstate[i].Xdot << std::endl;
+        std::cout << "Chain Xdotdot" << lstate[i].Xdotdot << std::endl << std::endl;
+
+    }
+    /*
     traverse(a_chain, jstate, lstate, comp1);
+    for (unsigned int i = 0; i < a_chain.getNrOfSegments(); i++)
+    {
+        std::cout << "TransformPose Chain X" << lstate[i].X << std::endl;
+        std::cout << "TransformPose Chain Xdot" << lstate[i].Xdot << std::endl;
 
+    }
+    std::cout << std::endl;
+    traverse(a_chain, jstate, lstate, comp2);
+    for (unsigned int i = 0; i < a_chain.getNrOfSegments(); i++)
+    {
+        std::cout << "TransformTwist Chain X" << lstate[i].X << std::endl;
+        std::cout << "TransformTwist Chain Xdot" << lstate[i].Xdot << std::endl;
+
+    }
+
+    
+    */
     return 0;
 }
 

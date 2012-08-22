@@ -165,34 +165,48 @@ class transformAccTwist : public BaseOperation
 public:
     transformAccTwist();
     virtual ~transformAccTwist();
-    SegmentState& operator()(const KDL::Segment& segmentId, const JointState& p_jointState, SegmentState& p_segmentState);
+    SegmentState& operator()(const KDL::Segment& segmentId, const JointState& p_jointState, const SegmentState& p_segmentState);
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState);
+};
+
+
+class ProjectWrench: public BaseOperation
+{
+public:
+    ProjectWrench();
+    virtual ~ProjectWrench();
+
+
 };
 
 //composes functional computations/operations and return more complex computational operation
 //helper class should be then hidden
-
+// it should be able to cope with different combination of composition. Now only can handle
+//two types
 class compose : public BaseOperation
 {
 public:
     compose();
     compose(transformTwist& p_op2, transformPose& p_op1);
+    compose(transformAccTwist& p_op2, transformTwist& p_op1);
     virtual ~compose();
-    SegmentState& operator()(const KDL::Segment& segmentId, const JointState& p_jointState, SegmentState& p_segmentState)
+    SegmentState& operator()(const KDL::Segment& segmentId, const JointState& p_jointState,  SegmentState& p_segmentState)
     {
-        a_segmentState = a_op2(segmentId, p_jointState, a_op1(segmentId, p_jointState, p_segmentState));
+        a_segmentState = a_op3(segmentId, p_jointState, a_op2(segmentId, p_jointState, p_segmentState));
         return a_segmentState;
     }
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState)
     {
-        a_segmentState = a_op2(segmentId, p_jointState, a_op1(segmentId, p_jointState, p_segmentState));
+        a_segmentState = a_op3(segmentId, p_jointState, a_op2(segmentId, p_jointState, p_segmentState));
         return a_segmentState;
     };
+    
     //    BaseOperation & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation2, transformPose& p_computation1);
     //    BaseOperation & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation1, transformTwist& p_computation2);
 protected:
     transformPose a_op1;
     transformTwist a_op2;
+    transformAccTwist a_op3;
 
 };
 
@@ -229,8 +243,11 @@ public:
     virtual ~iterateOverSegment();
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation);
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation);
+    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformAccTwist& p_computation);
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation2, transformPose& p_computation1);
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, compose& p_computation);
+    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, compose& p_computation, transformPose& p_computation1);
+    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState,  transformAccTwist& p_computation1, compose& p_computation);
 };
 
 class iterateOverTree : public BaseIterationOperation
@@ -248,19 +265,22 @@ public:
     // the problem with chain vs tree sucks. One uses vector and other map. The best option would be a hashtable which is equal in performance to a vector
     //for the time being lets use chain version.
     //we can still decide to parametrize this thing.
-    bool operator()(KDL::Chain&, const std::vector<JointState>&, std::vector<SegmentState>&, transformPose&);
-    bool operator()(KDL::Chain&, const std::vector<JointState>& p_jointState, std::vector<SegmentState>& p_segmentState, transformTwist& p_computation);
-    bool operator()(KDL::Chain&, const std::vector<JointState>& p_jointState, std::vector<SegmentState>& p_segmentState, transformTwist& p_computation2, transformPose& p_computation);
-    bool operator()(KDL::Chain&, const std::vector<JointState>& p_jointState, std::vector<SegmentState>& p_segmentState, compose& p_computation);
+    bool operator()(KDL::Chain& p_tree, const std::vector<JointState>& p_jointState, std::vector<SegmentState>& p_segmentState, transformPose& p_computation);
+    bool operator()(KDL::Chain& p_tree, const std::vector<JointState>& p_jointState, std::vector<SegmentState>& p_segmentState, transformTwist& p_computation);
+    bool operator()(KDL::Chain& p_tree, const std::vector<JointState>& p_jointState, std::vector<SegmentState>& p_segmentState, transformTwist& p_computation2, transformPose& p_computation);
+    bool operator()(KDL::Chain& p_tree, const std::vector<JointState>& p_jointState, std::vector<SegmentState>& p_segmentState, compose& p_computation);
+    bool operator()(KDL::Chain& p_tree, const std::vector<JointState>& p_jointState, std::vector<SegmentState>& p_segmentState, compose& p_computation2, transformPose& p_computation1);
     //returns a vector of segmentstates
-    std::vector<SegmentState> operator()(KDL::Chain&, const std::vector<JointState>& p_jointState, const std::vector<SegmentState>& p_segmentState, transformPose& p_computation);
+    std::vector<SegmentState> operator()(KDL::Chain& p_tree, const std::vector<JointState>& p_jointState, const std::vector<SegmentState>& p_segmentState, transformPose& p_computation);
 
 
 };
 
 typedef compose(*funcPtr)(transformTwist&, transformPose&);
 typedef compose complexComputation;
+typedef ProjectWrench projectWrench;
 compose compose_ternary(transformTwist& op2, transformPose& op1);
+compose compose_ternary(transformAccTwist& op2, transformTwist& op1);
 
 }
 
