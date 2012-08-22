@@ -298,12 +298,15 @@ int main(int argc, char** argv)
 
     kdl_extensions::Transform<kdl_extensions::_Pose> _comp1;
     kdl_extensions::Transform<kdl_extensions::_Twist> _comp2;
+    kdl_extensions::Transform<kdl_extensions::_AccTwist> _comp3;
     SegmentState stateLink = kdl_extensions::compose(_comp2, _comp1)(twoBranchTree.getSegment("L1"), jstate[0], lstate[0]);
-    std::cout << lstate[0].X << std::endl;
-    std::cout << lstate[0].Xdot << std::endl;
-    kdl_extensions::compose(_comp2, _comp1);
-    
-
+    std::cout << stateLink.X << std::endl;
+    std::cout << stateLink.Xdot << std::endl;
+    std::cout << stateLink.Xdotdot << std::endl;
+    stateLink = kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2),_comp1)(twoBranchTree.getSegment("L2"), jstate[0], lstate[0]);
+    std::cout << stateLink.X << std::endl;
+    std::cout << stateLink.Xdot << std::endl;
+std::cout << stateLink.Xdotdot << std::endl;
 
     return 0;
 }

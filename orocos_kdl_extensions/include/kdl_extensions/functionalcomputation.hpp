@@ -12,25 +12,6 @@
 
 namespace kdl_extensions
 {
-//traits for types used with computational operations
-template<typename T>
-class StateTraits;
-
-template<>
-class StateTraits<KDL::JointState>
-{
-public:
-    typedef KDL::JointState StateTraitType;
-
-};
-
-template<>
-class StateTraits<KDL::SegmentState>
-{
-public:
-    typedef KDL::SegmentState StateTraitType;
-
-};
 
 //operation arguments and return related traits
 //primary template
@@ -46,21 +27,10 @@ public:
 };
 
 //specialization for KDL types
-
-template<>
-class OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
-{
-public:
-    typedef KDL::SegmentState ReturnType;
-    typedef KDL::SegmentMap::const_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
-};
-
 //Trait for Pose transform Operation
-
 class _Pose : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
 {
+
 };
 
 class _Twist : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
@@ -93,11 +63,6 @@ public:
 
     Transform(Transform& copy)
     {
-    };
-
-    enum
-    {
-        NumberOfParams = 3
     };
 };
 
@@ -232,10 +197,11 @@ public:
     {
     };
 
-    inline ReturnType operator()(Param1T a_segmentId, Param2T& a_jointstate, Param3T& a_linkstate)
+    inline ReturnType operator()(Param1T a_segmentId, Param2T a_jointstate, Param3T a_linkstate)
     {
 
-        return BaseMem<OP1, 1 > ::operator()(a_segmentId, a_jointstate, BaseMem<OP2, 2 > ::operator()(a_segmentId, a_jointstate, a_linkstate));
+        return BaseMem<OP1,1>::operator()(a_segmentId, a_jointstate, BaseMem<OP2, 2 >::operator()(a_segmentId, a_jointstate, a_linkstate));
+        //BaseMem<OP1, 1 > ::operator()(a_segmentId, a_jointstate, BaseMem<OP2, 2 > ::operator()(a_segmentId, a_jointstate, a_linkstate));
     }
 
 };
