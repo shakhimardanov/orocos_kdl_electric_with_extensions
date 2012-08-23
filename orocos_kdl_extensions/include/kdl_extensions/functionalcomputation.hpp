@@ -28,20 +28,20 @@ public:
 
 //specialization for KDL types
 //Trait for Pose transform Operation
-class _Pose : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
+class pose_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
 {
 
 };
 
-class _Twist : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
+class twist_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
 {
 };
 
-class _AccTwist : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
+class acctwist_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
 {
 };
 
-class _Wrench : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
+class wrench_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
 {
 };
 
@@ -69,13 +69,13 @@ public:
 //Tranform functor specialized with Pose trait
 
 template<>
-class Transform<_Pose>
+class Transform<pose_t>
 {
 public:
-    typedef _Pose::ReturnType ReturnType;
-    typedef _Pose::Param1T Param1T;
-    typedef _Pose::Param2T Param2T;
-    typedef _Pose::Param3T Param3T;
+    typedef pose_t::ReturnType ReturnType;
+    typedef pose_t::Param1T Param1T;
+    typedef pose_t::Param2T Param2T;
+    typedef pose_t::Param3T Param3T;
 protected:
     ReturnType a_segmentState;
 public:
@@ -103,13 +103,13 @@ public:
 };
 
 template<>
-class Transform<_Twist>
+class Transform<twist_t>
 {
 public:
-    typedef _Twist::ReturnType ReturnType;
-    typedef _Twist::Param1T Param1T;
-    typedef _Twist::Param2T Param2T;
-    typedef _Twist::Param3T Param3T;
+    typedef twist_t::ReturnType ReturnType;
+    typedef twist_t::Param1T Param1T;
+    typedef twist_t::Param2T Param2T;
+    typedef twist_t::Param3T Param3T;
 protected:
     ReturnType a_segmentState;
 public:
@@ -136,13 +136,13 @@ public:
 };
 
 template<>
-class Transform<_AccTwist>
+class Transform<acctwist_t>
 {
 public:
-    typedef _AccTwist::ReturnType ReturnType;
-    typedef _AccTwist::Param1T Param1T;
-    typedef _AccTwist::Param2T Param2T;
-    typedef _AccTwist::Param3T Param3T;
+    typedef acctwist_t::ReturnType ReturnType;
+    typedef acctwist_t::Param1T Param1T;
+    typedef acctwist_t::Param2T Param2T;
+    typedef acctwist_t::Param3T Param3T;
 protected:
     ReturnType a_segmentState;
 public:
@@ -160,6 +160,27 @@ public:
     };
 };
 
+//primary template for computational function Project
+template<typename T>
+class Project
+{
+public:
+    Project(){};
+    Project(Project& copy){};
+    virtual ~Project(){};
+};
+
+//Specialization for Wrench types
+template<>
+class Project<wrench_t>
+{
+public:
+    typedef wrench_t::ReturnType ReturnType;
+    typedef wrench_t::Param1T Param1T;
+    typedef wrench_t::Param2T Param2T;
+    typedef wrench_t::Param3T Param3T;
+    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState){};
+};
 //--------------------------------------------//
 //for empty base class optimization
 

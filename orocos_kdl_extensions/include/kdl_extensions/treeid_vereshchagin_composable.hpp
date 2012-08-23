@@ -112,6 +112,11 @@ public:
         return a_segmentState;
     };
 
+    virtual SegmentState & operator()(const Segment& segmentId, const JointState& p_jointState, const SegmentState& p_segmentState)
+    {
+        return a_segmentState;
+    };
+
     virtual ~BaseOperation()
     {
     };
@@ -183,30 +188,33 @@ public:
 //helper class should be then hidden
 // it should be able to cope with different combination of composition. Now only can handle
 //two types
-class compose : public BaseOperation
+class compose
 {
 public:
     compose();
-    compose(transformTwist& p_op2, transformPose& p_op1);
-    compose(transformAccTwist& p_op2, transformTwist& p_op1);
-    virtual ~compose();
+    compose(BaseOperation& p_op2, BaseOperation& p_op1) 
+    {
+        a_op1 = p_op1;
+        a_op2 = p_op2;
+    };
+    virtual ~compose(){};
     SegmentState& operator()(const KDL::Segment& segmentId, const JointState& p_jointState,  SegmentState& p_segmentState)
     {
-        a_segmentState = a_op3(segmentId, p_jointState, a_op2(segmentId, p_jointState, p_segmentState));
+        a_segmentState = a_op2(segmentId, p_jointState, a_op1(segmentId, p_jointState, p_segmentState));
         return a_segmentState;
     }
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState)
     {
-        a_segmentState = a_op3(segmentId, p_jointState, a_op2(segmentId, p_jointState, p_segmentState));
+        a_segmentState = a_op2(segmentId, p_jointState, a_op1(segmentId, p_jointState, p_segmentState));
         return a_segmentState;
     };
     
     //    BaseOperation & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation2, transformPose& p_computation1);
     //    BaseOperation & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation1, transformTwist& p_computation2);
 protected:
-    transformPose a_op1;
-    transformTwist a_op2;
-    transformAccTwist a_op3;
+    SegmentState a_segmentState;
+    BaseOperation a_op1;
+    BaseOperation a_op2;
 
 };
 
@@ -241,12 +249,12 @@ protected:
 public:
     iterateOverSegment();
     virtual ~iterateOverSegment();
-    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation);
+    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, BaseOperation& p_computation);
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation);
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformAccTwist& p_computation);
-    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation2, transformPose& p_computation1);
+    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, BaseOperation& p_computation2, BaseOperation& p_computation1);
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, compose& p_computation);
-    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, compose& p_computation, transformPose& p_computation1);
+    SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, compose& p_computation, BaseOperation& p_computation1);
     SegmentState & operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState,  transformAccTwist& p_computation1, compose& p_computation);
 };
 

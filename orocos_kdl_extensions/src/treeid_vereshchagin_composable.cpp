@@ -232,30 +232,6 @@ SegmentState& transformAccTwist::operator()(const KDL::Segment& segmentId, const
     return a_segmentState;
 }
 
-//Composition operation
-
-compose::compose() : BaseOperation()
-{
-
-}
-
-compose::compose(transformTwist& p_op2, transformPose& p_op1) : BaseOperation()
-{
-    a_op1 = p_op1;
-    a_op2 = p_op2;
-}
-
-compose::compose(transformAccTwist& p_op2, transformTwist& p_op1) : BaseOperation()
-{
-    a_op2 = p_op1;
-    a_op3 = p_op2;
-}
-
-compose::~compose()
-{
-
-}
-
 //there should be another compose operation which composes the results of iterations (so values)
 
 compose compose_ternary(transformTwist& op2, transformPose& op1)
@@ -298,7 +274,7 @@ iterateOverSegment::~iterateOverSegment()
 
 }
 
-SegmentState& iterateOverSegment::operator ()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformPose& p_computation)
+SegmentState& iterateOverSegment::operator ()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, BaseOperation& p_computation)
 {
     a_segmentState = p_computation(segmentId, p_jointState, p_segmentState);
 #ifdef CHECK
@@ -324,7 +300,7 @@ SegmentState & iterateOverSegment::operator()(SegmentMap::const_iterator segment
     return a_segmentState;
 }
 
-SegmentState& iterateOverSegment::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation2, transformPose& p_computation1)
+SegmentState& iterateOverSegment::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, BaseOperation& p_computation2, BaseOperation& p_computation1)
 {
 
     a_segmentState = p_computation2(segmentId, p_jointState, p_computation1(segmentId, p_jointState, p_segmentState));
@@ -337,7 +313,7 @@ SegmentState& iterateOverSegment::operator()(SegmentMap::const_iterator segmentI
     return p_computation(segmentId, p_jointState, p_segmentState);
 }
 
-SegmentState & iterateOverSegment::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, compose& p_computation, transformPose& p_computation1)
+SegmentState & iterateOverSegment::operator()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, compose& p_computation, BaseOperation& p_computation1)
 {
 
     return p_computation(segmentId, p_jointState, p_computation1(segmentId, p_jointState, p_segmentState));
