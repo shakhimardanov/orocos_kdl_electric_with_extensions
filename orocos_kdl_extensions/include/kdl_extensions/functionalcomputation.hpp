@@ -222,7 +222,7 @@ public:
     {
 
         return BaseMem<OP1,1>::operator()(a_segmentId, a_jointstate, BaseMem<OP2, 2 >::operator()(a_segmentId, a_jointstate, a_linkstate));
-        //BaseMem<OP1, 1 > ::operator()(a_segmentId, a_jointstate, BaseMem<OP2, 2 > ::operator()(a_segmentId, a_jointstate, a_linkstate));
+        
     }
 
 };
@@ -236,11 +236,20 @@ inline Compose<OP1, OP2> compose(OP1 a_p1, OP2 a_p2)
 };
 
 
+template<typename Traits, typename TraversalPolicy>
+class IterateOverTree
+{
+public:
+    typedef typename Traits::ReturnType ReturnType;
+    typedef typename Traits::Param1T Param1T;
+    typedef typename Traits::Param2T Param2T;
+    typedef typename Traits::Param3T Param3T;
+    IterateOverTree();
+    virtual ~IterateOverTree();
+    inline ReturnType operator()(Param1T, Param2T, Param3T){};
 
-//primary template for an iteration over a node(T1)
-//template <typename IterationElementT, typename JointStateT, typename SegmentStateT, typename OP>
-//OP::RT iterate
-//template <typename IterationElement, typename StateTraits<KDL::JointState>::StateTraitType, typename StateTraits<KDL::SegmentState>::StateTraitType, typename OP>
+};
+
 
 template <typename T_Operation1, typename T_Operation2, typename T_IterationElement = KDL::SegmentMap::const_iterator,
         typename T_ComputationalState1 = KDL::JointState, typename T_ComputationalState2 = KDL::SegmentState>
