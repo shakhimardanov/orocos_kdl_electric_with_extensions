@@ -227,7 +227,7 @@ public:
     typedef typename OP2::Param1T Param1T;
     typedef typename OP2::Param2T Param2T;
     typedef typename OP2::Param3T Param3T;
-
+    ReturnType result1;
     Compose(OP1 a_p1, OP2 a_p2) : BaseMem<OP1, 1 > (a_p1), BaseMem<OP2, 2 > (a_p2)
     {
     };
@@ -235,7 +235,10 @@ public:
     inline ReturnType operator()(Param1T a_segmentId, Param2T a_jointstate, Param3T a_linkstate)
     {
 
-        return BaseMem<OP1,1>::operator()(a_segmentId, a_jointstate, BaseMem<OP2, 2 >::operator()(a_segmentId, a_jointstate, a_linkstate));
+        result1 = BaseMem<OP2, 2 >::operator()(a_segmentId, a_jointstate, a_linkstate); //why does this work?
+        return BaseMem<OP1,1>::operator()(a_segmentId, a_jointstate, result1);
+        //and this one does not. IS there sth wrong with temporaries.
+        //return BaseMem<OP1,1>::operator()(a_segmentId, a_jointstate, BaseMem<OP2, 2 >::operator()(a_segmentId, a_jointstate, a_linkstate));
         
     }
 
