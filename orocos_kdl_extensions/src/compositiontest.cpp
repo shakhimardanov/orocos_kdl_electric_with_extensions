@@ -192,6 +192,8 @@ int main(int argc, char** argv)
     iterateOverTree traverse;
 
     lstate[0].Xdotdot = rootAcc;
+
+    
     //use cases 1, 2
     /*
     //rule 1 - order of precedence of computations
@@ -285,19 +287,13 @@ int main(int argc, char** argv)
      */
 
     //use case relying in templates
-    /*
+   
     kdl_extensions::Transform<kdl_extensions::pose_t> _comp1;
     kdl_extensions::Transform<kdl_extensions::twist_t> _comp2;
     kdl_extensions::Transform<kdl_extensions::acctwist_t> _comp3;
     SegmentState stateLink = kdl_extensions::compose(_comp2, _comp1)(twoBranchTree.getSegment("L1"), jstate[0], lstate[0]);
-    std::cout << stateLink.X << std::endl;
-    std::cout << stateLink.Xdot << std::endl;
-    std::cout << stateLink.Xdotdot << std::endl;
-    stateLink = kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2),_comp1)(twoBranchTree.getSegment("L2"), jstate[0], lstate[0]);
-    std::cout << stateLink.X << std::endl;
-    std::cout << stateLink.Xdot << std::endl;
-    std::cout << stateLink.Xdotdot << std::endl;
-*/
+
+
     return 0;
 }
 

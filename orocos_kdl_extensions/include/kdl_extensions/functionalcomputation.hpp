@@ -4,11 +4,13 @@
  *
  * Created on August 7, 2012, 6:28 PM
  */
-#include <kdl/tree.hpp>
-#include <kdl_extensions/treeid_vereshchagin_composable.hpp>
 
 #ifndef FUNCTIONALCOMPUTATION_HPP
 #define	FUNCTIONALCOMPUTATION_HPP
+
+#include <kdl/tree.hpp>
+#include <kdl_extensions/treeid_vereshchagin_composable.hpp>
+#include <iterator>
 
 namespace kdl_extensions
 {
@@ -17,31 +19,58 @@ namespace kdl_extensions
 //primary template
 
 template<typename RT, typename Arg1T, typename Arg2T, typename Arg3T>
-class OperationTraits
+class OperationTraits;
+
+template<typename RT, typename Arg1T, typename Arg2T, typename Arg3T>
+class OperationTraits<RT, Arg1T, Arg2T&, Arg3T&>
 {
 public:
+    enum{ NumberOfParameters = 3};
     typedef RT ReturnType;
     typedef Arg1T Param1T;
-    typedef Arg2T Param2T;
-    typedef Arg3T Param3T;
+    typedef Arg2T& Param2TRef;
+    typedef Arg3T& Param3TRef;
 };
 
+
+template<typename RT, typename Arg1T, typename Arg2T, typename Arg3T>
+class OperationTraits<RT, Arg1T&, Arg2T&, Arg3T&>
+{
+public:
+    enum{ NumberOfParameters = 3};
+    typedef RT ReturnType;
+    typedef Arg1T& Param1TRef;
+    typedef Arg2T& Param2TRef;
+    typedef Arg3T& Param3TRef;
+};
+
+
+template<typename RT, typename Arg1T, typename Arg2T, typename Arg3T>
+class OperationTraits<RT, Arg1T*, Arg2T&, Arg3T&>
+{
+public:
+    enum{ NumberOfParameters = 3};
+    typedef RT ReturnType;
+    typedef Arg1T* Param1TPoint;
+    typedef Arg2T& Param2TRef;
+    typedef Arg3T& Param3TRef;
+};
 //specialization for KDL types
 //Trait for Pose transform Operation
-class pose_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
+class pose_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState&, KDL::SegmentState&>
 {
 
 };
 
-class twist_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
+class twist_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState&, KDL::SegmentState&>
 {
 };
 
-class acctwist_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
+class acctwist_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState&, KDL::SegmentState&>
 {
 };
 
-class wrench_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState, KDL::SegmentState>
+class wrench_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState&, KDL::SegmentState&>
 {
 };
 
@@ -49,22 +78,8 @@ class wrench_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::cons
 //Transform functor primary template
 
 template<typename T>
-class Transform
-{
-public:
+class Transform;
 
-    Transform()
-    {
-    };
-
-    ~Transform()
-    {
-    };
-
-    Transform(Transform& copy)
-    {
-    };
-};
 
 //Tranform functor specialized with Pose trait
 
@@ -74,8 +89,8 @@ class Transform<pose_t>
 public:
     typedef pose_t::ReturnType ReturnType;
     typedef pose_t::Param1T Param1T;
-    typedef pose_t::Param2T Param2T;
-    typedef pose_t::Param3T Param3T;
+    typedef pose_t::Param2TRef Param2T;
+    typedef pose_t::Param3TRef Param3T;
 protected:
     ReturnType a_segmentState;
 public:
@@ -108,8 +123,8 @@ class Transform<twist_t>
 public:
     typedef twist_t::ReturnType ReturnType;
     typedef twist_t::Param1T Param1T;
-    typedef twist_t::Param2T Param2T;
-    typedef twist_t::Param3T Param3T;
+    typedef twist_t::Param2TRef Param2T;
+    typedef twist_t::Param3TRef Param3T;
 protected:
     ReturnType a_segmentState;
 public:
@@ -141,8 +156,8 @@ class Transform<acctwist_t>
 public:
     typedef acctwist_t::ReturnType ReturnType;
     typedef acctwist_t::Param1T Param1T;
-    typedef acctwist_t::Param2T Param2T;
-    typedef acctwist_t::Param3T Param3T;
+    typedef acctwist_t::Param2TRef Param2T;
+    typedef acctwist_t::Param3TRef Param3T;
 protected:
     ReturnType a_segmentState;
 public:
@@ -177,13 +192,12 @@ class Project<wrench_t>
 public:
     typedef wrench_t::ReturnType ReturnType;
     typedef wrench_t::Param1T Param1T;
-    typedef wrench_t::Param2T Param2T;
-    typedef wrench_t::Param3T Param3T;
+    typedef wrench_t::Param2TRef Param2T;
+    typedef wrench_t::Param3TRef Param3T;
     inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState){};
 };
 //--------------------------------------------//
 //for empty base class optimization
-
 template <typename C, int N>
 class BaseMem : public C
 {
@@ -236,17 +250,20 @@ inline Compose<OP1, OP2> compose(OP1 a_p1, OP2 a_p2)
 };
 
 
-template<typename Traits, typename TraversalPolicy>
+template<typename OP, template<typename, typename > class TraversalPolicy>
 class IterateOverTree
 {
 public:
-    typedef typename Traits::ReturnType ReturnType;
-    typedef typename Traits::Param1T Param1T;
-    typedef typename Traits::Param2T Param2T;
-    typedef typename Traits::Param3T Param3T;
+    typedef typename OP::ReturnType ReturnType;
+    typedef typename OP::Param1T Param1T;
+    typedef typename OP::Param2T Param2T;
+    typedef typename OP::Param3T Param3T;
     IterateOverTree();
     virtual ~IterateOverTree();
-    inline ReturnType operator()(Param1T, Param2T, Param3T){};
+    inline ReturnType operator()(Param1T a_segmentId, Param2T a_jointstate, Param3T a_linkstate, OP a_op)
+    {
+//        TraversalPolicy<OP>::traverse();
+    };
 
 };
 
