@@ -22,14 +22,14 @@ template<typename RT, typename Arg1T, typename Arg2T, typename Arg3T>
 class OperationTraits;
 
 template<typename RT, typename Arg1T, typename Arg2T, typename Arg3T>
-class OperationTraits<RT, Arg1T, Arg2T&, Arg3T&>
+class OperationTraits<RT, Arg1T, Arg2T const &, Arg3T const &>
 {
 public:
     enum{ NumberOfParameters = 3};
     typedef RT ReturnType;
     typedef Arg1T Param1T;
-    typedef Arg2T& Param2TRef;
-    typedef Arg3T& Param3TRef;
+    typedef Arg2T const & Param2TRef;
+    typedef Arg3T const & Param3TRef;
 };
 
 
@@ -57,20 +57,20 @@ public:
 };
 //specialization for KDL types
 //Trait for Pose transform Operation
-class pose_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState&, KDL::SegmentState&>
+class pose_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState const &, KDL::SegmentState const &>
 {
 
 };
 
-class twist_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState&, KDL::SegmentState&>
+class twist_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState const &, KDL::SegmentState const &>
 {
 };
 
-class acctwist_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState&, KDL::SegmentState&>
+class acctwist_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState const &, KDL::SegmentState const &>
 {
 };
 
-class wrench_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState&, KDL::SegmentState&>
+class wrench_t : public OperationTraits<KDL::SegmentState, KDL::SegmentMap::const_iterator, KDL::JointState const &, KDL::SegmentState const &>
 {
 };
 
@@ -182,7 +182,7 @@ class Project
 public:
     Project(){};
     Project(Project& copy){};
-    virtual ~Project(){};
+    ~Project(){};
 };
 
 //Specialization for Wrench types
@@ -227,7 +227,7 @@ public:
     typedef typename OP2::Param1T Param1T;
     typedef typename OP2::Param2T Param2T;
     typedef typename OP2::Param3T Param3T;
-    ReturnType result1;
+    //ReturnType result1;
     Compose(OP1 a_p1, OP2 a_p2) : BaseMem<OP1, 1 > (a_p1), BaseMem<OP2, 2 > (a_p2)
     {
     };
@@ -235,17 +235,16 @@ public:
     inline ReturnType operator()(Param1T a_segmentId, Param2T a_jointstate, Param3T a_linkstate)
     {
 
-        result1 = BaseMem<OP2, 2 >::operator()(a_segmentId, a_jointstate, a_linkstate); //why does this work?
-        return BaseMem<OP1,1>::operator()(a_segmentId, a_jointstate, result1);
+        //result1 = BaseMem<OP2, 2 >::operator()(a_segmentId, a_jointstate, a_linkstate); //why does this work?
+        //return BaseMem<OP1,1>::operator()(a_segmentId, a_jointstate, result1);
         //and this one does not. IS there sth wrong with temporaries.
-        //return BaseMem<OP1,1>::operator()(a_segmentId, a_jointstate, BaseMem<OP2, 2 >::operator()(a_segmentId, a_jointstate, a_linkstate));
+        return BaseMem<OP1,1>::operator()(a_segmentId, a_jointstate, BaseMem<OP2, 2 >::operator()(a_segmentId, a_jointstate, a_linkstate));
         
     }
 
 };
 
 //convinience function for composition functor
-
 template <typename OP1, typename OP2>
 inline Compose<OP1, OP2> compose(OP1 a_p1, OP2 a_p2)
 {
@@ -253,7 +252,22 @@ inline Compose<OP1, OP2> compose(OP1 a_p1, OP2 a_p2)
 };
 
 
-template<typename OP, template<typename, typename > class TraversalPolicy>
+//traversal policies
+template <typename T>
+class DFSPolicy;
+
+template <typename T>
+class BFSPolicy;
+
+
+//traversal/schedule function
+//there is an association between computationtable and topology
+template<typename Topology, template<typename > class TraversalPolicy, typename ComputationTable>
+class IterateOverTree;
+
+
+//this is for the homogeneous case, the same computation is applied on all topology elements
+template<typename Topology, template<typename > class TraversalPolicy, typename OP>
 class IterateOverTree
 {
 public:
@@ -262,15 +276,15 @@ public:
     typedef typename OP::Param2T Param2T;
     typedef typename OP::Param3T Param3T;
     IterateOverTree();
-    virtual ~IterateOverTree();
+    ~IterateOverTree();
     inline ReturnType operator()(Param1T a_segmentId, Param2T a_jointstate, Param3T a_linkstate, OP a_op)
     {
-//        TraversalPolicy<OP>::traverse();
+        TraversalPolicy<OP>::traverse();
     };
 
 };
 
-
+/*
 template <typename T_Operation1, typename T_Operation2, typename T_IterationElement = KDL::SegmentMap::const_iterator,
         typename T_ComputationalState1 = KDL::JointState, typename T_ComputationalState2 = KDL::SegmentState>
         class iterateOver_t
@@ -283,6 +297,7 @@ private:
     T_ComputationalState2 a_internalState;
 
 };
+*/
 
 };
 #include "../../src/functionalcomputation.inl"

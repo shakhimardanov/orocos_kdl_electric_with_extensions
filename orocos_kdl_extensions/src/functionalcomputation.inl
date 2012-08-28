@@ -2,7 +2,7 @@
 #define	FUNCTIONALCOMPUTATION_HPP
 
 
-
+/*
 
 <typename T_Operation1, typename T_Operation2, typename T_IterationElement = KDL::SegmentMap::const_iterator,
           typename T_ComputationalState1 = KDL::JointState, typename T_ComputationalState2 = KDL::SegmentState>
@@ -36,7 +36,7 @@ T_ComputationalState2 iterateOver_t<T_Operation1, T_Operation2, T_IterationEleme
 }
 
 
-
+*/
 
 
 //template <typename T1, typename T2, typename T3, typename OP1, typename OP2>
