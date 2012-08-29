@@ -153,6 +153,8 @@ int main(int argc, char** argv)
     jstate[2].qdot = -0.2;
     std::vector<SegmentState> lstate;
     lstate.resize(twoBranchTree.getNrOfSegments() + 1);
+     std::vector<SegmentState> lstate2;
+    lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
     /*
     ForwardKinematics fkcomputation(rootAcc);
     ForceComputer forcecomputer;
@@ -300,6 +302,10 @@ int main(int argc, char** argv)
     std::cout << stateLink.Xdot << std::endl;
     std::cout << stateLink.Xdotdot << std::endl;
 
+    kdl_extensions::DFSPolicy<KDL::Chain> myPolicy;
+    kdl_extensions::traverse(a_chain, myPolicy, _comp1)(a_chain,jstate, lstate, lstate2, _comp1);
+
+    //kdl_extensions::traverse(a_chain, myPolicy, kdl_extensions::compose(_comp2, _comp1));
     return 0;
 }
 

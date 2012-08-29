@@ -194,7 +194,7 @@ public:
     typedef wrench_t::Param1T Param1T;
     typedef wrench_t::Param2TRef Param2T;
     typedef wrench_t::Param3TRef Param3T;
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState){};
+    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState){ };
 };
 //--------------------------------------------//
 //for empty base class optimization
@@ -253,21 +253,35 @@ inline Compose<OP1, OP2> compose(OP1 a_p1, OP2 a_p2)
 
 
 //traversal policies
-template <typename T>
-class DFSPolicy;
+//template <typename Iterator>
+//class DFSPolicy;
 
-template <typename T>
-class BFSPolicy;
+
+template <typename Topology>
+class DFSPolicy
+{
+public:
+    DFSPolicy(){};
+    ~DFSPolicy(){};
+    template <typename OP>
+    inline static bool walk(Topology a_topology, std::vector<typename OP::Param2T>& a_jointStateVectorIn, std::vector<typename OP::Param3T>& a_linkStateVectorIn,
+                         std::vector<typename OP::Param3T>& a_linkStateVectorOut, OP a_op){return true;};
+
+};
+
+//template <typename T>
+//class BFSPolicy;
 
 
 //traversal/schedule function
 //there is an association between computationtable and topology
-template<typename Topology, template<typename > class TraversalPolicy, typename ComputationTable>
+template<typename Topology, template <typename Topology > class TraversalPolicy, typename ComputationTable>
 class IterateOverTree;
 
 
 //this is for the homogeneous case, the same computation is applied on all topology elements
-template<typename Topology, template<typename > class TraversalPolicy, typename OP>
+//template<typename Topology, template<typename > class TraversalPolicy, typename OP>
+template<typename Topology, template <typename Topology > class TraversalPolicy, typename OP>
 class IterateOverTree
 {
 public:
@@ -275,15 +289,23 @@ public:
     typedef typename OP::Param1T Param1T;
     typedef typename OP::Param2T Param2T;
     typedef typename OP::Param3T Param3T;
-    IterateOverTree();
-    ~IterateOverTree();
-    inline ReturnType operator()(Param1T a_segmentId, Param2T a_jointstate, Param3T a_linkstate, OP a_op)
+
+    IterateOverTree(){};
+    ~IterateOverTree(){};
+    inline bool operator()(Topology a_topology, std::vector<Param2T>& a_jointStateVectorIn, std::vector<Param3T>& a_linkStateVectorIn, std::vector<Param3T>& a_linkStateVectorOut, OP a_op)
     {
-        TraversalPolicy<OP>::traverse();
+        return TraversalPolicy<Topology>::walk(a_topology, a_jointStateVectorIn, a_linkStateVectorIn, a_linkStateVectorOut, a_op);
     };
 
 };
+//convinience function
+template <typename Topology, template <typename > class Policy, typename OP>
+inline IterateOverTree<Topology, Policy, OP> traverse(Topology a_graph, Policy<Topology> a_dfs, OP a_op)
+{
 
+   
+   return IterateOverTree<Topology, Policy, OP>();
+};
 /*
 template <typename T_Operation1, typename T_Operation2, typename T_IterationElement = KDL::SegmentMap::const_iterator,
         typename T_ComputationalState1 = KDL::JointState, typename T_ComputationalState2 = KDL::SegmentState>
