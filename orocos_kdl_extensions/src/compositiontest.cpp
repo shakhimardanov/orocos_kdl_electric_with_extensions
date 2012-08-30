@@ -191,7 +191,7 @@ int main(int argc, char** argv)
     complexComputation newComplexOperation = compose_ternary(comp2, comp1);
     complexComputation newComplexOperation2 = compose_ternary(comp3, comp2);
     iterateOverSegment iterator;
-    iterateOverTree traverse;
+    iterateOverTree traversal;
 
     lstate[0].Xdotdot = rootAcc;
 
@@ -287,9 +287,9 @@ int main(int argc, char** argv)
 
     
      */
-
+    /*
     //use case relying in templates
-   
+    using namespace kdl_extensions;
     kdl_extensions::Transform<kdl_extensions::pose_t> _comp1;
     kdl_extensions::Transform<kdl_extensions::twist_t> _comp2;
     kdl_extensions::Transform<kdl_extensions::acctwist_t> _comp3;
@@ -301,10 +301,10 @@ int main(int argc, char** argv)
     std::cout << stateLink.X << std::endl;
     std::cout << stateLink.Xdot << std::endl;
     std::cout << stateLink.Xdotdot << std::endl;
-
+*/
     kdl_extensions::DFSPolicy<KDL::Chain> myPolicy;
-    kdl_extensions::traverse(a_chain, myPolicy, _comp1)(a_chain,jstate, lstate, lstate2, _comp1);
-
+    //kdl_extensions::traverse(a_chain, myPolicy, _comp1)(a_chain,jstate, lstate, lstate2, _comp1);
+   // traverse<DFSPolicy, KDL::Chain>(a_chain,_comp1, jstate, lstate, lstate2);
     //kdl_extensions::traverse(a_chain, myPolicy, kdl_extensions::compose(_comp2, _comp1));
     return 0;
 }
