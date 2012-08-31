@@ -30,21 +30,25 @@ OperParamT(2);
 OperParamT(3);
 OperParamT(4);
 OperParamT(5);
+OperParamT(6);
+OperParamT(7);
 #undef OperParamT
 
 //operation traits new version
-
+//should make this recursive like in typelist
 template <typename OperationT>
 class operation_traits
 {
 public:
-    typedef typename OperationT::NumberOfParams number_of_params;
+    enum { number_of_params = OperationT::NumberOfParams};
     typedef typename OperationT::ReturnType return_type;
     typedef typename Parameter<OperationT, 1 > ::Type Param1T;
     typedef typename Parameter<OperationT, 2 > ::Type Param2T;
     typedef typename Parameter<OperationT, 3 > ::Type Param3T;
-    typedef typename Parameter<OperationT, 4 > ::Type Param4T;
-    typedef typename Parameter<OperationT, 5 > ::Type Param5T;
+//    typedef typename Parameter<OperationT, 4 > ::Type Param4T;
+//    typedef typename Parameter<OperationT, 5 > ::Type Param5T;
+//    typedef typename Parameter<OperationT, 6 > ::Type Param6T;
+//    typedef typename Parameter<OperationT, 7 > ::Type Param7T;
 };
 
 //operation tags
@@ -73,6 +77,10 @@ typedef wrenchOperationTag wrench;
 template<typename Iterator, typename OperationTagT>
 class transform;
 
+typedef std::map<std::string, KDL::TreeElement >::const_iterator tree_iterator;
+typedef std::vector<KDL::Segment>::const_iterator chain_iterator;
+
+
 template<typename Iterator>
 class transform<Iterator, pose>
 {
@@ -89,7 +97,7 @@ public:
 };
 
 template<>
-class transform<KDL::SegmentMap::const_iterator, pose>
+class transform<tree_iterator, pose>
 {
 public:
 
@@ -98,7 +106,7 @@ public:
         NumberOfParams = 3
     };
     typedef KDL::SegmentState ReturnType;
-    typedef KDL::SegmentMap::const_iterator Param1T;
+    typedef tree_iterator Param1T;
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 
@@ -112,6 +120,39 @@ public:
         a_segmentState.jointIndex = p_jointState.jointIndex;
         a_segmentState.jointName = p_jointState.jointName;
         a_segmentState.segmentName = segmentId->first;
+        std::cout << "Inside transformPose 0" << a_segmentState.X << std::endl;
+        return a_segmentState;
+
+    };
+private:
+    ReturnType a_segmentState;
+
+};
+
+template<>
+class transform<chain_iterator, pose>
+{
+public:
+
+    enum
+    {
+        NumberOfParams = 3
+    };
+    typedef KDL::SegmentState ReturnType;
+    typedef chain_iterator Param1T;
+    typedef KDL::JointState Param2T;
+    typedef KDL::SegmentState Param3T;
+
+    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    {
+        //check for joint type None should be tree serialization function.
+        //a_segmentState.X =  a_p3.X * segmentId->second.segment.pose(p_jointState.q); //in base coordinates
+        a_segmentState.Xdot = p_segmentState.Xdot;
+        a_segmentState.Xdotdot = p_segmentState.Xdotdot;
+        a_segmentState.X = segmentId->pose(p_jointState.q);
+        a_segmentState.jointIndex = p_jointState.jointIndex;
+        a_segmentState.jointName = p_jointState.jointName;
+        a_segmentState.segmentName = segmentId->getName();
         std::cout << "Inside transformPose 0" << a_segmentState.X << std::endl;
         return a_segmentState;
 
@@ -137,7 +178,7 @@ public:
 };
 
 template<>
-class transform<KDL::SegmentMap::const_iterator, twist>
+class transform<tree_iterator, twist>
 {
 public:
 
@@ -146,7 +187,7 @@ public:
         NumberOfParams = 3
     };
     typedef KDL::SegmentState ReturnType;
-    typedef KDL::SegmentMap::const_iterator Param1T;
+    typedef tree_iterator Param1T;
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 
@@ -168,6 +209,40 @@ private:
     ReturnType a_segmentState;
 };
 
+
+template<>
+class transform<chain_iterator, twist>
+{
+public:
+
+    enum
+    {
+        NumberOfParams = 3
+    };
+    typedef KDL::SegmentState ReturnType;
+    typedef chain_iterator Param1T;
+    typedef KDL::JointState Param2T;
+    typedef KDL::SegmentState Param3T;
+
+    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    {
+        a_segmentState.X = p_segmentState.X;
+        a_segmentState.Xdotdot = p_segmentState.Xdotdot;
+        a_segmentState.Z = a_segmentState.X.M.Inverse(segmentId->twist(p_jointState.q, 1.0));
+        //a_segmentState.Z = a_jointUnitTwist;
+        a_segmentState.Vj = a_segmentState.X.M.Inverse(segmentId->twist(p_jointState.q, p_jointState.qdot));
+        //a_segmentState.Vj = a_jointTwistVelocity;
+
+        //do we check here for the index of a joint (whether the joint is first in the chain)
+        a_segmentState.Xdot = a_segmentState.X.Inverse(p_segmentState.Xdot) + a_segmentState.Vj;
+
+        return a_segmentState;
+    };
+private:
+    ReturnType a_segmentState;
+};
+
+
 template<typename Iterator>
 class transform<Iterator, accTwist>
 {
@@ -185,7 +260,7 @@ public:
 };
 
 template<>
-class transform<KDL::SegmentMap::const_iterator, accTwist>
+class transform<tree_iterator, accTwist>
 {
 public:
 
@@ -194,7 +269,7 @@ public:
         NumberOfParams = 3
     };
     typedef KDL::SegmentState ReturnType;
-    typedef KDL::SegmentMap::const_iterator Param1T;
+    typedef tree_iterator Param1T;
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 
@@ -209,6 +284,31 @@ private:
 
 };
 
+
+template<>
+class transform<chain_iterator, accTwist>
+{
+public:
+
+    enum
+    {
+        NumberOfParams = 3
+    };
+    typedef KDL::SegmentState ReturnType;
+    typedef chain_iterator Param1T;
+    typedef KDL::JointState Param2T;
+    typedef KDL::SegmentState Param3T;
+
+    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    {
+        a_segmentState = p_segmentState;
+        a_segmentState.Xdotdot = p_segmentState.X.Inverse(p_segmentState.Xdotdot) + p_segmentState.Z * p_jointState.qdotdot + p_segmentState.Xdot * p_segmentState.Vj;
+        return a_segmentState;
+    };
+private:
+    ReturnType a_segmentState;
+
+};
 
 //--------------------------------------------//
 //for empty base class optimization
@@ -228,7 +328,7 @@ public:
 };
 
 //composition template
-
+//later should enable any function with any number of parameters
 template <typename OperationT1, typename OperationT2> //could be transform, project category of operations
 class Compose : private OperationTDerived<OperationT1, 1 >, private OperationTDerived<OperationT2, 2 >
 {
@@ -242,40 +342,49 @@ public:
     typedef typename operation_traits<OperationT2>::Param1T Param1T;
     typedef typename operation_traits<OperationT2>::Param2T Param2T;
     typedef typename operation_traits<OperationT2>::Param3T Param3T;
+    //typedef typename operation_traits<OperationT2>::Param4T Param4T;
+    //typedef typename operation_traits<OperationT2>::Param5T Param5T;
+    //typedef typename operation_traits<OperationT2>::Param6T Param6T;
+    //typedef typename operation_traits<OperationT2>::Param7T Param7T;
     //ReturnType result1;
 
     Compose(OperationT1 a_p1, OperationT2 a_p2) : OperationTDerived<OperationT1, 1 > (a_p1), OperationTDerived<OperationT2, 2 > (a_p2)
     {
     };
 
+    //overloaded for one param
+    inline ReturnType operator()(Param1T a_param1)
+    {
+        return OperationTDerived<OperationT1, 1 > ::operator()(OperationTDerived<OperationT2, 2 > ::operator()(a_param1));
+    };
+    //overloaded for two params
+    inline ReturnType operator()(Param1T a_param1, Param2T a_param2)
+    {
+        return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2));
+    };
+    
+    //overloaded for three params
     inline ReturnType operator()(Param1T a_segmentId, Param2T a_jointstate, Param3T a_linkstate)
     {
-
         //result1 = BaseMem<OP2, 2 >::operator()(a_segmentId, a_jointstate, a_linkstate); //why does this work?
         //return BaseMem<OP1,1>::operator()(a_segmentId, a_jointstate, result1);
         //and this one does not. IS there sth wrong with temporaries.
+        //have to check for multiple copies
         return OperationTDerived<OperationT1, 1 > ::operator()(a_segmentId, a_jointstate, OperationTDerived<OperationT2, 2 > ::operator()(a_segmentId, a_jointstate, a_linkstate));
-
-    }
+    };
+    //can add further overloads when needed
 
 };
 
 //convinience function for composition functor
 
-template <typename OP1, typename OP2>
-inline Compose<OP1, OP2> compose(OP1 a_p1, OP2 a_p2)
+template <typename OperationT1, typename OperationT2>
+inline Compose<OperationT1, OperationT2> compose(OperationT1 a_p1, OperationT2 a_p2)
 {
-    return Compose<OP1, OP2 > (a_p1, a_p2);
+    return Compose<OperationT1, OperationT2 > (a_p1, a_p2);
 };
 
-
-
-
-
-
-
-
-
+/*
 //operation arguments and return related traits
 //primary template/old version
 template<typename RT, typename Arg1T, typename Arg2T, typename Arg3T>
@@ -480,34 +589,11 @@ public:
     {
     };
 };
-
-
+*/
 
 //traversal policies
-//template <typename Iterator>
-//class DFSPolicy;
-
 template <typename Topology>
-class DFSPolicy
-{
-public:
-
-    DFSPolicy()
-    {
-    };
-
-    ~DFSPolicy()
-    {
-    };
-
-    template <typename OP>
-    inline static bool walk(Topology a_topology, std::vector<typename OP::Param2T>& a_jointStateVectorIn, std::vector<typename OP::Param3T>& a_linkStateVectorIn,
-                            std::vector<typename OP::Param3T>& a_linkStateVectorOut, OP a_op)
-    {
-        return true;
-    };
-
-};
+class DFSPolicy;
 
 template<>
 class DFSPolicy<KDL::Chain>
@@ -545,29 +631,62 @@ public:
     };
 
     template <typename OP>
-    inline static bool walk(KDL::Tree a_topology, std::vector<typename OP::Param2T>& a_jointStateVectorIn, std::vector<typename OP::Param3T>& a_linkStateVectorIn,
-                            std::vector<typename OP::Param3T>& a_linkStateVectorOut, OP a_op)
+    inline static bool walk(KDL::Tree a_topology, std::vector<typename OP::Param2T> a_jointStateVectorIn, std::vector<typename OP::Param3T> a_linkStateVectorIn,
+                            std::vector<typename OP::Param3T> a_linkStateVectorOut, OP a_op)
     {
+        //just a simple test, will implement DFS algorithm
+        for(KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
+        {
+            a_op(iter, a_jointStateVectorIn[0], a_linkStateVectorIn[0]);
+        };
         return true;
     };
 
 };
 
-//template <typename T>
-//class BFSPolicy;
+template <typename Topology>
+class BFSPolicy;
+
+template<>
+class BFSPolicy<KDL::Tree>
+{
+public:
+
+    BFSPolicy()
+    {
+    };
+
+    ~BFSPolicy()
+    {
+    };
+
+    template <typename OP>
+    inline static bool walk(KDL::Tree a_topology, std::vector<typename OP::Param2T> a_jointStateVectorIn, std::vector<typename OP::Param3T> a_linkStateVectorIn,
+                            std::vector<typename OP::Param3T> a_linkStateVectorOut, OP a_op)
+    {
+        //just a simple test, will implement DFS algorithm
+        for(KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
+        {
+            a_op(iter, a_jointStateVectorIn[0], a_linkStateVectorIn[0]);
+        };
+        return true;
+    };
+
+};
+
 
 
 //traversal/schedule function
 //there is an association between computationtable and topology
-template<typename Topology, template <typename Topology > class TraversalPolicy, typename ComputationTable>
-class IterateOverTree;
+template<typename Topology, typename ComputationTable, template <typename Topology > class TraversalPolicy = DFSPolicy >
+class IterateOver;
 
 
 //this is for the homogeneous case, the same computation is applied on all topology elements
 //template<typename Topology, template<typename > class TraversalPolicy, typename OP>
 
-template<typename Topology, template <typename Topology > class TraversalPolicy, typename OP>
-class IterateOverTree
+template<typename Topology, typename OP, template <typename Topology > class TraversalPolicy>
+class IterateOver
 {
 public:
     typedef typename OP::ReturnType ReturnType;
@@ -575,15 +694,15 @@ public:
     typedef typename OP::Param2T Param2T;
     typedef typename OP::Param3T Param3T;
 
-    IterateOverTree()
+    IterateOver()
     {
     };
 
-    ~IterateOverTree()
+    ~IterateOver()
     {
     };
 
-    inline bool operator()(Topology a_topology, std::vector<Param2T>& a_jointStateVectorIn, std::vector<Param3T>& a_linkStateVectorIn, std::vector<Param3T>& a_linkStateVectorOut, OP a_op)
+    inline bool operator()(Topology a_topology, std::vector<Param2T> a_jointStateVectorIn, std::vector<Param3T> a_linkStateVectorIn, std::vector<Param3T> a_linkStateVectorOut, OP a_op)
     {
         return TraversalPolicy<Topology>::walk(a_topology, a_jointStateVectorIn, a_linkStateVectorIn, a_linkStateVectorOut, a_op);
     };
