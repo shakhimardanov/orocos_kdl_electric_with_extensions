@@ -330,7 +330,7 @@ public:
 //composition template
 //later should enable any function with any number of parameters
 template <typename OperationT1, typename OperationT2> //could be transform, project category of operations
-class Compose : private OperationTDerived<OperationT1, 1 >, private OperationTDerived<OperationT2, 2 >
+class Composite : private OperationTDerived<OperationT1, 1 >, private OperationTDerived<OperationT2, 2 >
 {
 public:
 
@@ -348,7 +348,8 @@ public:
     //typedef typename operation_traits<OperationT2>::Param7T Param7T;
     //ReturnType result1;
 
-    Compose(OperationT1 a_p1, OperationT2 a_p2) : OperationTDerived<OperationT1, 1 > (a_p1), OperationTDerived<OperationT2, 2 > (a_p2)
+    
+    Composite(OperationT1 a_p1, OperationT2 a_p2) : OperationTDerived<OperationT1, 1 > (a_p1), OperationTDerived<OperationT2, 2 > (a_p2)
     {
     };
 
@@ -379,9 +380,9 @@ public:
 //convinience function for composition functor
 
 template <typename OperationT1, typename OperationT2>
-inline Compose<OperationT1, OperationT2> compose(OperationT1 a_p1, OperationT2 a_p2)
+inline Composite<OperationT1, OperationT2> compose(OperationT1 a_p1, OperationT2 a_p2)
 {
-    return Compose<OperationT1, OperationT2 > (a_p1, a_p2);
+    return Composite<OperationT1, OperationT2 > (a_p1, a_p2);
 };
 
 /*
@@ -710,16 +711,17 @@ public:
 };
 
 //convinience function
-/*template <template <typename > class Policy, typename Topology, typename OP>
-inline bool traverse(Topology a_graph, OP a_op, std::vector<typename OP::Param2T>& a_p1, std::vector<typename OP::Param3T>& a_p2, std::vector<typename OP::Param3T>& a_p3)
+template <typename Topology, typename OP, template <typename > class Policy>
+//inline IterateOver<Topology, OP, Policy> traverseGraph(Topology a_graph, OP a_op, Policy<Topology> a_policy, std::vector<typename OP::Param2T> a_p1, std::vector<typename OP::Param3T> a_p2, std::vector<typename OP::Param3T> a_p3)
+inline IterateOver<Topology, OP, Policy> traverseGraph(Topology a_graph, OP a_op, Policy<Topology> a_policy)
 {
-    Policy<Topology>::walk(a_graph, a_op, a_p1,a_p2,a_p3);
+    //Policy<Topology>::walk(a_graph, a_op, a_p1,a_p2,a_p3);
    
-   return true;
+   return IterateOver<Topology, OP, Policy>();
 };
 
 
-
+/*
 template <typename T_Operation1, typename T_Operation2, typename T_IterationElement = KDL::SegmentMap::const_iterator,
         typename T_ComputationalState1 = KDL::JointState, typename T_ComputationalState2 = KDL::SegmentState>
         class iterateOver_t
