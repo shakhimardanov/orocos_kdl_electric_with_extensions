@@ -11,6 +11,8 @@
 #include <kdl/tree.hpp>
 #include <kdl_extensions/treeid_vereshchagin_composable.hpp>
 #include <iterator>
+//#include <unordered_map>
+
 
 namespace kdl_extensions
 {
@@ -34,21 +36,28 @@ OperParamT(6);
 OperParamT(7);
 #undef OperParamT
 
+//This is hash::map implementation from SGI
+
 //operation traits new version
 //should make this recursive like in typelist
+
 template <typename OperationT>
 class operation_traits
 {
 public:
-    enum { number_of_params = OperationT::NumberOfParams};
+
+    enum
+    {
+        number_of_params = OperationT::NumberOfParams
+    };
     typedef typename OperationT::ReturnType return_type;
     typedef typename Parameter<OperationT, 1 > ::Type Param1T;
     typedef typename Parameter<OperationT, 2 > ::Type Param2T;
     typedef typename Parameter<OperationT, 3 > ::Type Param3T;
-//    typedef typename Parameter<OperationT, 4 > ::Type Param4T;
-//    typedef typename Parameter<OperationT, 5 > ::Type Param5T;
-//    typedef typename Parameter<OperationT, 6 > ::Type Param6T;
-//    typedef typename Parameter<OperationT, 7 > ::Type Param7T;
+    //    typedef typename Parameter<OperationT, 4 > ::Type Param4T;
+    //    typedef typename Parameter<OperationT, 5 > ::Type Param5T;
+    //    typedef typename Parameter<OperationT, 6 > ::Type Param6T;
+    //    typedef typename Parameter<OperationT, 7 > ::Type Param7T;
 };
 
 //operation tags
@@ -79,7 +88,6 @@ class transform;
 
 typedef std::map<std::string, KDL::TreeElement >::const_iterator tree_iterator;
 typedef std::vector<KDL::Segment>::const_iterator chain_iterator;
-
 
 template<typename Iterator>
 class transform<Iterator, pose>
@@ -209,7 +217,6 @@ private:
     ReturnType a_segmentState;
 };
 
-
 template<>
 class transform<chain_iterator, twist>
 {
@@ -241,7 +248,6 @@ public:
 private:
     ReturnType a_segmentState;
 };
-
 
 template<typename Iterator>
 class transform<Iterator, accTwist>
@@ -283,7 +289,6 @@ private:
     ReturnType a_segmentState;
 
 };
-
 
 template<>
 class transform<chain_iterator, accTwist>
@@ -329,6 +334,7 @@ public:
 
 //composition template
 //later should enable any function with any number of parameters
+
 template <typename OperationT1, typename OperationT2> //could be transform, project category of operations
 class Composite : private OperationTDerived<OperationT1, 1 >, private OperationTDerived<OperationT2, 2 >
 {
@@ -348,23 +354,25 @@ public:
     //typedef typename operation_traits<OperationT2>::Param7T Param7T;
     //ReturnType result1;
 
-    
     Composite(OperationT1 a_p1, OperationT2 a_p2) : OperationTDerived<OperationT1, 1 > (a_p1), OperationTDerived<OperationT2, 2 > (a_p2)
     {
     };
 
     //overloaded for one param
+
     inline ReturnType operator()(Param1T a_param1)
     {
         return OperationTDerived<OperationT1, 1 > ::operator()(OperationTDerived<OperationT2, 2 > ::operator()(a_param1));
     };
     //overloaded for two params
+
     inline ReturnType operator()(Param1T a_param1, Param2T a_param2)
     {
         return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2));
     };
-    
+
     //overloaded for three params
+
     inline ReturnType operator()(Param1T a_segmentId, Param2T a_jointstate, Param3T a_linkstate)
     {
         //result1 = BaseMem<OP2, 2 >::operator()(a_segmentId, a_jointstate, a_linkstate); //why does this work?
@@ -590,7 +598,7 @@ public:
     {
     };
 };
-*/
+ */
 
 //traversal policies
 template <typename Topology>
@@ -636,7 +644,7 @@ public:
                             std::vector<typename OP::Param3T> a_linkStateVectorOut, OP a_op)
     {
         //just a simple test, will implement DFS algorithm
-        for(KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
+        for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
         {
             a_op(iter, a_jointStateVectorIn[0], a_linkStateVectorIn[0]);
         };
@@ -666,7 +674,7 @@ public:
                             std::vector<typename OP::Param3T> a_linkStateVectorOut, OP a_op)
     {
         //just a simple test, will implement DFS algorithm
-        for(KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
+        for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
         {
             a_op(iter, a_jointStateVectorIn[0], a_linkStateVectorIn[0]);
         };
@@ -695,7 +703,7 @@ public:
     typedef typename OP::Param2T Param2T;
     typedef typename OP::Param3T Param3T;
 
-    IterateOver()
+    IterateOver(Topology& a_topol, OP& a_oper, TraversalPolicy<Topology>& policy) : a_graph(a_topol), a_op(a_oper), a_policy(policy)
     {
     };
 
@@ -703,38 +711,28 @@ public:
     {
     };
 
-    inline bool operator()(Topology a_topology, std::vector<Param2T> a_jointStateVectorIn, std::vector<Param3T> a_linkStateVectorIn, std::vector<Param3T> a_linkStateVectorOut, OP a_op)
+    inline bool operator()(std::vector<Param2T> a_jointStateVectorIn, std::vector<Param3T> a_linkStateVectorIn, std::vector<Param3T> a_linkStateVectorOut)
     {
-        return TraversalPolicy<Topology>::walk(a_topology, a_jointStateVectorIn, a_linkStateVectorIn, a_linkStateVectorOut, a_op);
+        return a_policy.walk(a_graph, a_jointStateVectorIn, a_linkStateVectorIn, a_linkStateVectorOut, a_op);
     };
+private:
+    Topology a_graph;
+    OP a_op;
+    TraversalPolicy<Topology> a_policy;
 
 };
 
 //convinience function
+
 template <typename Topology, typename OP, template <typename > class Policy>
 //inline IterateOver<Topology, OP, Policy> traverseGraph(Topology a_graph, OP a_op, Policy<Topology> a_policy, std::vector<typename OP::Param2T> a_p1, std::vector<typename OP::Param3T> a_p2, std::vector<typename OP::Param3T> a_p3)
 inline IterateOver<Topology, OP, Policy> traverseGraph(Topology a_graph, OP a_op, Policy<Topology> a_policy)
 {
     //Policy<Topology>::walk(a_graph, a_op, a_p1,a_p2,a_p3);
-   
-   return IterateOver<Topology, OP, Policy>();
+
+    return IterateOver<Topology, OP, Policy > (a_graph, a_op, a_policy);
 };
 
-
-/*
-template <typename T_Operation1, typename T_Operation2, typename T_IterationElement = KDL::SegmentMap::const_iterator,
-        typename T_ComputationalState1 = KDL::JointState, typename T_ComputationalState2 = KDL::SegmentState>
-        class iterateOver_t
-{
-public:
-    iterateOver_t();
-    T_ComputationalState2 operator()(T_IterationElement, T_ComputationalState1, T_ComputationalState2, T_Operation1, T_Operation2);
-    T_ComputationalState2 operator()(T_IterationElement, T_ComputationalState1, T_ComputationalState2, T_Operation1);
-private:
-    T_ComputationalState2 a_internalState;
-
-};
- */
 
 };
 #include "../../src/functionalcomputation.inl"

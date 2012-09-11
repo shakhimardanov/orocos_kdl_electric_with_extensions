@@ -153,7 +153,7 @@ int main(int argc, char** argv)
     jstate[2].qdot = -0.2;
     std::vector<SegmentState> lstate;
     lstate.resize(twoBranchTree.getNrOfSegments() + 1);
-     std::vector<SegmentState> lstate2;
+    std::vector<SegmentState> lstate2;
     lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
     /*
     ForwardKinematics fkcomputation(rootAcc);
@@ -195,7 +195,52 @@ int main(int argc, char** argv)
 
     lstate[0].Xdotdot = rootAcc;
 
-    
+
+    //use case relying in templates
+    using namespace kdl_extensions;
+    kdl_extensions::transform<tree_iterator, pose> _comp1;
+
+    kdl_extensions::transform<tree_iterator, twist> _comp2;
+
+    kdl_extensions::transform<tree_iterator, accTwist> _comp3;
+
+    SegmentState stateLink = kdl_extensions::compose(_comp2, _comp1)(twoBranchTree.getSegment("L1"), jstate[0], lstate[0]);
+
+    std::cout << stateLink.X << std::endl;
+    std::cout << stateLink.Xdot << std::endl;
+    std::cout << stateLink.Xdotdot << std::endl;
+
+    //maybe need to create compose with multiple arguments and not only two, maybe upto 5?
+    stateLink = kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1)(twoBranchTree.getSegment("L2"), jstate[0], lstate[0]);
+
+    std::cout << stateLink.X << std::endl;
+    std::cout << stateLink.Xdot << std::endl;
+    std::cout << stateLink.Xdotdot << std::endl;
+
+
+    //kdl_extensions::IterateOver<KDL::Tree, kdl_extensions::transform<tree_iterator, pose> > traversalFunction;
+
+    //traversalFunction(twoBranchTree, jstate, lstate, lstate2, _comp1);
+    //kdl_extensions::IterateOver<KDL::Chain, kdl_extensions::transform<tree_iterator, twist> > traversalFunction1;
+
+    //traversalFunction1(a_chain, jstate, lstate, lstate2, _comp2);
+
+    Composite<kdl_extensions::transform<tree_iterator, twist>, kdl_extensions::transform<tree_iterator, pose> > composite1 = kdl_extensions::compose(_comp2, _comp1);
+
+    Composite<Composite<kdl_extensions::transform<tree_iterator, accTwist>, kdl_extensions::transform<tree_iterator, twist> >, kdl_extensions::transform<tree_iterator, pose> > composite2 = kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1);
+
+    //kdl_extensions::IterateOver<KDL::Tree, Composite<kdl_extensions::transform<tree_iterator, twist>, kdl_extensions::transform<tree_iterator, pose> >, BFSPolicy> traversalFunction2;
+
+    //traversalFunction2(twoBranchTree, jstate, lstate, lstate2, composite1);
+    DFSPolicy<KDL::Tree> mypolicy;
+    DFSPolicy<KDL::Chain> mypolicy1;
+    //kdl_extensions::traverse(a_chain, myPolicy, kdl_extensions::compose(_comp2, _comp1));
+
+    //this is a total non-sense because of the redundant arguments. Have to remove
+    traverseGraph(twoBranchTree, composite1, mypolicy)(jstate, lstate, lstate2);
+    traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jstate, lstate, lstate2);
+
+
     //use cases 1, 2
     /*
     //rule 1 - order of precedence of computations
@@ -203,7 +248,7 @@ int main(int argc, char** argv)
     std::cout << "L1 X" << lstate[0].X << std::endl;
     std::cout << "L1 Xdot" << lstate[0].Xdot << std::endl;
     std::cout << "L1 Xdotdot" << lstate[0].Xdotdot << std::endl << std::endl;
-    
+
     lstate[0] = iterator(twoBranchTree.getSegment("L1"), jstate[0], lstate[0], comp2);
     std::cout << "L1 X" << lstate[0].X << std::endl;
     std::cout << "L1 Xdot" << lstate[0].Xdot <<std::endl;
@@ -285,54 +330,8 @@ int main(int argc, char** argv)
 
     }
 
-    
+
      */
-    
-    
-    //use case relying in templates
-    using namespace kdl_extensions;
-    kdl_extensions::transform<tree_iterator, pose> _comp1;
-
-    kdl_extensions::transform<tree_iterator, twist> _comp2;
-
-    kdl_extensions::transform<tree_iterator, accTwist> _comp3;
-
-    SegmentState stateLink = kdl_extensions::compose(_comp2, _comp1)(twoBranchTree.getSegment("L1"), jstate[0], lstate[0]);
-
-    std::cout << stateLink.X << std::endl;
-    std::cout << stateLink.Xdot << std::endl;
-    std::cout << stateLink.Xdotdot << std::endl;
-
-    //maybe need to create compose with multiple arguments and not only two, maybe upto 5?
-    stateLink = kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2),_comp1)(twoBranchTree.getSegment("L2"), jstate[0], lstate[0]);
-
-    std::cout << stateLink.X << std::endl;
-    std::cout << stateLink.Xdot << std::endl;
-    std::cout << stateLink.Xdotdot << std::endl;
-
-
-    kdl_extensions::IterateOver<KDL::Tree,kdl_extensions::transform<tree_iterator, pose> > traversalFunction;
-
-
-
-
-    traversalFunction(twoBranchTree,jstate, lstate, lstate2, _comp1);
-    kdl_extensions::IterateOver<KDL::Chain, kdl_extensions::transform<tree_iterator, twist> > traversalFunction1;
-
-    traversalFunction1(a_chain,jstate, lstate, lstate2, _comp2);
-
-    Composite<kdl_extensions::transform<tree_iterator, twist>, kdl_extensions::transform<tree_iterator, pose> > composite1 = kdl_extensions::compose(_comp2, _comp1);
-
-    Composite<Composite<kdl_extensions::transform<tree_iterator, accTwist>, kdl_extensions::transform<tree_iterator, twist> >, kdl_extensions::transform<tree_iterator, pose> > composite2 = kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2),_comp1);
-
-    kdl_extensions::IterateOver<KDL::Tree, Composite<kdl_extensions::transform<tree_iterator, twist>, kdl_extensions::transform<tree_iterator, pose> >, BFSPolicy> traversalFunction2;
-
-    traversalFunction2(twoBranchTree,jstate, lstate, lstate2, composite1);
-    BFSPolicy<KDL::Tree> mypolicy;
-    //kdl_extensions::traverse(a_chain, myPolicy, kdl_extensions::compose(_comp2, _comp1));
-
-    //this is a total non-sense because of the redundant arguments. Have to remove
-    traverseGraph(twoBranchTree, composite1, mypolicy )(twoBranchTree,jstate, lstate, lstate2, composite1);
     return 0;
 }
 
