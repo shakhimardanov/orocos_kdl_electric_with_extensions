@@ -23,7 +23,8 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #rosbuild_gensrv()
 
 #common commands for building c++ executables and libraries
-rosbuild_add_library(${PROJECT_NAME} include/kdl_extensions/functionalcomputation.hpp src/functionalcomputation.inl 
+rosbuild_add_library(${PROJECT_NAME} include/kdl_extensions/functionalcomputation.hpp src/functionalcomputation.inl
+                    include/kdl_extensions/functionalcomputation_kdltypes.hpp src/functionalcomputation_kdltypes.inl
                     include/kdl_extensions/treeid_vereshchagin_composable.hpp src/treeid_vereshchagin_composable.cpp )
 
 target_link_libraries(${PROJECT_NAME} orocos-kdl)
@@ -31,5 +32,5 @@ target_link_libraries(${PROJECT_NAME} orocos-kdl)
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 
-rosbuild_add_executable(compositiontest src/compositiontest.cpp)
+rosbuild_add_executable(compositiontest examples/compositiontest.cpp)
 target_link_libraries(compositiontest ${PROJECT_NAME})

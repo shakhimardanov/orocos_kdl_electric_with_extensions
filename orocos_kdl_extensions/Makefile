@@ -320,19 +320,19 @@ tests/fast:
 .PHONY : tests/fast
 
 # target to build an object file
-src/compositiontest.o:
-	$(MAKE) -f CMakeFiles/compositiontest.dir/build.make CMakeFiles/compositiontest.dir/src/compositiontest.o
-.PHONY : src/compositiontest.o
+examples/compositiontest.o:
+	$(MAKE) -f CMakeFiles/compositiontest.dir/build.make CMakeFiles/compositiontest.dir/examples/compositiontest.o
+.PHONY : examples/compositiontest.o
 
 # target to preprocess a source file
-src/compositiontest.i:
-	$(MAKE) -f CMakeFiles/compositiontest.dir/build.make CMakeFiles/compositiontest.dir/src/compositiontest.i
-.PHONY : src/compositiontest.i
+examples/compositiontest.i:
+	$(MAKE) -f CMakeFiles/compositiontest.dir/build.make CMakeFiles/compositiontest.dir/examples/compositiontest.i
+.PHONY : examples/compositiontest.i
 
 # target to generate assembly for a file
-src/compositiontest.s:
-	$(MAKE) -f CMakeFiles/compositiontest.dir/build.make CMakeFiles/compositiontest.dir/src/compositiontest.s
-.PHONY : src/compositiontest.s
+examples/compositiontest.s:
+	$(MAKE) -f CMakeFiles/compositiontest.dir/build.make CMakeFiles/compositiontest.dir/examples/compositiontest.s
+.PHONY : examples/compositiontest.s
 
 # target to build an object file
 src/treeid_vereshchagin_composable.o:
@@ -374,9 +374,9 @@ help:
 	@echo "... test-results"
 	@echo "... test-results-run"
 	@echo "... tests"
-	@echo "... src/compositiontest.o"
-	@echo "... src/compositiontest.i"
-	@echo "... src/compositiontest.s"
+	@echo "... examples/compositiontest.o"
+	@echo "... examples/compositiontest.i"
+	@echo "... examples/compositiontest.s"
 	@echo "... src/treeid_vereshchagin_composable.o"
 	@echo "... src/treeid_vereshchagin_composable.i"
 	@echo "... src/treeid_vereshchagin_composable.s"

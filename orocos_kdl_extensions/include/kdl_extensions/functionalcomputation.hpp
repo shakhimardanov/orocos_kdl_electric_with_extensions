@@ -8,10 +8,8 @@
 #ifndef FUNCTIONALCOMPUTATION_HPP
 #define	FUNCTIONALCOMPUTATION_HPP
 
-#include <kdl/tree.hpp>
-#include <kdl_extensions/treeid_vereshchagin_composable.hpp>
 #include <iterator>
-//#include <unordered_map>
+#include <kdl_extensions/functionalcomputation_util.hpp>
 
 
 namespace kdl_extensions
@@ -20,6 +18,7 @@ namespace kdl_extensions
 template <typename OperationT, int N>
 class Parameter;
 
+//partial specialization
 #define OperParamT(N)                                           \
         template<typename OperationT>                           \
         class Parameter<OperationT,N>{                          \
@@ -58,261 +57,6 @@ public:
     //    typedef typename Parameter<OperationT, 5 > ::Type Param5T;
     //    typedef typename Parameter<OperationT, 6 > ::Type Param6T;
     //    typedef typename Parameter<OperationT, 7 > ::Type Param7T;
-};
-
-//operation tags
-
-class poseOperationTag
-{
-};
-
-class twistOperationTag : public poseOperationTag
-{
-};
-
-class accelerationTwistOperationTag : public twistOperationTag
-{
-};
-
-class wrenchOperationTag : public accelerationTwistOperationTag
-{
-};
-
-typedef poseOperationTag pose;
-typedef twistOperationTag twist;
-typedef accelerationTwistOperationTag accTwist;
-typedef wrenchOperationTag wrench;
-
-template<typename Iterator, typename OperationTagT>
-class transform;
-
-typedef std::map<std::string, KDL::TreeElement >::const_iterator tree_iterator;
-typedef std::vector<KDL::Segment>::const_iterator chain_iterator;
-
-template<typename Iterator>
-class transform<Iterator, pose>
-{
-public:
-
-    enum
-    {
-        NumberOfParams = 3
-    };
-    typedef KDL::SegmentState ReturnType;
-    typedef Iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
-};
-
-template<>
-class transform<tree_iterator, pose>
-{
-public:
-
-    enum
-    {
-        NumberOfParams = 3
-    };
-    typedef KDL::SegmentState ReturnType;
-    typedef tree_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
-
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
-    {
-        //check for joint type None should be tree serialization function.
-        //a_segmentState.X =  a_p3.X * segmentId->second.segment.pose(p_jointState.q); //in base coordinates
-        a_segmentState.Xdot = p_segmentState.Xdot;
-        a_segmentState.Xdotdot = p_segmentState.Xdotdot;
-        a_segmentState.X = segmentId->second.segment.pose(p_jointState.q);
-        a_segmentState.jointIndex = p_jointState.jointIndex;
-        a_segmentState.jointName = p_jointState.jointName;
-        a_segmentState.segmentName = segmentId->first;
-        std::cout << "Inside transformPose 0" << a_segmentState.X << std::endl;
-        return a_segmentState;
-
-    };
-private:
-    ReturnType a_segmentState;
-
-};
-
-template<>
-class transform<chain_iterator, pose>
-{
-public:
-
-    enum
-    {
-        NumberOfParams = 3
-    };
-    typedef KDL::SegmentState ReturnType;
-    typedef chain_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
-
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
-    {
-        //check for joint type None should be tree serialization function.
-        //a_segmentState.X =  a_p3.X * segmentId->second.segment.pose(p_jointState.q); //in base coordinates
-        a_segmentState.Xdot = p_segmentState.Xdot;
-        a_segmentState.Xdotdot = p_segmentState.Xdotdot;
-        a_segmentState.X = segmentId->pose(p_jointState.q);
-        a_segmentState.jointIndex = p_jointState.jointIndex;
-        a_segmentState.jointName = p_jointState.jointName;
-        a_segmentState.segmentName = segmentId->getName();
-        std::cout << "Inside transformPose 0" << a_segmentState.X << std::endl;
-        return a_segmentState;
-
-    };
-private:
-    ReturnType a_segmentState;
-
-};
-
-template<typename Iterator>
-class transform<Iterator, twist>
-{
-public:
-
-    enum
-    {
-        NumberOfParams = 3
-    };
-    typedef KDL::SegmentState ReturnType;
-    typedef Iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
-};
-
-template<>
-class transform<tree_iterator, twist>
-{
-public:
-
-    enum
-    {
-        NumberOfParams = 3
-    };
-    typedef KDL::SegmentState ReturnType;
-    typedef tree_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
-
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
-    {
-        a_segmentState.X = p_segmentState.X;
-        a_segmentState.Xdotdot = p_segmentState.Xdotdot;
-        a_segmentState.Z = a_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, 1.0));
-        //a_segmentState.Z = a_jointUnitTwist;
-        a_segmentState.Vj = a_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, p_jointState.qdot));
-        //a_segmentState.Vj = a_jointTwistVelocity;
-
-        //do we check here for the index of a joint (whether the joint is first in the chain)
-        a_segmentState.Xdot = a_segmentState.X.Inverse(p_segmentState.Xdot) + a_segmentState.Vj;
-
-        return a_segmentState;
-    };
-private:
-    ReturnType a_segmentState;
-};
-
-template<>
-class transform<chain_iterator, twist>
-{
-public:
-
-    enum
-    {
-        NumberOfParams = 3
-    };
-    typedef KDL::SegmentState ReturnType;
-    typedef chain_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
-
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
-    {
-        a_segmentState.X = p_segmentState.X;
-        a_segmentState.Xdotdot = p_segmentState.Xdotdot;
-        a_segmentState.Z = a_segmentState.X.M.Inverse(segmentId->twist(p_jointState.q, 1.0));
-        //a_segmentState.Z = a_jointUnitTwist;
-        a_segmentState.Vj = a_segmentState.X.M.Inverse(segmentId->twist(p_jointState.q, p_jointState.qdot));
-        //a_segmentState.Vj = a_jointTwistVelocity;
-
-        //do we check here for the index of a joint (whether the joint is first in the chain)
-        a_segmentState.Xdot = a_segmentState.X.Inverse(p_segmentState.Xdot) + a_segmentState.Vj;
-
-        return a_segmentState;
-    };
-private:
-    ReturnType a_segmentState;
-};
-
-template<typename Iterator>
-class transform<Iterator, accTwist>
-{
-public:
-
-    enum
-    {
-        NumberOfParams = 3
-    };
-    typedef KDL::SegmentState ReturnType;
-    typedef Iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
-
-};
-
-template<>
-class transform<tree_iterator, accTwist>
-{
-public:
-
-    enum
-    {
-        NumberOfParams = 3
-    };
-    typedef KDL::SegmentState ReturnType;
-    typedef tree_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
-
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
-    {
-        a_segmentState = p_segmentState;
-        a_segmentState.Xdotdot = p_segmentState.X.Inverse(p_segmentState.Xdotdot) + p_segmentState.Z * p_jointState.qdotdot + p_segmentState.Xdot * p_segmentState.Vj;
-        return a_segmentState;
-    };
-private:
-    ReturnType a_segmentState;
-
-};
-
-template<>
-class transform<chain_iterator, accTwist>
-{
-public:
-
-    enum
-    {
-        NumberOfParams = 3
-    };
-    typedef KDL::SegmentState ReturnType;
-    typedef chain_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
-
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
-    {
-        a_segmentState = p_segmentState;
-        a_segmentState.Xdotdot = p_segmentState.X.Inverse(p_segmentState.Xdotdot) + p_segmentState.Z * p_jointState.qdotdot + p_segmentState.Xdot * p_segmentState.Vj;
-        return a_segmentState;
-    };
-private:
-    ReturnType a_segmentState;
-
 };
 
 //--------------------------------------------//
@@ -601,88 +345,12 @@ public:
  */
 
 //traversal policies
+//primary templates
 template <typename Topology>
 class DFSPolicy;
 
-template<>
-class DFSPolicy<KDL::Chain>
-{
-public:
-
-    DFSPolicy()
-    {
-    };
-
-    ~DFSPolicy()
-    {
-    };
-
-    template <typename OP>
-    inline static bool walk(KDL::Chain a_topology, std::vector<typename OP::Param2T>& a_jointStateVectorIn, std::vector<typename OP::Param3T>& a_linkStateVectorIn,
-                            std::vector<typename OP::Param3T>& a_linkStateVectorOut, OP a_op)
-    {
-        return true;
-    };
-
-};
-
-template<>
-class DFSPolicy<KDL::Tree>
-{
-public:
-
-    DFSPolicy()
-    {
-    };
-
-    ~DFSPolicy()
-    {
-    };
-
-    template <typename OP>
-    inline static bool walk(KDL::Tree a_topology, std::vector<typename OP::Param2T> a_jointStateVectorIn, std::vector<typename OP::Param3T> a_linkStateVectorIn,
-                            std::vector<typename OP::Param3T> a_linkStateVectorOut, OP a_op)
-    {
-        //just a simple test, will implement DFS algorithm
-        for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
-        {
-            a_op(iter, a_jointStateVectorIn[0], a_linkStateVectorIn[0]);
-        };
-        return true;
-    };
-
-};
-
 template <typename Topology>
 class BFSPolicy;
-
-template<>
-class BFSPolicy<KDL::Tree>
-{
-public:
-
-    BFSPolicy()
-    {
-    };
-
-    ~BFSPolicy()
-    {
-    };
-
-    template <typename OP>
-    inline static bool walk(KDL::Tree a_topology, std::vector<typename OP::Param2T> a_jointStateVectorIn, std::vector<typename OP::Param3T> a_linkStateVectorIn,
-                            std::vector<typename OP::Param3T> a_linkStateVectorOut, OP a_op)
-    {
-        //just a simple test, will implement DFS algorithm
-        for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
-        {
-            a_op(iter, a_jointStateVectorIn[0], a_linkStateVectorIn[0]);
-        };
-        return true;
-    };
-
-};
-
 
 
 //traversal/schedule function
@@ -735,6 +403,8 @@ inline IterateOver<Topology, OP, Policy> traverseGraph(Topology a_graph, OP a_op
 
 
 };
+
 #include "../../src/functionalcomputation.inl"
 #endif	/* FUNCTIONALCOMPUTATION_HPP */
+
 

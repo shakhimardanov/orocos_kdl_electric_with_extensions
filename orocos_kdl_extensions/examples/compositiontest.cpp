@@ -22,7 +22,7 @@
 #include <kdl/treejnttojacsolver.hpp>
 #include <kdl/treefksolverpos_recursive.hpp>
 #include <kdl_extensions/treeid_vereshchagin_composable.hpp>
-#include <kdl_extensions/functionalcomputation.hpp>
+#include <kdl_extensions/functionalcomputation_kdltypes.hpp>
 
 
 
