@@ -269,7 +269,6 @@ private:
 
 };
 
-
 template<>
 class DFSPolicy<KDL::Chain>
 {

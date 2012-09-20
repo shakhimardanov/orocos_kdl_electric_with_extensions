@@ -9,78 +9,78 @@
 #define	FUNCTIONALCOMPUTATION_UTIL_HPP
 
 // primary template: yield second or third argument depending on first argument
-template<bool C, typename Ta, typename Tb>
-class IfThenElse;
+template<bool Choice, typename FirstType, typename SecondType>
+class Selector;
 
-// partial specialization: true yields second argument
-template<typename Ta, typename Tb>
-class IfThenElse<true, Ta, Tb> {
-  public:
-    typedef Ta ResultT;
+// partial specialization: true yields second argument and false yields the third arg
+template<typename FirstType, typename SecondType>
+class Selector < true, FirstType, SecondType>
+{
+public:
+    typedef FirstType ResultType;
 };
 
-// partial specialization: false yields third argument
-template<typename Ta, typename Tb>
-class IfThenElse<false, Ta, Tb> {
-  public:
-    typedef Tb ResultT;
+template<typename FirstType, typename SecondType>
+class Selector < false, FirstType, SecondType>
+{
+public:
+    typedef SecondType ResultType;
 };
 
+template <typename OperationT, int N>
+class Parameter;
 
-template <typename T>
-class TypeOp {            // primary template
-  public:
-    typedef T         ArgT;
-    typedef T         BareT;
-    typedef T const   ConstT;
-    typedef T &       RefT;
-    typedef T &       RefBareT;
-    typedef T const & RefConstT;
-};
-/*
- * //this is related to Parameter template defined in functionalcomputation.hpp
-template <typename F, int N>
-class UsedFunctorParam; // it is the same as Parameter template. It identifies type of the function argument
+//partial specialization
+#define ParameterT(N)                                           \
+        template<typename OperationT>                           \
+        class Parameter<OperationT,N>{                          \
+            public:                                             \
+                typedef typename OperationT::Param##N##T Type;  \
+        }
 
-template <typename F, int N>
-class FunctorParam {
-  private:
-    class Unused {
-      private:
-        class Private {};
-      public:
-        typedef Private Type;
+ParameterT(1);
+ParameterT(2);
+ParameterT(3);
+ParameterT(4);
+ParameterT(5);
+ParameterT(6);
+ParameterT(7);
+#undef ParameterT
+
+template <typename OperationT, int N>
+class OperationTParameterType
+{
+private:
+
+    class NotUsedParameter
+    {
+    private:
+
+        class DymmyType
+        {
+        };
+    public:
+        typedef DymmyType Type;
     };
-  public:
-    typedef typename IfThenElse<F::NumParams>=N,
-                                UsedFunctorParam<F,N>,
-                                Unused>::ResultT::Type
-            Type;
-};
- *
- *
- * // this template makes passed function arguments read-only (as references to const value)
-template<typename T>
-class ForwardParamT {
-  public:
-    typedef typename IfThenElse<TypeT<T>::IsClassT, // this should be changed to adjust for our use case
-                                typename TypeOp<T>::RefConstT,
-                                typename TypeOp<T>::ArgT
-                               >::ResultT
-            Type;
+public:
+    typedef typename Selector<OperationT::NumberOfParams >= N, Parameter<OperationT, N>, NotUsedParameter>::ResultType::Type Type;
 };
 
-template<>
-class ForwardParamT<void> {
-  private:
-    class Unused {};
-  public:
-    typedef Unused Type;
+
+// primary template for argument qualifiers
+template <typename T>
+class ParameterTypeQualifier
+{
+public:
+    typedef T ArgT;
+    typedef T const ConstT;
+    typedef T & RefToT;
+    typedef T & RefToArgT;
+    typedef T const & RefToConstT;
 };
 
- *
- *
 
+/*
 //this template is used to wrap normal function pointer into function objects
  // primary template handles maximum number of parameters:
 template<typename RT, typename P1 = void,
@@ -189,6 +189,7 @@ FunctionPtr<RT,P1,P2,P3> func_ptr (RT (*fp)(P1,P2,P3))
     return FunctionPtr<RT,P1,P2,P3>(fp);
 }
 
-*/
+ */
+
 #endif	/* FUNCTIONALCOMPUTATION_UTIL_HPP */
 
