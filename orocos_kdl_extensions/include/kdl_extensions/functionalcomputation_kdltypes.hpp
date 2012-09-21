@@ -32,17 +32,23 @@ class wrenchOperationTag : public accelerationTwistOperationTag
 {
 };
 
+class inertiaOperationTag
+{
+};
+
 typedef poseOperationTag pose;
 typedef twistOperationTag twist;
 typedef accelerationTwistOperationTag accTwist;
 typedef wrenchOperationTag wrench;
-
-template<typename Iterator, typename OperationTagT>
-class transform;
+typedef inertiaOperationTag inertia;
 
 typedef std::map<std::string, KDL::TreeElement >::const_iterator tree_iterator;
 typedef std::vector<KDL::Segment>::const_iterator chain_iterator;
 
+template<typename Iterator, typename OperationTagT>
+class transform;
+
+/*
 template<typename Iterator>
 class transform<Iterator, pose>
 {
@@ -57,6 +63,7 @@ public:
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 };
+ */
 
 template<>
 class transform<tree_iterator, pose>
@@ -124,6 +131,7 @@ private:
 
 };
 
+/*
 template<typename Iterator>
 class transform<Iterator, twist>
 {
@@ -138,6 +146,7 @@ public:
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 };
+ */
 
 template<>
 class transform<tree_iterator, twist>
@@ -203,6 +212,7 @@ private:
     ReturnType a_segmentState;
 };
 
+/*
 template<typename Iterator>
 class transform<Iterator, accTwist>
 {
@@ -218,6 +228,7 @@ public:
     typedef KDL::SegmentState Param3T;
 
 };
+ */
 
 template<>
 class transform<tree_iterator, accTwist>
@@ -267,6 +278,78 @@ public:
 private:
     ReturnType a_segmentState;
 
+};
+
+template<typename Iterator, typename OperationTagT>
+class project;
+
+template<>
+class project<chain_iterator, wrench>
+{
+public:
+
+
+};
+
+template<>
+class project<tree_iterator, wrench>
+{
+public:
+enum
+    {
+        NumberOfParams = 3
+    };
+    typedef KDL::SegmentState ReturnType;
+    typedef tree_iterator Param1T;
+    typedef KDL::JointState Param2T;
+    typedef KDL::SegmentState Param3T;
+
+    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    {
+       // return ;
+    };
+
+
+};
+
+template<>
+class project<chain_iterator, inertia>
+{
+public:
+    enum
+    {
+        NumberOfParams = 3
+    };
+    typedef KDL::RigidBodyInertia ReturnType;
+    typedef chain_iterator Param1T;
+    typedef KDL::JointState Param2T;
+    typedef KDL::SegmentState Param3T;
+
+    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    {
+        return segmentId->getInertia();
+    };
+
+};
+
+template<>
+class project<tree_iterator, inertia>
+{
+public:
+
+    enum
+    {
+        NumberOfParams = 3
+    };
+    typedef KDL::RigidBodyInertia ReturnType;
+    typedef tree_iterator Param1T;
+    typedef KDL::JointState Param2T;
+    typedef KDL::SegmentState Param3T;
+
+    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    {
+        return segmentId->second.segment.getInertia();
+    };
 };
 
 template<>
