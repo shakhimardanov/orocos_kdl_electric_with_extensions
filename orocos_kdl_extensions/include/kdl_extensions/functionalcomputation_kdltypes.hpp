@@ -48,23 +48,6 @@ typedef std::vector<KDL::Segment>::const_iterator chain_iterator;
 template<typename Iterator, typename OperationTagT>
 class transform;
 
-/*
-template<typename Iterator>
-class transform<Iterator, pose>
-{
-public:
-
-    enum
-    {
-        NumberOfParams = 3
-    };
-    typedef KDL::SegmentState ReturnType;
-    typedef Iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
-};
- */
-
 template<>
 class transform<tree_iterator, pose>
 {
@@ -131,23 +114,6 @@ private:
 
 };
 
-/*
-template<typename Iterator>
-class transform<Iterator, twist>
-{
-public:
-
-    enum
-    {
-        NumberOfParams = 3
-    };
-    typedef KDL::SegmentState ReturnType;
-    typedef Iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
-};
- */
-
 template<>
 class transform<tree_iterator, twist>
 {
@@ -211,24 +177,6 @@ public:
 private:
     ReturnType a_segmentState;
 };
-
-/*
-template<typename Iterator>
-class transform<Iterator, accTwist>
-{
-public:
-
-    enum
-    {
-        NumberOfParams = 3
-    };
-    typedef KDL::SegmentState ReturnType;
-    typedef Iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
-
-};
- */
 
 template<>
 class transform<tree_iterator, accTwist>
