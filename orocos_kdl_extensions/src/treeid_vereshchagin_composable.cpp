@@ -10,6 +10,7 @@ SegmentState::SegmentState()
     X.Identity();
     Xdot.Zero();
     Xdotdot.Zero();
+    F.Zero();
     Fext.Zero();
     Z.Zero();
     Vj.Zero();
@@ -24,6 +25,7 @@ SegmentState::SegmentState(const SegmentState& copy)
     X = copy.X;
     Xdot = copy.Xdot;
     Xdotdot = copy.Xdotdot;
+    F = copy.F;
     Z = copy.Z;
     Vj = copy.Vj;
     jointIndex = copy.jointIndex;
@@ -38,6 +40,7 @@ SegmentState& SegmentState::operator=(const SegmentState& copy)
         X = copy.X;
         Xdot = copy.Xdot;
         Xdotdot = copy.Xdotdot;
+        F = copy.F;
         Z = copy.Z;
         Vj = copy.Vj;
         jointIndex = copy.jointIndex;
@@ -61,6 +64,7 @@ JointState::JointState()
     q = 0.0;
     qdot = 0.0;
     qdotdot = 0.0;
+    torque = 0.0;
     jointIndex = 0;
     jointName = " ";
 
@@ -71,6 +75,7 @@ JointState::JointState(const JointState& copy)
     q = copy.q;
     qdot = copy.qdot;
     qdotdot = copy.qdotdot;
+    torque = copy.torque;
     jointIndex = copy.jointIndex;
     jointName = copy.jointName;
 }
@@ -82,6 +87,7 @@ JointState& JointState::operator=(const JointState& copy)
         q = copy.q;
         qdot = copy.qdot;
         qdotdot = copy.qdotdot;
+        torque = copy.torque;
         jointIndex = copy.jointIndex;
         jointName = copy.jointName;
     }

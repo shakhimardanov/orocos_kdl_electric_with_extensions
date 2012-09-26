@@ -27,6 +27,7 @@ public:
     Twist Xdot;
     Twist Xdotdot;
     Wrench Fext;
+    Wrench F;
     Twist Z; //supporting/driving joint unit twist/projection/Dof
     Twist Vj;
     unsigned int jointIndex; // supporting/driving joint name/index
@@ -46,54 +47,11 @@ public:
     double q;
     double qdot;
     double qdotdot;
+    double torque;
     unsigned int jointIndex; //joint name/index
     std::string jointName;
     virtual ~JointState();
 };
-
-//primitive(atomic) function object
-
-/*
-class ForwardKinematics
-{
-public:
-    ForwardKinematics(Twist& gravityAcc);
-    SegmentState & operator() (SegmentMap::const_iterator link, JointState& js);
-    SegmentState & operator() (std::pair<std::string, KDL::TreeElement> link, JointState& js);
-    virtual ~ForwardKinematics();
-private:
-    SegmentState m_segmentstate;
-    JointState m_jointstate;
-    Twist m_gravity;
-};
-
-class ForceComputer
-{
-public:
-    ForceComputer();
-    KDL::Wrench & operator ()(std::pair<std::string, KDL::TreeElement> link, SegmentState& ls);
-    KDL::Wrench & operator ()(SegmentMap::const_iterator link, SegmentState& ls);
-    virtual ~ForceComputer();
-private:
-    KDL::Wrench m_segmentforce;
-};
-
-
-// function object adapter which composes primitive ones. compose_f_h(yz)_g(x)
-//f ~= ForwardKinematicsComputationweep
-//g ~= ForwardKinematicsComputation x ~= jointState
-//h ~ =ForceComputation y ~= linkState output from g(x) and z ~= external forces/force input
-
-template <typename Arg1, typename Arg2, typename Arg3, typename Result>
-class ternary_function
-{
-    typedef Arg1 argument1_type;
-    typedef Arg2 argument2_type;
-    typedef Arg3 argument3_type;
-    typedef Result result_type;
-
-};
- */
 
 
 class BaseOperation

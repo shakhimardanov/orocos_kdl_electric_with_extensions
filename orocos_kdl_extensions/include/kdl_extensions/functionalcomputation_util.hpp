@@ -13,6 +13,7 @@ template<bool Choice, typename FirstType, typename SecondType>
 class Selector;
 
 // partial specialization: true yields second argument and false yields the third arg
+
 template<typename FirstType, typename SecondType>
 class Selector < true, FirstType, SecondType>
 {
@@ -68,6 +69,7 @@ public:
 
 
 // primary template for argument qualifiers
+
 template <typename T>
 class ParameterTypeQualifier
 {

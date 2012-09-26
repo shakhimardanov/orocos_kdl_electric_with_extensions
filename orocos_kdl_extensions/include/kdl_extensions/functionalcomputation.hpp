@@ -110,6 +110,7 @@ class IterateOver;
 
 //this is for the homogeneous case, the same computation is applied on all topology elements
 //template<typename Topology, template<typename > class TraversalPolicy, typename OP>
+
 template<typename Topology, typename OperationT, template <typename Topology > class TraversalPolicy>
 class IterateOver
 {
@@ -145,6 +146,7 @@ private:
 };
 
 //convinience function
+
 template <typename Topology, typename OP, template <typename > class Policy>
 inline IterateOver<Topology, OP, Policy> traverseGraph(Topology a_graph, OP a_op, Policy<Topology> a_policy)
 {

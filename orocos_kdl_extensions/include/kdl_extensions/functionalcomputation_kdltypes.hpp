@@ -72,7 +72,10 @@ public:
         a_segmentState.jointIndex = p_jointState.jointIndex;
         a_segmentState.jointName = p_jointState.jointName;
         a_segmentState.segmentName = segmentId->first;
-        std::cout << "Inside transformPose 0" << a_segmentState.X << std::endl;
+        std::cout << "Inside pose operation Transform value" << a_segmentState.X << std::endl;
+        std::cout << "Inside pose operation Twist value" << a_segmentState.Xdot << std::endl;
+        std::cout << "Inside pose operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
+        std::cout << "Inside pose operation Wrench value" << a_segmentState.F << std::endl;
         return a_segmentState;
 
     };
@@ -105,7 +108,7 @@ public:
         a_segmentState.jointIndex = p_jointState.jointIndex;
         a_segmentState.jointName = p_jointState.jointName;
         a_segmentState.segmentName = segmentId->getName();
-        std::cout << "Inside transformPose 0" << a_segmentState.X << std::endl;
+
         return a_segmentState;
 
     };
@@ -139,7 +142,10 @@ public:
 
         //do we check here for the index of a joint (whether the joint is first in the chain)
         a_segmentState.Xdot = a_segmentState.X.Inverse(p_segmentState.Xdot) + a_segmentState.Vj;
-
+        std::cout << "Inside twist operation Transform value" << a_segmentState.X << std::endl;
+        std::cout << "Inside twist operation Twist value" << a_segmentState.Xdot << std::endl;
+        std::cout << "Inside twist operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
+        std::cout << "Inside twist operation Wrench value" << a_segmentState.F << std::endl;
         return a_segmentState;
     };
 private:
@@ -168,7 +174,6 @@ public:
         //a_segmentState.Z = a_jointUnitTwist;
         a_segmentState.Vj = a_segmentState.X.M.Inverse(segmentId->twist(p_jointState.q, p_jointState.qdot));
         //a_segmentState.Vj = a_jointTwistVelocity;
-
         //do we check here for the index of a joint (whether the joint is first in the chain)
         a_segmentState.Xdot = a_segmentState.X.Inverse(p_segmentState.Xdot) + a_segmentState.Vj;
 
@@ -196,6 +201,10 @@ public:
     {
         a_segmentState = p_segmentState;
         a_segmentState.Xdotdot = p_segmentState.X.Inverse(p_segmentState.Xdotdot) + p_segmentState.Z * p_jointState.qdotdot + p_segmentState.Xdot * p_segmentState.Vj;
+        std::cout << "Inside acctwist operation Transform value" << a_segmentState.X << std::endl;
+        std::cout << "Inside acctwist operation Twist value" << a_segmentState.Xdot << std::endl;
+        std::cout << "Inside acctwist operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
+        std::cout << "Inside acctwist operation Wrench value" << a_segmentState.F << std::endl;
         return a_segmentState;
     };
 private:
@@ -236,6 +245,23 @@ class project<chain_iterator, wrench>
 {
 public:
 
+    enum
+    {
+        NumberOfParams = 3
+    };
+    typedef KDL::SegmentState ReturnType;
+    typedef chain_iterator Param1T;
+    typedef KDL::JointState Param2T;
+    typedef KDL::SegmentState Param3T;
+
+    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    {
+        a_segmentState = p_segmentState;
+        a_segmentState.F = segmentId->getInertia() * a_segmentState.Xdotdot + a_segmentState.Xdot * (segmentId->getInertia() * a_segmentState.Xdot) - a_segmentState.Fext;
+        return a_segmentState;
+    };
+private:
+    ReturnType a_segmentState;
 
 };
 
@@ -243,7 +269,8 @@ template<>
 class project<tree_iterator, wrench>
 {
 public:
-enum
+
+    enum
     {
         NumberOfParams = 3
     };
@@ -254,9 +281,16 @@ enum
 
     inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
     {
-       // return ;
+        a_segmentState = p_segmentState;
+        a_segmentState.F = segmentId->second.segment.getInertia() * a_segmentState.Xdotdot + a_segmentState.Xdot * (segmentId->second.segment.getInertia() * a_segmentState.Xdot) - a_segmentState.Fext;
+        std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
+        std::cout << "Inside wrench operation Twist value " << a_segmentState.Xdot << std::endl;
+        std::cout << "Inside wrench operation AccTwist value " << a_segmentState.Xdotdot << std::endl;
+        std::cout << "Inside wrench operation Wrench value " << a_segmentState.F << std::endl;
+        return a_segmentState;
     };
-
+private:
+    ReturnType a_segmentState;
 
 };
 
@@ -264,6 +298,7 @@ template<>
 class project<chain_iterator, inertia>
 {
 public:
+
     enum
     {
         NumberOfParams = 3
