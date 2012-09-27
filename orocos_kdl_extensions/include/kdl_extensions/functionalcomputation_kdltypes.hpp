@@ -11,6 +11,10 @@
 #include <kdl/tree.hpp>
 #include <kdl_extensions/treeid_vereshchagin_composable.hpp>
 #include <kdl_extensions/functionalcomputation.hpp>
+#include <Pose/PoseCoordinatesKDL.h>
+
+namespace gm = geometric_semantics;
+
 
 namespace kdl_extensions
 {

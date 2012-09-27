@@ -10,10 +10,14 @@
   <url>http://ros.org/wiki/orocos_kdl_extensions</url>
 
   <depend package="orocos_kdl"/>
-<export>
+  <depend package="geometric_semantics"/>
+  <depend package="geometric_semantics_kdl"/>
+  
+
+  <export>
         <rosdoc config="rosdoc.yaml" />
         <cpp cflags="-I${prefix}/include" lflags="-L${prefix}/lib -Wl,-rpath,${prefix}/lib -lkdl_extensions" />
-   </export>
+  </export>
 </package>
 
 
