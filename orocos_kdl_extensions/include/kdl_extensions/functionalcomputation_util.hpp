@@ -199,9 +199,8 @@ class FunctionPointerToFunctor
   public:
     // to fit in our framework:
     enum { NumParams = FunctionPointerT<ReturnT,Param1,Param2,Param3,Param4,Param5,Param6,Param7>::NumberOfParams };
-    //these are used by Composite template to identify return types are of the composite and paramter types of
-    //functor being composed.
-
+    //these are used by composition template to identify return types are of the operation/composite operation
+    //and paramter types of operations(functor) being composed.
     typedef ReturnT ReturnType;
     typedef Param1 Param1T;
     typedef Param2 Param2T;

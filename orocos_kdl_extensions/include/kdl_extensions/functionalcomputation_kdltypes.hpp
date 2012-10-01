@@ -69,6 +69,7 @@ public:
         //a_segmentState.X =  a_p3.X * segmentId->second.segment.pose(p_jointState.q); //in base coordinates
         a_segmentState.Xdot = p_segmentState.Xdot;
         a_segmentState.Xdotdot = p_segmentState.Xdotdot;
+        a_segmentState.F = p_segmentState.F;
         a_segmentState.X = segmentId->second.segment.pose(p_jointState.q);
         a_segmentState.jointIndex = p_jointState.jointIndex;
         a_segmentState.jointName = p_jointState.jointName;
@@ -136,6 +137,7 @@ public:
     {
         a_segmentState.X = p_segmentState.X;
         a_segmentState.Xdotdot = p_segmentState.Xdotdot;
+        a_segmentState.F = p_segmentState.F;
         a_segmentState.Z = a_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, 1.0));
         //a_segmentState.Z = a_jointUnitTwist;
         a_segmentState.Vj = a_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, p_jointState.qdot));
@@ -375,7 +377,11 @@ public:
     inline static bool walk(KDL::Tree a_topology, std::vector<typename OP::Param2T> a_jointStateVectorIn, std::vector<typename OP::Param3T> a_linkStateVectorIn,
                             std::vector<typename OP::Param3T> a_linkStateVectorOut, OP a_op)
     {
-        //just a simple test, will implement DFS algorithm
+        //just a simple test, should implement DFS algorithm
+        //we should also provide a global computational state to the operations
+        //how do we refer to the previous element in the link state vector
+        //maybe composed operation itself should not be called  directly but through another helper operation which also takes
+        //vector length info since we always need previous link state info
         for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
         {
             a_op(iter, a_jointStateVectorIn[0], a_linkStateVectorIn[0]);
