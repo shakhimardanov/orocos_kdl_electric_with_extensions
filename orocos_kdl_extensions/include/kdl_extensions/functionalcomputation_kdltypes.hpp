@@ -382,6 +382,7 @@ public:
         //how do we refer to the previous element in the link state vector
         //maybe composed operation itself should not be called  directly but through another helper operation which also takes
         //vector length info since we always need previous link state info
+        
         for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
         {
             a_op(iter, a_jointStateVectorIn[0], a_linkStateVectorIn[0]);
