@@ -8,6 +8,9 @@
 #ifndef FUNCTIONALCOMPUTATION_UTIL_HPP
 #define	FUNCTIONALCOMPUTATION_UTIL_HPP
 
+
+namespace kdl_extensions
+{
 // primary template: yield second or third argument depending on first argument
 template<bool Choice, typename FirstType, typename SecondType>
 class Selector;
@@ -82,116 +85,237 @@ public:
 };
 
 
-/*
-//this template is used to wrap normal function pointer into function objects
- // primary template handles maximum number of parameters:
-template<typename RT, typename P1 = void,
-                      typename P2 = void,
-                      typename P3 = void>
-class FunctionPtrT {
-  public:
-    enum { NumParams = 3 };
-    typedef RT (*Type)(P1,P2,P3);
+//this template is used to parametrize function pointer types. This is then used
+// for function pointer wrapper which actually creates a class type functor.
+// primary template handles maximum number of parameters. Here it is seven parameters.
+//if parameters type is void it means that it is not used/empty
+
+template< typename ReturnType,
+        typename Param1 = void,
+        typename Param2 = void,
+        typename Param3 = void,
+        typename Param4 = void,
+        typename Param5 = void,
+        typename Param6 = void,
+        typename Param7 = void>
+class FunctionPointerT
+{
+public:
+
+    enum
+    {
+        NumberofParams = 7
+    };
+    typedef ReturnType(*Type)(Param1, Param2, Param3, Param4, Param5, Param6, Param7);
 };
+
+
+// partial specialization for six parameters:
+template<typename ReturnType, typename Param1, typename Param2, typename Param3,
+                              typename Param4, typename Param5, typename Param6 >
+class FunctionPointerT<ReturnType, Param1, Param2, Param3, Param4, Param5, Param6, void>
+{
+  public:
+    enum { NumberOfParams = 6 };
+    typedef ReturnType(*Type)(Param1, Param2, Param3, Param4, Param5, Param6);
+};
+
+// partial specialization for five parameter:
+template<typename ReturnType, typename Param1, typename Param2, typename Param3,
+                              typename Param4, typename Param5>
+class FunctionPointerT<ReturnType, Param1, Param2, Param3, Param4, Param5, void, void>
+{
+  public:
+    enum { NumberOfParams = 5 };
+    typedef ReturnType(*Type)(Param1, Param2, Param3, Param4, Param5);
+};
+
+// partial specialization for four parameters:
+template<typename ReturnType, typename Param1, typename Param2, typename Param3, typename Param4 >
+class FunctionPointerT<ReturnType, Param1, Param2, Param3, Param4, void, void, void>
+{
+  public:
+    enum { NumberOfParams = 4 };
+    typedef ReturnType(*Type)(Param1, Param2, Param3, Param4);
+};
+
+
+// partial specialization for three parameters:
+template<typename ReturnType, typename Param1, typename Param2, typename Param3>
+class FunctionPointerT<ReturnType, Param1, Param2, Param3, void, void, void, void>
+{
+  public:
+    enum { NumberOfParams = 3 };
+    typedef ReturnType(*Type)(Param1, Param2, Param3);
+};
+
 
 // partial specialization for two parameters:
-template<typename RT, typename P1,
-                      typename P2>
-class FunctionPtrT<RT, P1, P2, void> {
+template<typename ReturnType, typename Param1, typename Param2>
+class FunctionPointerT<ReturnType, Param1, Param2, void, void, void, void, void>
+{
   public:
-    enum { NumParams = 2 };
-    typedef RT (*Type)(P1,P2);
+    enum { NumberOfParams = 2 };
+    typedef ReturnType(*Type)(Param1, Param2);
 };
 
-// partial specialization for one parameter:
-template<typename RT, typename P1>
-class FunctionPtrT<RT, P1, void, void> {
+
+// partial specialization for one parameters:
+template<typename ReturnType, typename Param1>
+class FunctionPointerT<ReturnType, Param1, void, void, void, void, void, void>
+{
   public:
-    enum { NumParams = 1 };
-    typedef RT (*Type)(P1);
+    enum { NumberOfParams = 1 };
+    typedef ReturnType(*Type)(Param1);
 };
+
 
 // partial specialization for no parameters:
-template<typename RT>
-class FunctionPtrT<RT, void, void, void> {
+template<typename ReturnType>
+class FunctionPointerT<ReturnType, void, void, void, void, void, void, void>
+{
   public:
-    enum { NumParams = 0 };
-    typedef RT (*Type)();
+    enum { NumberOfParams = 0 };
+    typedef ReturnType(*Type)();
 };
- *
- *
 
- * //this wrap the function into a class functor and adds additional information
- * // on argument, function call return types and number of arguments
- * template<typename RT, typename P1 = void,
-                      typename P2 = void,
-                      typename P3 = void>
-class FunctionPtr {
+//this wraps the function pointer into a class functor and adds additional information
+// on argument, function call return types and number of arguments
+template< typename ReturnT,
+        typename Param1 = void,
+        typename Param2 = void,
+        typename Param3 = void,
+        typename Param4 = void,
+        typename Param5 = void,
+        typename Param6 = void,
+        typename Param7 = void>
+
+class FunctionPointerToFunctor
+{
   private:
-    typedef typename FunctionPtrT<RT,P1,P2,P3>::Type FuncPtr;
+    typedef typename FunctionPointerT<ReturnT,Param1,Param2,Param3,Param4,Param5,Param6,Param7>::Type FuncPtr;
     // the encapsulated pointer:
-    FuncPtr fptr;
+    FuncPtr funcptr;
   public:
     // to fit in our framework:
-    enum { NumParams = FunctionPtrT<RT,P1,P2,P3>::NumParams };
-    typedef RT ReturnT;
-    typedef P1 Param1T;
-    typedef P2 Param2T;
-    typedef P3 Param3T;
+    enum { NumParams = FunctionPointerT<ReturnT,Param1,Param2,Param3,Param4,Param5,Param6,Param7>::NumberOfParams };
+    //these are used by Composite template to identify return types are of the composite and paramter types of
+    //functor being composed.
+
+    typedef ReturnT ReturnType;
+    typedef Param1 Param1T;
+    typedef Param2 Param2T;
+    typedef Param3 Param3T;
+    typedef Param4 Param4T;
+    typedef Param5 Param5T;
+    typedef Param6 Param6T;
+    typedef Param7 Param7T;
 
     // constructor:
-    FunctionPtr(FuncPtr ptr)
-     : fptr(ptr) {
+    FunctionPointerToFunctor(FuncPtr ptr) : funcptr(ptr)
+    {
     }
 
-    // ``function calls'':
-    RT operator()() {
-        return fptr();
+    // overloaded function call operators for different number of parameters
+    ReturnT operator()()
+    {
+        return funcptr();
     }
-    RT operator()(typename ForwardParamT<P1>::Type a1) {
-        return fptr(a1);
+    
+    ReturnT operator()(typename ParameterTypeQualifier<Param1>::RefToConstT arg1)
+    {
+        return funcptr(arg1);
     }
-    RT operator()(typename ForwardParamT<P1>::Type a1,
-                  typename ForwardParamT<P2>::Type a2) {
-        return fptr(a1, a2);
+    
+    ReturnT operator()(typename ParameterTypeQualifier<Param1>::RefToConstT arg1,
+                          typename ParameterTypeQualifier<Param2>::RefToConstT arg2)
+    {
+        return funcptr(arg1, arg2);
     }
-    RT operator()(typename ForwardParamT<P1>::Type a1,
-                  typename ForwardParamT<P2>::Type a2,
-                  typename ForwardParamT<P3>::Type a3) {
-        return fptr(a1, a2, a3);
+    
+    ReturnT operator()(typename ParameterTypeQualifier<Param1>::RefToConstT arg1,
+                          typename ParameterTypeQualifier<Param2>::RefToConstT arg2,
+                          typename ParameterTypeQualifier<Param3>::RefToConstT arg3)
+    {
+        return funcptr(arg1, arg2, arg3);
     }
+
+    ReturnT operator()(typename ParameterTypeQualifier<Param1>::RefToConstT arg1,
+                          typename ParameterTypeQualifier<Param2>::RefToConstT arg2,
+                          typename ParameterTypeQualifier<Param3>::RefToConstT arg3,
+                          typename ParameterTypeQualifier<Param4>::RefToConstT arg4)
+    {
+        return funcptr(arg1, arg2, arg3, arg4);
+    }
+
+    ReturnT operator()(typename ParameterTypeQualifier<Param1>::RefToConstT arg1,
+                          typename ParameterTypeQualifier<Param2>::RefToConstT arg2,
+                          typename ParameterTypeQualifier<Param3>::RefToConstT arg3,
+                          typename ParameterTypeQualifier<Param4>::RefToConstT arg4,
+                          typename ParameterTypeQualifier<Param5>::RefToConstT arg5)
+    {
+        return funcptr(arg1, arg2, arg3, arg4, arg5);
+    }
+
+
+    ReturnT operator()(typename ParameterTypeQualifier<Param1>::RefToConstT arg1,
+                          typename ParameterTypeQualifier<Param2>::RefToConstT arg2,
+                          typename ParameterTypeQualifier<Param3>::RefToConstT arg3,
+                          typename ParameterTypeQualifier<Param4>::RefToConstT arg4,
+                          typename ParameterTypeQualifier<Param5>::RefToConstT arg5,
+                          typename ParameterTypeQualifier<Param6>::RefToConstT arg6)
+    {
+        return funcptr(arg1, arg2, arg3, arg4, arg5, arg6);
+    }
+
+
+    ReturnT operator()(typename ParameterTypeQualifier<Param1>::RefToConstT arg1,
+                          typename ParameterTypeQualifier<Param2>::RefToConstT arg2,
+                          typename ParameterTypeQualifier<Param3>::RefToConstT arg3,
+                          typename ParameterTypeQualifier<Param4>::RefToConstT arg4,
+                          typename ParameterTypeQualifier<Param5>::RefToConstT arg5,
+                          typename ParameterTypeQualifier<Param6>::RefToConstT arg6,
+                          typename ParameterTypeQualifier<Param6>::RefToConstT arg7)
+    {
+        return funcptr(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+    }
+
 };
- *
- *
- *
- *
+
 //these are convinience fucntions for the template above
 // to make argument deduction work.
- * template<typename RT> inline
-FunctionPtr<RT> func_ptr (RT (*fp)())
+ template<typename RT> inline
+FunctionPointerToFunctor<RT> func_ptr (RT (*fp)())
 {
-    return FunctionPtr<RT>(fp);
+    return FunctionPointerToFunctor<RT>(fp);
 }
 
 template<typename RT, typename P1> inline
-FunctionPtr<RT,P1> func_ptr (RT (*fp)(P1))
+FunctionPointerToFunctor<RT,P1> func_ptr (RT (*fp)(P1))
 {
-    return FunctionPtr<RT,P1>(fp);
+    return FunctionPointerToFunctor<RT,P1>(fp);
 }
 
 template<typename RT, typename P1, typename P2> inline
-FunctionPtr<RT,P1,P2> func_ptr (RT (*fp)(P1,P2))
+FunctionPointerToFunctor<RT,P1,P2> func_ptr (RT (*fp)(P1,P2))
 {
-    return FunctionPtr<RT,P1,P2>(fp);
+    return FunctionPointerToFunctor<RT,P1,P2>(fp);
 }
 
 template<typename RT, typename P1, typename P2, typename P3> inline
-FunctionPtr<RT,P1,P2,P3> func_ptr (RT (*fp)(P1,P2,P3))
+FunctionPointerToFunctor<RT,P1,P2,P3> func_ptr (RT (*fp)(P1,P2,P3))
 {
-    return FunctionPtr<RT,P1,P2,P3>(fp);
+    return FunctionPointerToFunctor<RT,P1,P2,P3>(fp);
 }
+
+//@todo:xxxx
+//@todo
+//TODO
+/*@todo
+
 
  */
 
+}
 #endif	/* FUNCTIONALCOMPUTATION_UTIL_HPP */
 

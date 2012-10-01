@@ -14,13 +14,14 @@
 #include <kdl/frames.hpp>
 #include <kdl/joint.hpp>
 #include <kdl/frames_io.hpp>
-#include <kdl/chainfksolverpos_recursive.hpp>
-#include <kdl/chainiksolverpos_nr.hpp>
 #include <kdl/chain.hpp>
 #include <kdl/tree.hpp>
-#include <kdl/treeiksolvervel_wdls.hpp>
-#include <kdl/treejnttojacsolver.hpp>
+
+#include <kdl/chainfksolverpos_recursive.hpp>
+#include <kdl/chainfksolvervel_recursive.hpp>
 #include <kdl/treefksolverpos_recursive.hpp>
+#include <kdl/chainiksolverpos_nr.hpp>
+#include <kdl/treejnttojacsolver.hpp>
 #include <kdl_extensions/treeid_vereshchagin_composable.hpp>
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
 
@@ -102,44 +103,7 @@ int main(int argc, char** argv)
 
     KDL::Chain a_chain;
     twoBranchTree.getChain("L0", "L3", a_chain);
-    JntArray q(twoBranchTree.getNrOfJoints());
-    /*
-    std::cout << "Number of joints " << twoBranchTree.getNrOfJoints() << std::endl;
-    std::cout << "Number of segments " << twoBranchTree.getNrOfSegments() << std::endl;
-    SegmentMap::const_iterator iter;
-    SegmentMap::const_iterator iterRoot;
-    int i = 0;
-    std::string parentName = "";
-    std::string branchingLinkName = "";
-    Chain chainInTree[3];
-    iterRoot = twoBranchTree.getRootSegment();
-    for (iter = twoBranchTree.getSegments().begin(); iter != twoBranchTree.getSegments().end(); iter++)
-    {
-        //std::cout << iter->second.parent->first << std::endl;
-        if (iter->second.children.size() > 1)
-        {
-            branchingLinkName = iter->first;
-            std::cout << "branching "<<iter->first << std::endl;
-        }
-        if (iter->second.children.size() == 0)
-        {
-            std::cout << iter->first << std::endl;
-            //std::string rootName = iterRoot->second.segment.getName();
-            //std::string tipName = iter->second.segment.getName();
-            twoBranchTree.getChain(iterRoot->first, iter->first, chainInTree[i]);
-            std::cout << "Number of chain in the tree " << i << std::endl;
-            std::cout << "Number of chain joints in branch " << chainInTree[i].getNrOfJoints() << std::endl;
-            std::cout << "Number of chain links in  branch " << chainInTree[i].getNrOfSegments() << std::endl;
-            std::cout << chainInTree[i].getSegment(1).getName() << std::endl;
-            std::cout << chainInTree[i].getSegment(1).getJoint().getName() << std::endl;
 
-            i++;
-        }
-
-
-    }
-
-     */
     //arm root acceleration
     Vector linearAcc(0.0, -9.8, 0.0); //gravitational acceleration along Y
     Vector angularAcc(0.0, 0.0, 0.0);
@@ -199,20 +163,20 @@ int main(int argc, char** argv)
     std::cout << "Transform initial state" << lstate[0].X << std::endl;
     std::cout << "Twist initial state" << lstate[0].Xdot << std::endl;
     std::cout << "Acc Twist initial state" << lstate[0].Xdotdot << std::endl;
-    std::cout << "Wrench initial state" << lstate[0].F << std::endl;
+    std::cout << "Wrench initial state" << lstate[0].F << std::endl << std::endl;
 
     lstate[1] = kdl_extensions::compose(kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1))(twoBranchTree.getSegment("L1"), jstate[0], lstate[0]);
     std::cout << "Transform L1" << lstate[1].X << std::endl;
     std::cout << "Twist L1" << lstate[1].Xdot << std::endl;
     std::cout << "Acc Twist L1" << lstate[1].Xdotdot << std::endl;
-    std::cout << "Wrench L1" << lstate[1].F << std::endl;
+    std::cout << "Wrench L1" << lstate[1].F << std::endl << std::endl;
 
     lstate[2] = kdl_extensions::compose(kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1))(twoBranchTree.getSegment("L2"), jstate[1], lstate[1]);
 
     std::cout << "Transform L2" << lstate[2].X << std::endl;
     std::cout << "Twist L2" << lstate[2].Xdot << std::endl;
     std::cout << "Acc Twist L2" << lstate[2].Xdotdot << std::endl;
-    std::cout << "Wrench L2" << lstate[2].F << std::endl;
+    std::cout << "Wrench L2" << lstate[2].F << std::endl << std::endl;
 
     typedef Composite<kdl_extensions::transform<tree_iterator, twist>, kdl_extensions::transform<tree_iterator, pose> > compositeType1;
     typedef Composite< kdl_extensions::project<tree_iterator, wrench>, kdl_extensions::transform<tree_iterator, accTwist> > compositeType2;
@@ -222,99 +186,25 @@ int main(int argc, char** argv)
     compositeType3 composite2 = kdl_extensions::compose(kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1));
 
     DFSPolicy<KDL::Tree> mypolicy;
-    DFSPolicy<KDL::Chain> mypolicy1;
-   traverseGraph(twoBranchTree, composite2, mypolicy)(jstate, lstate, lstate2);
-   traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jstate, lstate, lstate2);
+    //DFSPolicy<KDL::Chain> mypolicy1;
 
+    traverseGraph(twoBranchTree, composite2, mypolicy)(jstate, lstate, lstate2);
+    //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jstate, lstate, lstate2);
 
-    //use cases 1, 2
-    /*
-    //rule 1 - order of precedence of computations
-    lstate[0] = iterator(twoBranchTree.getSegment("L1"), jstate[0], lstate[0], comp1);
-    std::cout << "L1 X" << lstate[0].X << std::endl;
-    std::cout << "L1 Xdot" << lstate[0].Xdot << std::endl;
-    std::cout << "L1 Xdotdot" << lstate[0].Xdotdot << std::endl << std::endl;
+    //This is just used as a reference to compare to our result.
+    //using standard KDL forward pose and vel solvers
+    TreeFkSolverPos_recursive kdlPoseSolver(twoBranchTree);
+    Frame myPose;
+    std::string segmentName = "L2";
+    JntArray myJstatePose(twoBranchTree.getNrOfJoints());
+    myJstatePose(0) = PI / 3.0;
+    myJstatePose(1) = -PI / 3.0;
+    myJstatePose(2) = PI / 4.0;
 
-    lstate[0] = iterator(twoBranchTree.getSegment("L1"), jstate[0], lstate[0], comp2);
-    std::cout << "L1 X" << lstate[0].X << std::endl;
-    std::cout << "L1 Xdot" << lstate[0].Xdot <<std::endl;
-    std::cout << "L1 Xdotdot" << lstate[0].Xdotdot << std::endl << std::endl;
+    //this returns the global computational state
+    kdlPoseSolver.JntToCart(myJstatePose, myPose, segmentName);
+    std::cout << myPose;
 
-    lstate[0] = iterator(twoBranchTree.getSegment("L1"), jstate[0], lstate[0], comp3);
-    std::cout << "L1 X" << lstate[0].X << std::endl;
-    std::cout << "L1 Xdot" << lstate[0].Xdot <<std::endl;
-    std::cout << "L1 Xdotdot" << lstate[0].Xdotdot << std::endl << std::endl;
-
-    //rule 2 - order of precedence of iterations
-    lstate[1] = iterator(twoBranchTree.getSegment("L2"), jstate[1], lstate[0], comp1);
-    std::cout << "L2 X" << lstate[1].X << std::endl;
-    std::cout << "L2 Xdot" << lstate[1].Xdot << std::endl;
-    std::cout << "L2 Xdotdot" << lstate[1].Xdotdot << std::endl << std::endl;
-
-    lstate[1] = iterator(twoBranchTree.getSegment("L2"), jstate[1], lstate[1], comp2);
-    std::cout << "L2 X" << lstate[1].X << std::endl;
-    std::cout << "L2 Xdot" << lstate[1].Xdot << std::endl;
-    std::cout << "L2 Xdotdot" << lstate[1].Xdotdot << std::endl << std::endl;
-
-    lstate[1] = iterator(twoBranchTree.getSegment("L2"), jstate[1], lstate[1], comp3);
-    std::cout << "L2 X" << lstate[1].X << std::endl;
-    std::cout << "L2 Xdot" << lstate[1].Xdot << std::endl;
-    std::cout << "L2 Xdotdot" << lstate[1].Xdotdot << std::endl << std::endl;
-     */
-    //use case 1,2 with several computations in single iteration
-    /*
-    lstate[0] = iterator(twoBranchTree.getSegment("L1"), jstate[0], lstate[0], comp2, comp1);
-    std::cout << "L1 X" << lstate[0].X << std::endl;
-    std::cout << "L1 Xdot" << lstate[0].Xdot << std::endl;
-    std::cout << "L1 Xdotdot" << lstate[0].Xdotdot << std::endl << std::endl;
-
-    lstate[0] = iterator(twoBranchTree.getSegment("L1"), jstate[0], lstate[0], comp3);
-    std::cout << "L1 X" << lstate[0].X << std::endl;
-    std::cout << "L1 Xdot" << lstate[0].Xdot << std::endl;
-    std::cout << "L1 Xdotdot" << lstate[0].Xdotdot << std::endl<< std::endl;
-
-    lstate[1] = iterator(twoBranchTree.getSegment("L2"), jstate[1], lstate[0], comp2, comp1);
-    std::cout << "L2 X" << lstate[1].X << std::endl;
-    std::cout << "L2 Xdot" << lstate[1].Xdot << std::endl;
-    std::cout << "L2 Xdotdot" << lstate[1].Xdotdot << std::endl<< std::endl;
-
-    lstate[1] = iterator(twoBranchTree.getSegment("L2"), jstate[0], lstate[1], comp3);
-    std::cout << "L2 X" << lstate[1].X << std::endl;
-    std::cout << "L2 Xdot" << lstate[1].Xdot << std::endl;
-    std::cout << "L2 Xdotdot" << lstate[1].Xdotdot << std::endl<< std::endl;
-     */
-    //use case
-    /*
-    traverse(a_chain, jstate, lstate, newComplexOperation2, comp1);
-    for (unsigned int i = 0; i < a_chain.getNrOfSegments(); i++)
-    {
-        std::cout << "Segment Name" << a_chain.getSegment(i).getName() << std::endl;
-        std::cout << "Chain X" << lstate[i].X << std::endl;
-        std::cout << "Chain Xdot" << lstate[i].Xdot << std::endl;
-        std::cout << "Chain Xdotdot" << lstate[i].Xdotdot << std::endl << std::endl;
-
-    }
-     */
-
-    /*
-    traverse(a_chain, jstate, lstate, comp1);
-    for (unsigned int i = 0; i < a_chain.getNrOfSegments(); i++)
-    {
-        std::cout << "TransformPose Chain X" << lstate[i].X << std::endl;
-        std::cout << "TransformPose Chain Xdot" << lstate[i].Xdot << std::endl;
-
-    }
-    std::cout << std::endl;
-    traverse(a_chain, jstate, lstate, comp2);
-    for (unsigned int i = 0; i < a_chain.getNrOfSegments(); i++)
-    {
-        std::cout << "TransformTwist Chain X" << lstate[i].X << std::endl;
-        std::cout << "TransformTwist Chain Xdot" << lstate[i].Xdot << std::endl;
-
-    }
-
-
-     */
     return 0;
 }
 

@@ -25,9 +25,10 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 #common commands for building c++ executables and libraries
 rosbuild_add_library(${PROJECT_NAME} include/kdl_extensions/functionalcomputation.hpp src/functionalcomputation.inl
                     include/kdl_extensions/functionalcomputation_kdltypes.hpp src/functionalcomputation_kdltypes.inl
-                    include/kdl_extensions/treeid_vereshchagin_composable.hpp src/treeid_vereshchagin_composable.cpp )
+                    include/kdl_extensions/treeid_vereshchagin_composable.hpp src/treeid_vereshchagin_composable.cpp
+                    include/kdl_extensions/computationalstate_kdltypes.hpp src/computationalstate_kdltypes.cpp)
 
-target_link_libraries(${PROJECT_NAME} orocos-kdl)
+target_link_libraries(${PROJECT_NAME} orocos-kdl geometric_semantics_kdl)
 
 #rosbuild_add_boost_directories()
 #rosbuild_link_boost(${PROJECT_NAME} thread)

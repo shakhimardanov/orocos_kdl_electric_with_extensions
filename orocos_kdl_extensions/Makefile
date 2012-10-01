@@ -335,6 +335,21 @@ examples/compositiontest.s:
 .PHONY : examples/compositiontest.s
 
 # target to build an object file
+src/computationalstate_kdltypes.o:
+	$(MAKE) -f CMakeFiles/kdl_extensions.dir/build.make CMakeFiles/kdl_extensions.dir/src/computationalstate_kdltypes.o
+.PHONY : src/computationalstate_kdltypes.o
+
+# target to preprocess a source file
+src/computationalstate_kdltypes.i:
+	$(MAKE) -f CMakeFiles/kdl_extensions.dir/build.make CMakeFiles/kdl_extensions.dir/src/computationalstate_kdltypes.i
+.PHONY : src/computationalstate_kdltypes.i
+
+# target to generate assembly for a file
+src/computationalstate_kdltypes.s:
+	$(MAKE) -f CMakeFiles/kdl_extensions.dir/build.make CMakeFiles/kdl_extensions.dir/src/computationalstate_kdltypes.s
+.PHONY : src/computationalstate_kdltypes.s
+
+# target to build an object file
 src/treeid_vereshchagin_composable.o:
 	$(MAKE) -f CMakeFiles/kdl_extensions.dir/build.make CMakeFiles/kdl_extensions.dir/src/treeid_vereshchagin_composable.o
 .PHONY : src/treeid_vereshchagin_composable.o
@@ -377,6 +392,9 @@ help:
 	@echo "... examples/compositiontest.o"
 	@echo "... examples/compositiontest.i"
 	@echo "... examples/compositiontest.s"
+	@echo "... src/computationalstate_kdltypes.o"
+	@echo "... src/computationalstate_kdltypes.i"
+	@echo "... src/computationalstate_kdltypes.s"
 	@echo "... src/treeid_vereshchagin_composable.o"
 	@echo "... src/treeid_vereshchagin_composable.i"
 	@echo "... src/treeid_vereshchagin_composable.s"

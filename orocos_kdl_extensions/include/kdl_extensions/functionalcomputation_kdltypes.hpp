@@ -11,10 +11,7 @@
 #include <kdl/tree.hpp>
 #include <kdl_extensions/treeid_vereshchagin_composable.hpp>
 #include <kdl_extensions/functionalcomputation.hpp>
-#include <Pose/PoseCoordinatesKDL.h>
-
-namespace gm = geometric_semantics;
-
+#include <kdl_extensions/computationalstate_kdltypes.hpp>
 
 namespace kdl_extensions
 {
@@ -79,7 +76,7 @@ public:
         std::cout << "Inside pose operation Transform value" << a_segmentState.X << std::endl;
         std::cout << "Inside pose operation Twist value" << a_segmentState.Xdot << std::endl;
         std::cout << "Inside pose operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
-        std::cout << "Inside pose operation Wrench value" << a_segmentState.F << std::endl;
+        std::cout << "Inside pose operation Wrench value" << a_segmentState.F << std::endl<< std::endl;
         return a_segmentState;
 
     };
@@ -149,7 +146,7 @@ public:
         std::cout << "Inside twist operation Transform value" << a_segmentState.X << std::endl;
         std::cout << "Inside twist operation Twist value" << a_segmentState.Xdot << std::endl;
         std::cout << "Inside twist operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
-        std::cout << "Inside twist operation Wrench value" << a_segmentState.F << std::endl;
+        std::cout << "Inside twist operation Wrench value" << a_segmentState.F << std::endl<< std::endl;
         return a_segmentState;
     };
 private:
@@ -208,7 +205,7 @@ public:
         std::cout << "Inside acctwist operation Transform value" << a_segmentState.X << std::endl;
         std::cout << "Inside acctwist operation Twist value" << a_segmentState.Xdot << std::endl;
         std::cout << "Inside acctwist operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
-        std::cout << "Inside acctwist operation Wrench value" << a_segmentState.F << std::endl;
+        std::cout << "Inside acctwist operation Wrench value" << a_segmentState.F << std::endl<< std::endl;
         return a_segmentState;
     };
 private:
@@ -290,7 +287,7 @@ public:
         std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
         std::cout << "Inside wrench operation Twist value " << a_segmentState.Xdot << std::endl;
         std::cout << "Inside wrench operation AccTwist value " << a_segmentState.Xdotdot << std::endl;
-        std::cout << "Inside wrench operation Wrench value " << a_segmentState.F << std::endl;
+        std::cout << "Inside wrench operation Wrench value " << a_segmentState.F << std::endl<< std::endl;
         return a_segmentState;
     };
 private:
