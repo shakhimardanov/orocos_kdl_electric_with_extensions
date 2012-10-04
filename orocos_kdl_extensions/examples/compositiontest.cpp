@@ -95,14 +95,11 @@ int main(int argc, char** argv)
     twoBranchTree.addSegment(segment2, "L1");
     twoBranchTree.addSegment(segment3, "L2");
     twoBranchTree.addSegment(segment4, "L3");
-    twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3
-    twoBranchTree.addSegment(segment6, "L5");
-    twoBranchTree.addSegment(segment7, "L6");
-    twoBranchTree.addSegment(segment8, "L6");
-    twoBranchTree.addSegment(segment9, "L8");
-
-    KDL::Chain a_chain;
-    twoBranchTree.getChain("L0", "L3", a_chain);
+    //twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3
+    //twoBranchTree.addSegment(segment6, "L5");
+    //twoBranchTree.addSegment(segment7, "L6");
+    //twoBranchTree.addSegment(segment8, "L6");
+    //twoBranchTree.addSegment(segment9, "L8");
 
     //arm root acceleration
     Vector linearAcc(0.0, -9.8, 0.0); //gravitational acceleration along Y
@@ -159,7 +156,7 @@ int main(int argc, char** argv)
     kdl_extensions::transform<tree_iterator, twist> _comp2;
     kdl_extensions::transform<tree_iterator, accTwist> _comp3;
     kdl_extensions::project<tree_iterator, wrench> _comp4;
-
+   
     std::cout << "Transform initial state" << lstate[0].X << std::endl;
     std::cout << "Twist initial state" << lstate[0].Xdot << std::endl;
     std::cout << "Acc Twist initial state" << lstate[0].Xdotdot << std::endl;
@@ -177,7 +174,7 @@ int main(int argc, char** argv)
     std::cout << "Twist L2" << lstate[2].Xdot << std::endl;
     std::cout << "Acc Twist L2" << lstate[2].Xdotdot << std::endl;
     std::cout << "Wrench L2" << lstate[2].F << std::endl << std::endl;
-
+   
     typedef Composite<kdl_extensions::transform<tree_iterator, twist>, kdl_extensions::transform<tree_iterator, pose> > compositeType1;
     typedef Composite< kdl_extensions::project<tree_iterator, wrench>, kdl_extensions::transform<tree_iterator, accTwist> > compositeType2;
     typedef Composite<compositeType2, compositeType1> compositeType3;
@@ -188,11 +185,13 @@ int main(int argc, char** argv)
     DFSPolicy<KDL::Tree> mypolicy;
     //DFSPolicy<KDL::Chain> mypolicy1;
 
+    std::cout << std::endl << std::endl<< "TRAVERSAL TEST" << std::endl << std::endl;
     traverseGraph(twoBranchTree, composite2, mypolicy)(jstate, lstate, lstate2);
     //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jstate, lstate, lstate2);
 
     //This is just used as a reference to compare to our result.
     //using standard KDL forward pose and vel solvers
+    /*
     TreeFkSolverPos_recursive kdlPoseSolver(twoBranchTree);
     Frame myPose;
     std::string segmentName = "L2";
@@ -204,7 +203,7 @@ int main(int argc, char** argv)
     //this returns the global computational state
     kdlPoseSolver.JntToCart(myJstatePose, myPose, segmentName);
     std::cout << myPose;
-
+    */
     return 0;
 }
 
