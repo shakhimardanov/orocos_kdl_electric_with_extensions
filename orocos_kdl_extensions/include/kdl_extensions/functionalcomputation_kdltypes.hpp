@@ -13,6 +13,8 @@
 #include <kdl_extensions/functionalcomputation.hpp>
 #include <kdl_extensions/computationalstate_kdltypes.hpp>
 
+//show fix all operations to take references to constant (constant input state)
+
 namespace kdl_extensions
 {
 //operation tags

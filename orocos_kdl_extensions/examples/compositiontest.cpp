@@ -188,7 +188,12 @@ int main(int argc, char** argv)
     std::cout << std::endl << std::endl<< "TRAVERSAL TEST" << std::endl << std::endl;
     traverseGraph(twoBranchTree, composite2, mypolicy)(jstate, lstate, lstate2);
     //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jstate, lstate, lstate2);
-
+    for(unsigned int i = 0 ; i < twoBranchTree.getNrOfSegments()+1; i++)
+    {
+        std::cout << std::endl << lstate[i].X << std::endl;
+        std::cout << lstate[i].Xdot << std::endl;
+        std::cout << lstate[i].Xdotdot << std::endl;
+    }
     //This is just used as a reference to compare to our result.
     //using standard KDL forward pose and vel solvers
     /*
