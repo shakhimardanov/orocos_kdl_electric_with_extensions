@@ -94,8 +94,6 @@ protected:
 };
 
 
-// TODO transform function does propagation over single segment from root to tip, so does have initial segment always state zero
-
 class transformPose : public BaseOperation
 {
 public:

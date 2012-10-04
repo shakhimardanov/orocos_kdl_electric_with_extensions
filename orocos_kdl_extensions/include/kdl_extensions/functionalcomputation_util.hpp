@@ -307,13 +307,7 @@ FunctionPointerToFunctor<RT,P1,P2,P3> func_ptr (RT (*fp)(P1,P2,P3))
     return FunctionPointerToFunctor<RT,P1,P2,P3>(fp);
 }
 
-//@todo:xxxx
-//@todo
-//TODO
-/*@todo
 
-
- */
 
 }
 #endif	/* FUNCTIONALCOMPUTATION_UTIL_HPP */

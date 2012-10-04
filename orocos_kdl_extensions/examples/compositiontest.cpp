@@ -190,9 +190,9 @@ int main(int argc, char** argv)
     //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jstate, lstate, lstate2);
     for(unsigned int i = 0 ; i < twoBranchTree.getNrOfSegments()+1; i++)
     {
-        std::cout << std::endl << lstate[i].X << std::endl;
-        std::cout << lstate[i].Xdot << std::endl;
-        std::cout << lstate[i].Xdotdot << std::endl;
+        std::cout << std::endl << lstate2[i].X << std::endl;
+        std::cout << lstate2[i].Xdot << std::endl;
+        std::cout << lstate2[i].Xdotdot << std::endl;
     }
     //This is just used as a reference to compare to our result.
     //using standard KDL forward pose and vel solvers

@@ -13,7 +13,7 @@
 #include <kdl_extensions/functionalcomputation.hpp>
 #include <kdl_extensions/computationalstate_kdltypes.hpp>
 
-//show fix all operations to take references to constant (constant input state)
+// TODO: fix all operations to take references to constant (constant input state)
 
 namespace kdl_extensions
 {
@@ -377,6 +377,7 @@ public:
     {
     };
 
+    //TODO: fix this parameters(state vectors are passed by value). As in the case of operations it should be ref to const.
     template <typename OP>
     inline static bool walk(KDL::Tree a_topology, std::vector<typename OP::Param2T> a_jointStateVectorIn, std::vector<typename OP::Param3T> a_linkStateVectorIn,
                             std::vector<typename OP::Param3T> a_linkStateVectorOut, OP a_op)
@@ -398,6 +399,7 @@ public:
                 std::cout << "Child element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
                 std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
                 a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[parentElement.q_nr]);
+                a_linkStateVectorOut[parentElement.q_nr] = a_linkStateVectorIn[(*childIter)->second.q_nr];
             }
         };
         return true;
