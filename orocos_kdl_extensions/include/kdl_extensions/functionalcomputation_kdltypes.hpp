@@ -11,9 +11,7 @@
 #include <kdl/tree.hpp>
 #include <kdl_extensions/treeid_vereshchagin_composable.hpp>
 #include <kdl_extensions/functionalcomputation.hpp>
-#include <kdl_extensions/computationalstate_kdltypes.hpp>
-
-// TODO: fix all operations to take references to constant (constant input state)
+//#include <kdl_extensions/computationalstate_kdltypes.hpp>
 
 namespace kdl_extensions
 {
@@ -65,7 +63,9 @@ public:
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
         //check for joint type None should be tree serialization function.
         //a_segmentState.X =  a_p3.X * segmentId->second.segment.pose(p_jointState.q); //in base coordinates
@@ -102,7 +102,9 @@ public:
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
         //check for joint type None should be tree serialization function.
         //a_segmentState.X =  a_p3.X * segmentId->second.segment.pose(p_jointState.q); //in base coordinates
@@ -135,7 +137,9 @@ public:
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
         a_segmentState.X = p_segmentState.X;
         a_segmentState.Xdotdot = p_segmentState.Xdotdot;
@@ -143,14 +147,14 @@ public:
         a_segmentState.Z = a_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, 1.0));
         //a_segmentState.Z = a_jointUnitTwist;
         a_segmentState.Vj = a_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, p_jointState.qdot));
-        
+
         //do we check here for the index of a joint (whether the joint is first/root in the chain)
         //if so, somehow an information about whether a segment is root or not should be sent here
         a_segmentState.Xdot = a_segmentState.X.Inverse(p_segmentState.Xdot) + a_segmentState.Vj;
         //std::cout << "Inside twist operation Transform value" << a_segmentState.X << std::endl;
         std::cout << "Inside twist operation Twist value" << a_segmentState.Xdot << std::endl;
-       // std::cout << "Inside twist operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
-       // std::cout << "Inside twist operation Wrench value" << a_segmentState.F << std::endl<< std::endl;
+        // std::cout << "Inside twist operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
+        // std::cout << "Inside twist operation Wrench value" << a_segmentState.F << std::endl<< std::endl;
         return a_segmentState;
     };
 private:
@@ -171,7 +175,9 @@ public:
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
         a_segmentState.X = p_segmentState.X;
         a_segmentState.Xdotdot = p_segmentState.Xdotdot;
@@ -202,7 +208,9 @@ public:
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
         a_segmentState = p_segmentState;
         a_segmentState.Xdotdot = p_segmentState.X.Inverse(p_segmentState.Xdotdot) + p_segmentState.Z * p_jointState.qdotdot + p_segmentState.Xdot * p_segmentState.Vj;
@@ -231,7 +239,9 @@ public:
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
         a_segmentState = p_segmentState;
         a_segmentState.Xdotdot = p_segmentState.X.Inverse(p_segmentState.Xdotdot) + p_segmentState.Z * p_jointState.qdotdot + p_segmentState.Xdot * p_segmentState.Vj;
@@ -259,7 +269,9 @@ public:
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
         a_segmentState = p_segmentState;
         a_segmentState.F = segmentId->getInertia() * a_segmentState.Xdotdot + a_segmentState.Xdot * (segmentId->getInertia() * a_segmentState.Xdot) - a_segmentState.Fext;
@@ -284,7 +296,9 @@ public:
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
         a_segmentState = p_segmentState;
         a_segmentState.F = segmentId->second.segment.getInertia() * a_segmentState.Xdotdot + a_segmentState.Xdot * (segmentId->second.segment.getInertia() * a_segmentState.Xdot) - a_segmentState.Fext;
@@ -292,8 +306,8 @@ public:
         std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
         std::cout << "Inside wrench operation Twist value " << a_segmentState.Xdot << std::endl;
         std::cout << "Inside wrench operation AccTwist value " << a_segmentState.Xdotdot << std::endl;
-        */
-        std::cout << "Inside wrench operation Wrench value " << a_segmentState.F << std::endl<< std::endl;
+         */
+        std::cout << "Inside wrench operation Wrench value " << a_segmentState.F << std::endl << std::endl;
         return a_segmentState;
     };
 private:
@@ -315,7 +329,9 @@ public:
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
         return segmentId->getInertia();
     };
@@ -336,7 +352,9 @@ public:
     typedef KDL::JointState Param2T;
     typedef KDL::SegmentState Param3T;
 
-    inline ReturnType operator()(Param1T segmentId, Param2T p_jointState, Param3T p_segmentState)
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
         return segmentId->second.segment.getInertia();
     };
@@ -356,8 +374,11 @@ public:
     };
 
     template <typename OP>
-    inline static bool walk(KDL::Chain a_topology, std::vector<typename OP::Param2T>& a_jointStateVectorIn, std::vector<typename OP::Param3T>& a_linkStateVectorIn,
-                            std::vector<typename OP::Param3T>& a_linkStateVectorOut, OP a_op)
+    inline static bool walk(typename ParameterTypeQualifier<KDL::Chain>::RefToConstT a_topology,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToConstT a_linkStateVectorIn,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToConstT a_linkStateVectorOut,
+                            OP a_op)
     {
         return true;
     };
@@ -378,16 +399,21 @@ public:
     };
 
     //TODO: fix this parameters(state vectors are passed by value). As in the case of operations it should be ref to const.
+    //just a simple test, should implement DFS algorithm
+    //we should also provide a global computational state to the operations
+    //how do we refer to the previous element in the link state vector
+    //maybe composed operation itself should not be called  directly but through another helper operation which also takes
+    //vector length info since we always need previous link state info
+
     template <typename OP>
-    inline static bool walk(KDL::Tree a_topology, std::vector<typename OP::Param2T> a_jointStateVectorIn, std::vector<typename OP::Param3T> a_linkStateVectorIn,
-                            std::vector<typename OP::Param3T> a_linkStateVectorOut, OP a_op)
+    inline static bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorIn,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
+                            OP a_op)
     {
-        //just a simple test, should implement DFS algorithm
-        //we should also provide a global computational state to the operations
-        //how do we refer to the previous element in the link state vector
-        //maybe composed operation itself should not be called  directly but through another helper operation which also takes
-        //vector length info since we always need previous link state info
-        
+
+
         for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
         {
             const KDL::TreeElement parentElement = iter->second;
@@ -395,11 +421,11 @@ public:
             std::cout << "Current/parent joint index and value " << parentElement.q_nr << " " << a_jointStateVectorIn[parentElement.q_nr].q << std::endl;
             for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
             {
-
                 std::cout << "Child element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
                 std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
+              //  a_linkStateVectorOut[parentElement.q_nr] = a_linkStateVectorIn[(*childIter)->second.q_nr];
                 a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[parentElement.q_nr]);
-                a_linkStateVectorOut[parentElement.q_nr] = a_linkStateVectorIn[(*childIter)->second.q_nr];
+                
             }
         };
         return true;

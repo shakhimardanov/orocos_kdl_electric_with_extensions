@@ -58,7 +58,9 @@ public:
     typedef typename OperationTParameterType<OperationT2, 6 > ::Type Param6T;
     typedef typename OperationTParameterType<OperationT2, 7 > ::Type Param7T;
 
-    Composite(typename ParameterTypeQualifier<OperationT1>::RefToConstT a_p1, typename ParameterTypeQualifier<OperationT2>::RefToConstT a_p2) : OperationTDerived<OperationT1, 1 > (a_p1), OperationTDerived<OperationT2, 2 > (a_p2)
+    Composite(typename ParameterTypeQualifier<OperationT1>::RefToConstT a_p1,
+              typename ParameterTypeQualifier<OperationT2>::RefToConstT a_p2) :
+              OperationTDerived<OperationT1, 1 > (a_p1), OperationTDerived<OperationT2, 2 > (a_p2)
     {
     };
 
@@ -70,14 +72,17 @@ public:
     };
     //overloaded for two params
 
-    inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT a_param1, typename ParameterTypeQualifier<Param2T>::RefToConstT a_param2)
+    inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT a_param1,
+            typename ParameterTypeQualifier<Param2T>::RefToConstT a_param2)
     {
         return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2));
     };
 
     //overloaded for three params
 
-    inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT a_segmentId, typename ParameterTypeQualifier<Param2T>::RefToConstT a_jointstate, typename ParameterTypeQualifier<Param3T>::RefToConstT a_linkstate)
+    inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT a_segmentId,
+            typename ParameterTypeQualifier<Param2T>::RefToConstT a_jointstate,
+            typename ParameterTypeQualifier<Param3T>::RefToConstT a_linkstate)
     {
         return OperationTDerived<OperationT1, 1 > ::operator()(a_segmentId, a_jointstate, OperationTDerived<OperationT2, 2 > ::operator()(a_segmentId, a_jointstate, a_linkstate));
     };
@@ -125,16 +130,27 @@ public:
     typedef typename OperationTParameterType<OperationT, 6 > ::Type Param6T;
     typedef typename OperationTParameterType<OperationT, 7 > ::Type Param7T;
 
-    IterateOver(typename ParameterTypeQualifier<Topology>::RefToConstT a_topol, typename ParameterTypeQualifier<OperationT>::RefToConstT a_oper, typename ParameterTypeQualifier<TraversalPolicy<Topology> >::RefToConstT policy) :
-    a_graph(a_topol), a_op(a_oper), a_policy(policy)
+    //TODO: check parameter qualifiers
+
+    IterateOver(typename ParameterTypeQualifier<Topology>::RefToConstT a_topol,
+                typename ParameterTypeQualifier<OperationT>::RefToConstT a_oper,
+                typename ParameterTypeQualifier<TraversalPolicy<Topology> >::RefToConstT policy) :
+                a_graph(a_topol), a_op(a_oper), a_policy(policy)
     {
+
     };
 
     ~IterateOver()
     {
+
     };
 
-    inline bool operator()(std::vector<Param2T> a_jointStateVectorIn, std::vector<Param3T> a_linkStateVectorIn, std::vector<Param3T> a_linkStateVectorOut)
+    // TODO: make this function call general/independent of any domain. Currently parameter names imply that it is for kinematic chains
+    // also need to make type of container a template parameter e.g template <typename ParamT> class Container = std::vector
+
+    inline bool operator()(typename ParameterTypeQualifier<std::vector<Param2T> >::RefToConstT a_jointStateVectorIn,
+            typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_linkStateVectorIn,
+            typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_linkStateVectorOut)
     {
         return a_policy.walk(a_graph, a_jointStateVectorIn, a_linkStateVectorIn, a_linkStateVectorOut, a_op);
     };
