@@ -274,7 +274,7 @@ class FunctionPointerToFunctor
                           typename ParameterTypeQualifier<Param4>::RefToConstT arg4,
                           typename ParameterTypeQualifier<Param5>::RefToConstT arg5,
                           typename ParameterTypeQualifier<Param6>::RefToConstT arg6,
-                          typename ParameterTypeQualifier<Param6>::RefToConstT arg7)
+                          typename ParameterTypeQualifier<Param7>::RefToConstT arg7)
     {
         return funcptr(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
     }

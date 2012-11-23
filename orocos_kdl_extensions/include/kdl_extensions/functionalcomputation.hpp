@@ -15,9 +15,6 @@
 namespace kdl_extensions
 {
 
-//operation traits new version
-//should make this recursive like in typelist
-
 //--------------------------------------------//
 //for empty base class optimization
 
@@ -65,26 +62,29 @@ public:
     };
 
     //overloaded for one param
-
+    //compose(f,g)(t) will give the following result
+    //f(x), where x = g(t)
     inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT a_param1)
     {
         return OperationTDerived<OperationT1, 1 > ::operator()(OperationTDerived<OperationT2, 2 > ::operator()(a_param1));
     };
     //overloaded for two params
-
+    //compose(f,g)(x,y) will give the following result
+    //f(x,z), where z = g(x,y)
     inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT a_param1,
-            typename ParameterTypeQualifier<Param2T>::RefToConstT a_param2)
+                                 typename ParameterTypeQualifier<Param2T>::RefToConstT a_param2)
     {
         return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2));
     };
 
     //overloaded for three params
-
-    inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT a_segmentId,
-            typename ParameterTypeQualifier<Param2T>::RefToConstT a_jointstate,
-            typename ParameterTypeQualifier<Param3T>::RefToConstT a_linkstate)
+    //compose(f,g)(x,y,t) will give the following result
+    //f(x,y,z) where z = g(x,y,t)
+    inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT a_param1,
+                                 typename ParameterTypeQualifier<Param2T>::RefToConstT a_param2,
+                                 typename ParameterTypeQualifier<Param3T>::RefToConstT a_param3)
     {
-        return OperationTDerived<OperationT1, 1 > ::operator()(a_segmentId, a_jointstate, OperationTDerived<OperationT2, 2 > ::operator()(a_segmentId, a_jointstate, a_linkstate));
+        return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, a_param2, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2, a_param3));
     };
     //can add further overloads when needed
 
@@ -97,6 +97,7 @@ inline Composite<OperationT1, OperationT2> compose(OperationT1 a_p1, OperationT2
 {
     return Composite<OperationT1, OperationT2 > (a_p1, a_p2);
 };
+
 
 //traversal policies
 //primary templates
@@ -131,7 +132,7 @@ public:
     typedef typename OperationTParameterType<OperationT, 7 > ::Type Param7T;
 
     //TODO: check parameter qualifiers
-
+    //Constructor
     IterateOver(typename ParameterTypeQualifier<Topology>::RefToConstT a_topol,
                 typename ParameterTypeQualifier<OperationT>::RefToConstT a_oper,
                 typename ParameterTypeQualifier<TraversalPolicy<Topology> >::RefToConstT policy) :
@@ -146,13 +147,18 @@ public:
     };
 
     // TODO: make this function call general/independent of any domain. Currently parameter names imply that it is for kinematic chains
-    // also need to make type of container a template parameter e.g template <typename ParamT> class Container = std::vector
+    // also need to make type of container a template parameter
+    // e.g template <typename ParamT, typename Allocator = allocator<ParamT> > class Container = std::vector
+    // this traversal can only be used with operations which take three arguments
+    // need to introduce the other versions too.
 
-    inline bool operator()(typename ParameterTypeQualifier<std::vector<Param2T> >::RefToConstT a_jointStateVectorIn,
-            typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_linkStateVectorIn,
-            typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_linkStateVectorOut)
+    inline bool operator()(typename ParameterTypeQualifier<std::vector<Param2T> >::RefToConstT a_param1,
+                           typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_param2,
+                           typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_param3)
+    // 2nd and 3rd params have the same type because computations are returned by a value, whereas traversal are return by a reference param.
+    //Think of a better solution
     {
-        return a_policy.walk(a_graph, a_jointStateVectorIn, a_linkStateVectorIn, a_linkStateVectorOut, a_op);
+        return a_policy.walk(a_graph, a_param1, a_param2, a_param3, a_op);
     };
 private:
     Topology a_graph;

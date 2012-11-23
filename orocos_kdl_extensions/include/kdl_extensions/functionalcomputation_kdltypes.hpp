@@ -413,7 +413,7 @@ public:
                             OP a_op)
     {
 
-
+        //this is forward/outward iterative walk
         for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
         {
             const KDL::TreeElement parentElement = iter->second;
@@ -427,7 +427,11 @@ public:
                 a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[parentElement.q_nr]);
                 
             }
-        };
+        }
+        
+        //this is reverse/inward iterative walk
+        //for()
+
         return true;
     };
 

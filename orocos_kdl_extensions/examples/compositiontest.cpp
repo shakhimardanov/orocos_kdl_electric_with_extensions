@@ -26,7 +26,11 @@
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
 
 
-
+bool myTestComputation(int z, int y, int x)
+{
+    printf("Hello myTestComputation");
+    return true;
+}
 
 
 
@@ -150,19 +154,24 @@ int main(int argc, char** argv)
      */
 
     lstate[0].Xdotdot = rootAcc;
+
+
     //use case relying in templates
     using namespace kdl_extensions;
+
     kdl_extensions::transform<tree_iterator, pose> _comp1;
     kdl_extensions::transform<tree_iterator, twist> _comp2;
     kdl_extensions::transform<tree_iterator, accTwist> _comp3;
     kdl_extensions::project<tree_iterator, wrench> _comp4;
+    
    
     std::cout << "Transform initial state" << lstate[0].X << std::endl;
     std::cout << "Twist initial state" << lstate[0].Xdot << std::endl;
     std::cout << "Acc Twist initial state" << lstate[0].Xdotdot << std::endl;
     std::cout << "Wrench initial state" << lstate[0].F << std::endl << std::endl;
 
-    lstate[1] = kdl_extensions::compose(kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1))(twoBranchTree.getSegment("L1"), jstate[0], lstate[0]);
+    lstate[1] = kdl_extensions::compose( kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1) ) (twoBranchTree.getSegment("L1"), jstate[0], lstate[0]);
+
     std::cout << "Transform L1" << lstate[1].X << std::endl;
     std::cout << "Twist L1" << lstate[1].Xdot << std::endl;
     std::cout << "Acc Twist L1" << lstate[1].Xdotdot << std::endl;
@@ -174,19 +183,23 @@ int main(int argc, char** argv)
     std::cout << "Twist L2" << lstate[2].Xdot << std::endl;
     std::cout << "Acc Twist L2" << lstate[2].Xdotdot << std::endl;
     std::cout << "Wrench L2" << lstate[2].F << std::endl << std::endl;
-   
-    typedef Composite<kdl_extensions::transform<tree_iterator, twist>, kdl_extensions::transform<tree_iterator, pose> > compositeType1;
+    
+    //typedef Composite<kdl_extensions::func_ptr(myTestComputation), kdl_extensions::func_ptr(myTestComputation) > compositeType0;
+    typedef Composite< kdl_extensions::transform<tree_iterator, twist>, kdl_extensions::transform<tree_iterator, pose> > compositeType1;
     typedef Composite< kdl_extensions::project<tree_iterator, wrench>, kdl_extensions::transform<tree_iterator, accTwist> > compositeType2;
     typedef Composite<compositeType2, compositeType1> compositeType3;
 
     compositeType1 composite1 = kdl_extensions::compose(_comp2, _comp1);
     compositeType3 composite2 = kdl_extensions::compose(kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1));
 
-    DFSPolicy<KDL::Tree> mypolicy;
-    //DFSPolicy<KDL::Chain> mypolicy1;
+    kdl_extensions::DFSPolicy<KDL::Tree> mypolicy;
+    kdl_extensions::DFSPolicy<KDL::Chain> mypolicy1;
 
     std::cout << std::endl << std::endl<< "TRAVERSAL TEST" << std::endl << std::endl;
+
     traverseGraph(twoBranchTree, composite2, mypolicy)(jstate, lstate, lstate2);
+    //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);
+
     //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jstate, lstate, lstate2);
     for(unsigned int i = 0 ; i < twoBranchTree.getNrOfSegments()+1; i++)
     {
