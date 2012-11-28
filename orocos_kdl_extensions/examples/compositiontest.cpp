@@ -26,19 +26,18 @@
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
 
 
+
+using namespace std;
+using namespace KDL;
+
 bool myTestComputation(int z, int y, int x)
 {
     printf("Hello myTestComputation");
     return true;
 }
 
-
-
-using namespace std;
-
-int main(int argc, char** argv)
+void createMyTree(KDL::Tree& twoBranchTree)
 {
-    using namespace KDL;
     Joint joint1 = Joint("j1", Joint::RotZ, 1, 0, 0.01);
     Joint joint2 = Joint("j2", Joint::RotZ, 1, 0, 0.01);
     Joint joint3 = Joint("j3", Joint::RotZ, 1, 0, 0.01);
@@ -93,23 +92,30 @@ int main(int argc, char** argv)
     segment8.setInertia(inerSegment8);
     segment9.setInertia(inerSegment9);
 
-    Tree twoBranchTree("L0");
+    //Tree twoBranchTree("L0");
 
     twoBranchTree.addSegment(segment1, "L0");
     twoBranchTree.addSegment(segment2, "L1");
     twoBranchTree.addSegment(segment3, "L2");
     twoBranchTree.addSegment(segment4, "L3");
-    //twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3
-    //twoBranchTree.addSegment(segment6, "L5");
-    //twoBranchTree.addSegment(segment7, "L6");
-    //twoBranchTree.addSegment(segment8, "L6");
-    //twoBranchTree.addSegment(segment9, "L8");
+   // twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3
+   // twoBranchTree.addSegment(segment6, "L5");
+   // twoBranchTree.addSegment(segment7, "L6");
+   // twoBranchTree.addSegment(segment8, "L6");
+   // twoBranchTree.addSegment(segment9, "L8");
 
+}
+
+
+int main(int argc, char** argv)
+{
+    Tree twoBranchTree("L0");
+
+    createMyTree(twoBranchTree);
     //arm root acceleration
     Vector linearAcc(0.0, -9.8, 0.0); //gravitational acceleration along Y
     Vector angularAcc(0.0, 0.0, 0.0);
     Twist rootAcc(linearAcc, angularAcc);
-
 
     std::vector<JointState> jstate;
     jstate.resize(twoBranchTree.getNrOfSegments() + 1);
@@ -123,36 +129,7 @@ int main(int argc, char** argv)
     lstate.resize(twoBranchTree.getNrOfSegments() + 1);
     std::vector<SegmentState> lstate2;
     lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
-    /*
-    ForwardKinematics fkcomputation(rootAcc);
-    ForceComputer forcecomputer;
-
     
-    //computation for a single node
-    lstate[0] = fkcomputation(twoBranchTree.getSegments().begin(), jstate[0]);
-    KDL::Wrench force = forcecomputer(twoBranchTree.getSegments().begin(), lstate[0]);
-    //std::cout << "value of returned frame" << lstate[0].X << std::endl;
-
-    //computation for the whole tree
-    Frame pose;
-    //option 1: uses external iterator, user needs to check conditions
-    for (SegmentMap::const_iterator iter = twoBranchTree.getSegments().begin(); iter != twoBranchTree.getSegments().end(); iter++)
-    {
-        lstate[iter->second.q_nr] = fkcomputation(iter, jstate[iter->second.q_nr]);
-        force = forcecomputer(iter, lstate[iter->second.q_nr]);
-        pose = pose * lstate[iter->second.q_nr].X;
-
-         std::cout << "Loop:: value of returned joint index" << iter->second.q_nr << std::endl;
-         std::cout << "Loop:: value of returned local frame" << lstate[iter->second.q_nr].X << std::endl;
-        std::cout << "Loop:: value of returned global frame" << pose << std::endl;
-        std::cout << "Loop:: value of returned link force" << force << std::endl;
-    }
-    std::cout << std::endl << std::endl << "Here, loop is done" << std::endl << std::endl << std::endl;
-
-    //option 2: uses internal iterator, inflexible because difficult to define a closure
-    transform(twoBranchTree.getSegments().begin(), twoBranchTree.getSegments().end(), jstate.begin(), lstate.begin(), fkcomputation);
-     */
-
     lstate[0].Xdotdot = rootAcc;
 
 
@@ -165,10 +142,10 @@ int main(int argc, char** argv)
     kdl_extensions::project<tree_iterator, wrench> _comp4;
     
    
-    std::cout << "Transform initial state" << lstate[0].X << std::endl;
-    std::cout << "Twist initial state" << lstate[0].Xdot << std::endl;
-    std::cout << "Acc Twist initial state" << lstate[0].Xdotdot << std::endl;
-    std::cout << "Wrench initial state" << lstate[0].F << std::endl << std::endl;
+    std::cout << "Transform initial state" << std::endl << lstate[0].X << std::endl;
+    std::cout << "Twist initial state" << std::endl << lstate[0].Xdot << std::endl;
+    std::cout << "Acc Twist initial state" << std::endl << lstate[0].Xdotdot << std::endl;
+    std::cout << "Wrench initial state" << std::endl<< lstate[0].F << std::endl << std::endl;
 
     lstate[1] = kdl_extensions::compose( kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1) ) (twoBranchTree.getSegment("L1"), jstate[0], lstate[0]);
 
@@ -209,19 +186,7 @@ int main(int argc, char** argv)
     }
     //This is just used as a reference to compare to our result.
     //using standard KDL forward pose and vel solvers
-    /*
-    TreeFkSolverPos_recursive kdlPoseSolver(twoBranchTree);
-    Frame myPose;
-    std::string segmentName = "L2";
-    JntArray myJstatePose(twoBranchTree.getNrOfJoints());
-    myJstatePose(0) = PI / 3.0;
-    myJstatePose(1) = -PI / 3.0;
-    myJstatePose(2) = PI / 4.0;
-
-    //this returns the global computational state
-    kdlPoseSolver.JntToCart(myJstatePose, myPose, segmentName);
-    std::cout << myPose;
-    */
+    
     return 0;
 }
 
