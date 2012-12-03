@@ -158,7 +158,7 @@ public:
     // 2nd and 3rd params have the same type because computations are returned by a value, whereas traversal are return by a reference param.
     //Think of a better solution
     {
-        return a_policy.walk(a_graph, a_param1, a_param2, a_param3, a_op);
+        return a_policy.forwardwalk(a_graph, a_param1, a_param2, a_param3, a_op);
     };
 private:
     Topology a_graph;
@@ -172,7 +172,7 @@ private:
 template <typename Topology, typename OP, template <typename > class Policy>
 inline IterateOver<Topology, OP, Policy> traverseGraph(Topology a_graph, OP a_op, Policy<Topology> a_policy)
 {
-    //Policy<Topology>::walk(a_graph, a_op, a_p1,a_p2,a_p3);
+    //Policy<Topology>::forwardwalk(a_graph, a_op, a_p1,a_p2,a_p3);
 
     return IterateOver<Topology, OP, Policy > (a_graph, a_op, a_policy);
 };

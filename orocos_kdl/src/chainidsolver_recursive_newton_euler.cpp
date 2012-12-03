@@ -65,18 +65,20 @@ namespace KDL{
                 v[i]=X[i].Inverse(v[i-1])+vj;
                 a[i]=X[i].Inverse(a[i-1])+S[i]*qdotdot_+v[i]*vj;
             }
-	    //std::cout <<i <<" F " << X[i] << std::endl;
-	    //std::cout << i << " S " <<  S[i] <<std::endl;
-	    //std::cout <<i << " Velocity of link" << v[i] << std::endl;
-	    //std::cout <<i <<" Acceleration of link" << a[i] << std::endl;
-	    //std::cout <<i <<" S[i]" << S[i] << std::endl;
+
+            std::cout << " Segment name " <<  chain.segments[i].getName() <<std::endl;
+            std::cout <<" F" << i << std::endl << X[i] << std::endl;
+            //std::cout << i << " S " <<  S[i] <<std::endl;
+            std::cout << " Velocity of link" << i << std::endl << v[i] << std::endl;
+            std::cout <<" Acceleration of link " << i << std::endl << a[i] << std::endl;
+            //std::cout <<i <<" S[i]" << S[i] << std::endl;
 
             //Calculate the force for the joint
             //Collect RigidBodyInertia and external forces
             RigidBodyInertia Ii=chain.getSegment(i).getInertia();
             f[i]=Ii*a[i]+v[i]*(Ii*v[i])-f_ext[i];
-	    //std::cout << i << " f_ext_link" << f_ext[i] << std::endl;
-	    //std::cout << i << " Force at link" << f[i] << std::endl;
+            //std::cout << i << " f_ext_link" << f_ext[i] << std::endl;
+            std::cout << " Force at link" << i << std::endl << f[i] << std::endl;
         }
         //Sweep from leaf to root
         j=nj-1;
