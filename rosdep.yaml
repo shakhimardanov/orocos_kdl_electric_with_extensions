@@ -9,3 +9,7 @@ python-sip:
   gentoo: dev-python/sip
   arch: sip
   freebsd: py26-sip
+
+graphviz-dev:
+  ubuntu: graphviz-dev
+  debian: graphviz-dev

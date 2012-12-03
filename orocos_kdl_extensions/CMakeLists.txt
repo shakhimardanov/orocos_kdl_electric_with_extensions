@@ -9,6 +9,9 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 #  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
 #set(ROS_BUILD_TYPE RelWithDebInfo)
 
+INCLUDE_DIRECTORIES(/usr/local/include/graphviz)
+LINK_DIRECTORIES(/usr/local/lib/graphviz)
+
 rosbuild_init()
 project(kdl_extensions)
 
@@ -34,4 +37,4 @@ target_link_libraries(${PROJECT_NAME} orocos-kdl geometric_semantics_kdl)
 #rosbuild_link_boost(${PROJECT_NAME} thread)
 
 rosbuild_add_executable(compositiontest examples/compositiontest.cpp)
-target_link_libraries(compositiontest ${PROJECT_NAME})
+target_link_libraries(compositiontest ${PROJECT_NAME} graph gvc)

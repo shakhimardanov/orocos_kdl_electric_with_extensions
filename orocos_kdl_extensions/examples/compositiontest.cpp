@@ -7,28 +7,18 @@
 
 
 
+#include <gvc.h>
+#include <graph.h>
+
 #include <cstdlib>
-#include <list>
-#include <algorithm>
-#include <functional>
-#include <iterator>
 #include <kdl/frames.hpp>
 #include <kdl/joint.hpp>
 #include <kdl/frames_io.hpp>
 #include <kdl/chain.hpp>
 #include <kdl/tree.hpp>
-/*
-    #include <kdl/chainfksolverpos_recursive.hpp>
-    #include <kdl/chainfksolvervel_recursive.hpp>
-    #include <kdl/treefksolverpos_recursive.hpp>
-    #include <kdl/chainiksolverpos_nr.hpp>
-    #include <kdl/treejnttojacsolver.hpp>
- */
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
 #include <kdl_extensions/treeid_vereshchagin_composable.hpp>
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
-#include <c++/4.4/bits/stl_map.h>
-#include <c++/4.4/bits/stl_vector.h>
 
 
 
@@ -110,6 +100,71 @@ void createMyTree(KDL::Tree& twoBranchTree)
     twoBranchTree.addSegment(segment9, "L8");
 
 }
+
+
+int drawMyTree(KDL::Tree& twoBranchTree)
+{
+
+
+
+    //graphviz stuff
+    /****************************************/
+    Agraph_t *g;
+    
+    GVC_t *gvc;
+
+    /* set up a graphviz context */
+    gvc = gvContext();
+
+    /* parse command line args - minimally argv[0] sets layout engine */
+    //gvParseArgs(gvc, argc, argv);
+
+    /* Create a simple digraph */
+    g = agopen("g", AGDIGRAPH);
+    
+    SegmentMap::const_iterator iter0 = twoBranchTree.getSegments().begin();
+
+    std::vector<Agnode_t*> nodeVector;
+    nodeVector.resize(twoBranchTree.getNrOfSegments());
+    int k = 0;
+    std::vector<Agedge_t*> edgeVector;
+    edgeVector.resize(twoBranchTree.getNrOfJoints());
+    
+    for(SegmentMap::const_iterator iter=iter0; iter !=twoBranchTree.getSegments().end(); ++iter)
+    {
+
+        const char* name = new char[iter->second.segment.getName().size()+1];
+        name = iter->second.segment.getName().c_str();
+        nodeVector[k] = agnode(g, name);
+        agsafeset(nodeVector[k], "color", "red", "");
+        agsafeset(nodeVector[k], "shape", "box", "");
+        ++k;
+        delete[] name;
+    }
+
+    //k = agedge(g, x, i);
+    // agsafeset(e,"label", "joint0", "");
+
+    /* Compute a layout using layout engine from command line args */
+    //  gvLayoutJobs(gvc, g);
+    gvLayout(gvc, g, "dot");
+
+    /* Write the graph according to -T and -o options */
+    //gvRenderJobs(gvc, g);
+    gvRenderFilename(gvc, g, "ps","tests.ps");
+
+    /* Free layout data */
+    gvFreeLayout(gvc, g);
+
+    /* Free graph structures */
+    agclose(g);
+
+    /* close output file, free context, and return number of errors */
+    return (gvFreeContext(gvc));
+
+
+}
+
 
 void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& rootLink, const std::string& tipLink, KDL::Vector& grav,
                                 std::vector<JointState>& jointState, std::vector<SegmentState>& linkState)
@@ -280,13 +335,12 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
 
 
 
-
 int main(int argc, char** argv)
 {
     Tree twoBranchTree("L0");
     createMyTree(twoBranchTree);
 
-    
+
     //arm root acceleration
     Vector linearAcc(0.0, 0.0, -9.8); //gravitational acceleration along Z
     Vector angularAcc(0.0, 0.0, 0.0);
@@ -319,6 +373,7 @@ int main(int argc, char** argv)
     tipLink = "L4";
     computeRNEDynamicsForChain(twoBranchTree,rootLink, tipLink, linearAcc, jstate, lstate);
 
+    drawMyTree(twoBranchTree);
 
     return 0;
 }

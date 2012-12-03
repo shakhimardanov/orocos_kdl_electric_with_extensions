@@ -13,6 +13,9 @@
   <depend package="geometric_semantics"/>
   <depend package="geometric_semantics_kdl"/>
   
+  <rosdep name="graphviz-dev"/>
+  <rosdep name="graphviz"/>
+  
 
   <export>
         <rosdoc config="rosdoc.yaml" />
