@@ -9,6 +9,7 @@
 
 #include <gvc.h>
 #include <graph.h>
+#include <cstring>
 
 #include <cstdlib>
 #include <kdl/frames.hpp>
@@ -101,49 +102,71 @@ void createMyTree(KDL::Tree& twoBranchTree)
 
 }
 
-
-int drawMyTree(KDL::Tree& twoBranchTree)
+void drawMyTree(KDL::Tree& twoBranchTree)
 {
-
-
-
+    
     //graphviz stuff
     /****************************************/
     Agraph_t *g;
-    
     GVC_t *gvc;
 
     /* set up a graphviz context */
     gvc = gvContext();
-
-    /* parse command line args - minimally argv[0] sets layout engine */
-    //gvParseArgs(gvc, argc, argv);
-
     /* Create a simple digraph */
     g = agopen("g", AGDIGRAPH);
-    
-    SegmentMap::const_iterator iter0 = twoBranchTree.getSegments().begin();
 
+    //create vector to hold nodes
     std::vector<Agnode_t*> nodeVector;
-    nodeVector.resize(twoBranchTree.getNrOfSegments());
-    int k = 0;
-    std::vector<Agedge_t*> edgeVector;
-    edgeVector.resize(twoBranchTree.getNrOfJoints());
+    nodeVector.resize(twoBranchTree.getNrOfSegments() + 1);
+    int segmentIndex = twoBranchTree.getSegments().size();
+    printf("size %d\n", segmentIndex);
     
-    for(SegmentMap::const_iterator iter=iter0; iter !=twoBranchTree.getSegments().end(); ++iter)
+    //fill in the node vector by iterating over tree segments
+    SegmentMap::const_iterator iter0 = twoBranchTree.getSegments().begin();
+    for (SegmentMap::const_iterator iter = iter0; iter != twoBranchTree.getSegments().end(); ++iter)
     {
+        int stringLength = iter->second.segment.getName().size();
+        char name[stringLength + 1];
+        strcpy(name, iter->second.segment.getName().c_str());
+        nodeVector[segmentIndex] = agnode(g, name);
+        agsafeset(nodeVector[segmentIndex], "color", "red", "");
+        agsafeset(nodeVector[segmentIndex], "shape", "box", "");
+        segmentIndex--;
 
-        const char* name = new char[iter->second.segment.getName().size()+1];
-        name = iter->second.segment.getName().c_str();
-        nodeVector[k] = agnode(g, name);
-        agsafeset(nodeVector[k], "color", "red", "");
-        agsafeset(nodeVector[k], "shape", "box", "");
-        ++k;
-        delete[] name;
+    }
+    //reset segment index to its initial value
+    segmentIndex = twoBranchTree.getSegments().size();
+
+    //create vector to hold edges
+    std::vector<Agedge_t*> edgeVector;
+    edgeVector.resize(twoBranchTree.getNrOfJoints() + 1);
+    int jointIndex = twoBranchTree.getNrOfJoints() + 1;
+    printf("size %d\n", jointIndex);
+
+    //fill in edge vector by iterating over joints in the tree
+    for (SegmentMap::const_iterator iter = iter0; iter != twoBranchTree.getSegments().end(); ++iter)
+    {
+        //TODO: Fix node-edge connection relation
+        int stringLength = iter->second.segment.getJoint().getName().size();
+        std::cout << "Joint name " << iter->second.segment.getJoint().getName() << std::endl;
+        char name[stringLength + 1];
+        strcpy(name, iter->second.segment.getJoint().getName().c_str());
+//        for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
+//        {
+//            edgeVector[(*childIter)->second.q_nr] = agedge(g, nodeVector[segmentIndex], nodeVector[jointIndex]);
+//            agsafeset(edgeVector[(*childIter)->second.q_nr], "label", name, "");
+//        }
+//
+        if(jointIndex != 0)
+        {
+            edgeVector[jointIndex] = agedge(g, nodeVector[segmentIndex], nodeVector[jointIndex]);
+            agsafeset(edgeVector[jointIndex], "label", name, "");
+        }
+        segmentIndex--;
+        jointIndex--;
     }
 
-    //k = agedge(g, x, i);
-    // agsafeset(e,"label", "joint0", "");
+
 
     /* Compute a layout using layout engine from command line args */
     //  gvLayoutJobs(gvc, g);
@@ -159,10 +182,9 @@ int drawMyTree(KDL::Tree& twoBranchTree)
     /* Free graph structures */
     agclose(g);
 
+    gvFreeContext(gvc);
     /* close output file, free context, and return number of errors */
-    return (gvFreeContext(gvc));
-
-
+    return;
 }
 
 
