@@ -98,6 +98,11 @@ inline Composite<OperationT1, OperationT2> compose(OperationT1 a_p1, OperationT2
     return Composite<OperationT1, OperationT2 > (a_p1, a_p2);
 };
 
+//TODO: the composition above is defined for computational operations
+//one should define a composition for tree walking operations.
+//Composition of forward and reverse walks
+
+
 
 //traversal policies
 //primary templates

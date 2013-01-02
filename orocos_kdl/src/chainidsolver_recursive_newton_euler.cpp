@@ -86,15 +86,15 @@ namespace KDL{
 	{
             if(chain.getSegment(i).getJoint().getType()!=Joint::None)
 	    {
-		//std::cout <<i <<" S[i] in inward sweep " << S[i] << std::endl;
-		//std::cout <<i <<" F[i] in inward sweep " << f[i] << std::endl;
+		std::cout <<i <<" S[i] in inward sweep " << S[i] << std::endl;
+		std::cout <<i <<" F[i] in inward sweep " << f[i] << std::endl;
                 torques(j--)=dot(S[i],f[i]);
 	    }
             if(i!=0)
                 f[i-1]=f[i-1]+X[i]*f[i];
-	    //std::cout << i << " Force in force rec" << f[i] << std::endl;
+	    std::cout << i << " Force in force rec" << f[i] << std::endl;
         }
-	//std::cout << std::endl;
+	std::cout << std::endl;
 	return 0;
     }
 }//namespace
