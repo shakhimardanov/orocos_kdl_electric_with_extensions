@@ -83,7 +83,7 @@ Inside wrench operation Wrench value
 [   0.0244206,   0.0613195,       -2.45,        0.98,           0,  0.00976823]
 
 Child element name in current iteration L5
-Current/child joint index and value 4 0
+Current/child joint index and value 5 0
 Inside pose operation Transform value
 [[           1,           0,           0;
             0,           1,           0;
@@ -114,127 +114,87 @@ Inside wrench operation Wrench value
 
 Parent element name in current iteration L4
 Current/parent joint index and value 3 0
+Child element name in current iteration M0
+Current/child joint index and value 4 0
+Inside pose operation Transform value
+[[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,        -0.4,           0]]
+Inside twist operation Twist value
+[     0.72698,      -0.149,           0,           0,           0,         0.4]
+Inside acctwist operation AccTwist value
+[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
+Inside wrench operation Wrench value 
+[   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
+
 Parent element name in current iteration L5
-Current/parent joint index and value 4 0
-Child element name in current iteration L6
-Current/child joint index and value 5 0
-Inside pose operation Transform value
-[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,        -0.4,           0]]
-Inside twist operation Twist value
-[        0.76,    0.069282,           0,           0,           0,         0.6]
-Inside acctwist operation AccTwist value
-[   0.0277128,      -0.016,        -9.8,           0,           0,           0]
-Inside wrench operation Wrench value 
-[  -0.0034641,       0.146,       -2.45,        0.98,           0, -0.00138564]
-
-Parent element name in current iteration L6
 Current/parent joint index and value 5 0
-Child element name in current iteration L7
-Current/child joint index and value 6 0
-Inside pose operation Transform value
-[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,        -0.4,           0]]
-Inside twist operation Twist value
-[           1,    0.069282,           0,           0,           0,         0.6]
-Inside acctwist operation AccTwist value
-[   0.0277128,      -0.016,        -9.8,           0,           0,           0]
-Inside wrench operation Wrench value 
-[  -0.0034641,       0.182,       -2.45,        0.98,           0, -0.00138564]
-
-Parent element name in current iteration L7
-Current/parent joint index and value 6 0
-Child element name in current iteration L8
-Current/child joint index and value 7 0
-Inside pose operation Transform value
-[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,        -0.4,           0]]
-Inside twist operation Twist value
-[        1.24,    0.069282,           0,           0,           0,         0.6]
-Inside acctwist operation AccTwist value
-[   0.0277128,      -0.016,        -9.8,           0,           0,           0]
-Inside wrench operation Wrench value 
-[  -0.0034641,       0.218,       -2.45,        0.98,           0, -0.00138564]
-
-Parent element name in current iteration L8
-Current/parent joint index and value 7 0
-Child element name in current iteration L9
-Current/child joint index and value 8 0
-Inside pose operation Transform value
-[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,        -0.4,           0]]
-Inside twist operation Twist value
-[        1.48,    0.069282,           0,           0,           0,         0.6]
-Inside acctwist operation AccTwist value
-[   0.0277128,      -0.016,        -9.8,           0,           0,           0]
-Inside wrench operation Wrench value 
-[  -0.0034641,       0.254,       -2.45,        0.98,           0, -0.00138564]
-
-Parent element name in current iteration L9
-Current/parent joint index and value 8 0
+Parent element name in current iteration M0
+Current/parent joint index and value 4 0
 
 This is reverse iteration/inward
-Parent element name in current reverse iteration L9
-Current/parent joint index and value in reverse iteration8 0
-Parent element name in current reverse iteration L8
-Current/parent joint index and value in reverse iteration7 0
-Child element name in current  reverse iteration L9
-Current/child joint index and value 8 0
-Torque at the curent joint -0.00277128
-Parent element name in current reverse iteration L7
-Current/parent joint index and value in reverse iteration6 0
-Child element name in current  reverse iteration L8
-Current/child joint index and value 7 0
-Torque at the curent joint -0.0069282
-Parent element name in current reverse iteration L6
-Current/parent joint index and value in reverse iteration5 0
-Child element name in current  reverse iteration L7
-Current/child joint index and value 6 0
-Torque at the curent joint -0.0124708
+Parent element name in current reverse iteration M0
+Current/parent joint index and value in reverse iteration 4 0
+
 Parent element name in current reverse iteration L5
-Current/parent joint index and value in reverse iteration4 0
-Child element name in current  reverse iteration L6
-Current/child joint index and value 5 0
-Torque at the curent joint -0.019399
+Current/parent joint index and value in reverse iteration 5 0
+
 Parent element name in current reverse iteration L4
-Current/parent joint index and value in reverse iteration3 0
+Current/parent joint index and value in reverse iteration 3 0
+
+Child element name in current  reverse iteration M0
+Current/child joint index and value 4 0
+Total spatial force on a parent [   0.0488411,    0.170639,        -4.9,        2.94,           0,   0.0293047]
+Total spatial force on a child [   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
+Torque at the curent joint 0.0195365
+
 Parent element name in current reverse iteration L3
-Current/parent joint index and value in reverse iteration2 0.785398
+Current/parent joint index and value in reverse iteration 2 0.785398
+
 Child element name in current  reverse iteration L4
 Current/child joint index and value 3 0
-Torque at the curent joint 0.0195365
+Total spatial force on a parent [   0.0732617,    0.231959,       -7.35,        5.88,           0,   0.0586094]
+Total spatial force on a child [   0.0488411,    0.170639,        -4.9,        2.94,           0,   0.0293047]
+Torque at the curent joint 0.0488411
+
 Parent element name in current reverse iteration L2
-Current/parent joint index and value in reverse iteration1 -1.0472
+Current/parent joint index and value in reverse iteration 1 -1.0472
+
 Child element name in current  reverse iteration L3
 Current/child joint index and value 2 0.785398
-Torque at the curent joint 0.0488411
+Total spatial force on a parent [    -0.11568,    0.289823,        -9.8,     7.21668,     6.23668,   0.0865284]
+Total spatial force on a child [   0.0732617,    0.231959,       -7.35,        5.88,           0,   0.0586094]
+Torque at the curent joint 0.087914
+
 Child element name in current  reverse iteration L5
-Current/child joint index and value 4 0
-Torque at the curent joint -0.0277128
+Current/child joint index and value 5 0
+Total spatial force on a parent [   -0.119144,    0.399823,      -12.25,     9.17668,     6.23668,   0.0837571]
+Total spatial force on a child [  -0.0034641,        0.11,       -2.45,        0.98,           0, -0.00138564]
+Torque at the curent joint -0.00277128
+
 Parent element name in current reverse iteration L1
-Current/parent joint index and value in reverse iteration0 1.0472
+Current/parent joint index and value in reverse iteration 0 1.0472
+
 Child element name in current  reverse iteration L2
 Current/child joint index and value 1 -1.0472
-Torque at the curent joint -0.0139699
+Total spatial force on a parent [    0.286685,    0.311093,       -14.7,     13.4195,    -9.07242,   0.0360996]
+Total spatial force on a child [   -0.119144,    0.399823,      -12.25,     9.17668,     6.23668,   0.0837571]
+Torque at the curent joint 0.0360996
+
 Parent element name in current reverse iteration L0
-Current/parent joint index and value in reverse iteration0 1.0472
+Current/parent joint index and value in reverse iteration 0 1.0472
+
 Child element name in current  reverse iteration L1
 Current/child joint index and value 0 1.0472
-Torque at the curent joint 0.355965
+Total spatial force on a parent [    0.160613,    0.714917,       -29.4,     30.9261,     3.10519,    0.186873]
+Total spatial force on a child [    0.160613,    0.714917,       -29.4,     30.9261,     3.10519,    0.186873]
+Torque at the curent joint 0.251119
+
 RNE dynamics values 
 q, qdot 1.047198, 0.200000
 q, qdot -1.047198, 0.400000
 q, qdot 0.785398, -0.200000
-q, qdot 0.000000, 0.000000
-q, qdot 0.000000, 0.000000
 q, qdot 0.000000, 0.000000
 q, qdot 0.000000, 0.000000
  Segment name L1
@@ -261,7 +221,7 @@ q, qdot 0.000000, 0.000000
 [   0.0277128,      -0.016,        -9.8,           0,           0,           0]
  Force at link1
 [  -0.0034641,       0.074,       -2.45,        0.98,           0, -0.00138564]
- Segment name L5
+ Segment name L3
  F2
 [[    0.707107,   -0.707107,           0;
      0.707107,    0.707107,           0;
@@ -273,7 +233,7 @@ q, qdot 0.000000, 0.000000
 [   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
  Force at link2
 [   0.0244206,   0.0613195,       -2.45,        0.98,           0,  0.00976823]
- Segment name L6
+ Segment name L4
  F3
 [[           1,           0,           0;
             0,           1,           0;
@@ -285,7 +245,7 @@ q, qdot 0.000000, 0.000000
 [   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
  Force at link3
 [   0.0244206,   0.0773195,       -2.45,        0.98,           0,  0.00976823]
- Segment name L7
+ Segment name M0
  F4
 [[           1,           0,           0;
             0,           1,           0;
@@ -297,56 +257,24 @@ q, qdot 0.000000, 0.000000
 [   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
  Force at link4
 [   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
- Segment name L8
- F5
-[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,        -0.4,           0]]
- Velocity of link5
-[     0.88698,      -0.149,           0,           0,           0,         0.4]
- Acceleration of link 5
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
- Force at link5
-[   0.0244206,     0.10932,       -2.45,        0.98,           0,  0.00976823]
- Segment name L9
- F6
-[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,        -0.4,           0]]
- Velocity of link6
-[     1.04698,      -0.149,           0,           0,           0,         0.4]
- Acceleration of link 6
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
- Force at link6
-[   0.0244206,     0.12532,       -2.45,        0.98,           0,  0.00976823]
-6 S[i] in inward sweep [         0.4,           0,           0,           0,           0,           1]
-6 F[i] in inward sweep [   0.0244206,     0.12532,       -2.45,        0.98,           0,  0.00976823]
-6 Force in force rec[   0.0244206,     0.12532,       -2.45,        0.98,           0,  0.00976823]
-5 S[i] in inward sweep [         0.4,           0,           0,           0,           0,           1]
-5 F[i] in inward sweep [   0.0488411,    0.234639,        -4.9,        2.94,           0,   0.0293047]
-5 Force in force rec[   0.0488411,    0.234639,        -4.9,        2.94,           0,   0.0293047]
 4 S[i] in inward sweep [         0.4,           0,           0,           0,           0,           1]
-4 F[i] in inward sweep [   0.0732617,    0.327959,       -7.35,        5.88,           0,   0.0586094]
-4 Force in force rec[   0.0732617,    0.327959,       -7.35,        5.88,           0,   0.0586094]
+4 F[i] in inward sweep [   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
+4 Force in force rec[   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
 3 S[i] in inward sweep [         0.4,           0,           0,           0,           0,           1]
-3 F[i] in inward sweep [   0.0976823,    0.405278,        -9.8,         9.8,           0,   0.0976823]
-3 Force in force rec[   0.0976823,    0.405278,        -9.8,         9.8,           0,   0.0976823]
+3 F[i] in inward sweep [   0.0488411,    0.170639,        -4.9,        2.94,           0,   0.0293047]
+3 Force in force rec[   0.0488411,    0.170639,        -4.9,        2.94,           0,   0.0293047]
 2 S[i] in inward sweep [         0.4,-7.84691e-18,           0,           0,           0,           1]
-2 F[i] in inward sweep [    0.122103,    0.466598,      -12.25,        14.7,           0,    0.146523]
-2 Force in force rec[    0.122103,    0.466598,      -12.25,        14.7,           0,    0.146523]
+2 F[i] in inward sweep [   0.0732617,    0.231959,       -7.35,        5.88,           0,   0.0586094]
+2 Force in force rec[   0.0732617,    0.231959,       -7.35,        5.88,           0,   0.0586094]
 1 S[i] in inward sweep [         0.4, 8.11796e-18,           0,           0,           0,           1]
-1 F[i] in inward sweep [   -0.247059,    0.490274,       -14.7,     14.8393,     13.8593,    0.193979]
-1 Force in force rec[   -0.247059,    0.490274,       -14.7,     14.8393,     13.8593,    0.193979]
+1 F[i] in inward sweep [    -0.11568,    0.289823,        -9.8,     7.21668,     6.23668,   0.0865284]
+1 Force in force rec[    -0.11568,    0.289823,        -9.8,     7.21668,     6.23668,   0.0865284]
 0 S[i] in inward sweep [         0.4,-8.11796e-18,           0,           0,           0,           1]
-0 F[i] in inward sweep [     0.30106,    0.467096,      -17.15,     23.3421,    -11.0138,   0.0951554]
-0 Force in force rec[     0.30106,    0.467096,      -17.15,     23.3421,    -11.0138,   0.0951554]
+0 F[i] in inward sweep [    0.193155,    0.253093,      -12.25,     11.9495,    -6.52631,   0.0402565]
+0 Force in force rec[    0.193155,    0.253093,      -12.25,     11.9495,    -6.52631,   0.0402565]
 
-q, qdot, torques 1.047198, 0.200000, 0.215580
-q, qdot, torques -1.047198, 0.400000, 0.095155
-q, qdot, torques 0.785398, -0.200000, 0.195365
-q, qdot, torques 0.000000, 0.000000, 0.136755
-q, qdot, torques 0.000000, 0.000000, 0.087914
+q, qdot, torques 1.047198, 0.200000, 0.117518
+q, qdot, torques -1.047198, 0.400000, 0.040256
+q, qdot, torques 0.785398, -0.200000, 0.087914
 q, qdot, torques 0.000000, 0.000000, 0.048841
 q, qdot, torques 0.000000, 0.000000, 0.019536

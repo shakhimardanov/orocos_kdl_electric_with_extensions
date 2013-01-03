@@ -46,6 +46,7 @@ void createMyTree(KDL::Tree& twoBranchTree)
     Joint joint7 = Joint("j7", Joint::RotZ, 1, 0, 0.01);
     Joint joint8 = Joint("j8", Joint::RotZ, 1, 0, 0.01);
     Joint joint9 = Joint("j9", Joint::RotZ, 1, 0, 0.01);
+    Joint joint10 = Joint("j10", Joint::RotZ, 1, 0, 0.01);
 
     Frame frame1(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
     Frame frame2(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
@@ -56,6 +57,7 @@ void createMyTree(KDL::Tree& twoBranchTree)
     Frame frame7(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
     Frame frame8(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
     Frame frame9(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
+    Frame frame10(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
 
     //Segment (const Joint &joint=Joint(Joint::None), const Frame &f_tip=Frame::Identity(), const RigidBodyInertia &I=RigidBodyInertia::Zero())
     Segment segment1 = Segment("L1", joint1, frame1);
@@ -67,6 +69,7 @@ void createMyTree(KDL::Tree& twoBranchTree)
     Segment segment7 = Segment("L7", joint7, frame7);
     Segment segment8 = Segment("L8", joint8, frame8);
     Segment segment9 = Segment("L9", joint9, frame9);
+    Segment segment10 = Segment("M0", joint10, frame10);
     // 	RotationalInertia (double Ixx=0, double Iyy=0, double Izz=0, double Ixy=0, double Ixz=0, double Iyz=0)
     RotationalInertia rotInerSeg1(0.0, 0.0, 0.0, 0.0, 0.0, 0.0); //around symmetry axis of rotation
     double pointMass = 0.25; //in kg
@@ -80,6 +83,7 @@ void createMyTree(KDL::Tree& twoBranchTree)
     RigidBodyInertia inerSegment7(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
     RigidBodyInertia inerSegment8(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
     RigidBodyInertia inerSegment9(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
+    RigidBodyInertia inerSegment10(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
 
     segment1.setInertia(inerSegment1);
     segment2.setInertia(inerSegment2);
@@ -90,20 +94,22 @@ void createMyTree(KDL::Tree& twoBranchTree)
     segment7.setInertia(inerSegment7);
     segment8.setInertia(inerSegment8);
     segment9.setInertia(inerSegment9);
+    segment10.setInertia(inerSegment10);
 
     //Tree twoBranchTree("L0");
 
     twoBranchTree.addSegment(segment1, "L0");
     twoBranchTree.addSegment(segment2, "L1");
     twoBranchTree.addSegment(segment3, "L2");
-    //twoBranchTree.addSegment(segment4, "L2");
+//   // twoBranchTree.addSegment(segment4, "L2");
     twoBranchTree.addSegment(segment4, "L3");
-    twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3
+    twoBranchTree.addSegment(segment10, "L4");
+    twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
 //    //twoBranchTree.addSegment(segment5, "L4");
-    twoBranchTree.addSegment(segment6, "L5"); // j5 is co-located with j3
-    twoBranchTree.addSegment(segment7, "L6");
-    twoBranchTree.addSegment(segment8, "L7");
-    twoBranchTree.addSegment(segment9, "L8");
+//    twoBranchTree.addSegment(segment6, "L5");
+//    twoBranchTree.addSegment(segment7, "L6");
+//    twoBranchTree.addSegment(segment8, "L7");
+//    twoBranchTree.addSegment(segment9, "L8");
 
 }
 
@@ -437,7 +443,7 @@ int main(int argc, char** argv)
     //This is just used as a reference to compare to our result.
     //using standard KDL forward pose and vel solvers
     rootLink = "L0";
-    tipLink = "L9";
+    tipLink = "M0";
     computeRNEDynamicsForChain(twoBranchTree, rootLink, tipLink, linearAcc, jstate, lstate3);
 
 //    drawMyTree(twoBranchTree);

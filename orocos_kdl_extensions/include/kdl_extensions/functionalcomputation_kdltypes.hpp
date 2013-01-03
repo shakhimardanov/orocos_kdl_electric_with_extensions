@@ -471,20 +471,28 @@ public:
 #ifdef CHECK
 
             std::cout << "Parent element name in current reverse iteration " << parentElement.segment.getName() << std::endl;
-            std::cout << "Current/parent joint index and value in reverse iteration" << parentElement.q_nr << " " << a_jointStateVectorIn[parentElement.q_nr].q << std::endl;
+            std::cout << "Current/parent joint index and value in reverse iteration " << parentElement.q_nr << " " << a_jointStateVectorIn[parentElement.q_nr].q << std::endl << std::endl;
 #endif
+            //TODO: make torque accessible. In order to do this we need to introduce mutable joint computational state.
+            //in total having 4 (2 immutable and mutable per link and per joint)
+            //also need to put this iteration into a separate reverse walk
             for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
             {
 //                  torques(j--)=dot(S[i],f[i]);
-                    double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
+//                  f[i - 1] = f[i - 1] + X[i] * f[i];
+                 //the second term should be summed for all children of the parent and then added to the parent's force.
                     a_linkStateVectorIn[parentElement.q_nr].F = a_linkStateVectorIn[parentElement.q_nr].F + a_linkStateVectorIn[(*childIter)->second.q_nr].X * a_linkStateVectorIn[(*childIter)->second.q_nr].F;
-//                    f[i - 1] = f[i - 1] + X[i] * f[i];
+                    double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
+                   
+
 
 #ifdef CHECK
 
                 std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
                 std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
-                std::cout << "Torque at the curent joint " << torque << std::endl;
+                std::cout << "Total spatial force on a parent " << a_linkStateVectorIn[parentElement.q_nr].F << std::endl;
+                std::cout << "Total spatial force on a child " << a_linkStateVectorIn[(*childIter)->second.q_nr].F << std::endl;
+                std::cout << "Torque at the curent joint " << torque << std::endl<< std::endl;
 #endif
 
             }
