@@ -9,8 +9,8 @@
 
 //#define CHECK_IN_MAIN // switches on console output in main
 
-#include <gvc.h>
-#include <graph.h>
+#include <graphviz/gvc.h>
+#include <graphviz/graph.h>
 #include <cstring>
 
 #include <cstdlib>
@@ -428,11 +428,11 @@ int main(int argc, char** argv)
     lstate[0].Xdotdot = rootAcc;
 
 
-    computeTemplatedDynamicsForTree(twoBranchTree,linearAcc, jstate, lstate,lstate2);
+    computeTemplatedDynamicsForTree(twoBranchTree, linearAcc, jstate, lstate, lstate2);
 
     std::string rootLink = "L0";
     std::string tipLink = "L9";
-     std::vector<SegmentState> lstate3;
+    std::vector<SegmentState> lstate3;
     lstate3.resize(twoBranchTree.getNrOfSegments() + 1);
     std::vector<SegmentState> lstate4;
     lstate4.resize(twoBranchTree.getNrOfSegments() + 1);
