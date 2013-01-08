@@ -645,6 +645,8 @@ public:
 
 };
 
+namespace kdle = kdl_extensions;
+
 #include "../../src/functionalcomputation_kdltypes.inl"
 #endif	/* FUNCTIONALCOMPUTATION_KDLTYPES_HPP */
 

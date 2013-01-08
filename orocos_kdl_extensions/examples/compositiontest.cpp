@@ -335,14 +335,12 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
                                      std::vector<SegmentState>& linkState, std::vector<SegmentState>& linkState2)
 {
 
-
+    using namespace kdle;
     printf("Templated dynamics values for Tree \n");
-
-    using namespace kdl_extensions;
-    kdl_extensions::transform<tree_iterator, pose> _comp1;
-    kdl_extensions::transform<tree_iterator, twist> _comp2;
-    kdl_extensions::transform<tree_iterator, accTwist> _comp3;
-    kdl_extensions::project<tree_iterator, wrench> _comp4;
+    kdle::transform<tree_iterator, pose> _comp1;
+    kdle::transform<tree_iterator, twist> _comp2;
+    kdle::transform<tree_iterator, accTwist> _comp3;
+    kdle::project<tree_iterator, wrench> _comp4;
 
 #ifdef CHECK_IN_MAIN
     std::cout << "Transform initial state" << std::endl << linkState[0].X << std::endl;
@@ -351,8 +349,8 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     std::cout << "Wrench initial state" << std::endl << linkState[0].F << std::endl << std::endl;
 #endif
 
-    linkState[1] = kdl_extensions::compose(_comp2, _comp1) (twoBranchTree.getSegment("L1"), jointState[0], linkState[0]);
-    linkState[1] = kdl_extensions::compose(kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1)) (twoBranchTree.getSegment("L1"), jointState[0], linkState[0]);
+    linkState[1] = kdle::compose(_comp2, _comp1) (twoBranchTree.getSegment("L1"), jointState[0], linkState[0]);
+    linkState[1] = kdle::compose(kdle::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1)) (twoBranchTree.getSegment("L1"), jointState[0], linkState[0]);
 
 #ifdef CHECK_IN_MAIN
     std::cout << "Transform L1" << linkState[1].X << std::endl;
@@ -361,7 +359,7 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     std::cout << "Wrench L1" << linkState[1].F << std::endl << std::endl;
 #endif
 
-    linkState[2] = kdl_extensions::compose(kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1))(twoBranchTree.getSegment("L2"), jointState[1], linkState[1]);
+    linkState[2] = kdle::compose(kdl_extensions::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1))(twoBranchTree.getSegment("L2"), jointState[1], linkState[1]);
 
 #ifdef CHECK_IN_MAIN
     std::cout << "Transform L2" << linkState[2].X << std::endl;
@@ -371,8 +369,8 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
 #endif
 
     //typedef Composite<kdl_extensions::func_ptr(myTestComputation), kdl_extensions::func_ptr(myTestComputation) > compositeType0;
-    typedef Composite< kdl_extensions::transform<tree_iterator, twist>, kdl_extensions::transform<tree_iterator, pose> > compositeType1;
-    typedef Composite< kdl_extensions::project<tree_iterator, wrench>, kdl_extensions::transform<tree_iterator, accTwist> > compositeType2;
+    typedef Composite< kdle::transform<tree_iterator, twist>, kdle::transform<tree_iterator, pose> > compositeType1;
+    typedef Composite< kdle::project<tree_iterator, wrench>, kdle::transform<tree_iterator, accTwist> > compositeType2;
     typedef Composite<compositeType2, compositeType1> compositeType3;
 
     compositeType1 composite1 = kdl_extensions::compose(_comp2, _comp1);
@@ -380,12 +378,20 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
 
     kdl_extensions::DFSPolicy<KDL::Tree> mypolicy;
     kdl_extensions::DFSPolicy_ver2<KDL::Tree, inward> mypolicy1;
+    kdl_extensions::DFSPolicy_ver2<KDL::Tree, outward> mypolicy2;
 
     std::cout << std::endl << std::endl << "TRAVERSAL TEST" << std::endl << std::endl;
 
-    traverseGraph(twoBranchTree, composite2, mypolicy)(jointState, linkState, linkState2);
+    //traverseGraph(twoBranchTree, composite2, mypolicy)(jointState, linkState, linkState2);
+
+    kdle::IterateOver_ver2<KDL::Tree, kdle::transform<tree_iterator,pose>, outward, kdle::DFSPolicy_ver2> traversal;
+    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, linkState, linkState2);
+
+    std::cout << std::endl << std::endl << "VER2 TRAVERSAL TEST" << std::endl << std::endl;
+    traverseGraph_ver2(twoBranchTree, composite1, mypolicy1)(jointState, linkState, linkState2);
+    
     //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);
-    //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jstate, lstate, lstate2);
+    //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jointState, linkState, linkState2);
 #ifdef CHECK_IN_MAIN
     for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
     {

@@ -113,12 +113,12 @@ template <typename Topology>
 class BFSPolicy;
 
 //this is a test DFS version which allows to define a direction of traversal
+//the direction of a sweep is defined with respect to a root or leaves of the tree structure
+//thus any sweep is outgoing when it starts as the root and any sweep is ingoing when it starts at the leaves.
 enum Direction{outward=0, inward=1};
 
 template <typename Topology, Direction sweepDirection=outward>
 class DFSPolicy_ver2;
-
-
 
 
 
@@ -212,9 +212,12 @@ public:
     typedef typename OperationTParameterType<OperationT, 7 > ::Type Param7T;
 
     //TODO: check parameter qualifiers
+    IterateOver_ver2()
+    {};
     //Constructor
     IterateOver_ver2(typename ParameterTypeQualifier<Topology>::RefToConstT a_topol,
                 typename ParameterTypeQualifier<OperationT>::RefToConstT a_oper,
+                Direction sweepDir,
                 typename ParameterTypeQualifier<TraversalPolicy<Topology, sweepDirection> >::RefToConstT policy) :
                 a_graph(a_topol), a_op(a_oper), a_policy(policy)
     {
@@ -240,6 +243,14 @@ private:
 
 };
 
+
+template <typename Topology, typename OP, Direction sweepDir, template <typename, Direction> class Policy>
+inline IterateOver_ver2<Topology, OP, sweepDir , Policy> traverseGraph_ver2(Topology a_graph, OP a_op, Policy<Topology, sweepDir> a_policy)
+{
+    //Policy<Topology>::forwardwalk(a_graph, a_op, a_p1,a_p2,a_p3);
+
+    return IterateOver_ver2<Topology, OP, sweepDir, Policy > (a_graph, a_op, sweepDir, a_policy);
+};
 
 };
 
