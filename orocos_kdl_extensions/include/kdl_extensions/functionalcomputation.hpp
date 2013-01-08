@@ -113,9 +113,9 @@ template <typename Topology>
 class BFSPolicy;
 
 //this is a test DFS version which allows to define a direction of traversal
-enum Direction{forward=0, reverse=1};
+enum Direction{outward=0, inward=1};
 
-template <typename Topology, class Direction direction = 0 >
+template <typename Topology, Direction sweepDirection=outward>
 class DFSPolicy_ver2;
 
 
@@ -191,8 +191,13 @@ inline IterateOver<Topology, OP, Policy> traverseGraph(Topology a_graph, OP a_op
     return IterateOver<Topology, OP, Policy > (a_graph, a_op, a_policy);
 };
 
+
+
+
+
 //this is a version of traversal which works with DFS_ver2
-template<typename Topology, typename OperationT, template <typename Topology, class Direction dir = forward> class TraversalPolicy>
+template<typename Topology, typename OperationT, Direction sweepDirection, 
+         template <typename Topology, Direction sweepDirection=outward> class TraversalPolicy>
 class IterateOver_ver2
 {
 public:
@@ -210,7 +215,7 @@ public:
     //Constructor
     IterateOver_ver2(typename ParameterTypeQualifier<Topology>::RefToConstT a_topol,
                 typename ParameterTypeQualifier<OperationT>::RefToConstT a_oper,
-                typename ParameterTypeQualifier<TraversalPolicy<Topology, Direction> >::RefToConstT policy) :
+                typename ParameterTypeQualifier<TraversalPolicy<Topology, sweepDirection> >::RefToConstT policy) :
                 a_graph(a_topol), a_op(a_oper), a_policy(policy)
     {
 
@@ -221,24 +226,17 @@ public:
 
     };
 
-    // TODO: make this function call general/independent of any domain. Currently parameter names imply that it is for kinematic chains
-    // also need to make type of container a template parameter
-    // e.g template <typename ParamT, typename Allocator = allocator<ParamT> > class Container = std::vector
-    // this traversal can only be used with operations which take three arguments
-    // need to introduce the other versions too.
 
     inline bool operator()(typename ParameterTypeQualifier<std::vector<Param2T> >::RefToConstT a_param1,
                            typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_param2,
                            typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_param3)
-    // 2nd and 3rd params have the same type because computations are returned by a value, whereas traversal are return by a reference param.
-    //Think of a better solution
     {
         return a_policy.walk(a_graph, a_param1, a_param2, a_param3, a_op);
     };
 private:
     Topology a_graph;
     OperationT a_op;
-    TraversalPolicy<Topology, Direction> a_policy;
+    TraversalPolicy<Topology, sweepDirection> a_policy;
 
 };
 

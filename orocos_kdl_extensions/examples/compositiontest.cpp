@@ -379,13 +379,12 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     compositeType3 composite2 = kdl_extensions::compose(kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1));
 
     kdl_extensions::DFSPolicy<KDL::Tree> mypolicy;
-    kdl_extensions::DFSPolicy<KDL::Chain> mypolicy1;
+    kdl_extensions::DFSPolicy_ver2<KDL::Tree, inward> mypolicy1;
 
     std::cout << std::endl << std::endl << "TRAVERSAL TEST" << std::endl << std::endl;
 
     traverseGraph(twoBranchTree, composite2, mypolicy)(jointState, linkState, linkState2);
     //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);
-
     //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jstate, lstate, lstate2);
 #ifdef CHECK_IN_MAIN
     for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
@@ -397,7 +396,6 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
         std::cout << linkState2[i].F << std::endl;
     }
 #endif
-
 
     return;
 }

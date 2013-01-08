@@ -533,7 +533,7 @@ public:
 
 //Direction here is the type name of enum
 template<>
-class DFSPolicy_ver2<KDL::Tree, forward>
+class DFSPolicy_ver2<KDL::Tree, outward>
 {
 public:
 
@@ -546,7 +546,7 @@ public:
     };
 
     template <typename OP>
-    inline static bool forwardwalk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
+    inline static bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
                                    typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
                                    //typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorIn, //introduce a separate mutable state representation, now is used for testing
                                    typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorIn,
@@ -575,6 +575,34 @@ public:
             }
         }
 
+        return true;
+    };
+
+};
+
+template<>
+class DFSPolicy_ver2<KDL::Tree, inward>
+{
+public:
+
+    DFSPolicy_ver2()
+    {
+    };
+
+    ~DFSPolicy_ver2()
+    {
+    };
+
+    template <typename OP>
+    inline static bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
+                                   typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
+                                   //typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorIn, //introduce a separate mutable state representation, now is used for testing
+                                   typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorIn,
+                                   typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
+                                   OP a_op)
+    {
+
+
 #ifdef CHECK
         std::cout << std::endl<< "This is reverse iteration/inward" << std::endl;
 #endif
@@ -592,21 +620,18 @@ public:
             //also need to put this iteration into a separate reverse walk
             for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
             {
-//                  torques(j--)=dot(S[i],f[i]);
-//                  f[i - 1] = f[i - 1] + X[i] * f[i];
-                 //the second term should be summed for all children of the parent and then added to the parent's force.
-                    a_linkStateVectorIn[parentElement.q_nr].F = a_linkStateVectorIn[parentElement.q_nr].F + a_linkStateVectorIn[(*childIter)->second.q_nr].X * a_linkStateVectorIn[(*childIter)->second.q_nr].F;
-                    double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
-                   
-
-
+                //                  torques(j--)=dot(S[i],f[i]);
+                //                  f[i - 1] = f[i - 1] + X[i] * f[i];
+                //the second term should be summed for all children of the parent and then added to the parent's force.
+                a_linkStateVectorIn[parentElement.q_nr].F = a_linkStateVectorIn[parentElement.q_nr].F + a_linkStateVectorIn[(*childIter)->second.q_nr].X * a_linkStateVectorIn[(*childIter)->second.q_nr].F;
+                double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
 #ifdef CHECK
 
                 std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
                 std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
                 std::cout << "Total spatial force on a parent " << a_linkStateVectorIn[parentElement.q_nr].F << std::endl;
                 std::cout << "Total spatial force on a child " << a_linkStateVectorIn[(*childIter)->second.q_nr].F << std::endl;
-                std::cout << "Torque at the curent joint " << torque << std::endl<< std::endl;
+                std::cout << "Torque at the curent joint " << torque << std::endl << std::endl;
 #endif
 
             }
