@@ -38,3 +38,6 @@ target_link_libraries(${PROJECT_NAME} orocos-kdl geometric_semantics_kdl)
 
 rosbuild_add_executable(compositiontest examples/compositiontest.cpp)
 target_link_libraries(compositiontest ${PROJECT_NAME} graph gvc)
+
+rosbuild_add_executable(poseoperation4treelink-test tests/poseoperation4treelink-test.cpp)
+target_link_libraries(poseoperation4treelink-test ${PROJECT_NAME})
