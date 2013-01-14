@@ -405,17 +405,17 @@ public:
                                  ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
                                  ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
-        a_segmentState = p_segmentState;
+        //a_segmentState = p_segmentState;
         a_jointState = p_jointState;
         a_jointState.torque = dot(a_segmentState.Z,a_segmentState.F);
-        a_segmentState.F = a_segmentState.F +p_segmentState.X * p_segmentState.F; //???Wrong
+        a_segmentState.F = a_segmentState.F + p_segmentState.X * p_segmentState.F; //???Wrong
 
 #ifdef CHECK
-//        std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
-//        std::cout << "Inside wrench operation Twist value " << a_segmentState.Xdot << std::endl;
-//        std::cout << "Inside wrench operation AccTwist value " << a_segmentState.Xdotdot << std::endl;
-//
+        std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
+        std::cout << "Inside wrench operation Twist value " << a_segmentState.Xdot << std::endl;
+        std::cout << "Inside wrench operation AccTwist value " << a_segmentState.Xdotdot << std::endl;
         std::cout << "Inside wrench operation Wrench value "<< std::endl << a_segmentState.F << std::endl << std::endl;
+        std::cout << "Inside wrench operation torque value "<< std::endl << a_jointState.torque << std::endl << std::endl;
 #endif
         return a_segmentState;
     };
@@ -666,6 +666,7 @@ public:
             //TODO: make torque accessible. In order to do this we need to introduce mutable joint computational state.
             //in total having 4 (2 immutable and mutable per link and per joint)
             //also need to put this iteration into a separate reverse walk
+             a_linkStateVectorOut[parentElement.q_nr] = a_linkStateVectorIn[parentElement.q_nr];
             for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
             {
                 //                  torques(j--)=dot(S[i],f[i]);
@@ -676,14 +677,14 @@ public:
 //                double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
 
                  a_linkStateVectorIn[parentElement.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[(*childIter)->second.q_nr]);
-//#ifdef CHECK
-//
-//                std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
-//                std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
-//                std::cout << "Total spatial force on a parent " << a_linkStateVectorIn[parentElement.q_nr].F << std::endl;
-//                std::cout << "Total spatial force on a child " << a_linkStateVectorIn[(*childIter)->second.q_nr].F << std::endl;
-//               std::cout << "Torque at the curent joint " << torque << std::endl << std::endl;
-//#endif
+#ifdef CHECK
+
+                std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
+                std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
+                std::cout << "Total spatial force on a parent " << a_linkStateVectorIn[parentElement.q_nr].F << std::endl;
+                std::cout << "Total spatial force on a child " << a_linkStateVectorIn[(*childIter)->second.q_nr].F << std::endl;
+               std::cout << "Torque at the curent joint " << torque << std::endl << std::endl;
+#endif
 
             }
 

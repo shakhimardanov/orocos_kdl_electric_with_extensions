@@ -5,9 +5,9 @@
  * Created on December 21, 2011, 11:46 AM
  */
 
-#define CHECK //switches on console output in kdl related methods
+//#define CHECK //switches on console output in kdl related methods
 
-//#define CHECK_IN_MAIN // switches on console output in main
+#define CHECK_IN_MAIN // switches on console output in main
 
 #include <graphviz/gvc.h>
 #include <graphviz/graph.h>
@@ -384,7 +384,7 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, linkState, linkState2);
 
     std::cout << std::endl << std::endl << "VER2 TRAVERSAL TEST" << std::endl << std::endl;
-    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, linkState, linkState2);
+    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, linkState2, linkState2);
     
     //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);
     //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jointState, linkState, linkState2);
