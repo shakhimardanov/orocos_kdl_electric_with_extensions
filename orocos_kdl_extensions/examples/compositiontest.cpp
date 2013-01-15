@@ -100,7 +100,7 @@ void createMyTree(KDL::Tree& twoBranchTree)
 //   // twoBranchTree.addSegment(segment4, "L2");
     twoBranchTree.addSegment(segment4, "L3");
     twoBranchTree.addSegment(segment10, "L4");
-    twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
+   // twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
 //    //twoBranchTree.addSegment(segment5, "L4");
 //    twoBranchTree.addSegment(segment6, "L5");
 //    twoBranchTree.addSegment(segment7, "L6");
@@ -345,9 +345,9 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     std::cout << "Acc Twist initial state" << std::endl << linkState[0].Xdotdot << std::endl;
     std::cout << "Wrench initial state" << std::endl << linkState[0].F << std::endl << std::endl;
 #endif
-
-    linkState[1] = kdle::compose(_comp2, _comp1) (twoBranchTree.getSegment("L1"), jointState[0], linkState[0]);
-    linkState[1] = kdle::compose(kdle::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1)) (twoBranchTree.getSegment("L1"), jointState[0], linkState[0]);
+// This is for a single link
+//    linkState[1] = kdle::compose(_comp2, _comp1) (twoBranchTree.getSegment("L1"), jointState[0], linkState[0]);
+//    linkState[1] = kdle::compose(kdle::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1)) (twoBranchTree.getSegment("L1"), jointState[0], linkState[0]);
 
 #ifdef CHECK_IN_MAIN
     std::cout << "Transform L1" << linkState[1].X << std::endl;
@@ -355,8 +355,8 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     std::cout << "Acc Twist L1" << linkState[1].Xdotdot << std::endl;
     std::cout << "Wrench L1" << linkState[1].F << std::endl << std::endl;
 #endif
-
-    linkState[2] = kdle::compose(kdl_extensions::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1))(twoBranchTree.getSegment("L2"), jointState[1], linkState[1]);
+    //
+   // linkState[2] = kdle::compose(kdl_extensions::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1))(twoBranchTree.getSegment("L2"), jointState[1], linkState[1]);
 
 #ifdef CHECK_IN_MAIN
     std::cout << "Transform L2" << linkState[2].X << std::endl;

@@ -407,18 +407,17 @@ public:
     {
         //TODO: Fix this, this is wrong
         
-        a_segmentState = p_segmentState;
+       // a_segmentState = p_segmentState;
+        std::cout << "Inside wrench operation Wrench value "<< std::endl << a_segmentState.F << std::endl << std::endl;
         a_jointState = p_jointState;
-        a_jointState.torque = dot(a_segmentState.Z,a_segmentState.F);
-        a_segmentState.F = a_segmentState2.F + p_segmentState.X * p_segmentState.F;
-        a_segmentState2 = a_segmentState;
+        a_jointState.torque = dot(p_segmentState.Z,p_segmentState.F);
+        a_segmentState.F = p_segmentState.F + p_segmentState.X * a_segmentState.F;
+        //a_segmentState2 = a_segmentState;
 
 #ifdef CHECK
         std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
         std::cout << "Inside wrench operation Transform value " << p_segmentState.X << std::endl;
         std::cout << "Inside wrench operation Transform value " << a_segmentState2.X << std::endl;
-        std::cout << "Inside wrench operation Twist value " << a_segmentState.Xdot << std::endl;
-        std::cout << "Inside wrench operation AccTwist value " << a_segmentState.Xdotdot << std::endl;
         std::cout << "Inside wrench operation Wrench value "<< std::endl << a_segmentState.F << std::endl << std::endl;
         std::cout << "Inside wrench operation torque value "<< std::endl << a_jointState.torque << std::endl << std::endl;
 #endif
@@ -672,6 +671,7 @@ public:
             //in total having 4 (2 immutable and mutable per link and per joint)
             //also need to put this iteration into a separate reverse walk
              a_linkStateVectorOut[parentElement.q_nr] = a_linkStateVectorIn[parentElement.q_nr];
+             std::cout << "Total spatial force on a parent " << a_linkStateVectorOut[parentElement.q_nr].F << std::endl;
             for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
             {
                 //                  torques(j--)=dot(S[i],f[i]);
@@ -682,12 +682,11 @@ public:
 //                double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
 
                 //HERE IS STH WRONG???
-                 a_linkStateVectorIn[parentElement.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[(*childIter)->second.q_nr]);
+                 a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[(*childIter)->second.q_nr]);
 #ifdef CHECK
 
                 std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
                 std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
-                std::cout << "Total spatial force on a parent " << a_linkStateVectorIn[parentElement.q_nr].F << std::endl;
                 std::cout << "Total spatial force on a child " << a_linkStateVectorIn[(*childIter)->second.q_nr].F << std::endl;
 //               std::cout << "Torque at the curent joint " << torque << std::endl << std::endl;
 #endif
