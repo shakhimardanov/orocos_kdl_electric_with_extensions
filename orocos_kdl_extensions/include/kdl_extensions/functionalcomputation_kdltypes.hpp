@@ -405,13 +405,18 @@ public:
                                  ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
                                  ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
-        //a_segmentState = p_segmentState;
+        //TODO: Fix this, this is wrong
+        
+        a_segmentState = p_segmentState;
         a_jointState = p_jointState;
         a_jointState.torque = dot(a_segmentState.Z,a_segmentState.F);
-        a_segmentState.F = a_segmentState.F + p_segmentState.X * p_segmentState.F; //???Wrong
+        a_segmentState.F = a_segmentState2.F + p_segmentState.X * p_segmentState.F;
+        a_segmentState2 = a_segmentState;
 
 #ifdef CHECK
         std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
+        std::cout << "Inside wrench operation Transform value " << p_segmentState.X << std::endl;
+        std::cout << "Inside wrench operation Transform value " << a_segmentState2.X << std::endl;
         std::cout << "Inside wrench operation Twist value " << a_segmentState.Xdot << std::endl;
         std::cout << "Inside wrench operation AccTwist value " << a_segmentState.Xdotdot << std::endl;
         std::cout << "Inside wrench operation Wrench value "<< std::endl << a_segmentState.F << std::endl << std::endl;
@@ -420,7 +425,7 @@ public:
         return a_segmentState;
     };
 private:
-    ReturnType a_segmentState;
+    ReturnType a_segmentState, a_segmentState2;
     KDL::JointState a_jointState;
 
 };
@@ -676,6 +681,7 @@ public:
 //                a_linkStateVectorIn[parentElement.q_nr].F = a_linkStateVectorIn[parentElement.q_nr].F + a_linkStateVectorIn[(*childIter)->second.q_nr].X * a_linkStateVectorIn[(*childIter)->second.q_nr].F;
 //                double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
 
+                //HERE IS STH WRONG???
                  a_linkStateVectorIn[parentElement.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[(*childIter)->second.q_nr]);
 #ifdef CHECK
 
@@ -683,7 +689,7 @@ public:
                 std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
                 std::cout << "Total spatial force on a parent " << a_linkStateVectorIn[parentElement.q_nr].F << std::endl;
                 std::cout << "Total spatial force on a child " << a_linkStateVectorIn[(*childIter)->second.q_nr].F << std::endl;
-               std::cout << "Torque at the curent joint " << torque << std::endl << std::endl;
+//               std::cout << "Torque at the curent joint " << torque << std::endl << std::endl;
 #endif
 
             }
