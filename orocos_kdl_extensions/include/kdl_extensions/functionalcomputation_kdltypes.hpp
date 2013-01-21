@@ -622,8 +622,7 @@ public:
                 std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
 #endif
                 
-                a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[parentElement.q_nr]);
-               
+                a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorOut[parentElement.q_nr]);               
             }
         }
 
@@ -667,22 +666,21 @@ public:
             std::cout << "Parent element name in current reverse iteration " << parentElement.segment.getName() << std::endl;
             std::cout << "Current/parent joint index and value in reverse iteration " << parentElement.q_nr << " " << a_jointStateVectorIn[parentElement.q_nr].q << std::endl << std::endl;
 #endif
-            //TODO: make torque accessible. In order to do this we need to introduce mutable joint computational state.
+//TODO: make torque accessible. In order to do this we need to introduce mutable joint computational state.
             //in total having 4 (2 immutable and mutable per link and per joint)
             //also need to put this iteration into a separate reverse walk
              a_linkStateVectorOut[parentElement.q_nr] = a_linkStateVectorIn[parentElement.q_nr];
              std::cout << "Total spatial force on a parent " << a_linkStateVectorOut[parentElement.q_nr].F << std::endl;
             for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
             {
-                //                  torques(j--)=dot(S[i],f[i]);
-                //                  f[i - 1] = f[i - 1] + X[i] * f[i];
-                //the second term in the 2nd expression should be summed for all children of the parent and then added to the parent's force (ID for trees).
-
+//                torques(j--)=dot(S[i],f[i]);
+//                f[i - 1] = f[i - 1] + X[i] * f[i];
+//                the second term in the 2nd expression should be summed for all children of the parent and then added to the parent's force (ID for trees).
 //                a_linkStateVectorIn[parentElement.q_nr].F = a_linkStateVectorIn[parentElement.q_nr].F + a_linkStateVectorIn[(*childIter)->second.q_nr].X * a_linkStateVectorIn[(*childIter)->second.q_nr].F;
 //                double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
 
                 //HERE IS STH WRONG???
-                 a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[(*childIter)->second.q_nr]);
+                 a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorOut[parentElement.q_nr]);
 #ifdef CHECK
 
                 std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;

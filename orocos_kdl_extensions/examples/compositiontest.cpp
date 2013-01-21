@@ -97,15 +97,13 @@ void createMyTree(KDL::Tree& twoBranchTree)
     twoBranchTree.addSegment(segment1, "L0");
     twoBranchTree.addSegment(segment2, "L1");
     twoBranchTree.addSegment(segment3, "L2");
-//   // twoBranchTree.addSegment(segment4, "L2");
     twoBranchTree.addSegment(segment4, "L3");
     twoBranchTree.addSegment(segment10, "L4");
-   // twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
-//    //twoBranchTree.addSegment(segment5, "L4");
-//    twoBranchTree.addSegment(segment6, "L5");
-//    twoBranchTree.addSegment(segment7, "L6");
-//    twoBranchTree.addSegment(segment8, "L7");
-//    twoBranchTree.addSegment(segment9, "L8");
+    twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
+    twoBranchTree.addSegment(segment6, "L5");
+    twoBranchTree.addSegment(segment7, "L6");
+    twoBranchTree.addSegment(segment8, "L7");
+    twoBranchTree.addSegment(segment9, "L8");
 
 }
 

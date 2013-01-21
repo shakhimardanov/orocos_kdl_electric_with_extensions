@@ -51,6 +51,20 @@ Inside acctwist operation AccTwist value
 Inside wrench operation Wrench value 
 [   0.0244206,   0.0613195,       -2.45,        0.98,           0,  0.00976823]
 
+Child element name in current iteration L5
+Current/child joint index and value 5 0
+Inside pose operation Transform value
+[[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,        -0.4,           0]]
+Inside twist operation Twist value
+[        0.52,    0.069282,           0,           0,           0,         0.6]
+Inside acctwist operation AccTwist value
+[   0.0277128,      -0.016,        -9.8,           0,           0,           0]
+Inside wrench operation Wrench value 
+[  -0.0034641,        0.11,       -2.45,        0.98,           0, -0.00138564]
+
 Parent element name in current iteration L3
 Current/parent joint index and value 2 0.785398
 Child element name in current iteration L4
@@ -83,6 +97,72 @@ Inside acctwist operation AccTwist value
 Inside wrench operation Wrench value 
 [   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
 
+Parent element name in current iteration L5
+Current/parent joint index and value 5 0
+Child element name in current iteration L6
+Current/child joint index and value 6 0
+Inside pose operation Transform value
+[[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,        -0.4,           0]]
+Inside twist operation Twist value
+[        0.76,    0.069282,           0,           0,           0,         0.6]
+Inside acctwist operation AccTwist value
+[   0.0277128,      -0.016,        -9.8,           0,           0,           0]
+Inside wrench operation Wrench value 
+[  -0.0034641,       0.146,       -2.45,        0.98,           0, -0.00138564]
+
+Parent element name in current iteration L6
+Current/parent joint index and value 6 0
+Child element name in current iteration L7
+Current/child joint index and value 7 0
+Inside pose operation Transform value
+[[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,        -0.4,           0]]
+Inside twist operation Twist value
+[           1,    0.069282,           0,           0,           0,         0.6]
+Inside acctwist operation AccTwist value
+[   0.0277128,      -0.016,        -9.8,           0,           0,           0]
+Inside wrench operation Wrench value 
+[  -0.0034641,       0.182,       -2.45,        0.98,           0, -0.00138564]
+
+Parent element name in current iteration L7
+Current/parent joint index and value 7 0
+Child element name in current iteration L8
+Current/child joint index and value 8 0
+Inside pose operation Transform value
+[[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,        -0.4,           0]]
+Inside twist operation Twist value
+[        1.24,    0.069282,           0,           0,           0,         0.6]
+Inside acctwist operation AccTwist value
+[   0.0277128,      -0.016,        -9.8,           0,           0,           0]
+Inside wrench operation Wrench value 
+[  -0.0034641,       0.218,       -2.45,        0.98,           0, -0.00138564]
+
+Parent element name in current iteration L8
+Current/parent joint index and value 8 0
+Child element name in current iteration L9
+Current/child joint index and value 9 0
+Inside pose operation Transform value
+[[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,        -0.4,           0]]
+Inside twist operation Twist value
+[        1.48,    0.069282,           0,           0,           0,         0.6]
+Inside acctwist operation AccTwist value
+[   0.0277128,      -0.016,        -9.8,           0,           0,           0]
+Inside wrench operation Wrench value 
+[  -0.0034641,       0.254,       -2.45,        0.98,           0, -0.00138564]
+
+Parent element name in current iteration L9
+Current/parent joint index and value 9 0
 Parent element name in current iteration M0
 Current/parent joint index and value 4 0
 
@@ -95,10 +175,14 @@ Parent element name in current reverse iteration M0
 Current/parent joint index and value in reverse iteration 4 0
 
 Total spatial force on a parent [   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
-Parent element name in current reverse iteration L4
-Current/parent joint index and value in reverse iteration 3 0
+Parent element name in current reverse iteration L9
+Current/parent joint index and value in reverse iteration 9 0
 
-Total spatial force on a parent [   0.0244206,   0.0773195,       -2.45,        0.98,           0,  0.00976823]
+Total spatial force on a parent [  -0.0034641,       0.254,       -2.45,        0.98,           0, -0.00138564]
+Parent element name in current reverse iteration L8
+Current/parent joint index and value in reverse iteration 8 0
+
+Total spatial force on a parent [  -0.0034641,       0.218,       -2.45,        0.98,           0, -0.00138564]
 Inside wrench operation Wrench value 
 [           0,           0,           0,           0,           0,           0]
 
@@ -115,20 +199,20 @@ Inside wrench operation Transform value [[           1,           0,           0
             0,           0,           1]
 [           0,           0,           0]]
 Inside wrench operation Wrench value 
-[   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
+[  -0.0034641,       0.254,       -2.45,        0.98,           0, -0.00138564]
 
 Inside wrench operation torque value 
-0.0195365
+-0.00277128
 
-Child element name in current  reverse iteration M0
-Current/child joint index and value 4 0
-Total spatial force on a child [   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
-Parent element name in current reverse iteration L3
-Current/parent joint index and value in reverse iteration 2 0.785398
+Child element name in current  reverse iteration L9
+Current/child joint index and value 9 0
+Total spatial force on a child [  -0.0034641,       0.254,       -2.45,        0.98,           0, -0.00138564]
+Parent element name in current reverse iteration L7
+Current/parent joint index and value in reverse iteration 7 0
 
-Total spatial force on a parent [   0.0244206,   0.0613195,       -2.45,        0.98,           0,  0.00976823]
+Total spatial force on a parent [  -0.0034641,       0.182,       -2.45,        0.98,           0, -0.00138564]
 Inside wrench operation Wrench value 
-[   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
+[  -0.0034641,       0.254,       -2.45,        0.98,           0, -0.00138564]
 
 Inside wrench operation Transform value [[           1,           0,           0;
             0,           1,           0;
@@ -143,20 +227,132 @@ Inside wrench operation Transform value [[           1,           0,           0
             0,           0,           1]
 [           0,           0,           0]]
 Inside wrench operation Wrench value 
-[   0.0488411,    0.170639,        -4.9,        2.94,           0,   0.0293047]
+[  -0.0069282,       0.472,        -4.9,        2.94,           0, -0.00415692]
+
+Inside wrench operation torque value 
+-0.00277128
+
+Child element name in current  reverse iteration L8
+Current/child joint index and value 8 0
+Total spatial force on a child [  -0.0069282,       0.472,        -4.9,        2.94,           0, -0.00415692]
+Parent element name in current reverse iteration L6
+Current/parent joint index and value in reverse iteration 6 0
+
+Total spatial force on a parent [  -0.0034641,       0.146,       -2.45,        0.98,           0, -0.00138564]
+Inside wrench operation Wrench value 
+[  -0.0069282,       0.472,        -4.9,        2.94,           0, -0.00415692]
+
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,           0,           0]]
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,        -0.4,           0]]
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,           0,           0]]
+Inside wrench operation Wrench value 
+[  -0.0103923,       0.654,       -7.35,        5.88,           0, -0.00831384]
+
+Inside wrench operation torque value 
+-0.00277128
+
+Child element name in current  reverse iteration L7
+Current/child joint index and value 7 0
+Total spatial force on a child [  -0.0103923,       0.654,       -7.35,        5.88,           0, -0.00831384]
+Parent element name in current reverse iteration L5
+Current/parent joint index and value in reverse iteration 5 0
+
+Total spatial force on a parent [  -0.0034641,        0.11,       -2.45,        0.98,           0, -0.00138564]
+Inside wrench operation Wrench value 
+[  -0.0103923,       0.654,       -7.35,        5.88,           0, -0.00831384]
+
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,           0,           0]]
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,        -0.4,           0]]
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,           0,           0]]
+Inside wrench operation Wrench value 
+[  -0.0138564,         0.8,        -9.8,         9.8,           0,  -0.0138564]
+
+Inside wrench operation torque value 
+-0.00277128
+
+Child element name in current  reverse iteration L6
+Current/child joint index and value 6 0
+Total spatial force on a child [  -0.0138564,         0.8,        -9.8,         9.8,           0,  -0.0138564]
+Parent element name in current reverse iteration L4
+Current/parent joint index and value in reverse iteration 3 0
+
+Total spatial force on a parent [   0.0244206,   0.0773195,       -2.45,        0.98,           0,  0.00976823]
+Inside wrench operation Wrench value 
+[  -0.0138564,         0.8,        -9.8,         9.8,           0,  -0.0138564]
+
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,           0,           0]]
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,        -0.4,           0]]
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,           0,           0]]
+Inside wrench operation Wrench value 
+[   0.0105642,     0.89332,      -12.25,        14.7,           0, -0.00963074]
+
+Inside wrench operation torque value 
+0.0195365
+
+Child element name in current  reverse iteration M0
+Current/child joint index and value 4 0
+Total spatial force on a child [   0.0105642,     0.89332,      -12.25,        14.7,           0, -0.00963074]
+Parent element name in current reverse iteration L3
+Current/parent joint index and value in reverse iteration 2 0.785398
+
+Total spatial force on a parent [   0.0244206,   0.0613195,       -2.45,        0.98,           0,  0.00976823]
+Inside wrench operation Wrench value 
+[   0.0105642,     0.89332,      -12.25,        14.7,           0, -0.00963074]
+
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,           0,           0]]
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,        -0.4,           0]]
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,           0,           0]]
+Inside wrench operation Wrench value 
+[   0.0349847,    0.970639,       -14.7,       20.58,           0,  0.00436315]
 
 Inside wrench operation torque value 
 0.0195365
 
 Child element name in current  reverse iteration L4
 Current/child joint index and value 3 0
-Total spatial force on a child [   0.0488411,    0.170639,        -4.9,        2.94,           0,   0.0293047]
+Total spatial force on a child [   0.0349847,    0.970639,       -14.7,       20.58,           0,  0.00436315]
 Parent element name in current reverse iteration L2
 Current/parent joint index and value in reverse iteration 1 -1.0472
 
 Total spatial force on a parent [  -0.0034641,       0.074,       -2.45,        0.98,           0, -0.00138564]
 Inside wrench operation Wrench value 
-[   0.0488411,    0.170639,        -4.9,        2.94,           0,   0.0293047]
+[   0.0349847,    0.970639,       -14.7,       20.58,           0,  0.00436315]
 
 Inside wrench operation Transform value [[           1,           0,           0;
             0,           1,           0;
@@ -171,20 +367,44 @@ Inside wrench operation Transform value [[           1,           0,           0
             0,           0,           1]
 [           0,           0,           0]]
 Inside wrench operation Wrench value 
-[  -0.0617036,    0.216516,       -7.35,     4.44482,     3.46482,   0.0586094]
+[   -0.637187,    0.772403,      -17.15,       19.69,       18.71,   0.0281253]
 
 Inside wrench operation torque value 
 0.0195365
 
 Child element name in current  reverse iteration L3
 Current/child joint index and value 2 0.785398
-Total spatial force on a child [  -0.0617036,    0.216516,       -7.35,     4.44482,     3.46482,   0.0586094]
+Total spatial force on a child [   -0.637187,    0.772403,      -17.15,       19.69,       18.71,   0.0281253]
+Inside wrench operation Wrench value 
+[   -0.637187,    0.772403,      -17.15,       19.69,       18.71,   0.0281253]
+
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,           0,           0]]
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,        -0.4,           0]]
+Inside wrench operation Transform value [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[           0,           0,           0]]
+Inside wrench operation Wrench value 
+[   -0.640651,    0.882403,       -19.6,       27.53,       18.71,   -0.228135]
+
+Inside wrench operation torque value 
+-0.00277128
+
+Child element name in current  reverse iteration L5
+Current/child joint index and value 5 0
+Total spatial force on a child [   -0.640651,    0.882403,       -19.6,       27.53,       18.71,   -0.228135]
 Parent element name in current reverse iteration L1
 Current/parent joint index and value in reverse iteration 0 1.0472
 
 Total spatial force on a parent [ 1.41455e-19,       0.008,       -2.45,        0.98,           0, 5.65818e-20]
 Inside wrench operation Wrench value 
-[  -0.0617036,    0.216516,       -7.35,     4.44482,     3.46482,   0.0586094]
+[   -0.640651,    0.882403,       -19.6,       27.53,       18.71,   -0.228135]
 
 Inside wrench operation Transform value [[           1,           0,           0;
             0,           1,           0;
@@ -199,20 +419,20 @@ Inside wrench operation Transform value [[           1,           0,           0
             0,           0,           1]
 [           0,           0,           0]]
 Inside wrench operation Wrench value 
-[    0.153192,    0.235695,        -9.8,     7.67304,    -4.66303,   0.0325423]
+[    0.440394,     1.07002,      -22.05,     34.8684,    -21.2763,   -0.485781]
 
 Inside wrench operation torque value 
 -0.00277128
 
 Child element name in current  reverse iteration L2
 Current/child joint index and value 1 -1.0472
-Total spatial force on a child [    0.153192,    0.235695,        -9.8,     7.67304,    -4.66303,   0.0325423]
+Total spatial force on a child [    0.440394,     1.07002,      -22.05,     34.8684,    -21.2763,   -0.485781]
 Parent element name in current reverse iteration L0
 Current/parent joint index and value in reverse iteration 0 1.0472
 
 Total spatial force on a parent [ 1.41455e-19,       0.008,       -2.45,        0.98,           0, 5.65818e-20]
 Inside wrench operation Wrench value 
-[    0.153192,    0.235695,        -9.8,     7.67304,    -4.66303,   0.0325423]
+[    0.440394,     1.07002,      -22.05,     34.8684,    -21.2763,   -0.485781]
 
 Inside wrench operation Transform value [[           1,           0,           0;
             0,           1,           0;
@@ -227,14 +447,14 @@ Inside wrench operation Transform value [[           1,           0,           0
             0,           0,           1]
 [           0,           0,           0]]
 Inside wrench operation Wrench value 
-[   -0.127522,    0.258516,      -12.25,     10.8148,     7.70835,   0.0938191]
+[   -0.706469,    0.924403,       -24.5,       41.25,     27.1971,   -0.309624]
 
 Inside wrench operation torque value 
 4.82199e-20
 
 Child element name in current  reverse iteration L1
 Current/child joint index and value 0 1.0472
-Total spatial force on a child [   -0.127522,    0.258516,      -12.25,     10.8148,     7.70835,   0.0938191]
+Total spatial force on a child [   -0.706469,    0.924403,       -24.5,       41.25,     27.1971,   -0.309624]
 RNE dynamics values 
 q, qdot 1.047198, 0.200000
 q, qdot -1.047198, 0.400000
