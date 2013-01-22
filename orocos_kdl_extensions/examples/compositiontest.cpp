@@ -99,129 +99,129 @@ void createMyTree(KDL::Tree& twoBranchTree)
     twoBranchTree.addSegment(segment3, "L2");
     twoBranchTree.addSegment(segment4, "L3");
     twoBranchTree.addSegment(segment10, "L4");
-    twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
-    twoBranchTree.addSegment(segment6, "L5");
-    twoBranchTree.addSegment(segment7, "L6");
-    twoBranchTree.addSegment(segment8, "L7");
-    twoBranchTree.addSegment(segment9, "L8");
+//    twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
+//    twoBranchTree.addSegment(segment6, "L5");
+//    twoBranchTree.addSegment(segment7, "L6");
+//    twoBranchTree.addSegment(segment8, "L7");
+//    twoBranchTree.addSegment(segment9, "L8");
 
 }
 
-void drawMyTree(KDL::Tree& twoBranchTree)
-{
-
-    //graphviz stuff
-    /****************************************/
-    Agraph_t *g;
-    GVC_t *gvc;
-
-    /* set up a graphviz context */
-    gvc = gvContext();
-    /* Create a simple digraph */
-    g = agopen("robot-structure", AGDIGRAPH);
-
-    //create vector to hold nodes
-    std::vector<Agnode_t*> nodeVector;
-    nodeVector.resize(twoBranchTree.getNrOfSegments() + 1);
-    int segmentIndex = twoBranchTree.getSegments().size();
-    printf("size of segments in tree map %d\n", segmentIndex);
-    printf("size of segments in tree %d\n", twoBranchTree.getNrOfSegments());
-
-    //create vector to hold edges
-    std::vector<Agedge_t*> edgeVector;
-    edgeVector.resize(twoBranchTree.getNrOfJoints() + 1);
-    int jointIndex = twoBranchTree.getNrOfJoints() + 1;
-    printf("size of joint array %d %d\n", jointIndex, twoBranchTree.getNrOfJoints());
-
-    segmentIndex = 0;
-    //fill in the node vector by iterating over tree segments
-    SegmentMap::const_iterator iter0 = twoBranchTree.getSegments().begin();
-    for (SegmentMap::const_iterator iter = iter0; iter != twoBranchTree.getSegments().end(); ++iter)
-    {
-        //it would have been very useful if one could access list of joints of a tree
-        //list of segments is already possible
-        int stringLength = iter->second.segment.getName().size();
-        char name[stringLength + 1];
-        strcpy(name, iter->second.segment.getName().c_str());
-        //q_nr returned is the same value for the root and the its child. this is a bug
-        nodeVector[segmentIndex] = agnode(g, name);
-        agsafeset(nodeVector[iter->second.q_nr], "color", "red", "");
-        agsafeset(nodeVector[iter->second.q_nr], "shape", "box", "");
-        std::cout << "index parent " << iter->second.q_nr << std::endl;
-        std::cout << "name parent " << iter->second.segment.getName() << std::endl;
-        std::cout << "joint name parent " << iter->second.segment.getJoint().getName() << std::endl;
-        std::cout << "joint type parent " << iter->second.segment.getJoint().getType() << std::endl;
-
-        if (iter->second.segment.getJoint().getType() == Joint::None) //equals to joint type None
-        {
-            int stringLength = iter->second.segment.getJoint().getName().size();
-            char name[stringLength + 1];
-            strcpy(name, iter->second.segment.getJoint().getName().c_str());
-            edgeVector[iter->second.q_nr] = agedge(g, nodeVector[iter->second.q_nr], nodeVector[iter->second.q_nr]);
-            agsafeset(edgeVector[iter->second.q_nr], "label", name, "");
-        }
-        
-        for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); ++childIter)
-        {
-            int stringLength = iter->second.segment.getJoint().getName().size();
-            char name[stringLength + 1];
-            strcpy(name, iter->second.segment.getJoint().getName().c_str());
-            std::cout << "index child " << (*childIter)->second.q_nr << std::endl;
-            edgeVector[(*childIter)->second.q_nr] = agedge(g, nodeVector[iter->second.q_nr], nodeVector[(*childIter)->second.q_nr]);
-            agsafeset(edgeVector[(*childIter)->second.q_nr], "label", name, "");
-        }
-
-
-        ++segmentIndex;
-
-    }
-    //reset segment index to its initial value
-    //    segmentIndex = twoBranchTree.getSegments().size();
-    //
-    //
-    //    //fill in edge vector by iterating over joints in the tree
-    //    for (SegmentMap::const_iterator iter = iter0; iter != twoBranchTree.getSegments().end(); ++iter)
-    //    {
-    //        //TODO: Fix node-edge connection relation
-    //        int stringLength = iter->second.segment.getJoint().getName().size();
-    //        std::cout << "Joint name " << iter->second.segment.getJoint().getName() << std::endl;
-    //        char name[stringLength + 1];
-    //        strcpy(name, iter->second.segment.getJoint().getName().c_str());
-    //        //        for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
-    //        //        {
-    //        //            edgeVector[(*childIter)->second.q_nr] = agedge(g, nodeVector[segmentIndex], nodeVector[jointIndex]);
-    //        //            agsafeset(edgeVector[(*childIter)->second.q_nr], "label", name, "");
-    //        //        }
-    //        //
-    //        if (jointIndex != 0)
-    //        {
-    //            edgeVector[jointIndex] = agedge(g, nodeVector[segmentIndex], nodeVector[jointIndex]);
-    //            agsafeset(edgeVector[jointIndex], "label", name, "");
-    //        }
-    //        segmentIndex--;
-    //        jointIndex--;
-    //    }
-
-
-
-    /* Compute a layout using layout engine from command line args */
-    //  gvLayoutJobs(gvc, g);
-    gvLayout(gvc, g, "dot");
-
-    /* Write the graph according to -T and -o options */
-    //gvRenderJobs(gvc, g);
-    gvRenderFilename(gvc, g, "ps", "tests.ps");
-
-    /* Free layout data */
-    gvFreeLayout(gvc, g);
-
-    /* Free graph structures */
-    agclose(g);
-
-    gvFreeContext(gvc);
-    /* close output file, free context, and return number of errors */
-    return;
-}
+//void drawMyTree(KDL::Tree& twoBranchTree)
+//{
+//
+//    //graphviz stuff
+//    /****************************************/
+//    Agraph_t *g;
+//    GVC_t *gvc;
+//
+//    /* set up a graphviz context */
+//    gvc = gvContext();
+//    /* Create a simple digraph */
+//    g = agopen("robot-structure", AGDIGRAPH);
+//
+//    //create vector to hold nodes
+//    std::vector<Agnode_t*> nodeVector;
+//    nodeVector.resize(twoBranchTree.getNrOfSegments() + 1);
+//    int segmentIndex = twoBranchTree.getSegments().size();
+//    printf("size of segments in tree map %d\n", segmentIndex);
+//    printf("size of segments in tree %d\n", twoBranchTree.getNrOfSegments());
+//
+//    //create vector to hold edges
+//    std::vector<Agedge_t*> edgeVector;
+//    edgeVector.resize(twoBranchTree.getNrOfJoints() + 1);
+//    int jointIndex = twoBranchTree.getNrOfJoints() + 1;
+//    printf("size of joint array %d %d\n", jointIndex, twoBranchTree.getNrOfJoints());
+//
+//    segmentIndex = 0;
+//    //fill in the node vector by iterating over tree segments
+//    SegmentMap::const_iterator iter0 = twoBranchTree.getSegments().begin();
+//    for (SegmentMap::const_iterator iter = iter0; iter != twoBranchTree.getSegments().end(); ++iter)
+//    {
+//        //it would have been very useful if one could access list of joints of a tree
+//        //list of segments is already possible
+//        int stringLength = iter->second.segment.getName().size();
+//        char name[stringLength + 1];
+//        strcpy(name, iter->second.segment.getName().c_str());
+//        //q_nr returned is the same value for the root and the its child. this is a bug
+//        nodeVector[segmentIndex] = agnode(g, name);
+//        agsafeset(nodeVector[iter->second.q_nr], "color", "red", "");
+//        agsafeset(nodeVector[iter->second.q_nr], "shape", "box", "");
+//        std::cout << "index parent " << iter->second.q_nr << std::endl;
+//        std::cout << "name parent " << iter->second.segment.getName() << std::endl;
+//        std::cout << "joint name parent " << iter->second.segment.getJoint().getName() << std::endl;
+//        std::cout << "joint type parent " << iter->second.segment.getJoint().getType() << std::endl;
+//
+//        if (iter->second.segment.getJoint().getType() == Joint::None) //equals to joint type None
+//        {
+//            int stringLength = iter->second.segment.getJoint().getName().size();
+//            char name[stringLength + 1];
+//            strcpy(name, iter->second.segment.getJoint().getName().c_str());
+//            edgeVector[iter->second.q_nr] = agedge(g, nodeVector[iter->second.q_nr], nodeVector[iter->second.q_nr]);
+//            agsafeset(edgeVector[iter->second.q_nr], "label", name, "");
+//        }
+//
+//        for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); ++childIter)
+//        {
+//            int stringLength = iter->second.segment.getJoint().getName().size();
+//            char name[stringLength + 1];
+//            strcpy(name, iter->second.segment.getJoint().getName().c_str());
+//            std::cout << "index child " << (*childIter)->second.q_nr << std::endl;
+//            edgeVector[(*childIter)->second.q_nr] = agedge(g, nodeVector[iter->second.q_nr], nodeVector[(*childIter)->second.q_nr]);
+//            agsafeset(edgeVector[(*childIter)->second.q_nr], "label", name, "");
+//        }
+//
+//
+//        ++segmentIndex;
+//
+//    }
+//    //reset segment index to its initial value
+//    //    segmentIndex = twoBranchTree.getSegments().size();
+//    //
+//    //
+//    //    //fill in edge vector by iterating over joints in the tree
+//    //    for (SegmentMap::const_iterator iter = iter0; iter != twoBranchTree.getSegments().end(); ++iter)
+//    //    {
+//    //        //TODO: Fix node-edge connection relation
+//    //        int stringLength = iter->second.segment.getJoint().getName().size();
+//    //        std::cout << "Joint name " << iter->second.segment.getJoint().getName() << std::endl;
+//    //        char name[stringLength + 1];
+//    //        strcpy(name, iter->second.segment.getJoint().getName().c_str());
+//    //        //        for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
+//    //        //        {
+//    //        //            edgeVector[(*childIter)->second.q_nr] = agedge(g, nodeVector[segmentIndex], nodeVector[jointIndex]);
+//    //        //            agsafeset(edgeVector[(*childIter)->second.q_nr], "label", name, "");
+//    //        //        }
+//    //        //
+//    //        if (jointIndex != 0)
+//    //        {
+//    //            edgeVector[jointIndex] = agedge(g, nodeVector[segmentIndex], nodeVector[jointIndex]);
+//    //            agsafeset(edgeVector[jointIndex], "label", name, "");
+//    //        }
+//    //        segmentIndex--;
+//    //        jointIndex--;
+//    //    }
+//
+//
+//
+//    /* Compute a layout using layout engine from command line args */
+//    //  gvLayoutJobs(gvc, g);
+//    gvLayout(gvc, g, "dot");
+//
+//    /* Write the graph according to -T and -o options */
+//    //gvRenderJobs(gvc, g);
+//    gvRenderFilename(gvc, g, "ps", "tests.ps");
+//
+//    /* Free layout data */
+//    gvFreeLayout(gvc, g);
+//
+//    /* Free graph structures */
+//    agclose(g);
+//
+//    gvFreeContext(gvc);
+//    /* close output file, free context, and return number of errors */
+//    return;
+//}
 
 void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& rootLink, const std::string& tipLink, KDL::Vector& grav,
                                 std::vector<JointState>& jointState, std::vector<SegmentState>& linkState)
@@ -259,71 +259,71 @@ void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& roo
     return;
 }
 
-void computeTemplatedDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& rootLink, const std::string& tipLink, KDL::Vector& grav,
-                                      std::vector<JointState>& jointState, std::vector<SegmentState>& linkState, std::vector<SegmentState>& linkState2)
-{
-
-    KDL::Chain achain;
-
-    twoBranchTree.getChain(rootLink, tipLink, achain);
-    printf("Templated dynamics values for Chain \n");
-
-    using namespace kdl_extensions;
-    kdl_extensions::transform<chain_iterator, pose> _comp1;
-    kdl_extensions::transform<chain_iterator, twist> _comp2;
-    kdl_extensions::transform<chain_iterator, accTwist> _comp3;
-    kdl_extensions::balance<chain_iterator, force> _comp4;
-
-    /*
-        std::vector<Segment>::const_iterator iterChain = achain.segments.begin();
-
-        std::cout << "Segment name" << std::endl << iterChain->getName() << std::endl;
-        std::cout << "Transform initial state" << std::endl << linkState[0].X << std::endl;
-        std::cout << "Twist initial state" << std::endl << linkState[0].Xdot << std::endl;
-        std::cout << "Acc Twist initial state" << std::endl << linkState[0].Xdotdot << std::endl;
-        std::cout << "Wrench initial state" << std::endl << linkState[0].F << std::endl << std::endl;
-    
-        linkState[1] = kdl_extensions::compose(kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1)) (iterChain, jointState[0], linkState[0]);
-    
-        std::cout << "Transform L1" << linkState[1].X << std::endl;
-        std::cout << "Twist L1" << linkState[1].Xdot << std::endl;
-        std::cout << "Acc Twist L1" << linkState[1].Xdotdot << std::endl;
-        std::cout << "Wrench L1" << linkState[1].F << std::endl << std::endl;
-
-        iterChain++;
-    
-        linkState[2] = kdl_extensions::compose(kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1))(iterChain, jointState[1], linkState[1]);
-
-        std::cout << "Segment name" << std::endl << iterChain->getName() << std::endl;
-        std::cout << "Transform L2" << linkState[2].X << std::endl;
-        std::cout << "Twist L2" << linkState[2].Xdot << std::endl;
-        std::cout << "Acc Twist L2" << linkState[2].Xdotdot << std::endl;
-        std::cout << "Wrench L2" << linkState[2].F << std::endl << std::endl;
-     */
-    //typedef Composite<kdl_extensions::func_ptr(myTestComputation), kdl_extensions::func_ptr(myTestComputation) > compositeType0;
-    typedef Composite< kdl_extensions::transform<chain_iterator, twist>, kdl_extensions::transform<chain_iterator, pose> > compositeType1;
-    typedef Composite< kdl_extensions::balance<chain_iterator, force>, kdl_extensions::transform<chain_iterator, accTwist> > compositeType2;
-    typedef Composite<compositeType2, compositeType1> compositeType3;
-
-    compositeType1 composite1 = kdl_extensions::compose(_comp2, _comp1);
-    compositeType3 composite2 = kdl_extensions::compose(kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1));
-
-    kdl_extensions::DFSPolicy<KDL::Chain> mypolicy;
-    traverseGraph(achain, composite2, mypolicy)(jointState, linkState, linkState2);
-    //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);
-
-    //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jstate, lstate, lstate2);
-    /*
-    for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments() + 1; i++)
-    {
-        std::cout << std::endl << linkState2[i].X << std::endl;
-        std::cout << linkState2[i].Xdot << std::endl;
-        std::cout << linkState2[i].Xdotdot << std::endl;
-    }
-     */
-
-    return;
-}
+//void computeTemplatedDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& rootLink, const std::string& tipLink, KDL::Vector& grav,
+//                                      std::vector<JointState>& jointState, std::vector<SegmentState>& linkState, std::vector<SegmentState>& linkState2)
+//{
+//
+//    KDL::Chain achain;
+//
+//    twoBranchTree.getChain(rootLink, tipLink, achain);
+//    printf("Templated dynamics values for Chain \n");
+//
+//    using namespace kdl_extensions;
+//    kdl_extensions::transform<chain_iterator, pose> _comp1;
+//    kdl_extensions::transform<chain_iterator, twist> _comp2;
+//    kdl_extensions::transform<chain_iterator, accTwist> _comp3;
+//    kdl_extensions::balance<chain_iterator, force> _comp4;
+//
+//    /*
+//        std::vector<Segment>::const_iterator iterChain = achain.segments.begin();
+//
+//        std::cout << "Segment name" << std::endl << iterChain->getName() << std::endl;
+//        std::cout << "Transform initial state" << std::endl << linkState[0].X << std::endl;
+//        std::cout << "Twist initial state" << std::endl << linkState[0].Xdot << std::endl;
+//        std::cout << "Acc Twist initial state" << std::endl << linkState[0].Xdotdot << std::endl;
+//        std::cout << "Wrench initial state" << std::endl << linkState[0].F << std::endl << std::endl;
+//
+//        linkState[1] = kdl_extensions::compose(kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1)) (iterChain, jointState[0], linkState[0]);
+//
+//        std::cout << "Transform L1" << linkState[1].X << std::endl;
+//        std::cout << "Twist L1" << linkState[1].Xdot << std::endl;
+//        std::cout << "Acc Twist L1" << linkState[1].Xdotdot << std::endl;
+//        std::cout << "Wrench L1" << linkState[1].F << std::endl << std::endl;
+//
+//        iterChain++;
+//
+//        linkState[2] = kdl_extensions::compose(kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1))(iterChain, jointState[1], linkState[1]);
+//
+//        std::cout << "Segment name" << std::endl << iterChain->getName() << std::endl;
+//        std::cout << "Transform L2" << linkState[2].X << std::endl;
+//        std::cout << "Twist L2" << linkState[2].Xdot << std::endl;
+//        std::cout << "Acc Twist L2" << linkState[2].Xdotdot << std::endl;
+//        std::cout << "Wrench L2" << linkState[2].F << std::endl << std::endl;
+//     */
+//    //typedef Composite<kdl_extensions::func_ptr(myTestComputation), kdl_extensions::func_ptr(myTestComputation) > compositeType0;
+//    typedef Composite< kdl_extensions::transform<chain_iterator, twist>, kdl_extensions::transform<chain_iterator, pose> > compositeType1;
+//    typedef Composite< kdl_extensions::balance<chain_iterator, force>, kdl_extensions::transform<chain_iterator, accTwist> > compositeType2;
+//    typedef Composite<compositeType2, compositeType1> compositeType3;
+//
+//    compositeType1 composite1 = kdl_extensions::compose(_comp2, _comp1);
+//    compositeType3 composite2 = kdl_extensions::compose(kdl_extensions::compose(_comp4, _comp3), kdl_extensions::compose(_comp2, _comp1));
+//
+//    kdl_extensions::DFSPolicy<KDL::Chain> mypolicy;
+//    traverseGraph(achain, composite2, mypolicy)(jointState, linkState, linkState2);
+//    //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);
+//
+//    //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jstate, lstate, lstate2);
+//    /*
+//    for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments() + 1; i++)
+//    {
+//        std::cout << std::endl << linkState2[i].X << std::endl;
+//        std::cout << linkState2[i].Xdot << std::endl;
+//        std::cout << linkState2[i].Xdotdot << std::endl;
+//    }
+//     */
+//
+//    return;
+//}
 
 void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav, std::vector<JointState>& jointState,
                                      std::vector<SegmentState>& linkState, std::vector<SegmentState>& linkState2)
@@ -376,14 +376,15 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     kdl_extensions::DFSPolicy_ver2<KDL::Tree, inward> mypolicy1;
     kdl_extensions::DFSPolicy_ver2<KDL::Tree, outward> mypolicy2;
 
-    std::cout << std::endl << std::endl << "TRAVERSAL TEST" << std::endl << std::endl;
+    std::cout << std::endl << std::endl << "FORWARD TRAVERSAL" << std::endl << std::endl;
 
     //traverseGraph(twoBranchTree, composite2, mypolicy)(jointState, linkState, linkState2);
 
     kdle::IterateOver_ver2<KDL::Tree, kdle::transform<tree_iterator,pose>, outward, kdle::DFSPolicy_ver2> traversal;
     traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, linkState, linkState2);
 
-#ifdef CHECK_IN_MAIN
+//#ifdef CHECK_IN_MAIN
+    std::cout << std::endl << std::endl << "LSTATE" << std::endl << std::endl;
     for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
     {
         std::cout << linkState[i].segmentName << std::endl;
@@ -392,7 +393,7 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
         std::cout << linkState[i].Xdotdot << std::endl;
         std::cout << linkState[i].F << std::endl;
     }
-
+    std::cout << std::endl << std::endl << "LSTATE2" << std::endl << std::endl;
      for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
     {
         std::cout << linkState2[i].segmentName << std::endl;
@@ -401,12 +402,12 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
         std::cout << linkState2[i].Xdotdot << std::endl;
         std::cout << linkState2[i].F << std::endl;
     }
-#endif
+//#endif
 
     std::vector<KDL::SegmentState> linkState3;
     linkState3.resize(twoBranchTree.getNrOfSegments()+1);
-    std::cout << std::endl << std::endl << "VER2 TRAVERSAL TEST" << std::endl << std::endl;
-    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, linkState2, linkState3);
+    std::cout << std::endl << std::endl << "REVERSE TRAVERSAL" << std::endl << std::endl;
+    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, jointState, linkState2, linkState3);
     //version 1 traversal
     //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);
     //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jointState, linkState, linkState2);

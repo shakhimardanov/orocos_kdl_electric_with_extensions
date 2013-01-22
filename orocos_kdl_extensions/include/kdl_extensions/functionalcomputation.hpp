@@ -249,7 +249,7 @@ public:
 
     inline bool operator()(typename ParameterTypeQualifier<std::vector<Param2T> >::RefToConstT a_param1,
                            typename ParameterTypeQualifier<std::vector<Param2T> >::RefToArgT   a_param2,
-                           typename ParameterTypeQualifier<std::vector<Param3T> >::RefToConstT a_param3,
+                           typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_param3,
                            typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_param4)
     {
         return a_policy.walk(a_graph, a_param1, a_param2, a_param3, a_param4, a_op);
