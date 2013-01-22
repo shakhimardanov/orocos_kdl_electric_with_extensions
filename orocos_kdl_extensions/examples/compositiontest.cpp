@@ -336,6 +336,7 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     kdle::transform<tree_iterator, accTwist> _comp3;
     kdle::balance<tree_iterator, force> _comp4;
     kdle::project<tree_iterator,wrench> _comp5;
+    kdle::project<tree_reverse_iterator,wrench> _comp6;
 
 #ifdef CHECK_IN_MAIN
     std::cout << "Transform initial state" << std::endl << linkState[0].X << std::endl;
@@ -405,7 +406,7 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     std::vector<KDL::SegmentState> linkState3;
     linkState3.resize(twoBranchTree.getNrOfSegments()+1);
     std::cout << std::endl << std::endl << "VER2 TRAVERSAL TEST" << std::endl << std::endl;
-    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, linkState, linkState3);
+    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, linkState2, linkState3);
     //version 1 traversal
     //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);
     //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jointState, linkState, linkState2);

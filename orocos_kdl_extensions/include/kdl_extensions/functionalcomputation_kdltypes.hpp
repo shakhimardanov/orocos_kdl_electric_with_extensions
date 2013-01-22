@@ -50,6 +50,7 @@ typedef wrenchOperationTag wrench;
 typedef inertiaOperationTag inertia;
 
 typedef std::map<std::string, KDL::TreeElement >::const_iterator tree_iterator;
+typedef std::map<std::string, KDL::TreeElement >::const_reverse_iterator tree_reverse_iterator;
 typedef std::vector<KDL::Segment>::const_iterator chain_iterator;
 
 template<typename Iterator, typename OperationTagT>
@@ -429,6 +430,47 @@ private:
 
 };
 
+template<>
+class project<tree_reverse_iterator,wrench>
+{
+public:
+
+    enum
+    {
+        NumberOfParams = 3
+    };
+    typedef KDL::SegmentState ReturnType;
+    typedef tree_reverse_iterator Param1T;
+    typedef KDL::JointState Param2T;
+    typedef KDL::SegmentState Param3T;
+
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
+    {
+        //TODO: Fix this, this is wrong
+
+       // a_segmentState = p_segmentState;
+//        std::cout << "Inside wrench operation Wrench value "<< std::endl << a_segmentState.F << std::endl << std::endl;
+        a_jointState = p_jointState;
+        a_jointState.torque = dot(p_segmentState.Z,p_segmentState.F);
+        a_segmentState.F = p_segmentState.F + p_segmentState.X * p_segmentState.F;
+        //a_segmentState2 = a_segmentState;
+
+#ifdef CHECK
+//        std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
+        std::cout << "Inside wrench operation Transform value " << p_segmentState.X << std::endl;
+//        std::cout << "Inside wrench operation Transform value " << a_segmentState2.X << std::endl;
+        std::cout << "Inside wrench operation Wrench value "<< std::endl << a_segmentState.F << std::endl << std::endl;
+        std::cout << "Inside wrench operation torque value "<< std::endl << a_jointState.torque << std::endl << std::endl;
+#endif
+        return a_segmentState;
+    };
+private:
+    ReturnType a_segmentState, a_segmentState2;
+    KDL::JointState a_jointState;
+
+};
 
 
 template<>
@@ -600,7 +642,6 @@ public:
     template <typename OP>
     inline static bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
                                    typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
-                                   //typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorIn, //introduce a separate mutable state representation, now is used for testing
                                    typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorIn,
                                    typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
                                    OP a_op)
@@ -629,6 +670,19 @@ public:
         return true;
     };
 
+
+    template <typename OP>
+    inline static bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
+                                   typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
+                                   typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorOut, //introduce a separate mutable state representation, now is used for testing
+                                   typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToConstT a_linkStateVectorIn,
+                                   typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
+                                   OP a_op)
+    {
+
+        return true;
+    };
+
 };
 
 template<>
@@ -647,7 +701,6 @@ public:
     template <typename OP>
     inline static bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
                                    typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
-                                   //typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorIn, //introduce a separate mutable state representation, now is used for testing
                                    typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorIn,
                                    typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
                                    OP a_op)
@@ -661,6 +714,8 @@ public:
         for (KDL::SegmentMap::const_reverse_iterator iter = a_topology.getSegments().rbegin(); iter != a_topology.getSegments().rend(); ++iter)
         {
             const KDL::TreeElement parentElement = iter->second;
+//            if (iter->second.parent != a_topology.getRootSegment())
+//             a_linkStateVectorIn[iter->second.parent->second.q_nr] = a_op(iter, a_jointStateVectorIn[iter->second.q_nr], a_linkStateVectorIn[iter->second.q_nr]);
 #ifdef CHECK
 
             std::cout << "Parent element name in current reverse iteration " << parentElement.segment.getName() << std::endl;
@@ -692,6 +747,19 @@ public:
             }
 
         }
+
+        return true;
+    };
+
+
+    template <typename OP>
+    inline static bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
+                                   typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
+                                   typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorOut, //introduce a separate mutable state representation, now is used for testing
+                                   typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToConstT a_linkStateVectorIn,
+                                   typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
+                                   OP a_op)
+    {
 
         return true;
     };

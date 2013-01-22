@@ -86,6 +86,18 @@ public:
     {
         return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, a_param2, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2, a_param3));
     };
+
+     //overloaded for four params
+    //compose(f,g)(x,y,z,t) will give the following result
+    //f(x,y,z,w) where w = g(x,y,z,t)
+    inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT a_param1,
+                                 typename ParameterTypeQualifier<Param2T>::RefToConstT a_param2,
+                                 typename ParameterTypeQualifier<Param3T>::RefToConstT a_param3,
+                                 typename ParameterTypeQualifier<Param4T>::RefToConstT a_param4)
+    {
+        return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, a_param2, a_param3, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2, a_param3, a_param4));
+    };
+
     //can add further overloads when needed
 
 };
@@ -119,7 +131,6 @@ enum Direction{outward=0, inward=1};
 
 template <typename Topology, Direction sweepDirection=outward>
 class DFSPolicy_ver2;
-
 
 
 //traversal/schedule function
@@ -193,8 +204,6 @@ inline IterateOver<Topology, OP, Policy> traverseGraph(Topology a_graph, OP a_op
 
 
 
-
-
 //this is a version of traversal which works with DFS_ver2
 template<typename Topology, typename OperationT, Direction sweepDirection, 
          template <typename Topology, Direction sweepDirection=outward> class TraversalPolicy>
@@ -235,6 +244,15 @@ public:
                            typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_param3)
     {
         return a_policy.walk(a_graph, a_param1, a_param2, a_param3, a_op);
+    };
+
+
+    inline bool operator()(typename ParameterTypeQualifier<std::vector<Param2T> >::RefToConstT a_param1,
+                           typename ParameterTypeQualifier<std::vector<Param2T> >::RefToArgT   a_param2,
+                           typename ParameterTypeQualifier<std::vector<Param3T> >::RefToConstT a_param3,
+                           typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_param4)
+    {
+        return a_policy.walk(a_graph, a_param1, a_param2, a_param3, a_param4, a_op);
     };
 private:
     Topology a_graph;
