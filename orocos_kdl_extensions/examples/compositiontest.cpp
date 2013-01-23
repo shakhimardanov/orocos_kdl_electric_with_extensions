@@ -411,6 +411,15 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     //version 1 traversal
     //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);
     //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jointState, linkState, linkState2);
+       std::cout << std::endl << std::endl << "LSTATE3" << std::endl << std::endl;
+     for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
+    {
+        std::cout << linkState3[i].segmentName << std::endl;
+        std::cout << std::endl << linkState3[i].X << std::endl;
+        std::cout << linkState3[i].Xdot << std::endl;
+        std::cout << linkState3[i].Xdotdot << std::endl;
+        std::cout << linkState3[i].F << std::endl;
+    }
 #ifdef CHECK_IN_MAIN
     for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
     {
@@ -446,6 +455,9 @@ int main(int argc, char** argv)
     jstate[2].qdot = -0.2;
     std::vector<SegmentState> lstate;
     lstate.resize(twoBranchTree.getNrOfSegments() + 1);
+    for (KDL::SegmentMap::const_iterator iter = twoBranchTree.getSegments().begin(); iter != twoBranchTree.getSegments().end(); ++iter)
+        lstate[iter->second.q_nr].segmentName = iter->first;
+
     std::vector<SegmentState> lstate2;
     lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
     lstate[0].Xdotdot = rootAcc;
