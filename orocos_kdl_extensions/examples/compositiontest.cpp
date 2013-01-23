@@ -455,8 +455,8 @@ int main(int argc, char** argv)
     jstate[2].qdot = -0.2;
     std::vector<SegmentState> lstate;
     lstate.resize(twoBranchTree.getNrOfSegments() + 1);
-    for (KDL::SegmentMap::const_iterator iter = twoBranchTree.getSegments().begin(); iter != twoBranchTree.getSegments().end(); ++iter)
-        lstate[iter->second.q_nr].segmentName = iter->first;
+    printf("Number of Joints %d\n", twoBranchTree.getNrOfJoints());
+    printf("Number of Segments %d\n", twoBranchTree.getNrOfSegments());
 
     std::vector<SegmentState> lstate2;
     lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
