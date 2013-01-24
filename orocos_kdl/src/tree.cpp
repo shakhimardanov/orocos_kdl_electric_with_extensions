@@ -42,8 +42,8 @@ Tree::Tree(const Tree& in) {
 
 Tree& Tree::operator=(const Tree& in) {
     segments.clear();
-    nrOfSegments = 1;
-    nrOfJoints = 1;
+    nrOfSegments = 0;
+    nrOfJoints = 0;
     root_name = in.root_name;
 
     segments.insert(make_pair(in.root_name, TreeElement::Root(root_name)));

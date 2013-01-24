@@ -50,7 +50,6 @@ typedef wrenchOperationTag wrench;
 typedef inertiaOperationTag inertia;
 
 typedef std::map<std::string, KDL::TreeElement >::const_iterator tree_iterator;
-typedef std::map<std::string, KDL::TreeElement >::const_reverse_iterator tree_reverse_iterator;
 typedef std::vector<KDL::Segment>::const_iterator chain_iterator;
 
 template<typename Iterator, typename OperationTagT>
@@ -460,48 +459,6 @@ private:
 
 };
 
-template<>
-class project<tree_reverse_iterator,wrench>
-{
-public:
-
-    enum
-    {
-        NumberOfParams = 3
-    };
-    typedef KDL::SegmentState ReturnType;
-    typedef tree_reverse_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
-
-    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
-                                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
-                                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
-    {
-        //TODO: Fix this, this is wrong
-
-       // a_segmentState = p_segmentState;
-//        std::cout << "Inside wrench operation Wrench value "<< std::endl << a_segmentState.F << std::endl << std::endl;
-        a_jointState = p_jointState;
-        a_jointState.torque = dot(p_segmentState.Z,p_segmentState.F);
-        a_segmentState.F = p_segmentState.F + p_segmentState.X * p_segmentState.F;
-        //a_segmentState2 = a_segmentState;
-
-#ifdef CHECK
-//        std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
-        std::cout << "Inside wrench operation Transform value " << p_segmentState.X << std::endl;
-//        std::cout << "Inside wrench operation Transform value " << a_segmentState2.X << std::endl;
-        std::cout << "Inside wrench operation Wrench value "<< std::endl << a_segmentState.F << std::endl << std::endl;
-        std::cout << "Inside wrench operation torque value "<< std::endl << a_jointState.torque << std::endl << std::endl;
-#endif
-        return a_segmentState;
-    };
-private:
-    ReturnType a_segmentState, a_segmentState2;
-    KDL::JointState a_jointState;
-
-};
-
 
 template<>
 class DFSPolicy<KDL::Chain>
@@ -743,6 +700,7 @@ public:
         std::cout << std::endl<< "This is reverse iteration/inward" << std::endl;
 #endif
         //this is reverse/inward iterative walk
+        // TODO: this function does not compute correct traversal, should be removed
         for (KDL::SegmentMap::const_reverse_iterator iter = a_topology.getSegments().rbegin(); iter != a_topology.getSegments().rend(); ++iter)
         {
             const KDL::TreeElement currentElement = iter->second;
@@ -754,29 +712,13 @@ public:
             std::cout << "Current/parent joint index and value in reverse iteration " << currentElement.q_nr << " " << a_jointStateVectorIn[currentElement.q_nr].q << std::endl << std::endl;
             std::cout << "Total spatial force on a parent " << a_linkStateVectorIn[currentElement.q_nr].F << std::endl;
 #endif
-//            TODO: make torque accessible. In order to do this we need to introduce mutable joint computational state.
-//            in total having 4 (2 immutable and mutable per link and per joint)
-//            also need to put this iteration into a separate reverse walk
+
             a_linkStateVectorOut[currentElement.q_nr] = a_linkStateVectorIn[currentElement.q_nr];
             
             for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
             {
-//                torques(j--)=dot(S[i],f[i]);
-//                f[i - 1] = f[i - 1] + X[i] * f[i];
-//                the second term in the 2nd expression should be summed for all children of the parent and then added to the parent's force (ID for trees).
-//                a_linkStateVectorIn[parentElement.q_nr].F = a_linkStateVectorIn[parentElement.q_nr].F + a_linkStateVectorIn[(*childIter)->second.q_nr].X * a_linkStateVectorIn[(*childIter)->second.q_nr].F;
-//                double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
-
                 //HERE IS STH WRONG???
                  a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorOut[currentElement.q_nr]);
-#ifdef CHECK
-
-                std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
-                std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
-                std::cout << "Total spatial force on a child " << a_linkStateVectorIn[(*childIter)->second.q_nr].F << std::endl;
-//               std::cout << "Torque at the curent joint " << torque << std::endl << std::endl;
-#endif
-
             }
 
         }
@@ -794,47 +736,51 @@ public:
                                    OP a_op)
      {
 
-
+        KDL::SegmentState tempState;
 #ifdef CHECK
         std::cout << std::endl<< "This is reverse iteration/inward" << std::endl;
 #endif
         //this is reverse/inward iterative walk
         for (KDL::SegmentMap::const_reverse_iterator iter = a_topology.getSegments().rbegin(); iter != a_topology.getSegments().rend(); ++iter)
         {
-            const KDL::TreeElement currentElement = iter->second;
-            KDL::SegmentState tempState;
-
-            tempState = a_linkStateVectorIn[currentElement.q_nr];
-
-
-#ifdef CHECK
-
-            std::cout << "Current element name in current reverse iteration " << currentElement.segment.getName() << std::endl;
-            std::cout << "Current joint index and value in reverse iteration " << currentElement.q_nr << " " << a_jointStateVectorIn[currentElement.q_nr].q << std::endl;
-            std::cout << "Spatial BODY force on a current element " << a_linkStateVectorIn[currentElement.q_nr].F << std::endl;
-#endif
-            
-            for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
+            //TODO: this needs to be changed, string comparison is inefficient
+            if (iter->first != a_topology.getRootSegment()->first)
             {
-//                torques(j--)=dot(S[i],f[i]);
-//                f[i - 1] = f[i - 1] + X[i] * f[i];
-//                the second term in the 2nd expression should be summed for all children of the parent and then added to the parent's force (ID for trees).
-//                a_linkStateVectorIn[parentElement.q_nr].F = a_linkStateVectorIn[parentElement.q_nr].F + a_linkStateVectorIn[(*childIter)->second.q_nr].X * a_linkStateVectorIn[(*childIter)->second.q_nr].F;
-//                double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
-
-                 tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[currentElement.q_nr], a_linkStateVectorOut[(*childIter)->second.q_nr]);
-                 
+                const KDL::TreeElement currentElement = iter->second;
+                tempState = a_linkStateVectorIn[currentElement.q_nr];
 #ifdef CHECK
 
-                std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
-                std::cout << "Child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
-                std::cout << "Total spatial force on a child " << a_linkStateVectorOut[(*childIter)->second.q_nr].F << std::endl;
-            
+                std::cout << "Current element name in current reverse iteration " << currentElement.segment.getName() << std::endl;
+                std::cout << "Current joint index and value in reverse iteration " << currentElement.q_nr << " " << a_jointStateVectorIn[currentElement.q_nr].q << std::endl;
+                std::cout << "Spatial BODY force on a current element " << a_linkStateVectorIn[currentElement.q_nr].F << std::endl;
+#endif
+                //            TODO: make torque accessible. In order to do this we need to introduce mutable joint computational state.
+                //            in total having 4 (2 immutable and mutable per link and per joint)
+                //            also need to put this iteration into a separate reverse walk
+
+                for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
+                {
+                    //                torques(j--)=dot(S[i],f[i]);
+                    //                f[i - 1] = f[i - 1] + X[i] * f[i];
+                    //                the second term in the 2nd expression should be summed for all children of the parent and then added to the parent's force (ID for trees).
+                    //                a_linkStateVectorIn[parentElement.q_nr].F = a_linkStateVectorIn[parentElement.q_nr].F + a_linkStateVectorIn[(*childIter)->second.q_nr].X * a_linkStateVectorIn[(*childIter)->second.q_nr].F;
+                    //                double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
+
+                    tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[currentElement.q_nr], a_linkStateVectorOut[(*childIter)->second.q_nr]);
+
+#ifdef CHECK
+
+                    std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
+                    std::cout << "Child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
+                    std::cout << "Total spatial force on a child " << a_linkStateVectorOut[(*childIter)->second.q_nr].F << std::endl;
+
 #endif
 
+                }
+
+                a_linkStateVectorOut[currentElement.q_nr] = tempState;
+                std::cout << "Total Spatial force on a current element " << a_linkStateVectorOut[currentElement.q_nr].F << std::endl;
             }
-            a_linkStateVectorOut[currentElement.q_nr] = tempState;
-            std::cout << "Total Spatial force on a current element " << a_linkStateVectorOut[currentElement.q_nr].F << std::endl;
         }
 
         return true;

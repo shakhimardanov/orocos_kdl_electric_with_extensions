@@ -336,8 +336,7 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     kdle::transform<tree_iterator, accTwist> _comp3;
     kdle::balance<tree_iterator, force> _comp4;
     kdle::project<tree_iterator,wrench> _comp5;
-    kdle::project<tree_reverse_iterator,wrench> _comp6;
-
+    
 #ifdef CHECK_IN_MAIN
     std::cout << "Transform initial state" << std::endl << linkState[0].X << std::endl;
     std::cout << "Twist initial state" << std::endl << linkState[0].Xdot << std::endl;
@@ -383,7 +382,7 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     kdle::IterateOver_ver2<KDL::Tree, kdle::transform<tree_iterator,pose>, outward, kdle::DFSPolicy_ver2> traversal;
     traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, linkState, linkState2);
 
-//#ifdef CHECK_IN_MAIN
+#ifdef CHECK_IN_MAIN
     std::cout << std::endl << std::endl << "LSTATE" << std::endl << std::endl;
     for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
     {
@@ -402,7 +401,7 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
         std::cout << linkState2[i].Xdotdot << std::endl;
         std::cout << linkState2[i].F << std::endl;
     }
-//#endif
+#endif
 
     std::vector<KDL::SegmentState> linkState3;
     linkState3.resize(twoBranchTree.getNrOfSegments()+1);
@@ -411,16 +410,8 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     //version 1 traversal
     //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);
     //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jointState, linkState, linkState2);
-       std::cout << std::endl << std::endl << "LSTATE3" << std::endl << std::endl;
-     for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
-    {
-        std::cout << linkState3[i].segmentName << std::endl;
-        std::cout << std::endl << linkState3[i].X << std::endl;
-        std::cout << linkState3[i].Xdot << std::endl;
-        std::cout << linkState3[i].Xdotdot << std::endl;
-        std::cout << linkState3[i].F << std::endl;
-    }
 #ifdef CHECK_IN_MAIN
+    std::cout << std::endl << std::endl << "LSTATE3" << std::endl << std::endl;
     for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
     {
         std::cout << linkState3[i].segmentName << std::endl;
