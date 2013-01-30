@@ -465,7 +465,10 @@ int main(int argc, char** argv)
     lstate3[0].Xdotdot = rootAcc;
 
 //    computeTemplatedDynamicsForChain(twoBranchTree, rootLink, tipLink, linearAcc, jstate, lstate3, lstate4);
-
+    if (lstate[0] == lstate2[0])
+        printf("XXXXXXXXXXXX");
+    else
+        printf("YYYYYYYYYYYY");
     //This is just used as a reference to compare to our result.
     //using standard KDL forward pose and vel solvers
     rootLink = "L0";

@@ -27,10 +27,7 @@ public:
     void tearDown();
 
 private:
-    KDL::SegmentState *a_segmentState;
-    KDL::JointState *a_jointState;
-    KDL::SegmentMap::const_iterator segmentId;
-    kdle::transform<kdle::tree_iterator, kdle::pose> *a_operation;
+    
     
     void testTransformPose();
     void testFailedTransformPose();

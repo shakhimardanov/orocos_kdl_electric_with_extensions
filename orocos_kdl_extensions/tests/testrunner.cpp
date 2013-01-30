@@ -14,7 +14,7 @@
 #include "poseOperationTest.hpp"
 
 int main() {
-    CPPUNIT_TEST_SUITE_REGISTRATION( PoseOperationTest );
+    //CPPUNIT_TEST_SUITE_REGISTRATION( PoseOperationTest );
 
     // Create the event manager and test controller
     CPPUNIT_NS::TestResult controller;

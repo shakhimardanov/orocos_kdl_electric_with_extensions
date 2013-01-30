@@ -22,6 +22,8 @@ public:
     SegmentState();
     SegmentState(const SegmentState& copy);
     SegmentState & operator=(const SegmentState& copy);
+    bool operator==(SegmentState& instance);
+//    friend bool operator==(const SegmentState& instance1, const SegmentState& instance2);
 
     Frame X;
     Twist Xdot;

@@ -49,6 +49,15 @@ SegmentState& SegmentState::operator=(const SegmentState& copy)
     }
     return *this;
 }
+bool SegmentState::operator==(SegmentState& instance)
+{
+    return true;
+};
+
+//bool operator==(const SegmentState& instance1, const SegmentState& instance2)
+//{
+//    return true;
+//};
 
 SegmentState::~SegmentState()
 {
