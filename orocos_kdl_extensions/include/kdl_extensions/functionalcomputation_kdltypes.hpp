@@ -10,11 +10,11 @@
 
 
 #include <kdl/tree.hpp>
-#include <kdl_extensions/treeid_vereshchagin_composable.hpp>
+#include <kdl_extensions/computationalstate_kdltypes.hpp>
 #include <kdl_extensions/functionalcomputation.hpp>
-//#include <kdl_extensions/computationalstate_kdltypes.hpp>
 
-namespace kdl_extensions
+
+namespace kdle
 {
 //operation tags
 
@@ -64,10 +64,10 @@ public:
     {
         NumberOfParams = 3
     };
-    typedef KDL::SegmentState ReturnType;
+    typedef SegmentState ReturnType;
     typedef tree_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
+    typedef JointState Param2T;
+    typedef SegmentState Param3T;
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
                                  ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
@@ -82,7 +82,7 @@ public:
         a_segmentState.jointIndex = p_jointState.jointIndex;
         a_segmentState.jointName = p_jointState.jointName;
         a_segmentState.segmentName = segmentId->first;
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
         std::cout << "Inside pose operation Transform value"<< std::endl << a_segmentState.X << std::endl;
         //std::cout << "Inside pose operation Twist value" << a_segmentState.Xdot << std::endl;
         //std::cout << "Inside pose operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
@@ -105,10 +105,10 @@ public:
     {
         NumberOfParams = 3
     };
-    typedef KDL::SegmentState ReturnType;
+    typedef SegmentState ReturnType;
     typedef chain_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
+    typedef JointState Param2T;
+    typedef SegmentState Param3T;
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
                                  ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
@@ -123,7 +123,7 @@ public:
         a_segmentState.jointName = p_jointState.jointName;
         a_segmentState.segmentName = segmentId->getName();
 
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
         std::cout << "Inside pose operation Transform value"<< std::endl << a_segmentState.X << std::endl;
 #endif
         return a_segmentState;
@@ -143,10 +143,10 @@ public:
     {
         NumberOfParams = 3
     };
-    typedef KDL::SegmentState ReturnType;
+    typedef SegmentState ReturnType;
     typedef tree_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
+    typedef JointState Param2T;
+    typedef SegmentState Param3T;
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
                                  ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
@@ -156,13 +156,12 @@ public:
         a_segmentState.Xdotdot = p_segmentState.Xdotdot;
         a_segmentState.F = p_segmentState.F;
         a_segmentState.Z = a_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, 1.0));
-        //a_segmentState.Z = a_jointUnitTwist;
         a_segmentState.Vj = a_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, p_jointState.qdot));
 
         //do we check here for the index of a joint (whether the joint is first/root in the chain)
         //if so, somehow an information about whether a segment is root or not should be sent here
         a_segmentState.Xdot = a_segmentState.X.Inverse(p_segmentState.Xdot) + a_segmentState.Vj;
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
         //std::cout << "Inside twist operation Transform value" << a_segmentState.X << std::endl;
         std::cout << "Inside twist operation Twist value"<< std::endl << a_segmentState.Xdot << std::endl;
         // std::cout << "Inside twist operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
@@ -183,10 +182,10 @@ public:
     {
         NumberOfParams = 3
     };
-    typedef KDL::SegmentState ReturnType;
+    typedef SegmentState ReturnType;
     typedef chain_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
+    typedef JointState Param2T;
+    typedef SegmentState Param3T;
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
                                  ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
@@ -195,12 +194,10 @@ public:
         a_segmentState.X = p_segmentState.X;
         a_segmentState.Xdotdot = p_segmentState.Xdotdot;
         a_segmentState.Z = a_segmentState.X.M.Inverse(segmentId->twist(p_jointState.q, 1.0));
-        //a_segmentState.Z = a_jointUnitTwist;
         a_segmentState.Vj = a_segmentState.X.M.Inverse(segmentId->twist(p_jointState.q, p_jointState.qdot));
-        //a_segmentState.Vj = a_jointTwistVelocity;
         //do we check here for the index of a joint (whether the joint is first in the chain)
         a_segmentState.Xdot = a_segmentState.X.Inverse(p_segmentState.Xdot) + a_segmentState.Vj;
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
         std::cout << "Inside twist operation Twist value"<< std::endl << a_segmentState.Xdot << std::endl;
 #endif
         return a_segmentState;
@@ -218,10 +215,10 @@ public:
     {
         NumberOfParams = 3
     };
-    typedef KDL::SegmentState ReturnType;
+    typedef SegmentState ReturnType;
     typedef tree_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
+    typedef JointState Param2T;
+    typedef SegmentState Param3T;
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
                                  ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
@@ -229,7 +226,7 @@ public:
     {
         a_segmentState = p_segmentState;
         a_segmentState.Xdotdot = p_segmentState.X.Inverse(p_segmentState.Xdotdot) + p_segmentState.Z * p_jointState.qdotdot + p_segmentState.Xdot * p_segmentState.Vj;
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
         //std::cout << "Inside acctwist operation Transform value" << a_segmentState.X << std::endl;
         //std::cout << "Inside acctwist operation Twist value" << a_segmentState.Xdot << std::endl;
         std::cout << "Inside acctwist operation AccTwist value"<< std::endl << a_segmentState.Xdotdot << std::endl;
@@ -251,10 +248,10 @@ public:
     {
         NumberOfParams = 3
     };
-    typedef KDL::SegmentState ReturnType;
+    typedef SegmentState ReturnType;
     typedef chain_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
+    typedef JointState Param2T;
+    typedef SegmentState Param3T;
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
                                  ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
@@ -262,7 +259,7 @@ public:
     {
         a_segmentState = p_segmentState;
         a_segmentState.Xdotdot = p_segmentState.X.Inverse(p_segmentState.Xdotdot) + p_segmentState.Z * p_jointState.qdotdot + p_segmentState.Xdot * p_segmentState.Vj;
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
         std::cout << "Inside acctwist operation AccTwist value"<< std::endl << a_segmentState.Xdotdot << std::endl;
 #endif
         return a_segmentState;
@@ -284,10 +281,10 @@ public:
     {
         NumberOfParams = 3
     };
-    typedef KDL::SegmentState ReturnType;
+    typedef SegmentState ReturnType;
     typedef chain_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
+    typedef JointState Param2T;
+    typedef SegmentState Param3T;
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
                                  ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
@@ -295,7 +292,7 @@ public:
     {
         a_segmentState = p_segmentState;
         a_segmentState.F = segmentId->getInertia() * a_segmentState.Xdotdot + a_segmentState.Xdot * (segmentId->getInertia() * a_segmentState.Xdot) - a_segmentState.Fext;
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
          std::cout << "Inside wrench operation Wrench value "<< std::endl << a_segmentState.F << std::endl << std::endl;
 #endif
         return a_segmentState;
@@ -314,10 +311,10 @@ public:
     {
         NumberOfParams = 3
     };
-    typedef KDL::SegmentState ReturnType;
+    typedef SegmentState ReturnType;
     typedef tree_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
+    typedef JointState Param2T;
+    typedef SegmentState Param3T;
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
                                  ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
@@ -325,11 +322,10 @@ public:
     {
         a_segmentState = p_segmentState;
         a_segmentState.F = segmentId->second.segment.getInertia() * a_segmentState.Xdotdot + a_segmentState.Xdot * (segmentId->second.segment.getInertia() * a_segmentState.Xdot) - a_segmentState.Fext;
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
 //        std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
 //        std::cout << "Inside wrench operation Twist value " << a_segmentState.Xdot << std::endl;
 //        std::cout << "Inside wrench operation AccTwist value " << a_segmentState.Xdotdot << std::endl;
-//
         std::cout << "Inside wrench operation Wrench value "<< std::endl << a_segmentState.F << std::endl << std::endl;
 #endif
         return a_segmentState;
@@ -353,8 +349,8 @@ public:
     };
     typedef KDL::RigidBodyInertia ReturnType;
     typedef chain_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
+    typedef JointState Param2T;
+    typedef SegmentState Param3T;
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
                                  ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
@@ -376,8 +372,8 @@ public:
     };
     typedef KDL::RigidBodyInertia ReturnType;
     typedef tree_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
+    typedef JointState Param2T;
+    typedef SegmentState Param3T;
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
                                  ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
@@ -396,10 +392,10 @@ public:
     {
         NumberOfParams = 3
     };
-    typedef KDL::SegmentState ReturnType;
+    typedef SegmentState ReturnType;
     typedef tree_iterator Param1T;
-    typedef KDL::JointState Param2T;
-    typedef KDL::SegmentState Param3T;
+    typedef JointState Param2T;
+    typedef SegmentState Param3T;
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
                                  ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
@@ -410,14 +406,16 @@ public:
         a_segmentState = p_segmentState;
         a_jointState = p_jointState;
 
+#ifdef VERBOSE_CHECK
         std::cout << "Inside wrench operation Wrench value "<< std::endl << a_segmentState.F << std::endl << std::endl;
         std::cout << "Inside wrench operation Wrench value "<< std::endl << p_segmentState.F << std::endl << std::endl;
-
+#endif
+        
         a_jointState.torque = dot(p_segmentState.Z,p_segmentState.F);
         a_segmentState.F = p_segmentState.F + p_segmentState.X * a_segmentState.F;
-        //a_segmentState2 = a_segmentState;
+        
 
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
         std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
         std::cout << "Inside wrench operation Transform value " << p_segmentState.X << std::endl;
         std::cout << "Inside wrench operation Wrench value "<< std::endl << a_segmentState.F << std::endl << std::endl;
@@ -432,22 +430,23 @@ public:
                                  ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's state (body force)
                                  ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState2) //current's child's state (total force)
     {
-        //TODO: Fix this, this is wrong
-
+      
         a_segmentState = p_segmentState;
         a_jointState = p_jointState;
-
-//        std::cout << "Inside wrench operation Input Wrench  A "<< std::endl << a_segmentState.F << std::endl << std::endl;
+        
+#ifdef VERBOSE_CHECK
+        std::cout << "Inside wrench operation Input Wrench A "<< std::endl << a_segmentState.F << std::endl << std::endl;
         std::cout << "Inside wrench operation Input Wrench P1 "<< std::endl << p_segmentState.F << std::endl << std::endl;
-        std::cout << "Inside wrench operation Input Wrench P2 "<< std::endl << p_segmentState2.F << std::endl << std::endl;
+//        std::cout << "Inside wrench operation Input Wrench P2 "<< std::endl << p_segmentState2.F << std::endl << std::endl;
 //        std::cout << "Inside wrench operation Input Transform A " << a_segmentState.Z << std::endl;
 //        std::cout << "Inside wrench operation Input Transform P1 " << p_segmentState.Z << std::endl;
 //        std::cout << "Inside wrench operation Input Transform P1 " << p_segmentState2.Z << std::endl;
-
-//        a_jointState.torque = dot(p_segmentState2.Z,p_segmentState2.F);
+#endif
+        
+        a_jointState.torque = dot(p_segmentState2.Z,p_segmentState2.F);
         a_segmentState.F = p_segmentState.F + p_segmentState2.X * p_segmentState2.F;
 
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
         std::cout << "Inside wrench operation Computed Wrench A "<< std::endl << a_segmentState.F << std::endl << std::endl;
         std::cout << "Inside wrench operation Computed Torque A "<< std::endl << a_jointState.torque << std::endl << std::endl;
 #endif
@@ -455,7 +454,7 @@ public:
     };
 private:
     ReturnType a_segmentState;
-    KDL::JointState a_jointState;
+    JointState a_jointState;
 
 };
 
@@ -525,14 +524,14 @@ public:
         for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
         {
             const KDL::TreeElement parentElement = iter->second;
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
             std::cout << "Parent element name in current iteration " << parentElement.segment.getName() << std::endl;
             std::cout << "Current/parent joint index and value " << parentElement.q_nr << " " << a_jointStateVectorIn[parentElement.q_nr].q << std::endl;
 #endif
              a_linkStateVectorOut[parentElement.q_nr] = a_linkStateVectorIn[parentElement.q_nr];
             for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
             {
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
                 std::cout << "Child element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
                 std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
 #endif
@@ -542,14 +541,14 @@ public:
             }
         }
 
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
         std::cout << std::endl<< "This is reverse iteration/inward" << std::endl;
 #endif
         //this is reverse/inward iterative walk
         for (KDL::SegmentMap::const_reverse_iterator iter = a_topology.getSegments().rbegin(); iter != a_topology.getSegments().rend(); ++iter)
         {
             const KDL::TreeElement parentElement = iter->second;
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
 
             std::cout << "Parent element name in current reverse iteration " << parentElement.segment.getName() << std::endl;
             std::cout << "Current/parent joint index and value in reverse iteration " << parentElement.q_nr << " " << a_jointStateVectorIn[parentElement.q_nr].q << std::endl << std::endl;
@@ -567,7 +566,7 @@ public:
                    
 
 
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
 
                 std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
                 std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
@@ -638,7 +637,7 @@ public:
         for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
         {
             const KDL::TreeElement parentElement = iter->second;
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
             std::cout << "Parent element name in current iteration " << parentElement.segment.getName() << std::endl;
             std::cout << "State vector input " << a_linkStateVectorIn[parentElement.q_nr].segmentName << std::endl;
 
@@ -647,7 +646,7 @@ public:
              a_linkStateVectorOut[parentElement.q_nr] = a_linkStateVectorIn[parentElement.q_nr];
             for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
             {
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
                 std::cout << "Child element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
                 std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
 #endif
@@ -695,18 +694,17 @@ public:
                                    OP a_op)
     {
 
-
-#ifdef CHECK
+ // TODO: this function does not compute correct traversal, should be removed
+#ifdef VERBOSE_CHECK
         std::cout << std::endl<< "This is reverse iteration/inward" << std::endl;
 #endif
         //this is reverse/inward iterative walk
-        // TODO: this function does not compute correct traversal, should be removed
         for (KDL::SegmentMap::const_reverse_iterator iter = a_topology.getSegments().rbegin(); iter != a_topology.getSegments().rend(); ++iter)
         {
             const KDL::TreeElement currentElement = iter->second;
 //            if (iter->second.parent != a_topology.getRootSegment())
 //             a_linkStateVectorIn[iter->second.parent->second.q_nr] = a_op(iter, a_jointStateVectorIn[iter->second.q_nr], a_linkStateVectorIn[iter->second.q_nr]);
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
 
             std::cout << "Parent element name in current reverse iteration " << currentElement.segment.getName() << std::endl;
             std::cout << "Current/parent joint index and value in reverse iteration " << currentElement.q_nr << " " << a_jointStateVectorIn[currentElement.q_nr].q << std::endl << std::endl;
@@ -736,8 +734,8 @@ public:
                                    OP a_op)
      {
 
-        KDL::SegmentState tempState;
-#ifdef CHECK
+        SegmentState tempState;
+#ifdef VERBOSE_CHECK
         std::cout << std::endl<< "This is reverse iteration/inward" << std::endl;
 #endif
         //this is reverse/inward iterative walk
@@ -748,7 +746,7 @@ public:
             {
                 const KDL::TreeElement currentElement = iter->second;
                 tempState = a_linkStateVectorIn[currentElement.q_nr];
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
 
                 std::cout << "Current element name in current reverse iteration " << currentElement.segment.getName() << std::endl;
                 std::cout << "Current joint index and value in reverse iteration " << currentElement.q_nr << " " << a_jointStateVectorIn[currentElement.q_nr].q << std::endl;
@@ -768,7 +766,7 @@ public:
 
                     tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[currentElement.q_nr], a_linkStateVectorOut[(*childIter)->second.q_nr]);
 
-#ifdef CHECK
+#ifdef VERBOSE_CHECK
 
                     std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
                     std::cout << "Child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
@@ -790,7 +788,6 @@ public:
 
 };
 
-namespace kdle = kdl_extensions;
 
 #include "../../src/functionalcomputation_kdltypes.inl"
 #endif	/* FUNCTIONALCOMPUTATION_KDLTYPES_HPP */

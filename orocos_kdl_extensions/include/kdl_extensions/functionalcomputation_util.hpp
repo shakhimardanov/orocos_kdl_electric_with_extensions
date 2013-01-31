@@ -9,7 +9,7 @@
 #define	FUNCTIONALCOMPUTATION_UTIL_HPP
 
 
-namespace kdl_extensions
+namespace kdle
 {
 // primary template: yield second or third argument depending on first argument
 template<bool Choice, typename FirstType, typename SecondType>

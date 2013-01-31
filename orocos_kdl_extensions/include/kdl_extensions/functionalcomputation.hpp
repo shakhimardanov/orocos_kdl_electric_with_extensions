@@ -12,7 +12,7 @@
 #include <kdl_extensions/functionalcomputation_util.hpp>
 
 
-namespace kdl_extensions
+namespace kdle
 {
 
 //--------------------------------------------//

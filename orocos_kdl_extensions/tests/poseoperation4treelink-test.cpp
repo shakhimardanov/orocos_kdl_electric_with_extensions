@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
-#include <kdl_extensions/treeid_vereshchagin_composable.hpp>
+
 
 /*
  * Simple C++ Test Suite
@@ -96,9 +96,9 @@ void test1() {
 
     KDL::Tree twoBranchTree("L0");
     createMyTree(twoBranchTree);
-    KDL::SegmentState linkState0, linkState1;
-    KDL::JointState jointState0;
-    kdle::transform<tree_iterator, pose> comp1;
+    kdle::SegmentState linkState0, linkState1;
+    kdle::JointState jointState0;
+    kdle::transform<kdle::tree_iterator, kdle::pose> comp1;
     
     linkState1 = comp1(twoBranchTree.getSegment("L1"), jointState0, linkState0);
 }
@@ -108,9 +108,9 @@ void test2() {
 
     KDL::Tree twoBranchTree("L0");
     createMyTree(twoBranchTree);
-    KDL::SegmentState linkState0, linkState1;
-    KDL::JointState jointState0;
-    kdle::transform<tree_iterator, pose> comp1;
+    kdle::SegmentState linkState0, linkState1;
+    kdle::JointState jointState0;
+    kdle::transform<kdle::tree_iterator, kdle::pose> comp1;
 
     std::cout << "%TEST_FAILED% time=0 testname=test2 (poseoperation4treelink-test) message=error message sample" << std::endl;
     linkState1 = comp1(twoBranchTree.getSegment("L1"), jointState0, linkState0);

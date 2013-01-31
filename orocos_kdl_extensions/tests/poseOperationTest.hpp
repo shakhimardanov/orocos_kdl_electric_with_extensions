@@ -10,7 +10,6 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
-#include <kdl_extensions/treeid_vereshchagin_composable.hpp>
 
 class PoseOperationTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE(PoseOperationTest);

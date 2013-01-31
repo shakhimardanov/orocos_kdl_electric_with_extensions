@@ -11,7 +11,6 @@
 #include <cppunit/TestResult.h>
 #include <cppunit/TestResultCollector.h>
 #include <cppunit/TestRunner.h>
-#include "poseOperationTest.hpp"
 
 int main() {
     //CPPUNIT_TEST_SUITE_REGISTRATION( PoseOperationTest );

@@ -37,8 +37,8 @@ void PoseOperationTest::testTransformPose()
     KDL::Tree testTree("TestTreeRoot");
     testTree.addSegment(testSegment,"TestTreeRoot");
 
-    KDL::SegmentState a_segmentState, a_segmentState1;
-    KDL::JointState a_jointState;
+    kdle::SegmentState a_segmentState, a_segmentState1;
+    kdle::JointState a_jointState;
     KDL::SegmentMap::const_iterator segmentId = testTree.getRootSegment();
     kdle::transform<kdle::tree_iterator, kdle::pose> a_operation;
     
@@ -47,7 +47,8 @@ void PoseOperationTest::testTransformPose()
 }
 
 void PoseOperationTest::testFailedTransformPose()
-{ KDL::SegmentState a_segmentState, a_segmentState1;
+{
+    kdle::SegmentState a_segmentState, a_segmentState1;
 
     CPPUNIT_ASSERT_ASSERTION_FAIL(CPPUNIT_ASSERT(a_segmentState == a_segmentState1));
 }
