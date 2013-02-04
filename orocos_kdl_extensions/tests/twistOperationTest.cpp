@@ -20,6 +20,20 @@ TwistOperationTest::~TwistOperationTest()
 
 void TwistOperationTest::setUp()
 {
+
+    KDL::Joint testJoint = KDL::Joint("TestJoint", KDL::Joint::RotZ, 1, 0, 0.01);
+    KDL::Frame testFrame(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, 0.4, 0.0));
+    KDL::Segment testSegment = KDL::Segment("TestSegment", testJoint, testFrame);
+    KDL::RotationalInertia testRotInerSeg(0.0, 0.0, 0.0, 0.0, 0.0, 0.0); //around symmetry axis of rotation
+    double pointMass = 0.25; //in kg
+    KDL::RigidBodyInertia testInerSegment(pointMass, KDL::Vector(0.0, 0.4, 0.0), testRotInerSeg);
+    testSegment.setInertia(testInerSegment);
+
+    testTree.addSegment(testSegment,"root");
+
+    a_segmentState = kdle::SegmentState();
+    a_jointState = kdle::JointState();
+
 }
 
 void TwistOperationTest::tearDown()
@@ -28,21 +42,46 @@ void TwistOperationTest::tearDown()
 
 void TwistOperationTest::testMethod()
 {
-    KDL::Segment testSegment("TestSegment");
-    KDL::Tree testTree("TestTreeRoot");
-    testTree.addSegment(testSegment, "TestTreeRoot");
-
-    kdle::SegmentState a_segmentState, a_segmentState1;
-    kdle::JointState a_jointState;
-    KDL::SegmentMap::const_iterator segmentId = testTree.getRootSegment();
+    
+    kdle::SegmentState a_segmentState1;
+    KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");
     kdle::transform<kdle::tree_iterator, kdle::twist> a_operation;
 
+    a_segmentState.Xdot.vel[0] = 2.0;
+    a_jointState.qdot = 0.5;
+    std::cout << std::endl;
+    printf("initial twist x %f\n",a_segmentState.Xdot.vel[0]);
+    printf("initial twist y %f\n",a_segmentState.Xdot.vel[1]);
+    printf("initial twist z %f\n",a_segmentState.Xdot.vel[2]);
+
     a_segmentState1 = a_operation(segmentId, a_jointState, a_segmentState);
-    CPPUNIT_ASSERT(a_segmentState == a_segmentState1);
+
+    printf("updated twist x %f\n",a_segmentState1.Xdot.vel[0]);
+    printf("updated twist y %f\n",a_segmentState1.Xdot.vel[1]);
+    printf("updated twist z %f\n",a_segmentState1.Xdot.vel[2]);
+
+    CPPUNIT_ASSERT(a_segmentState != a_segmentState1);
 }
 
 void TwistOperationTest::testFailedMethod()
 {
-    CPPUNIT_ASSERT(false);
+    kdle::SegmentState a_segmentState1;
+    KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");
+    kdle::transform<kdle::tree_iterator, kdle::twist> a_operation;
+
+
+    std::cout << std::endl;
+    printf("initial twist x %f\n",a_segmentState.Xdot.vel[0]);
+    printf("initial twist y %f\n",a_segmentState.Xdot.vel[1]);
+    printf("initial twist z %f\n",a_segmentState.Xdot.vel[2]);
+
+    a_segmentState1 = a_operation(segmentId, a_jointState, a_segmentState);
+
+    printf("updated twist x %f\n",a_segmentState1.Xdot.vel[0]);
+    printf("updated twist y %f\n",a_segmentState1.Xdot.vel[1]);
+    printf("updated twist z %f\n",a_segmentState1.Xdot.vel[2]);
+
+    CPPUNIT_ASSERT(a_segmentState != a_segmentState1);
+//    CPPUNIT_ASSERT(a_segmentState == a_segmentState1);
 }
 

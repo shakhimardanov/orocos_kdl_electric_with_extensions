@@ -26,6 +26,10 @@ public:
     void tearDown();
 
 private:
+    KDL::Tree testTree;
+    kdle::SegmentState a_segmentState;
+    kdle::JointState a_jointState;
+    
     void testMethod();
     void testFailedMethod();
 };

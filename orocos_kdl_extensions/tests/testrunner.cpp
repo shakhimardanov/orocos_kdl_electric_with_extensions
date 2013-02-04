@@ -7,10 +7,12 @@
 
 #include <cppunit/BriefTestProgressListener.h>
 #include <cppunit/CompilerOutputter.h>
+#include <cppunit/TextOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/TestResult.h>
 #include <cppunit/TestResultCollector.h>
 #include <cppunit/TestRunner.h>
+
 
 int main() {
     //CPPUNIT_TEST_SUITE_REGISTRATION( PoseOperationTest );
@@ -34,6 +36,10 @@ int main() {
     // Print test in a compiler compatible format.
     CPPUNIT_NS::CompilerOutputter outputter(&result, CPPUNIT_NS::stdCOut());
     outputter.write();
+
+//    CPPUNIT_NS::TextOutputter outputter1(&result, CPPUNIT_NS::stdCOut());
+//    outputter1.write();
+
 
     return result.wasSuccessful() ? 0 : 1;
 }

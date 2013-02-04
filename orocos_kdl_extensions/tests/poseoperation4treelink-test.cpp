@@ -92,7 +92,7 @@ void createMyTree(KDL::Tree& twoBranchTree)
 
 
 void test1() {
-    std::cout << "poseoperation4treelink-test test 1" << std::endl;
+    std::cout << "Pose operation for a tree segment test1 is started" << std::endl;
 
     KDL::Tree twoBranchTree("L0");
     createMyTree(twoBranchTree);
@@ -101,35 +101,31 @@ void test1() {
     kdle::transform<kdle::tree_iterator, kdle::pose> comp1;
     
     linkState1 = comp1(twoBranchTree.getSegment("L1"), jointState0, linkState0);
+
+    std::cout << "Pose operation for a tree segment test1 is finished" << std::endl;
 }
 
 void test2() {
-    std::cout << "poseoperation4treelink-test test 2" << std::endl;
+    std::cout << "Pose operation for a tree segment test2 is started" << std::endl;
 
     KDL::Tree twoBranchTree("L0");
     createMyTree(twoBranchTree);
     kdle::SegmentState linkState0, linkState1;
     kdle::JointState jointState0;
     kdle::transform<kdle::tree_iterator, kdle::pose> comp1;
-
-    std::cout << "%TEST_FAILED% time=0 testname=test2 (poseoperation4treelink-test) message=error message sample" << std::endl;
+    
     linkState1 = comp1(twoBranchTree.getSegment("L1"), jointState0, linkState0);
     linkState1 = comp1(twoBranchTree.getSegment("L2"), jointState0, linkState1);
+
+    std::cout << "Pose operation for a tree segment test2 is finished" << std::endl;
 }
 
 int main(int argc, char** argv) {
-    std::cout << "%SUITE_STARTING% poseoperation4treelink-test" << std::endl;
-    std::cout << "%SUITE_STARTED%" << std::endl;
 
-    std::cout << "%TEST_STARTED% test1 (poseoperation4treelink-test)" << std::endl;
+    std::cout << "Pose operation for a tree segment test suite is started" << std::endl;
     test1();
-    std::cout << "%TEST_FINISHED% time=0 test1 (poseoperation4treelink-test)" << std::endl;
-
-    std::cout << "%TEST_STARTED% test2 (poseoperation4treelink-test)\n" << std::endl;
     test2();
-    std::cout << "%TEST_FINISHED% time=0 test2 (poseoperation4treelink-test)" << std::endl;
-
-    std::cout << "%SUITE_FINISHED% time=0" << std::endl;
+    std::cout << "Pose operation for a tree segment test suite is finished" << std::endl;
 
     return (EXIT_SUCCESS);
 }
