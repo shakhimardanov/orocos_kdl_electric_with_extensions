@@ -170,9 +170,8 @@ public:
     {
 
     };
-
-    // TODO: make this function call general/independent of any domain. Currently parameter names imply that it is for kinematic chains
-    // also need to make type of container a template parameter
+    
+    // TODO: need to make type of container a template parameter
     // e.g template <typename ParamT, typename Allocator = allocator<ParamT> > class Container = std::vector
     // this traversal can only be used with operations which take three arguments
     // need to introduce the other versions too.

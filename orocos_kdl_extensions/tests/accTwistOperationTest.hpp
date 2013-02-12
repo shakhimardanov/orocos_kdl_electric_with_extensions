@@ -14,8 +14,8 @@
 class AccTwistOperationTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE(AccTwistOperationTest);
 
-    CPPUNIT_TEST(testMethod);
-    CPPUNIT_TEST(testFailedMethod);
+    CPPUNIT_TEST(testTransformAccTwist);
+    CPPUNIT_TEST(testFailedTransformAccTwist);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -30,8 +30,8 @@ private:
     kdle::SegmentState a_segmentState;
     kdle::JointState a_jointState;
     
-    void testMethod();
-    void testFailedMethod();
+    void testTransformAccTwist();
+    void testFailedTransformAccTwist();
 };
 
 #endif	/* ACCTWISTOPERATIONTEST_HPP */

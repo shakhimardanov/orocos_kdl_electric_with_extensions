@@ -39,7 +39,7 @@ void AccTwistOperationTest::tearDown()
 {
 }
 
-void AccTwistOperationTest::testMethod()
+void AccTwistOperationTest::testTransformAccTwist()
 {
     kdle::SegmentState a_segmentState1;
     KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");
@@ -59,7 +59,7 @@ void AccTwistOperationTest::testMethod()
     CPPUNIT_ASSERT(a_segmentState == a_segmentState1);
 }
 
-void AccTwistOperationTest::testFailedMethod()
+void AccTwistOperationTest::testFailedTransformAccTwist()
 {
     kdle::SegmentState a_segmentState1;
     KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");

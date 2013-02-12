@@ -38,7 +38,7 @@ void ForceOperationTest::tearDown()
 {
 }
 
-void ForceOperationTest::testMethod()
+void ForceOperationTest::testBalanceWrench()
 {
     kdle::SegmentState a_segmentState1;
     KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");
@@ -58,7 +58,7 @@ void ForceOperationTest::testMethod()
     CPPUNIT_ASSERT(a_segmentState == a_segmentState1);
 }
 
-void ForceOperationTest::testFailedMethod()
+void ForceOperationTest::testFailedBalanceWrench()
 {
     kdle::SegmentState a_segmentState1;
     KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");

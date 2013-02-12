@@ -24,11 +24,11 @@ void PoseOperationTest::setUp()
 {
     
     KDL::Joint testJoint = KDL::Joint("TestJoint", KDL::Joint::RotZ, 1, 0, 0.01);
-    KDL::Frame testFrame(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, 0.4, 0.0));
+    KDL::Frame testFrame(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, -0.4, 0.0));
     KDL::Segment testSegment = KDL::Segment("TestSegment", testJoint, testFrame);
     KDL::RotationalInertia testRotInerSeg(0.0, 0.0, 0.0, 0.0, 0.0, 0.0); //around symmetry axis of rotation
     double pointMass = 0.25; //in kg
-    KDL::RigidBodyInertia testInerSegment(pointMass, KDL::Vector(0.0, 0.4, 0.0), testRotInerSeg);
+    KDL::RigidBodyInertia testInerSegment(pointMass, KDL::Vector(0.0, -0.4, 0.0), testRotInerSeg);
     testSegment.setInertia(testInerSegment);
     
     testTree.addSegment(testSegment,"root");
@@ -74,7 +74,7 @@ void PoseOperationTest::testFailedTransformPose()
     KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");
     kdle::transform<kdle::tree_iterator, kdle::pose> a_operation;
 
-    a_jointState.q = 0.5;
+    a_jointState.q = KDL::PI/3.0;
     std::cout << std::endl;
     printf("initial pose x %f\n",a_segmentState.X.p[0]);
     printf("initial pose y %f\n",a_segmentState.X.p[1]);

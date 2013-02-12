@@ -14,8 +14,8 @@
 class TwistOperationTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE(TwistOperationTest);
 
-    CPPUNIT_TEST(testMethod);
-    CPPUNIT_TEST(testFailedMethod);
+    CPPUNIT_TEST(testTransformTwist);
+    CPPUNIT_TEST(testFailedTransformTwist);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -30,8 +30,8 @@ private:
     kdle::SegmentState a_segmentState;
     kdle::JointState a_jointState;
 
-    void testMethod();
-    void testFailedMethod();
+    void testTransformTwist();
+    void testFailedTransformTwist();
 };
 
 #endif	/* TWISTOPERATIONTEST_HPP */

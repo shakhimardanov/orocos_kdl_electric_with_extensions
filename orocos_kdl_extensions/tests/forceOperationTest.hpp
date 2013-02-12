@@ -14,8 +14,8 @@
 class ForceOperationTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE(ForceOperationTest);
 
-    CPPUNIT_TEST(testMethod);
-    CPPUNIT_TEST(testFailedMethod);
+    CPPUNIT_TEST(testBalanceWrench);
+    CPPUNIT_TEST(testFailedBalanceWrench);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -30,8 +30,8 @@ private:
     kdle::SegmentState a_segmentState;
     kdle::JointState a_jointState;
 
-    void testMethod();
-    void testFailedMethod();
+    void testBalanceWrench();
+    void testFailedBalanceWrench();
 };
 
 #endif	/* WRENCHOPERATIONTEST_HPP */
