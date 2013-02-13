@@ -50,14 +50,37 @@ void ComposeOperationTest::testComposition()
     kdle::SegmentState a_segmentState1;
     kdle::SegmentState a_segmentState2;
 
+    a_jointState.q = KDL::PI / 3.0;
+    a_jointState.qdot = 0.2;
+
+    printf("initial pose x %f\n", a_segmentState.X.p[0]);
+    printf("initial pose y %f\n", a_segmentState.X.p[1]);
+    printf("initial pose z %f\n", a_segmentState.X.p[2]);
+    printf("initial twist x %f\n", a_segmentState.Xdot.vel[0]);
+    printf("initial twist y %f\n", a_segmentState.Xdot.vel[1]);
+    printf("initial twist z %f\n", a_segmentState.Xdot.vel[2]);
     //    update a state by performing two consecutive operations on it
     //    in this case it is first pose transform and then twist transform
     a_segmentState1 = a_operation1(testTree.getSegment("TestSegment"), a_jointState, a_segmentState);
     a_segmentState2 = a_operation2(testTree.getSegment("TestSegment"), a_jointState, a_segmentState1);
 
+    printf("without composition: updated pose x %f\n", a_segmentState2.X.p[0]);
+    printf("without composition: updated pose y %f\n", a_segmentState2.X.p[1]);
+    printf("without composition: updated pose z %f\n", a_segmentState2.X.p[2]);
+    printf("without composition: updated twist x %f\n", a_segmentState2.Xdot.vel[0]);
+    printf("without composition: updated twist y %f\n", a_segmentState2.Xdot.vel[1]);
+    printf("without composition: updated twist rot-z %f\n", a_segmentState2.Xdot.rot[2]);
+
     //    update a state applying composed operations on it
     //    in this case pose and twist transform operations are functionally composed
     a_segmentState1 = kdle::compose(a_operation2, a_operation1) (testTree.getSegment("TestSegment"), a_jointState, a_segmentState);
+
+    printf("composition: updated pose x %f\n", a_segmentState1.X.p[0]);
+    printf("composition: updated pose y %f\n", a_segmentState1.X.p[1]);
+    printf("composition: updated pose z %f\n", a_segmentState1.X.p[2]);
+    printf("composition: updated twist x %f\n", a_segmentState1.Xdot.vel[0]);
+    printf("composition: updated twist y %f\n", a_segmentState1.Xdot.vel[1]);
+    printf("composition: updated twist rot-z %f\n", a_segmentState1.Xdot.rot[2]);
 
     //    the outcome of two versions  of updates should be the same
     CPPUNIT_ASSERT(a_segmentState2 == a_segmentState1);

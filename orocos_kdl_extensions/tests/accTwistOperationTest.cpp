@@ -22,11 +22,11 @@ AccTwistOperationTest::~AccTwistOperationTest()
 void AccTwistOperationTest::setUp()
 {
     KDL::Joint testJoint = KDL::Joint("TestJoint", KDL::Joint::RotZ, 1, 0, 0.01);
-    KDL::Frame testFrame(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, 0.4, 0.0));
+    KDL::Frame testFrame(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, -0.4, 0.0));
     KDL::Segment testSegment = KDL::Segment("TestSegment", testJoint, testFrame);
     KDL::RotationalInertia testRotInerSeg(0.0, 0.0, 0.0, 0.0, 0.0, 0.0); //around symmetry axis of rotation
     double pointMass = 0.25; //in kg
-    KDL::RigidBodyInertia testInerSegment(pointMass, KDL::Vector(0.0, 0.4, 0.0), testRotInerSeg);
+    KDL::RigidBodyInertia testInerSegment(pointMass, KDL::Vector(0.0, -0.4, 0.0), testRotInerSeg);
     testSegment.setInertia(testInerSegment);
 
     testTree.addSegment(testSegment,"root");
@@ -65,7 +65,7 @@ void AccTwistOperationTest::testFailedTransformAccTwist()
     KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");
     kdle::transform<kdle::tree_iterator, kdle::accTwist> a_operation;
 
-    a_segmentState.Xdotdot.vel[1] = 2.0;
+    a_segmentState.Xdotdot.vel[2] = -9.8;
 
     std::cout << std::endl;
     printf("initial acctwist x %f\n",a_segmentState.Xdotdot.vel[0]);

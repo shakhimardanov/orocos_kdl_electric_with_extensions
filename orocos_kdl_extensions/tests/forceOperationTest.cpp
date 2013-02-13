@@ -21,11 +21,11 @@ ForceOperationTest::~ForceOperationTest()
 void ForceOperationTest::setUp()
 {
     KDL::Joint testJoint = KDL::Joint("TestJoint", KDL::Joint::RotZ, 1, 0, 0.01);
-    KDL::Frame testFrame(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, 0.4, 0.0));
+    KDL::Frame testFrame(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, -0.4, 0.0));
     KDL::Segment testSegment = KDL::Segment("TestSegment", testJoint, testFrame);
     KDL::RotationalInertia testRotInerSeg(0.0, 0.0, 0.0, 0.0, 0.0, 0.0); //around symmetry axis of rotation
     double pointMass = 0.25; //in kg
-    KDL::RigidBodyInertia testInerSegment(pointMass, KDL::Vector(0.0, 0.4, 0.0), testRotInerSeg);
+    KDL::RigidBodyInertia testInerSegment(pointMass, KDL::Vector(0.0, -0.4, 0.0), testRotInerSeg);
     testSegment.setInertia(testInerSegment);
 
     testTree.addSegment(testSegment,"root");
@@ -68,13 +68,19 @@ void ForceOperationTest::testFailedBalanceWrench()
     printf("initial wrench x %f\n",a_segmentState.F.force[0]);
     printf("initial wrench y %f\n",a_segmentState.F.force[1]);
     printf("initial wrench z %f\n",a_segmentState.F.force[2]);
+    printf("initial wrench tau-x %f\n",a_segmentState.F.torque[0]);
+
+    a_segmentState.Xdot.vel[0] = 0.08;
+    a_segmentState.Xdot.rot[2] = 0.2;
+    a_segmentState.Xdotdot.vel[2] = -9.8;
 
     a_segmentState1 = a_operation(segmentId, a_jointState, a_segmentState);
 
-    printf("updated wrench x %f\n",a_segmentState.F.force[0]);
-    printf("updated wrench y %f\n",a_segmentState.F.force[1]);
-    printf("updated wrench z %f\n",a_segmentState.F.force[2]);
+    printf("updated wrench x %f\n",a_segmentState1.F.force[0]);
+    printf("updated wrench y %f\n",a_segmentState1.F.force[1]);
+    printf("updated wrench z %f\n",a_segmentState1.F.force[2]);
+    printf("updated wrench tau-x %f\n",a_segmentState1.F.torque[0]);
 
-    CPPUNIT_ASSERT(a_segmentState != a_segmentState1);
+    CPPUNIT_ASSERT(a_segmentState == a_segmentState1);
 }
 

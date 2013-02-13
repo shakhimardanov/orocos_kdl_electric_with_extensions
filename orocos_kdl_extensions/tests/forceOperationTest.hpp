@@ -8,6 +8,8 @@
 #ifndef WRENCHOPERATIONTEST_HPP
 #define	WRENCHOPERATIONTEST_HPP
 
+
+
 #include <cppunit/extensions/HelperMacros.h>
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
 

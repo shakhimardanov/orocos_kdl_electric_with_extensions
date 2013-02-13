@@ -344,8 +344,8 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     std::cout << "Wrench initial state" << std::endl << linkState[0].F << std::endl << std::endl;
 #endif
 // This is for a single link
-    linkState[1] = kdle::compose(_comp2, _comp1) (twoBranchTree.getSegment("L1"), jointState[0], linkState[0]);
-    linkState[1] = kdle::compose(kdle::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1)) (twoBranchTree.getSegment("L1"), jointState[0], linkState[0]);
+//    linkState[1] = kdle::compose(_comp2, _comp1) (twoBranchTree.getSegment("L1"), jointState[0], linkState[0]);
+//    linkState[1] = kdle::compose(kdle::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1)) (twoBranchTree.getSegment("L1"), jointState[0], linkState[0]);
 
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << "Transform L1" << linkState[1].X << std::endl;
