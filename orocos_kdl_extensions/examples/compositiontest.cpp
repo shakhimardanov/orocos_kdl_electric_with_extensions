@@ -5,9 +5,9 @@
  * Created on December 21, 2011, 11:46 AM
  */
 
-#define VERBOSE_CHECK //switches on console output in kdl related methods
+//#define VERBOSE_CHECK //switches on console output in kdl related methods
 
-//#define VERBOSE_CHECK_MAIN // switches on console output in main
+#define VERBOSE_CHECK_MAIN // switches on console output in main
 
 #include <graphviz/gvc.h>
 #include <graphviz/graph.h>
@@ -99,8 +99,8 @@ void createMyTree(KDL::Tree& twoBranchTree)
     twoBranchTree.addSegment(segment3, "L2");
     twoBranchTree.addSegment(segment4, "L3");
     twoBranchTree.addSegment(segment10, "L4");
-//    twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
-//    twoBranchTree.addSegment(segment6, "L5");
+    twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
+    twoBranchTree.addSegment(segment6, "L5");
 //    twoBranchTree.addSegment(segment7, "L6");
 //    twoBranchTree.addSegment(segment8, "L7");
 //    twoBranchTree.addSegment(segment9, "L8");
@@ -223,41 +223,6 @@ void createMyTree(KDL::Tree& twoBranchTree)
 //    return;
 //}
 
-void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& rootLink, const std::string& tipLink, KDL::Vector& grav,
-                                std::vector<kdle::JointState>& jointState, std::vector<kdle::SegmentState>& linkState)
-{
-    KDL::Chain achain;
-
-    twoBranchTree.getChain(rootLink, tipLink, achain);
-    KDL::ChainIdSolver_RNE *rneDynamics = new ChainIdSolver_RNE(achain, -grav);
-
-
-    KDL::JntArray q(achain.getNrOfJoints());
-    KDL::JntArray q_dot(achain.getNrOfJoints());
-    KDL::JntArray q_dotdot(achain.getNrOfJoints());
-    JntArray torques(achain.getNrOfJoints());
-    KDL::Wrenches f_ext;
-    f_ext.resize(achain.getNrOfSegments());
-
-    printf("RNE dynamics values \n");
-
-
-    for (unsigned int i = 0; i < achain.getNrOfJoints(); ++i)
-    {
-        q(i) = jointState[i].q;
-        q_dot(i) = jointState[i].qdot;
-        q_dotdot(i) = jointState[i].qdotdot;
-        printf("q, qdot %f, %f\n", q(i), q_dot(i));
-    }
-
-    rneDynamics->CartToJnt(q, q_dot, q_dotdot, f_ext, torques);
-
-    for (unsigned int i = 0; i < achain.getNrOfJoints(); ++i)
-    {
-        printf("q, qdot, torques %f, %f, %f\n", q(i), q_dot(i), torques(i));
-    }
-    return;
-}
 
 //void computeTemplatedDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& rootLink, const std::string& tipLink, KDL::Vector& grav,
 //                                      std::vector<JointState>& jointState, std::vector<SegmentState>& linkState, std::vector<SegmentState>& linkState2)
@@ -324,6 +289,42 @@ void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& roo
 //
 //    return;
 //}
+
+void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& rootLink, const std::string& tipLink, KDL::Vector& grav,
+                                std::vector<kdle::JointState>& jointState, std::vector<kdle::SegmentState>& linkState)
+{
+    KDL::Chain achain;
+
+    twoBranchTree.getChain(rootLink, tipLink, achain);
+    KDL::ChainIdSolver_RNE *rneDynamics = new ChainIdSolver_RNE(achain, -grav);
+
+
+    KDL::JntArray q(achain.getNrOfJoints());
+    KDL::JntArray q_dot(achain.getNrOfJoints());
+    KDL::JntArray q_dotdot(achain.getNrOfJoints());
+    JntArray torques(achain.getNrOfJoints());
+    KDL::Wrenches f_ext;
+    f_ext.resize(achain.getNrOfSegments());
+
+    printf("RNE dynamics values \n");
+
+
+    for (unsigned int i = 0; i < achain.getNrOfJoints(); ++i)
+    {
+        q(i) = jointState[i].q;
+        q_dot(i) = jointState[i].qdot;
+        q_dotdot(i) = jointState[i].qdotdot;
+        printf("q, qdot %f, %f\n", q(i), q_dot(i));
+    }
+
+    rneDynamics->CartToJnt(q, q_dot, q_dotdot, f_ext, torques);
+
+    for (unsigned int i = 0; i < achain.getNrOfJoints(); ++i)
+    {
+        printf("q, qdot, torques %f, %f, %f\n", q(i), q_dot(i), torques(i));
+    }
+    return;
+}
 
 void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav, std::vector<kdle::JointState>& jointState,
                                      std::vector<kdle::SegmentState>& linkState, std::vector<kdle::SegmentState>& linkState2)
