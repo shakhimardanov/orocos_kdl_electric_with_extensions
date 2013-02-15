@@ -55,19 +55,17 @@ SegmentState& SegmentState::operator=(const SegmentState& copy)
 
 bool SegmentState::operator==(const SegmentState& instance)
 {
-    return 
-            ((this->X == instance.X) &&
-            (this->Xdot == instance.Xdot) && 
+    return
+    ((this->X == instance.X) &&
+            (this->Xdot == instance.Xdot) &&
             (this->Xdotdot == instance.Xdotdot) &&
-            (this->F == instance.F)) ;
+            (this->F == instance.F));
 };
-
 
 bool SegmentState::operator!=(const SegmentState& instance)
 {
     return !(operator==(instance));
 };
-
 
 SegmentState::~SegmentState()
 {

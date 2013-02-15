@@ -74,7 +74,7 @@ void TraverseOperationTest::testTraverseOperation()
     //    root segment is used in traversal but its state does not effect those of the segments of the physical structure (arm)
     kdle::traverseGraph_ver2(testTree, kdle::compose(a_operation2, a_operation1), a_policy1)(a_jointState, a_segmentState, a_segmentState1);
 
-
+    printf("traversal: updated state of TestSegment0\n");
     printf("traversal: updated pose x %f\n", a_segmentState1[0].X.p[0]);
     printf("traversal: updated pose y %f\n", a_segmentState1[0].X.p[1]);
     printf("traversal: updated pose z %f\n", a_segmentState1[0].X.p[2]);
@@ -82,6 +82,7 @@ void TraverseOperationTest::testTraverseOperation()
     printf("traversal: updated twist y %f\n", a_segmentState1[0].Xdot.vel[1]);
     printf("traversal: updated twist rot-z %f\n", a_segmentState1[0].Xdot.rot[2]);
 
+    printf("traversal: updated state of TestSegment1\n");
     printf("traversal: updated pose x %f\n", a_segmentState1[1].X.p[0]);
     printf("traversal: updated pose y %f\n", a_segmentState1[1].X.p[1]);
     printf("traversal: updated pose z %f\n", a_segmentState1[1].X.p[2]);
@@ -98,6 +99,7 @@ void TraverseOperationTest::testTraverseOperation()
     a_segmentState2[0] = kdle::compose(a_operation2, a_operation1) (testTree.getSegment("TestSegment0"), a_jointState[0], tempInitialState);
     a_segmentState2[1] = kdle::compose(a_operation2, a_operation1) (testTree.getSegment("TestSegment1"), a_jointState[1], a_segmentState2[0]);
 
+    printf("traversal: updated state of TestSegment0\n");
     printf("without traversal: updated pose x %f\n", a_segmentState2[0].X.p[0]);
     printf("without traversal: updated pose y %f\n", a_segmentState2[0].X.p[1]);
     printf("without traversal: updated pose z %f\n", a_segmentState2[0].X.p[2]);
@@ -107,6 +109,7 @@ void TraverseOperationTest::testTraverseOperation()
 
     CPPUNIT_ASSERT(a_segmentState1[0] == a_segmentState2[0]);
 
+    printf("traversal: updated state of TestSegment1\n");
     printf("without traversal: updated pose x %f\n", a_segmentState2[1].X.p[0]);
     printf("without traversal: updated pose y %f\n", a_segmentState2[1].X.p[1]);
     printf("without traversal: updated pose z %f\n", a_segmentState2[1].X.p[2]);
