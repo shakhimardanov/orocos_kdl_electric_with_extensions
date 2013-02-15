@@ -5,9 +5,9 @@
  * Created on December 21, 2011, 11:46 AM
  */
 
-//#define VERBOSE_CHECK //switches on console output in kdl related methods
+#define VERBOSE_CHECK //switches on console output in kdl related methods
 
-#define VERBOSE_CHECK_MAIN // switches on console output in main
+//#define VERBOSE_CHECK_MAIN // switches on console output in main
 
 #include <graphviz/gvc.h>
 #include <graphviz/graph.h>

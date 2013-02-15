@@ -384,7 +384,7 @@ public:
 };
 
 template<>
-class project<tree_iterator,wrench>
+class project<tree_iterator, wrench>
 {
 public:
 
@@ -435,17 +435,17 @@ public:
         a_jointState = p_jointState;
         
 #ifdef VERBOSE_CHECK
-        std::cout << "Inside wrench operation Input Wrench A "<< std::endl << a_segmentState.F << std::endl << std::endl;
-        std::cout << "Inside wrench operation Input Wrench P1 "<< std::endl << p_segmentState.F << std::endl << std::endl;
-        std::cout << "Inside wrench operation Input Wrench P2 "<< std::endl << p_segmentState2.F << std::endl << std::endl;
+        std::cout << "Inside wrench operation Input Wrench of current element (current's body wrench) "<< std::endl << p_segmentState.F << std::endl << std::endl;
+        std::cout << "Inside wrench operation Input Wrench of a child (child's total wrench) "<< std::endl << p_segmentState2.F << std::endl << std::endl;
+//        std::cout << "Inside wrench operation Input Wrench copy of current element "<< std::endl << a_segmentState.F << std::endl << std::endl;
 #endif
         
         a_jointState.torque = dot(p_segmentState2.Z,p_segmentState2.F);
         a_segmentState.F = p_segmentState.F + p_segmentState2.X * p_segmentState2.F;
 
 #ifdef VERBOSE_CHECK
-        std::cout << "Inside wrench operation Computed Wrench A "<< std::endl << a_segmentState.F << std::endl << std::endl;
-        std::cout << "Inside wrench operation Computed Torque A "<< std::endl << a_jointState.torque << std::endl << std::endl;
+        std::cout << "Inside wrench operation updated Wrench of current element "<< std::endl << a_segmentState.F << std::endl << std::endl;
+        std::cout << "Inside wrench operation computed Torque of current joint "<< std::endl << a_jointState.torque << std::endl << std::endl;
 #endif
         return a_segmentState;
     };
@@ -636,22 +636,19 @@ public:
         for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
         {
             const KDL::TreeElement currentElement = iter->second;
-            std::cout << "Current element name in current iteration " << currentElement.segment.getName() << std::endl;
 #ifdef VERBOSE_CHECK
-            std::cout << "Parent element name in current iteration " << currentElement.segment.getName() << std::endl;
+            std::cout << "Current element name in current iteration " << currentElement.segment.getName() << std::endl;
             std::cout << "State vector input " << a_linkStateVectorIn[currentElement.q_nr].segmentName << std::endl;
-            std::cout << "Current/parent joint index and value " << currentElement.q_nr << " " << a_jointStateVectorIn[currentElement.q_nr].q << std::endl;
+            std::cout << "Current joint index and value " << currentElement.q_nr << " " << a_jointStateVectorIn[currentElement.q_nr].q << std::endl;
 #endif
             a_linkStateVectorOut[currentElement.q_nr] = a_linkStateVectorIn[currentElement.q_nr];
 
             for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
             {
-
-                std::cout << "Child element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
-                std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
+                
 #ifdef VERBOSE_CHECK
                 std::cout << "Child element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
-                std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
+                std::cout << "Child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
 #endif               
                 a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorOut[currentElement.q_nr]);
             }

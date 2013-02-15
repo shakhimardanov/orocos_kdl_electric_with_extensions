@@ -35,7 +35,7 @@ void TraverseOperationTest::setUp()
     KDL::Frame testFrame1(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, -0.4, 0.0));
     KDL::Segment testSegment1 = KDL::Segment("TestSegment1", testJoint1, testFrame1);
     KDL::RotationalInertia testRotInerSeg1(0.0, 0.0, 0.0, 0.0, 0.0, 0.0); //around symmetry axis of rotation
-    
+
     KDL::RigidBodyInertia testInerSegment1(pointMass, KDL::Vector(0.0, -0.4, 0.0), testRotInerSeg1);
     testSegment1.setInertia(testInerSegment1);
 
@@ -71,6 +71,7 @@ void TraverseOperationTest::testTraverseOperation()
     printf("initial twist y %f\n", a_segmentState[1].Xdot.vel[1]);
     printf("initial twist z %f\n", a_segmentState[1].Xdot.vel[2]);
 
+    //    root segment is used in traversal but its state does not effect those of the segments of the physical structure (arm)
     kdle::traverseGraph_ver2(testTree, kdle::compose(a_operation2, a_operation1), a_policy1)(a_jointState, a_segmentState, a_segmentState1);
 
 
@@ -92,9 +93,19 @@ void TraverseOperationTest::testTraverseOperation()
     std::vector<kdle::SegmentState> a_segmentState2;
     a_segmentState2.resize(testTree.getSegments().size());
     kdle::SegmentState tempInitialState;
-    
-    a_segmentState2[0] = kdle::compose(a_operation2, a_operation1) (testTree.getSegment("Root"), a_jointState[0], tempInitialState);
-    a_segmentState2[1] = kdle::compose(a_operation2, a_operation1) (testTree.getSegment("TestSegment0"), a_jointState[1], a_segmentState2[0]);
+
+    //    root segment is not condired in state-by-state composition below, since it is not part of the physical structure (arm)
+    a_segmentState2[0] = kdle::compose(a_operation2, a_operation1) (testTree.getSegment("TestSegment0"), a_jointState[0], tempInitialState);
+    a_segmentState2[1] = kdle::compose(a_operation2, a_operation1) (testTree.getSegment("TestSegment1"), a_jointState[1], a_segmentState2[0]);
+
+    printf("without traversal: updated pose x %f\n", a_segmentState2[0].X.p[0]);
+    printf("without traversal: updated pose y %f\n", a_segmentState2[0].X.p[1]);
+    printf("without traversal: updated pose z %f\n", a_segmentState2[0].X.p[2]);
+    printf("without traversal: updated twist x %f\n", a_segmentState2[0].Xdot.vel[0]);
+    printf("without traversal: updated twist y %f\n", a_segmentState2[0].Xdot.vel[1]);
+    printf("without traversal: updated twist rot-z %f\n", a_segmentState2[0].Xdot.rot[2]);
+
+    CPPUNIT_ASSERT(a_segmentState1[0] == a_segmentState2[0]);
 
     printf("without traversal: updated pose x %f\n", a_segmentState2[1].X.p[0]);
     printf("without traversal: updated pose y %f\n", a_segmentState2[1].X.p[1]);
@@ -103,7 +114,7 @@ void TraverseOperationTest::testTraverseOperation()
     printf("without traversal: updated twist y %f\n", a_segmentState2[1].Xdot.vel[1]);
     printf("without traversal: updated twist rot-z %f\n", a_segmentState2[1].Xdot.rot[2]);
 
-        CPPUNIT_ASSERT(a_segmentState1[1] == a_segmentState2[1]);
+    CPPUNIT_ASSERT(a_segmentState1[1] == a_segmentState2[1]);
 
 }
 
