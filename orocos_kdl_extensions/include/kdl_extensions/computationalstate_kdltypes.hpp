@@ -8,12 +8,13 @@
 #ifndef COMPUTATIONALSTATE_KDLTYPES_HPP
 #define	COMPUTATIONALSTATE_KDLTYPES_HPP
 
-#include <kdl/frames.hpp>
-#include <Pose/Pose.h>
-#include <Twist/Twist.h>
-#include <Wrench/Wrench.h>
+#include <kdl/frames_io.hpp>
 
-namespace grs = geometric_semantics;
+//#include <Pose/Pose.h>
+//#include <Twist/Twist.h>
+//#include <Wrench/Wrench.h>
+
+//namespace grs = geometric_semantics;
 // TODO: maybe we should introduce domain independent
 // representation of a computational state and instantiate for the specific domain
 // The specific case could looks as below.

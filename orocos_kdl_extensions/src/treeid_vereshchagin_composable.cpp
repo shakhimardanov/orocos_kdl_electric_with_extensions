@@ -3,8 +3,6 @@
 namespace KDL
 {
 
-//Link computational state
-
 SegmentState::SegmentState()
 {
     X.Identity();
@@ -49,15 +47,20 @@ SegmentState& SegmentState::operator=(const SegmentState& copy)
     }
     return *this;
 }
-bool SegmentState::operator==(SegmentState& instance)
+
+bool SegmentState::operator==(const SegmentState& instance)
 {
-    return true;
+    return
+    ((this->X == instance.X) &&
+            (this->Xdot == instance.Xdot) &&
+            (this->Xdotdot == instance.Xdotdot) &&
+            (this->F == instance.F));
 };
 
-//bool operator==(const SegmentState& instance1, const SegmentState& instance2)
-//{
-//    return true;
-//};
+bool SegmentState::operator!=(const SegmentState& instance)
+{
+    return !(operator==(instance));
+};
 
 SegmentState::~SegmentState()
 {

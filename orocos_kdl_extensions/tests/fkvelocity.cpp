@@ -5,10 +5,8 @@
  * Created on Jan 14, 2013, 2:19:59 PM
  */
 
-//#define VERBOSE_CHECK
+#define VERBOSE_CHECK
 
-#include <stdlib.h>
-#include <iostream>
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
 
 
@@ -110,8 +108,8 @@ int main(int argc, char** argv) {
     jstate[2].qdot = -0.2;
     std::vector<kdle::SegmentState> lstate;
     lstate.resize(twoBranchTree.getNrOfSegments() + 1);
-    printf("Number of Joints %d\n", twoBranchTree.getNrOfJoints());
-    printf("Number of Segments %d\n", twoBranchTree.getNrOfSegments());
+//    printf("Number of Joints %d\n", twoBranchTree.getNrOfJoints());
+//    printf("Number of Segments %d\n", twoBranchTree.getNrOfSegments());
 
     std::vector<kdle::SegmentState> lstate2;
     lstate2.resize(twoBranchTree.getNrOfSegments() + 1);

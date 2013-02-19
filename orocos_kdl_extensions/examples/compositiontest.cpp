@@ -5,24 +5,22 @@
  * Created on December 21, 2011, 11:46 AM
  */
 
-//#define VERBOSE_CHECK //switches on console output in kdl related methods
+#define VERBOSE_CHECK //switches on console output in kdl related methods
 
 //#define VERBOSE_CHECK_MAIN // switches on console output in main
 
-#include <graphviz/gvc.h>
-#include <graphviz/graph.h>
+//#include <graphviz/gvc.h>
+//#include <graphviz/graph.h>
 #include <cstring>
-
 #include <cstdlib>
+#include <vector>
 #include <kdl/frames.hpp>
 #include <kdl/joint.hpp>
-#include <kdl/frames_io.hpp>
 #include <kdl/chain.hpp>
 #include <kdl/tree.hpp>
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
-#include <kdl_extensions/computationalstate_kdltypes.hpp>
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
-#include <vector>
+
 
 
 
@@ -408,7 +406,7 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     std::vector<kdle::SegmentState> linkState3;
     linkState3.resize(twoBranchTree.getNrOfSegments()+1);
     std::cout << std::endl << std::endl << "REVERSE TRAVERSAL" << std::endl << std::endl;
-//    while(1)
+    while(1)
     traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, jointState, linkState2, linkState3);
     //version 1 traversal
     //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);

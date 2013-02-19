@@ -5,17 +5,14 @@
  * Created on Jan 14, 2013, 2:19:59 PM
  */
 
-//#define VERBOSE_MAIN
+#define VERBOSE_MAIN
 
-#include <stdlib.h>
-#include <iostream>
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
 
-
-
-
+using namespace std;
 using namespace KDL;
 using namespace kdle;
+
 
 void createMyTree(KDL::Tree& twoBranchTree)
 {
@@ -126,6 +123,7 @@ int main(int argc, char** argv)
     kdle::DFSPolicy_ver2<Tree, outward> forwardTraversal;
 
     //declare a traversal operation on the give topology
+//    while(1)
     traverseGraph_ver2(twoBranchTree, poseComputation, forwardTraversal)(jstate, lstate, lstate2);
 
     //print the results

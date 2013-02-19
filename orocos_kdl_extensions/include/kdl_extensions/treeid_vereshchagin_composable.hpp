@@ -16,22 +16,27 @@
 namespace KDL
 {
 
+
+//TODO: consider whether link local and global computational states
+// should be represented in the single data type, as Herman suggested
+
+//TODO: These has to be deprecated in the favor of Global and Local?
 class SegmentState
 {
 public:
     SegmentState();
     SegmentState(const SegmentState& copy);
     SegmentState & operator=(const SegmentState& copy);
-    bool operator==(SegmentState& instance);
-//    friend bool operator==(const SegmentState& instance1, const SegmentState& instance2);
+    bool operator==(const SegmentState& instance);
+    bool operator!=(const SegmentState& instance);
 
-    Frame X;
-    Twist Xdot;
-    Twist Xdotdot;
-    Wrench Fext;
-    Wrench F;
-    Twist Z; //supporting/driving joint unit twist/projection/Dof
-    Twist Vj;
+    KDL::Frame X;
+    KDL::Twist Xdot;
+    KDL::Twist Xdotdot;
+    KDL::Wrench Fext;
+    KDL::Wrench F;
+    KDL::Twist Z; //supporting/driving joint unit twist/projection/Dof
+    KDL::Twist Vj;
     unsigned int jointIndex; // supporting/driving joint name/index
     std::string jointName;
     std::string segmentName;
@@ -54,6 +59,7 @@ public:
     std::string jointName;
     virtual ~JointState();
 };
+
 
 
 class BaseOperation
