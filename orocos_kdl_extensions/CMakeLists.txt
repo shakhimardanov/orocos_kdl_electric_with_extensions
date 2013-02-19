@@ -4,7 +4,7 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 rosbuild_init()
 project(kdl_extensions)
 SET(CMAKE_VERBOSE_MAKEFILE ON)
-SET(CMAKE_CXX_FLAGS_DEBUG "-g -0g")
+SET(CMAKE_CXX_FLAGS "-O0")
 
 #INCLUDE_DIRECTORIES(/usr/local/include/graphviz)
 #LINK_DIRECTORIES(/usr/local/lib/graphviz)
@@ -23,10 +23,14 @@ rosbuild_add_library(${PROJECT_NAME} include/kdl_extensions/functionalcomputatio
                     include/kdl_extensions/treeid_vereshchagin_composable.hpp src/treeid_vereshchagin_composable.cpp
                     )
 
+rosbuild_add_compile_flags(${PROJECT_NAME} "-O0")
+
 #target_link_libraries(${PROJECT_NAME} orocos-kdl geometric_semantics_kdl)
 target_link_libraries(${PROJECT_NAME} orocos-kdl)
 
 rosbuild_add_executable(compositiontest examples/compositiontest.cpp)
+rosbuild_add_compile_flags(${PROJECT_NAME} "-O0")
+
 #target_link_libraries(compositiontest ${PROJECT_NAME} graph gvc)
 target_link_libraries(compositiontest ${PROJECT_NAME})
 
