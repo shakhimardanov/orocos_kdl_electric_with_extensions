@@ -5,7 +5,7 @@
  * Created on Jan 14, 2013, 2:19:59 PM
  */
 
-//#define VERBOSE_CHECK
+//#define VERBOSE_MAIN
 
 #include <stdlib.h>
 #include <iostream>
@@ -40,7 +40,7 @@ void createMyTree(KDL::Tree& twoBranchTree)
     Frame frame8(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
     Frame frame9(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
     Frame frame10(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
-    
+
     Segment segment1 = Segment("L1", joint1, frame1);
     Segment segment2 = Segment("L2", joint2, frame2);
     Segment segment3 = Segment("L3", joint3, frame3);
@@ -76,7 +76,7 @@ void createMyTree(KDL::Tree& twoBranchTree)
     segment9.setInertia(inerSegment9);
     segment10.setInertia(inerSegment10);
 
-    
+
     twoBranchTree.addSegment(segment1, "L0");
     twoBranchTree.addSegment(segment2, "L1");
     twoBranchTree.addSegment(segment3, "L2");
@@ -90,42 +90,56 @@ void createMyTree(KDL::Tree& twoBranchTree)
 
 }
 
+int main(int argc, char** argv)
+{
 
-void test1() {
-    std::cout << "Pose operation for a tree segment test1 is started" << std::endl;
-
-    KDL::Tree twoBranchTree("L0");
+    std::cout << "Computing forward position kinematics for a tree" << std::endl;
+    Tree twoBranchTree("L0");
     createMyTree(twoBranchTree);
-    kdle::SegmentState linkState0, linkState1;
-    kdle::JointState jointState0;
-    kdle::transform<kdle::tree_iterator, kdle::pose> comp1;
-    
-    linkState1 = comp1(twoBranchTree.getSegment("L1"), jointState0, linkState0);
 
-    std::cout << "Pose operation for a tree segment test1 is finished" << std::endl;
-}
+    //arm root acceleration
+    Vector linearAcc(0.0, 0.0, -9.8); //gravitational acceleration along Z
+    Vector angularAcc(0.0, 0.0, 0.0);
+    Twist rootAcc(linearAcc, angularAcc);
 
-void test2() {
-    std::cout << "Pose operation for a tree segment test2 is started" << std::endl;
+    std::vector<kdle::JointState> jstate;
+    jstate.resize(twoBranchTree.getNrOfSegments() + 1);
+    jstate[0].q = PI / 3.0;
+    jstate[0].qdot = 0.2;
+    jstate[1].q = -PI / 3.0;
+    jstate[1].qdot = 0.4;
+    jstate[2].q = PI / 4.0;
+    jstate[2].qdot = -0.2;
+    std::vector<kdle::SegmentState> lstate;
+    lstate.resize(twoBranchTree.getNrOfSegments() + 1);
+    printf("Number of Joints %d\n", twoBranchTree.getNrOfJoints());
+    printf("Number of Segments %d\n", twoBranchTree.getNrOfSegments());
 
-    KDL::Tree twoBranchTree("L0");
-    createMyTree(twoBranchTree);
-    kdle::SegmentState linkState0, linkState1;
-    kdle::JointState jointState0;
-    kdle::transform<kdle::tree_iterator, kdle::pose> comp1;
-    
-    linkState1 = comp1(twoBranchTree.getSegment("L1"), jointState0, linkState0);
-    linkState1 = comp1(twoBranchTree.getSegment("L2"), jointState0, linkState1);
+    std::vector<kdle::SegmentState> lstate2;
+    lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
+    lstate[0].Xdotdot = rootAcc;
 
-    std::cout << "Pose operation for a tree segment test2 is finished" << std::endl;
-}
+    // declare a computation to be performed
+    kdle::transform<tree_iterator, pose> poseComputation;
 
-int main(int argc, char** argv) {
+    //declare a policy for a tree traversal
+    kdle::DFSPolicy_ver2<Tree, outward> forwardTraversal;
 
-    std::cout << "Pose operation for a tree segment test suite is started" << std::endl;
-    test1();
-    test2();
-    std::cout << "Pose operation for a tree segment test suite is finished" << std::endl;
+    //declare a traversal operation on the give topology
+    traverseGraph_ver2(twoBranchTree, poseComputation, forwardTraversal)(jstate, lstate, lstate2);
+
+    //print the results
+#ifdef VERBOSE_MAIN
+    for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
+    {
+        std::cout << lstate2[i].segmentName << std::endl;
+        std::cout << std::endl << lstate2[i].X << std::endl;
+        std::cout << lstate2[i].Xdot << std::endl;
+        std::cout << lstate2[i].Xdotdot << std::endl;
+        std::cout << lstate2[i].F << std::endl;
+    }
+
+#endif
 
     return (EXIT_SUCCESS);
 }

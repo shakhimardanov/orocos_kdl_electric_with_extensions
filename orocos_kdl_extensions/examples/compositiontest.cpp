@@ -5,7 +5,7 @@
  * Created on December 21, 2011, 11:46 AM
  */
 
-#define VERBOSE_CHECK //switches on console output in kdl related methods
+//#define VERBOSE_CHECK //switches on console output in kdl related methods
 
 //#define VERBOSE_CHECK_MAIN // switches on console output in main
 
@@ -317,7 +317,8 @@ void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& roo
         printf("q, qdot %f, %f\n", q(i), q_dot(i));
     }
 
-    rneDynamics->CartToJnt(q, q_dot, q_dotdot, f_ext, torques);
+//    while(1)
+        rneDynamics->CartToJnt(q, q_dot, q_dotdot, f_ext, torques);
 
     for (unsigned int i = 0; i < achain.getNrOfJoints(); ++i)
     {
@@ -407,6 +408,7 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     std::vector<kdle::SegmentState> linkState3;
     linkState3.resize(twoBranchTree.getNrOfSegments()+1);
     std::cout << std::endl << std::endl << "REVERSE TRAVERSAL" << std::endl << std::endl;
+//    while(1)
     traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, jointState, linkState2, linkState3);
     //version 1 traversal
     //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);

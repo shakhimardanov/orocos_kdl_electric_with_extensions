@@ -89,42 +89,58 @@ void createMyTree(KDL::Tree& twoBranchTree)
 
 }
 
-void test1() {
-std::cout << "Twist operation for a tree segment test1 is started" << std::endl;
-
-    KDL::Tree twoBranchTree("L0");
-    createMyTree(twoBranchTree);
-    kdle::SegmentState linkState0, linkState1;
-    kdle::JointState jointState0;
-    kdle::transform<tree_iterator, twist> comp1;
-
-
-//    std::cout << "Transform of initial state" << std::endl << linkState0.X << std::endl;
-//    std::cout << "Transform of initial state" << std::endl << jointState0.q << std::endl;
-    linkState1 = comp1(twoBranchTree.getSegment("L1"), jointState0, linkState0);
-    
-    std::cout << "Twist operation for a tree segment test1 is finished" << std::endl;
-}
-
-void test2() {
-    std::cout << "Twist operation for a tree segment test2 is started" << std::endl;
-
-    KDL::Tree twoBranchTree("L0");
-    createMyTree(twoBranchTree);
-    kdle::SegmentState linkState0, linkState1;
-    kdle::JointState jointState0;
-    kdle::transform<tree_iterator, twist> comp1;
-    linkState1 = comp1(twoBranchTree.getSegment("L1"), jointState0, linkState0);
-    linkState1 = comp1(twoBranchTree.getSegment("L2"), jointState0, linkState1);
-
-    std::cout << "Twist operation for a tree segment test2 is finished" << std::endl;
-}
-
 int main(int argc, char** argv) {
-    std::cout << "Twist operation for a tree segment test suite is started" << std::endl;
-    test1();
-    test2();
-    std::cout << "Twist operation for a tree segment test suite is finished" << std::endl;
+
+    std::cout << "Computing forward velocity kinematics for a tree" << std::endl;
+    Tree twoBranchTree("L0");
+    createMyTree(twoBranchTree);
+
+        //arm root acceleration
+    Vector linearAcc(0.0, 0.0, -9.8); //gravitational acceleration along Z
+    Vector angularAcc(0.0, 0.0, 0.0);
+    Twist rootAcc(linearAcc, angularAcc);
+
+    std::vector<kdle::JointState> jstate;
+    jstate.resize(twoBranchTree.getNrOfSegments() + 1);
+    jstate[0].q = PI / 3.0;
+    jstate[0].qdot = 0.2;
+    jstate[1].q = -PI / 3.0;
+    jstate[1].qdot = 0.4;
+    jstate[2].q = PI / 4.0;
+    jstate[2].qdot = -0.2;
+    std::vector<kdle::SegmentState> lstate;
+    lstate.resize(twoBranchTree.getNrOfSegments() + 1);
+    printf("Number of Joints %d\n", twoBranchTree.getNrOfJoints());
+    printf("Number of Segments %d\n", twoBranchTree.getNrOfSegments());
+
+    std::vector<kdle::SegmentState> lstate2;
+    lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
+    lstate[0].Xdotdot = rootAcc;
+
+    // declare a computation to be performed
+    kdle::transform<tree_iterator, pose> poseComputation;
+    kdle::transform<tree_iterator, twist> twistComputation;
+    
+
+    //declare a policy for a tree traversal
+    kdle::DFSPolicy_ver2<Tree, outward> forwardTraversal;
+
+    //declare a traversal operation on the give topology
+    traverseGraph_ver2(twoBranchTree, kdle::compose(twistComputation, poseComputation), forwardTraversal)(jstate, lstate, lstate2);
+
+    //print the results
+#ifdef VERBOSE_MAIN
+    for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
+    {
+        std::cout << lstate2[i].segmentName << std::endl;
+        std::cout << std::endl << lstate2[i].X << std::endl;
+        std::cout << lstate2[i].Xdot << std::endl;
+        std::cout << lstate2[i].Xdotdot << std::endl;
+        std::cout << lstate2[i].F << std::endl;
+    }
+
+#endif
+
 
     return (EXIT_SUCCESS);
 }
