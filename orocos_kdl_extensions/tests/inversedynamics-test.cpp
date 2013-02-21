@@ -1,15 +1,24 @@
 /*
- * File:   poseoperation4treelink-test.cpp
+ * File:   simpleKDLTree.cpp
  * Author: azamat
  *
- * Created on Jan 14, 2013, 2:19:59 PM
+ * Created on December 21, 2011, 11:46 AM
  */
 
-//#define VERBOSE_CHECK
-//#define VERBOSE_MAIN
+#define VERBOSE_CHECK //switches on console output in kdl related methods
 
+//#define VERBOSE_CHECK_MAIN // switches on console output in main
+
+#include <cstring>
+#include <cstdlib>
+#include <vector>
+#include <kdl/frames.hpp>
+#include <kdl/joint.hpp>
+#include <kdl/chain.hpp>
+#include <kdl/tree.hpp>
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
 
+using namespace std;
 using namespace KDL;
 using namespace kdle;
 
@@ -37,6 +46,7 @@ void createMyTree(KDL::Tree& twoBranchTree)
     Frame frame9(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
     Frame frame10(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
 
+    //Segment (const Joint &joint=Joint(Joint::None), const Frame &f_tip=Frame::Identity(), const RigidBodyInertia &I=RigidBodyInertia::Zero())
     Segment segment1 = Segment("L1", joint1, frame1);
     Segment segment2 = Segment("L2", joint2, frame2);
     Segment segment3 = Segment("L3", joint3, frame3);
@@ -47,9 +57,10 @@ void createMyTree(KDL::Tree& twoBranchTree)
     Segment segment8 = Segment("L8", joint8, frame8);
     Segment segment9 = Segment("L9", joint9, frame9);
     Segment segment10 = Segment("M0", joint10, frame10);
-
+    // 	RotationalInertia (double Ixx=0, double Iyy=0, double Izz=0, double Ixy=0, double Ixz=0, double Iyz=0)
     RotationalInertia rotInerSeg1(0.0, 0.0, 0.0, 0.0, 0.0, 0.0); //around symmetry axis of rotation
     double pointMass = 0.25; //in kg
+    //RigidBodyInertia (double m=0, const Vector &oc=Vector::Zero(), const RotationalInertia &Ic=RotationalInertia::Zero())
     RigidBodyInertia inerSegment1(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
     RigidBodyInertia inerSegment2(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
     RigidBodyInertia inerSegment3(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
@@ -72,6 +83,7 @@ void createMyTree(KDL::Tree& twoBranchTree)
     segment9.setInertia(inerSegment9);
     segment10.setInertia(inerSegment10);
 
+    //Tree twoBranchTree("L0");
 
     twoBranchTree.addSegment(segment1, "L0");
     twoBranchTree.addSegment(segment2, "L1");
@@ -80,19 +92,21 @@ void createMyTree(KDL::Tree& twoBranchTree)
     twoBranchTree.addSegment(segment10, "L4");
     twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
     twoBranchTree.addSegment(segment6, "L5");
-    twoBranchTree.addSegment(segment7, "L6");
-    twoBranchTree.addSegment(segment8, "L7");
-    twoBranchTree.addSegment(segment9, "L8");
+    //    twoBranchTree.addSegment(segment7, "L6");
+    //    twoBranchTree.addSegment(segment8, "L7");
+    //    twoBranchTree.addSegment(segment9, "L8");
 
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
+    std::cout << "Computing inverse dynamics for a tree" << std::endl;
 
-    std::cout << "Computing forward velocity kinematics for a tree" << std::endl;
     Tree twoBranchTree("L0");
     createMyTree(twoBranchTree);
 
-        //arm root acceleration
+
+    //arm root acceleration
     Vector linearAcc(0.0, 0.0, -9.8); //gravitational acceleration along Z
     Vector angularAcc(0.0, 0.0, 0.0);
     Twist rootAcc(linearAcc, angularAcc);
@@ -114,31 +128,73 @@ int main(int argc, char** argv) {
     lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
     lstate[0].Xdotdot = rootAcc;
 
-    // declare a computation to be performed
-    kdle::transform<tree_iterator, pose> poseComputation;
-    kdle::transform<tree_iterator, twist> twistComputation;
-    
+    printf("Templated inverse dynamics for Tree \n");
+    kdle::transform<tree_iterator, pose> _comp1;
+    kdle::transform<tree_iterator, twist> _comp2;
+    kdle::transform<tree_iterator, accTwist> _comp3;
+    kdle::balance<tree_iterator, force> _comp4;
+    kdle::project<tree_iterator, wrench> _comp5;
 
-    //declare a policy for a tree traversal
-    kdle::DFSPolicy_ver2<Tree, outward> forwardTraversal;
+    //typedef Composite<kdle::func_ptr(myTestComputation), kdle::func_ptr(myTestComputation) > compositeType0;
+    typedef Composite< kdle::transform<tree_iterator, twist>, kdle::transform<tree_iterator, pose> > compositeType1;
+    typedef Composite< kdle::balance<tree_iterator, force>, kdle::transform<tree_iterator, accTwist> > compositeType2;
+    typedef Composite<compositeType2, compositeType1> compositeType3;
 
-    //declare a traversal operation on the give topology
-    traverseGraph_ver2(twoBranchTree, kdle::compose(twistComputation, poseComputation), forwardTraversal)(jstate, lstate, lstate2);
+    compositeType1 composite1 = kdle::compose(_comp2, _comp1);
+    compositeType3 composite2 = kdle::compose(kdle::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1));
 
-    //print the results
-#ifdef VERBOSE_MAIN
+    //kdle::DFSPolicy<KDL::Tree> mypolicy;
+    kdle::DFSPolicy_ver2<KDL::Tree, inward> mypolicy1;
+    kdle::DFSPolicy_ver2<KDL::Tree, outward> mypolicy2;
+
+    std::cout << std::endl << std::endl << "FORWARD TRAVERSAL" << std::endl << std::endl;
+
+    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, linkState, linkState2);
+
+#ifdef VERBOSE_CHECK_MAIN
+    std::cout << std::endl << std::endl << "LSTATE" << std::endl << std::endl;
     for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
     {
-        std::cout << lstate2[i].segmentName << std::endl;
-        std::cout << std::endl << lstate2[i].X << std::endl;
-        std::cout << lstate2[i].Xdot << std::endl;
-        std::cout << lstate2[i].Xdotdot << std::endl;
-        std::cout << lstate2[i].F << std::endl;
+        std::cout << linkState[i].segmentName << std::endl;
+        std::cout << std::endl << linkState[i].X << std::endl;
+        std::cout << linkState[i].Xdot << std::endl;
+        std::cout << linkState[i].Xdotdot << std::endl;
+        std::cout << linkState[i].F << std::endl;
     }
+    std::cout << std::endl << std::endl << "LSTATE2" << std::endl << std::endl;
+    for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
+    {
+        std::cout << linkState2[i].segmentName << std::endl;
+        std::cout << std::endl << linkState2[i].X << std::endl;
+        std::cout << linkState2[i].Xdot << std::endl;
+        std::cout << linkState2[i].Xdotdot << std::endl;
+        std::cout << linkState2[i].F << std::endl;
+    }
+#endif
 
+    std::vector<kdle::SegmentState> linkState3;
+    linkState3.resize(twoBranchTree.getNrOfSegments() + 1);
+
+    std::cout << std::endl << std::endl << "REVERSE TRAVERSAL" << std::endl << std::endl;
+
+    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, jointState, linkState2, linkState3);
+
+#ifdef VERBOSE_CHECK_MAIN
+    std::cout << std::endl << std::endl << "LSTATE3" << std::endl << std::endl;
+    for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
+    {
+        std::cout << linkState3[i].segmentName << std::endl;
+        std::cout << std::endl << linkState3[i].X << std::endl;
+        std::cout << linkState3[i].Xdot << std::endl;
+        std::cout << linkState3[i].Xdotdot << std::endl;
+        std::cout << linkState3[i].F << std::endl;
+    }
 #endif
 
 
-    return (EXIT_SUCCESS);
+    return 0;
 }
+
+
+
 

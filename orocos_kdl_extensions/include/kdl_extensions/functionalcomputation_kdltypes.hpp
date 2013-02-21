@@ -52,6 +52,38 @@ typedef inertiaOperationTag inertia;
 typedef std::map<std::string, KDL::TreeElement >::const_iterator tree_iterator;
 typedef std::vector<KDL::Segment>::const_iterator chain_iterator;
 
+
+template <typename Iterator>//, typename Operation> //accumulation operation (* or +)
+class accumulate
+{
+public:
+    enum
+    {
+        NumberOfParams = 3
+    };
+    typedef SegmentState ReturnType;
+    typedef Iterator Param1T;
+    typedef JointState Param2T;
+    typedef SegmentState Param3T;
+
+    //this needs to be changes, currently this is just overwritten
+    accumulate(ParameterTypeQualifier<Param3T>::RefToConstT initialValue)
+    {
+        a_segmentState = initialValue;
+    };
+
+    inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState1)
+    {
+        a_segmentState = p_segmentState1;
+        a_segmentState.Xtotal = a_segmentState.Xtotal*p_segmentState1.X;
+        return a_segmentState;
+    };
+private:
+    SegmentState a_segmentState;
+};
+
 template<typename Iterator, typename OperationTagT>
 class transform;
 
@@ -79,12 +111,13 @@ public:
         a_segmentState.Xdotdot = p_segmentState.Xdotdot;
         a_segmentState.F = p_segmentState.F;
         a_segmentState.X = segmentId->second.segment.pose(p_jointState.q);
+        a_segmentState.Xtotal = p_segmentState.Xtotal;
         a_segmentState.jointIndex = p_jointState.jointIndex;
         a_segmentState.jointName = p_jointState.jointName;
         a_segmentState.segmentName = segmentId->first;
 #ifdef VERBOSE_CHECK
         std::cout << "Inside pose operation Transform value" << std::endl << a_segmentState.X << std::endl;
-        //std::cout << "Inside pose operation Twist value" << a_segmentState.Xdot << std::endl;
+//        std::cout << "Inside pose operation Twist value" << a_segmentState.Xtotal << std::endl;
         //std::cout << "Inside pose operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
         //std::cout << "Inside pose operation Wrench value" << a_segmentState.F << std::endl<< std::endl;
 #endif 

@@ -5,6 +5,7 @@
  * Created on Jan 14, 2013, 2:19:59 PM
  */
 
+//#define VERBOSE_CHECK
 #define VERBOSE_MAIN
 
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
@@ -118,13 +119,14 @@ int main(int argc, char** argv)
 
     // declare a computation to be performed
     kdle::transform<tree_iterator, pose> poseComputation;
+    kdle::accumulate<tree_iterator> poseBaseComputation(lstate[0]);
+
 
     //declare a policy for a tree traversal
     kdle::DFSPolicy_ver2<Tree, outward> forwardTraversal;
 
     //declare a traversal operation on the give topology
-//    while(1)
-    traverseGraph_ver2(twoBranchTree, poseComputation, forwardTraversal)(jstate, lstate, lstate2);
+    traverseGraph_ver2(twoBranchTree, compose(poseBaseComputation, poseComputation), forwardTraversal)(jstate, lstate, lstate2);
 
     //print the results
 #ifdef VERBOSE_MAIN
@@ -132,9 +134,7 @@ int main(int argc, char** argv)
     {
         std::cout << lstate2[i].segmentName << std::endl;
         std::cout << std::endl << lstate2[i].X << std::endl;
-        std::cout << lstate2[i].Xdot << std::endl;
-        std::cout << lstate2[i].Xdotdot << std::endl;
-        std::cout << lstate2[i].F << std::endl;
+        std::cout << std::endl << lstate2[i].Xtotal << std::endl;
     }
 
 #endif

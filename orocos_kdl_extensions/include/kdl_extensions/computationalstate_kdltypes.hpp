@@ -36,6 +36,7 @@ public:
     bool operator!=(const SegmentState& instance);
 
     KDL::Frame X;
+    KDL::Frame Xtotal; //should this be in here or be computed in "accumulate" functor
     KDL::Twist Xdot;
     KDL::Twist Xdotdot;
     KDL::Wrench Fext;

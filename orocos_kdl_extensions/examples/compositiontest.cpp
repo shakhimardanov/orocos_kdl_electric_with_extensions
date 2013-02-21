@@ -406,7 +406,7 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     std::vector<kdle::SegmentState> linkState3;
     linkState3.resize(twoBranchTree.getNrOfSegments()+1);
     std::cout << std::endl << std::endl << "REVERSE TRAVERSAL" << std::endl << std::endl;
-    while(1)
+//    while(1)
     traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, jointState, linkState2, linkState3);
     //version 1 traversal
     //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);

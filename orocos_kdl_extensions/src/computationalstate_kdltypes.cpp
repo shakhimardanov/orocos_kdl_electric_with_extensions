@@ -11,6 +11,7 @@ namespace kdle
 SegmentState::SegmentState()
 {
     X.Identity();
+    Xtotal.Identity();
     Xdot.Zero();
     Xdotdot.Zero();
     F.Zero();
@@ -26,6 +27,7 @@ SegmentState::SegmentState()
 SegmentState::SegmentState(const SegmentState& copy)
 {
     X = copy.X;
+    Xtotal = copy.Xtotal;
     Xdot = copy.Xdot;
     Xdotdot = copy.Xdotdot;
     F = copy.F;
@@ -41,6 +43,7 @@ SegmentState& SegmentState::operator=(const SegmentState& copy)
     if (this != &copy)
     {
         X = copy.X;
+        Xtotal = copy.Xtotal;
         Xdot = copy.Xdot;
         Xdotdot = copy.Xdotdot;
         F = copy.F;
