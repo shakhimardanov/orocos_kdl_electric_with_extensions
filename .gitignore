@@ -1,3 +1,17 @@
 build
 bin
 lib
+Makefile*
+orocos_kdl_extensions/Makefile*
+orocos_kdl_extensions/.dep.inc
+orocos_kdl/Makefile*
+CMakeFiles*
+CMakeCache*
+cmake_*
+*cmake
+cmake_*
+*log
+*so.*
+*.so
+*#*
+*doc*

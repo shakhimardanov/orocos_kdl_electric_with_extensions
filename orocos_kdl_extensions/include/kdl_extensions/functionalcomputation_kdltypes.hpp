@@ -434,38 +434,18 @@ public:
             ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
             ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
-        //TODO: Fix this, this is wrong
-
-        a_segmentState = p_segmentState;
-        a_jointState = p_jointState;
-
-#ifdef VERBOSE_CHECK
-        std::cout << "Inside wrench operation Wrench value " << std::endl << a_segmentState.F << std::endl << std::endl;
-        std::cout << "Inside wrench operation Wrench value " << std::endl << p_segmentState.F << std::endl << std::endl;
-#endif
-
-        a_jointState.torque = dot(p_segmentState.Z, p_segmentState.F);
-        a_segmentState.F = p_segmentState.F + p_segmentState.X * a_segmentState.F;
-
-
-#ifdef VERBOSE_CHECK
-        std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
-        std::cout << "Inside wrench operation Transform value " << p_segmentState.X << std::endl;
-        std::cout << "Inside wrench operation Wrench value " << std::endl << a_segmentState.F << std::endl << std::endl;
-        std::cout << "Inside wrench operation torque value " << std::endl << a_jointState.torque << std::endl << std::endl;
-#endif
+        //TODO: Place holder for future use
         return a_segmentState;
     };
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
             ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
-            //ParameterTypeQualifier<Param2T>::RefToArgT p_jointState2,
             ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's state (current's body force)
             ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState2) //current's child's state (child's total force)
     {
 
         a_segmentState = p_segmentState;
-        a_jointState = p_jointState;
+        JointState a_jointState = p_jointState;
 
 #ifdef VERBOSE_CHECK
         std::cout << "Inside wrench operation Input Wrench of current element (current's body wrench) " << std::endl << p_segmentState.F << std::endl << std::endl;
@@ -482,12 +462,41 @@ public:
 #endif
         return a_segmentState;
     };
+
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+            ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+            ParameterTypeQualifier<Param2T>::RefToArgT p_jointState2,
+            ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's state (current's body force)
+            ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState2) //current's child's state (child's total force)
+    {
+
+        a_segmentState = p_segmentState;
+        
+#ifdef VERBOSE_CHECK
+        std::cout << "Inside wrench operation Input Wrench of current element (current's body wrench) " << std::endl << p_segmentState.F << std::endl << std::endl;
+        std::cout << "Inside wrench operation Input Wrench of a child (child's total wrench) " << std::endl << p_segmentState2.F << std::endl << std::endl;
+#endif
+
+        p_jointState2.torque = dot(p_segmentState2.Z, p_segmentState2.F);
+        a_segmentState.F = p_segmentState.F + p_segmentState2.X * p_segmentState2.F;
+
+#ifdef VERBOSE_CHECK
+        std::cout << "Inside wrench operation updated Wrench of current element " << std::endl << a_segmentState.F << std::endl << std::endl;
+        std::cout << "Inside wrench operation computed Torque of current joint " << std::endl << p_jointState2.torque << std::endl << std::endl;
+#endif
+        return a_segmentState;
+    };
+
+
 private:
     ReturnType a_segmentState;
-    JointState a_jointState;
 
 };
 
+
+
+
+//TODO: Deprecate this policy in favor of DFSPolicy_ver2
 template<>
 class DFSPolicy<KDL::Chain>
 {
@@ -670,9 +679,9 @@ public:
         {
             const KDL::TreeElement currentElement = iter->second;
 #ifdef VERBOSE_CHECK
-            std::cout << "Current element name in current iteration " << currentElement.segment.getName() << std::endl;
-            std::cout << "State vector input " << a_linkStateVectorIn[currentElement.q_nr].segmentName << std::endl;
-            std::cout << "Current joint index and value " << currentElement.q_nr << " " << a_jointStateVectorIn[currentElement.q_nr].q << std::endl;
+//            std::cout << "Parent element name in current iteration " << currentElement.segment.getName() << std::endl;
+//            std::cout << "State vector input " << a_linkStateVectorIn[currentElement.q_nr].segmentName << std::endl;
+//            std::cout << "Parent joint index and value " << currentElement.q_nr << " " << a_jointStateVectorIn[currentElement.q_nr].q << std::endl;
 #endif
             a_linkStateVectorOut[currentElement.q_nr] = a_linkStateVectorIn[currentElement.q_nr];
 
@@ -680,8 +689,8 @@ public:
             {
 
 #ifdef VERBOSE_CHECK
-                std::cout << "Child element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
-                std::cout << "Child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
+                std::cout << "Current element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
+                std::cout << "Current joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
 #endif               
                 a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorOut[currentElement.q_nr]);
             }
@@ -746,46 +755,47 @@ public:
         //this is reverse/inward iterative walk
         for (KDL::SegmentMap::const_reverse_iterator iter = a_topology.getSegments().rbegin(); iter != a_topology.getSegments().rend(); ++iter)
         {
+            const KDL::TreeElement currentElement = iter->second;
+            tempState = a_linkStateVectorIn[currentElement.q_nr];
+
+#ifdef VERBOSE_CHECK
+
+            std::cout << "Current element name in current reverse iteration " << currentElement.segment.getName() << std::endl;
+            std::cout << "Current joint index and value in reverse iteration " << currentElement.q_nr << " " << a_jointStateVectorIn[currentElement.q_nr].q << std::endl;
+            std::cout << "Spatial BODY force on a current element " << a_linkStateVectorIn[currentElement.q_nr].F << std::endl;
+#endif
+            //            TODO: make torque accessible. In order to do this we need to introduce mutable joint computational state.
+            //            in total having 4 (2 immutable and mutable per link and per joint)
+            //            also need to put this iteration into a separate reverse walk
+
+            for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
+            {
+
+#ifdef VERBOSE_CHECK
+
+                std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
+                std::cout << "Child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
+                std::cout << "Total spatial force on a child " << a_linkStateVectorOut[(*childIter)->second.q_nr].F << std::endl;
+#endif
+                //                torques(j--)=dot(S[i],f[i]);
+                //                f[i - 1] = f[i - 1] + X[i] * f[i];
+                //                the second term in the 2nd expression should be summed for all children of the parent and then added to the parent's force (ID for trees).
+                //                a_linkStateVectorIn[parentElement.q_nr].F = a_linkStateVectorIn[parentElement.q_nr].F + a_linkStateVectorIn[(*childIter)->second.q_nr].X * a_linkStateVectorIn[(*childIter)->second.q_nr].F;
+                //                double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
+
+                //                    tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], tempState, a_linkStateVectorOut[(*childIter)->second.q_nr]); //uses operations with 4 args
+                tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_jointStateVectorOut[(*childIter)->second.q_nr], tempState, a_linkStateVectorOut[(*childIter)->second.q_nr]); //uses operations with 5 args
+                std::cout << "Torque on a current supporting joint " <<(*childIter)->second.q_nr << " " << a_jointStateVectorOut[(*childIter)->second.q_nr].torque << std::endl << std::endl;
+            }
             //TODO: this needs to be changed, string comparison is inefficient
             if (iter->first != a_topology.getRootSegment()->first)
-            {
-                const KDL::TreeElement currentElement = iter->second;
-                tempState = a_linkStateVectorIn[currentElement.q_nr];
-
-#ifdef VERBOSE_CHECK
-
-                std::cout << "Current element name in current reverse iteration " << currentElement.segment.getName() << std::endl;
-                std::cout << "Current joint index and value in reverse iteration " << currentElement.q_nr << " " << a_jointStateVectorIn[currentElement.q_nr].q << std::endl;
-                std::cout << "Spatial BODY force on a current element " << a_linkStateVectorIn[currentElement.q_nr].F << std::endl;
-#endif
-                //            TODO: make torque accessible. In order to do this we need to introduce mutable joint computational state.
-                //            in total having 4 (2 immutable and mutable per link and per joint)
-                //            also need to put this iteration into a separate reverse walk
-
-                for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
-                {
-
-#ifdef VERBOSE_CHECK
-
-                    std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
-                    std::cout << "Child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
-                    std::cout << "Total spatial force on a child " << a_linkStateVectorOut[(*childIter)->second.q_nr].F << std::endl;
-
-#endif
-                    //                torques(j--)=dot(S[i],f[i]);
-                    //                f[i - 1] = f[i - 1] + X[i] * f[i];
-                    //                the second term in the 2nd expression should be summed for all children of the parent and then added to the parent's force (ID for trees).
-                    //                a_linkStateVectorIn[parentElement.q_nr].F = a_linkStateVectorIn[parentElement.q_nr].F + a_linkStateVectorIn[(*childIter)->second.q_nr].X * a_linkStateVectorIn[(*childIter)->second.q_nr].F;
-                    //                double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
-
-                    //                    tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[currentElement.q_nr], a_linkStateVectorOut[(*childIter)->second.q_nr]);
-                    tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], tempState, a_linkStateVectorOut[(*childIter)->second.q_nr]);
-
-                }
-
                 a_linkStateVectorOut[currentElement.q_nr] = tempState;
-                std::cout << "Total Spatial force on a current element " << a_linkStateVectorOut[currentElement.q_nr].F << std::endl;
-            }
+
+#ifdef VERBOSE_CHECK
+            std::cout << "Total Spatial force on a current element " << a_linkStateVectorOut[currentElement.q_nr].F << std::endl;
+            std::cout << "Torque on a current supporting joint " << a_jointStateVectorOut[currentElement.q_nr].torque << std::endl << std::endl;
+#endif
+
         }
 
         return true;

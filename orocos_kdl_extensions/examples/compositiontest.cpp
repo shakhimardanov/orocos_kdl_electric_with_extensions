@@ -7,7 +7,7 @@
 
 #define VERBOSE_CHECK //switches on console output in kdl related methods
 
-//#define VERBOSE_CHECK_MAIN // switches on console output in main
+#define VERBOSE_CHECK_MAIN // switches on console output in main
 
 //#include <graphviz/gvc.h>
 //#include <graphviz/graph.h>
@@ -99,9 +99,9 @@ void createMyTree(KDL::Tree& twoBranchTree)
     twoBranchTree.addSegment(segment10, "L4");
     twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
     twoBranchTree.addSegment(segment6, "L5");
-//    twoBranchTree.addSegment(segment7, "L6");
-//    twoBranchTree.addSegment(segment8, "L7");
-//    twoBranchTree.addSegment(segment9, "L8");
+    twoBranchTree.addSegment(segment7, "L6");
+    twoBranchTree.addSegment(segment8, "L7");
+    twoBranchTree.addSegment(segment9, "L8");
 
 }
 
@@ -303,7 +303,7 @@ void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& roo
     JntArray torques(achain.getNrOfJoints());
     KDL::Wrenches f_ext;
     f_ext.resize(achain.getNrOfSegments());
-
+    std::cout << endl << endl << endl;
     printf("RNE dynamics values \n");
 
 
@@ -320,7 +320,7 @@ void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& roo
 
     for (unsigned int i = 0; i < achain.getNrOfJoints(); ++i)
     {
-        printf("q, qdot, torques %f, %f, %f\n", q(i), q_dot(i), torques(i));
+        printf("index, q, qdot, torques %d, %f, %f, %f\n", i, q(i), q_dot(i), torques(i));
     }
     return;
 }
@@ -414,13 +414,14 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << std::endl << std::endl << "LSTATE3" << std::endl << std::endl;
-    for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
+    for (KDL::SegmentMap::const_reverse_iterator iter = twoBranchTree.getSegments().rbegin(); iter != twoBranchTree.getSegments().rend(); ++iter)
     {
-        std::cout << linkState3[i].segmentName << std::endl;
-        std::cout << std::endl << linkState3[i].X << std::endl;
-        std::cout << linkState3[i].Xdot << std::endl;
-        std::cout << linkState3[i].Xdotdot << std::endl;
-        std::cout << linkState3[i].F << std::endl;
+        std::cout << std::endl << iter->first << std::endl;
+        std::cout << linkState3[iter->second.q_nr].X << std::endl;
+        std::cout << linkState3[iter->second.q_nr].Xdot << std::endl;
+        std::cout << linkState3[iter->second.q_nr].Xdotdot << std::endl;
+        std::cout << linkState3[iter->second.q_nr].F << std::endl;
+        std::cout << "Joint index and torque " << iter->second.q_nr << "  " << jointState[iter->second.q_nr].torque << std::endl;
     }
 #endif
 

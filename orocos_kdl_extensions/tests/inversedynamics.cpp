@@ -5,9 +5,9 @@
  * Created on December 21, 2011, 11:46 AM
  */
 
-#define VERBOSE_CHECK //switches on console output in kdl related methods
+//#define VERBOSE_CHECK //switches on console output in kdl related methods
 
-//#define VERBOSE_CHECK_MAIN // switches on console output in main
+#define VERBOSE_CHECK_MAIN // switches on console output in main
 
 #include <cstring>
 #include <cstdlib>
@@ -92,9 +92,9 @@ void createMyTree(KDL::Tree& twoBranchTree)
     twoBranchTree.addSegment(segment10, "L4");
     twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
     twoBranchTree.addSegment(segment6, "L5");
-    //    twoBranchTree.addSegment(segment7, "L6");
-    //    twoBranchTree.addSegment(segment8, "L7");
-    //    twoBranchTree.addSegment(segment9, "L8");
+    twoBranchTree.addSegment(segment7, "L6");
+    twoBranchTree.addSegment(segment8, "L7");
+    twoBranchTree.addSegment(segment9, "L8");
 
 }
 
@@ -149,45 +149,46 @@ int main(int argc, char** argv)
 
     std::cout << std::endl << std::endl << "FORWARD TRAVERSAL" << std::endl << std::endl;
 
-    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, linkState, linkState2);
+    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, lstate, lstate2);
 
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << std::endl << std::endl << "LSTATE" << std::endl << std::endl;
     for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
     {
-        std::cout << linkState[i].segmentName << std::endl;
-        std::cout << std::endl << linkState[i].X << std::endl;
-        std::cout << linkState[i].Xdot << std::endl;
-        std::cout << linkState[i].Xdotdot << std::endl;
-        std::cout << linkState[i].F << std::endl;
+        std::cout << lstate[i].segmentName << std::endl;
+        std::cout << std::endl << lstate[i].X << std::endl;
+        std::cout << lstate[i].Xdot << std::endl;
+        std::cout << lstate[i].Xdotdot << std::endl;
+        std::cout << lstate[i].F << std::endl;
     }
     std::cout << std::endl << std::endl << "LSTATE2" << std::endl << std::endl;
     for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
     {
-        std::cout << linkState2[i].segmentName << std::endl;
-        std::cout << std::endl << linkState2[i].X << std::endl;
-        std::cout << linkState2[i].Xdot << std::endl;
-        std::cout << linkState2[i].Xdotdot << std::endl;
-        std::cout << linkState2[i].F << std::endl;
+        std::cout << lstate2[i].segmentName << std::endl;
+        std::cout << std::endl << lstate2[i].X << std::endl;
+        std::cout << lstate2[i].Xdot << std::endl;
+        std::cout << lstate2[i].Xdotdot << std::endl;
+        std::cout << lstate2[i].F << std::endl;
     }
 #endif
 
-    std::vector<kdle::SegmentState> linkState3;
-    linkState3.resize(twoBranchTree.getNrOfSegments() + 1);
+    std::vector<kdle::SegmentState> lstate3;
+    lstate3.resize(twoBranchTree.getNrOfSegments() + 1);
 
     std::cout << std::endl << std::endl << "REVERSE TRAVERSAL" << std::endl << std::endl;
 
-    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, jointState, linkState2, linkState3);
+    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jstate, jstate, lstate2, lstate3);
 
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << std::endl << std::endl << "LSTATE3" << std::endl << std::endl;
-    for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
+    for (KDL::SegmentMap::const_reverse_iterator iter = twoBranchTree.getSegments().rbegin(); iter != twoBranchTree.getSegments().rend(); ++iter)
     {
-        std::cout << linkState3[i].segmentName << std::endl;
-        std::cout << std::endl << linkState3[i].X << std::endl;
-        std::cout << linkState3[i].Xdot << std::endl;
-        std::cout << linkState3[i].Xdotdot << std::endl;
-        std::cout << linkState3[i].F << std::endl;
+        std::cout << std::endl << iter->first << std::endl;
+        std::cout << lstate3[iter->second.q_nr].X << std::endl;
+        std::cout << lstate3[iter->second.q_nr].Xdot << std::endl;
+        std::cout << lstate3[iter->second.q_nr].Xdotdot << std::endl;
+        std::cout << lstate3[iter->second.q_nr].F << std::endl;
+        std::cout << "Joint index and torque " << iter->second.q_nr << "  " << jstate[iter->second.q_nr].torque << std::endl;
     }
 #endif
 
