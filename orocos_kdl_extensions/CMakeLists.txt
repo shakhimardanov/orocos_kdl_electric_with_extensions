@@ -31,7 +31,7 @@ target_link_libraries(${PROJECT_NAME} orocos-kdl)
 rosbuild_add_executable(compositiontest examples/compositiontest.cpp)
 rosbuild_add_compile_flags(${PROJECT_NAME} "-O0")
 
-#target_link_libraries(compositiontest ${PROJECT_NAME} graph gvc)
+target_link_libraries(compositiontest ${PROJECT_NAME} graph gvc)
 target_link_libraries(compositiontest ${PROJECT_NAME})
 
 
