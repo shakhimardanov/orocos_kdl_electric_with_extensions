@@ -120,9 +120,8 @@ void drawMyTree(KDL::Tree& twoBranchTree)
 
     //create vector to hold nodes
     std::vector<Agnode_t*> nodeVector;
-    nodeVector.resize(twoBranchTree.getNrOfSegments() + 1);
-    int segmentIndex = twoBranchTree.getSegments().size();
-    printf("size of segments in tree map %d\n", segmentIndex);
+    nodeVector.resize(twoBranchTree.getSegments().size());
+    printf("size of segments in tree map %d\n", twoBranchTree.getSegments().size());
     printf("size of segments in tree %d\n", twoBranchTree.getNrOfSegments());
 
     //create vector to hold edges
@@ -131,25 +130,24 @@ void drawMyTree(KDL::Tree& twoBranchTree)
     int jointIndex = twoBranchTree.getNrOfJoints() + 1;
     printf("size of joint array %d %d\n", jointIndex, twoBranchTree.getNrOfJoints());
 
-    segmentIndex = 0;
-    //fill in the node vector by iterating over tree segments
-//    SegmentMap::const_iterator iter0 = twoBranchTree.getSegments().begin();
-//    for (SegmentMap::const_iterator iter = iter0; iter != twoBranchTree.getSegments().end(); ++iter)
-//    {
-//        //it would have been very useful if one could access list of joints of a tree
-//        //list of segments is already possible
-//        int stringLength = iter->second.segment.getName().size();
-//        char name[stringLength + 1];
-//        strcpy(name, iter->second.segment.getName().c_str());
-//        //q_nr returned is the same value for the root and the its child. this is a bug
-//        nodeVector[segmentIndex] = agnode(g, name);
-//        agsafeset(nodeVector[iter->second.q_nr], "color", "red", "");
-//        agsafeset(nodeVector[iter->second.q_nr], "shape", "box", "");
-//        std::cout << "index parent " << iter->second.q_nr << std::endl;
-//        std::cout << "name parent " << iter->second.segment.getName() << std::endl;
-//        std::cout << "joint name parent " << iter->second.segment.getJoint().getName() << std::endl;
-//        std::cout << "joint type parent " << iter->second.segment.getJoint().getType() << std::endl;
-//
+    int  segmentIndex = 0;
+//    fill in the node vector by iterating over tree segments
+    for (SegmentMap::const_iterator iter = twoBranchTree.getSegments().begin(); iter != twoBranchTree.getSegments().end(); ++iter)
+    {
+        //it would have been very useful if one could access list of joints of a tree
+        //list of segments is already possible
+        int stringLength = iter->second.segment.getName().size();
+        char name[stringLength + 1];
+        strcpy(name, iter->second.segment.getName().c_str());
+        //q_nr returned is the same value for the root and the its child. this is a bug
+        nodeVector[segmentIndex] = agnode(g, name);
+        agsafeset(nodeVector[segmentIndex], "color", "red", "");
+        agsafeset(nodeVector[segmentIndex], "shape", "box", "");
+        std::cout << "index parent " << iter->second.q_nr << std::endl;
+        std::cout << "name parent " << iter->second.segment.getName() << std::endl;
+        std::cout << "joint name parent " << iter->second.segment.getJoint().getName() << std::endl;
+        std::cout << "joint type parent " << iter->second.segment.getJoint().getType() << std::endl;
+
 //        if (iter->second.segment.getJoint().getType() == Joint::None) //equals to joint type None
 //        {
 //            int stringLength = iter->second.segment.getJoint().getName().size();
@@ -158,47 +156,32 @@ void drawMyTree(KDL::Tree& twoBranchTree)
 //            edgeVector[iter->second.q_nr] = agedge(g, nodeVector[iter->second.q_nr], nodeVector[iter->second.q_nr]);
 //            agsafeset(edgeVector[iter->second.q_nr], "label", name, "");
 //        }
-//
-//        for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); ++childIter)
-//        {
-//            int stringLength = iter->second.segment.getJoint().getName().size();
-//            char name[stringLength + 1];
-//            strcpy(name, iter->second.segment.getJoint().getName().c_str());
-//            std::cout << "index child " << (*childIter)->second.q_nr << std::endl;
-//            edgeVector[(*childIter)->second.q_nr] = agedge(g, nodeVector[iter->second.q_nr], nodeVector[(*childIter)->second.q_nr]);
-//            agsafeset(edgeVector[(*childIter)->second.q_nr], "label", name, "");
-//        }
-//
-//
-//        ++segmentIndex;
-//
-//    }
-    //reset segment index to its initial value
-    //    segmentIndex = twoBranchTree.getSegments().size();
-    //
-    //
-    //    //fill in edge vector by iterating over joints in the tree
-    //    for (SegmentMap::const_iterator iter = iter0; iter != twoBranchTree.getSegments().end(); ++iter)
-    //    {
-    //        //TODO: Fix node-edge connection relation
-    //        int stringLength = iter->second.segment.getJoint().getName().size();
-    //        std::cout << "Joint name " << iter->second.segment.getJoint().getName() << std::endl;
-    //        char name[stringLength + 1];
-    //        strcpy(name, iter->second.segment.getJoint().getName().c_str());
-    //        //        for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
-    //        //        {
-    //        //            edgeVector[(*childIter)->second.q_nr] = agedge(g, nodeVector[segmentIndex], nodeVector[jointIndex]);
-    //        //            agsafeset(edgeVector[(*childIter)->second.q_nr], "label", name, "");
-    //        //        }
-    //        //
-    //        if (jointIndex != 0)
-    //        {
-    //            edgeVector[jointIndex] = agedge(g, nodeVector[segmentIndex], nodeVector[jointIndex]);
-    //            agsafeset(edgeVector[jointIndex], "label", name, "");
-    //        }
-    //        segmentIndex--;
-    //        jointIndex--;
-    //    }
+        if (segmentIndex < twoBranchTree.getSegments().size())
+           segmentIndex++;
+
+    }
+    
+        //fill in edge vector by iterating over joints in the tree
+        for (SegmentMap::const_iterator iter = twoBranchTree.getSegments().begin(); iter != twoBranchTree.getSegments().end(); ++iter)
+        {
+            //TODO: Fix node-edge connection relation
+            int stringLength = iter->second.segment.getJoint().getName().size();
+            std::cout << "Joint name " << iter->second.segment.getJoint().getName() << std::endl;
+            char name[stringLength + 1];
+            strcpy(name, iter->second.segment.getJoint().getName().c_str());
+                    for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
+                    {
+                        edgeVector[iter->second.q_nr] = agedge(g, nodeVector[iter->second.q_nr], nodeVector[(*childIter)->second.q_nr]);
+                        agsafeset(edgeVector[iter->second.q_nr], "label", name, "");
+                    }
+            
+//            if (jointIndex != 0)
+//            {
+//                edgeVector[jointIndex] = agedge(g, nodeVector[segmentIndex], nodeVector[jointIndex]);
+//                agsafeset(edgeVector[jointIndex], "label", name, "");
+//            }
+
+        }
 
 
 
