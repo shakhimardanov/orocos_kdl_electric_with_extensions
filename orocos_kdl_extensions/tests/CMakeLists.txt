@@ -4,6 +4,10 @@
 rosbuild_add_executable(fkposition-test fkposition.cpp)
 target_link_libraries(fkposition-test ${PROJECT_NAME})
 
+rosbuild_add_executable(fkposition-test2 fkposition2.cpp)
+target_link_libraries(fkposition-test2 ${PROJECT_NAME} graph gvc)
+
+
 rosbuild_add_executable(fkvelocity-test fkvelocity.cpp)
 target_link_libraries(fkvelocity-test ${PROJECT_NAME})
 
