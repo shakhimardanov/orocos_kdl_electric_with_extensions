@@ -30,32 +30,60 @@ void createMyTree(KDL::Tree& a_tree)
     RotationalInertia rotInerSeg(0.0, 0.0, 0.0, 0.0, 0.0, 0.0); //around symmetry axis of rotation
     double pointMass = 0.25; //in kg
 
-
+    std::string jointname, linkname;
     //create names and segments of the tree
     for (unsigned int i = 0; i < numberofsegments - 2; i = i + 3)
     {
+        //this name manipulation is required to ensure that
+        //topological order of segments in the tree and the order std::map data structure are equivalent
+        if (i < 10)
+        {
+            ostringstream converter, converter3;
+            converter << "joint00" << i;
+            jointname = converter.str();
+            converter3 << "link00" << i;
+            linkname = converter3.str();
+            linknamecontainer[i] = linkname;
+            std::cout << jointname << linkname << std::endl;
+        }
+        else
+        {
+            ostringstream converter, converter3;
+            converter << "joint0" << i;
+            jointname = converter.str();
+            converter3 << "link0" << i;
+            linkname = converter3.str();
+            linknamecontainer[i] = linkname;
+            std::cout << jointname << linkname << std::endl;
 
-        ostringstream converter, converter3;
-        converter << "joint" << i;
-        std::string jointname = converter.str();
-        converter3 << "link" << i;
-        std::string linkname = converter3.str();
-        linknamecontainer[i] = linkname;
-        //        std::cout << jointname << linkname << std::endl;
-
+        }
         jointcontainer[i] = Joint(jointname, Joint::RotZ, 1, 0, 0.01);
         framecontainer[i] = Frame(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
         segmentcontainer[i] = Segment(linkname, jointcontainer[i], framecontainer[i]);
         inertiacontainer[i] = RigidBodyInertia(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg);
         segmentcontainer[i].setInertia(inertiacontainer[i]);
 
-        ostringstream converter1, converter4;
-        converter1 << "joint" << i + 1;
-        jointname = converter1.str();
-        converter4 << "link" << i + 1;
-        linkname = converter4.str();
-        linknamecontainer[i + 1] = linkname;
-        //        std::cout << jointname << linkname << std::endl;
+        if (i < 9)
+        {
+            ostringstream converter1, converter4;
+            converter1 << "joint00" << i + 1;
+            jointname = converter1.str();
+            converter4 << "link00" << i + 1;
+            linkname = converter4.str();
+            linknamecontainer[i + 1] = linkname;
+            std::cout << jointname << linkname << std::endl;
+        }
+        else
+        {
+            ostringstream converter1, converter4;
+            converter1 << "joint0" << i + 1;
+            jointname = converter1.str();
+            converter4 << "link0" << i + 1;
+            linkname = converter4.str();
+            linknamecontainer[i + 1] = linkname;
+            std::cout << jointname << linkname << std::endl;
+
+        }
 
         jointcontainer[i + 1] = Joint(jointname, Joint::RotX, 1, 0, 0.01);
         framecontainer[i + 1] = Frame(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
@@ -63,14 +91,28 @@ void createMyTree(KDL::Tree& a_tree)
         inertiacontainer[i + 1] = RigidBodyInertia(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg);
         segmentcontainer[i + 1].setInertia(inertiacontainer[i + 1]);
 
-        ostringstream converter2, converter5;
-        converter2 << "joint" << i + 2;
-        jointname = converter2.str();
-        converter5 << "link" << i + 2;
-        linkname = converter5.str();
-        linknamecontainer[i + 2] = linkname;
-        //        std::cout << jointname << linkname << std::endl;
+        if (i < 8)
+        {
+            ostringstream converter2, converter5;
+            converter2 << "joint00" << i + 2;
+            jointname = converter2.str();
+            converter5 << "link00" << i + 2;
+            linkname = converter5.str();
+            linknamecontainer[i + 2] = linkname;
+            std::cout << jointname << linkname << std::endl;
+        }
 
+        else
+        {
+            ostringstream converter2, converter5;
+            converter2 << "joint0" << i + 2;
+            jointname = converter2.str();
+            converter5 << "link0" << i + 2;
+            linkname = converter5.str();
+            linknamecontainer[i + 2] = linkname;
+            std::cout << jointname << linkname << std::endl;
+
+        }
         jointcontainer[i + 2] = Joint(jointname, Joint::RotY, 1, 0, 0.01);
         framecontainer[i + 2] = Frame(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
         segmentcontainer[i + 2] = Segment(linkname, jointcontainer[i + 2], framecontainer[i + 2]);
@@ -95,52 +137,52 @@ void createMyTree(KDL::Tree& a_tree)
     //connect 1st branch to the last link of the initial chain
     a_tree.addSegment(segmentcontainer[numberofbranches], linknamecontainer[numberofbranches - 1]);
 
-//    //segments of the 1st tree branch
-//    for (unsigned int j = numberofbranches; j < (elementsInBranch + initialChainElementNumber) - 1; j++)
-//    {
-//        a_tree.addSegment(segmentcontainer[j + 1], linknamecontainer[j]);
-//        std::cout << linknamecontainer[j] << " and " << segmentcontainer[j + 1].getName() << std::endl;
-//    }
-//
-//    //connect 2nd branch to the last link of the initial chain
-//    a_tree.addSegment(segmentcontainer[(elementsInBranch + initialChainElementNumber)], linknamecontainer[numberofbranches - 1]);
+    //segments of the 1st tree branch
+    for (unsigned int j = numberofbranches; j < (elementsInBranch + initialChainElementNumber) - 1; j++)
+    {
+        a_tree.addSegment(segmentcontainer[j + 1], linknamecontainer[j]);
+        std::cout << linknamecontainer[j] << " and " << segmentcontainer[j + 1].getName() << std::endl;
+    }
 
-//    //segments of the 2nd tree branch
-//    for (unsigned int j = (elementsInBranch + initialChainElementNumber); j < (2 * elementsInBranch + initialChainElementNumber) - 1; j++)
-//    {
-//        a_tree.addSegment(segmentcontainer[j + 1], linknamecontainer[j]);
-//        std::cout << linknamecontainer[j] << " and " << segmentcontainer[j + 1].getName() << std::endl;
-//    }
-//
-//    //connect 3rd branch to the last link of the initial chain
-//    a_tree.addSegment(segmentcontainer[(2 * elementsInBranch + initialChainElementNumber)], linknamecontainer[numberofbranches - 1]);
-//
-//    //segments of the 3rd tree branch
-//    for (unsigned int j = (2 * elementsInBranch + initialChainElementNumber); j < (3 * elementsInBranch + initialChainElementNumber) - 1; j++)
-//    {
-//        a_tree.addSegment(segmentcontainer[j + 1], linknamecontainer[j]);
-//        std::cout << linknamecontainer[j] << " and " << segmentcontainer[j + 1].getName() << std::endl;
-//    }
-//
-//    //connect 4th branch to the last link of the initial chain
-//    a_tree.addSegment(segmentcontainer[(3 * elementsInBranch + initialChainElementNumber)], linknamecontainer[numberofbranches - 1]);
-//
-//    //segments of the 4ht tree branch
-//    for (unsigned int j = (3 * elementsInBranch + initialChainElementNumber); j < (4 * elementsInBranch + initialChainElementNumber) - 1; j++)
-//    {
-//        a_tree.addSegment(segmentcontainer[j + 1], linknamecontainer[j]);
-//        std::cout << linknamecontainer[j] << " and " << segmentcontainer[j + 1].getName() << std::endl;
-//    }
-//
-//    //connect 5th branch to the last link of the initial chain
-//    a_tree.addSegment(segmentcontainer[(4 * elementsInBranch + initialChainElementNumber)], linknamecontainer[numberofbranches - 1]);
-//
-//    //segments of the 5th tree branch
-//    for (unsigned int j = (4 * elementsInBranch + initialChainElementNumber); j < (5 * elementsInBranch + initialChainElementNumber) - 1; j++)
-//    {
-//        a_tree.addSegment(segmentcontainer[j + 1], linknamecontainer[j]);
-//        std::cout << linknamecontainer[j] << " and " << segmentcontainer[j + 1].getName() << std::endl;
-//    }
+    //connect 2nd branch to the last link of the initial chain
+    a_tree.addSegment(segmentcontainer[(elementsInBranch + initialChainElementNumber)], linknamecontainer[numberofbranches - 1]);
+
+    //segments of the 2nd tree branch
+    for (unsigned int j = (elementsInBranch + initialChainElementNumber); j < (2 * elementsInBranch + initialChainElementNumber) - 1; j++)
+    {
+        a_tree.addSegment(segmentcontainer[j + 1], linknamecontainer[j]);
+        std::cout << linknamecontainer[j] << " and " << segmentcontainer[j + 1].getName() << std::endl;
+    }
+
+    //connect 3rd branch to the last link of the initial chain
+    a_tree.addSegment(segmentcontainer[(2 * elementsInBranch + initialChainElementNumber)], linknamecontainer[numberofbranches - 1]);
+
+    //segments of the 3rd tree branch
+    for (unsigned int j = (2 * elementsInBranch + initialChainElementNumber); j < (3 * elementsInBranch + initialChainElementNumber) - 1; j++)
+    {
+        a_tree.addSegment(segmentcontainer[j + 1], linknamecontainer[j]);
+        std::cout << linknamecontainer[j] << " and " << segmentcontainer[j + 1].getName() << std::endl;
+    }
+
+    //connect 4th branch to the last link of the initial chain
+    a_tree.addSegment(segmentcontainer[(3 * elementsInBranch + initialChainElementNumber)], linknamecontainer[numberofbranches - 1]);
+
+    //segments of the 4ht tree branch
+    for (unsigned int j = (3 * elementsInBranch + initialChainElementNumber); j < (4 * elementsInBranch + initialChainElementNumber) - 1; j++)
+    {
+        a_tree.addSegment(segmentcontainer[j + 1], linknamecontainer[j]);
+        std::cout << linknamecontainer[j] << " and " << segmentcontainer[j + 1].getName() << std::endl;
+    }
+
+    //connect 5th branch to the last link of the initial chain
+    a_tree.addSegment(segmentcontainer[(4 * elementsInBranch + initialChainElementNumber)], linknamecontainer[numberofbranches - 1]);
+
+    //segments of the 5th tree branch
+    for (unsigned int j = (4 * elementsInBranch + initialChainElementNumber); j < (5 * elementsInBranch + initialChainElementNumber) - 1; j++)
+    {
+        a_tree.addSegment(segmentcontainer[j + 1], linknamecontainer[j]);
+        std::cout << linknamecontainer[j] << " and " << segmentcontainer[j + 1].getName() << std::endl;
+    }
 }
 
 void drawMyTree(KDL::Tree& twoBranchTree)
@@ -253,67 +295,71 @@ int main(int argc, char** argv)
     createMyTree(complexTree);
     drawMyTree(complexTree);
 
-        //arm root acceleration
-        Vector linearAcc(0.0, 0.0, -9.8); //gravitational acceleration along Z
-        Vector angularAcc(0.0, 0.0, 0.0);
-        Twist rootAcc(linearAcc, angularAcc);
-    
-        std::vector<kdle::JointState> jstate;
-        jstate.resize(complexTree.getNrOfSegments() + 1);
-        jstate[0].q = PI / 3.0;
-        jstate[0].qdot = 0.2;
-        jstate[1].q = -PI / 3.0;
-        jstate[1].qdot = 0.4;
-        jstate[2].q = PI / 4.0;
-        jstate[2].qdot = -0.2;
-        jstate[3].q = PI / 4.0;
-        jstate[3].qdot = 0.25;
-        jstate[4].q = -PI / 8.0;
-        jstate[4].qdot = 0.35;
+    //arm root acceleration
+    Vector linearAcc(0.0, 0.0, -9.8); //gravitational acceleration along Z
+    Vector angularAcc(0.0, 0.0, 0.0);
+    Twist rootAcc(linearAcc, angularAcc);
 
-        std::vector<kdle::SegmentState> lstate;
-        lstate.resize(complexTree.getNrOfSegments() + 1);
-        printf("Number of Joints %d\n", complexTree.getNrOfJoints());
-        printf("Number of Segments %d\n", complexTree.getNrOfSegments());
-    
-        std::vector<kdle::SegmentState> lstate2;
-        lstate2.resize(complexTree.getNrOfSegments() + 1);
-        lstate[0].Xdotdot = rootAcc;
-    
-        // declare a computation to be performed
-        kdle::transform<tree_iterator, pose> poseComputation;
-        kdle::accumulate<tree_iterator> poseBaseComputation(lstate[0]);
-    
-    
-        //declare a policy for a tree traversal
-        kdle::DFSPolicy_ver2<Tree, outward> forwardTraversal;
-    
-        //declare a traversal operation on the give topology
-        traverseGraph_ver2(complexTree, compose(poseBaseComputation, poseComputation), forwardTraversal)(jstate, lstate, lstate2);
-    
-        //print the results
-    #ifdef VERBOSE_MAIN
-        for (unsigned int i = 0; i < complexTree.getNrOfSegments(); i++)
-        {
-            std::cout << lstate2[i].segmentName << std::endl;
-            std::cout << std::endl << lstate2[i].X << std::endl;
-            std::cout << std::endl << lstate2[i].Xtotal << std::endl;
-        }
-    
-    #endif
+    std::vector<kdle::JointState> jstate;
+    jstate.resize(complexTree.getNrOfSegments() + 1);
+    jstate[0].q = PI / 3.0;
+    jstate[0].qdot = 0.2;
+    jstate[1].q = -PI / 3.0;
+    jstate[1].qdot = 0.4;
+    jstate[2].q = PI / 4.0;
+    jstate[2].qdot = -0.2;
+    jstate[3].q = PI / 4.0;
+    jstate[3].qdot = 0.25;
+    jstate[4].q = -PI / 8.0;
+    jstate[4].qdot = 0.35;
 
-        TreeFkSolverPos_recursive solverPose(complexTree);
-        JntArray q_in(complexTree.getNrOfJoints());
-        Frame outputPose;
-        
-        q_in(0) = jstate[0].q;
-        q_in(1) = jstate[1].q;
-        q_in(2) = jstate[2].q;
-        q_in(3) = jstate[3].q;
-        q_in(4) = jstate[4].q;
-        
-        solverPose.JntToCart(q_in, outputPose, "link5");
-        std::cout << outputPose << std::endl;
+    std::vector<kdle::SegmentState> lstate;
+    lstate.resize(complexTree.getNrOfSegments() + 1);
+    printf("Number of Joints %d\n", complexTree.getNrOfJoints());
+    printf("Number of Segments %d\n", complexTree.getNrOfSegments());
+
+    std::vector<kdle::SegmentState> lstate2;
+    lstate2.resize(complexTree.getNrOfSegments() + 1);
+    lstate[0].Xdotdot = rootAcc;
+
+    //================================Definition of an algorithm=========================//
+    // declare a computation to be performed
+    kdle::transform<tree_iterator, pose> poseComputation;
+    kdle::accumulate<tree_iterator> poseBaseComputation(lstate[0]);
+
+    //declare a policy for a tree traversal
+    kdle::DFSPolicy_ver2<Tree, outward> forwardTraversal;
+
+    //declare a traversal operation on the given topology
+    traverseGraph_ver2(complexTree, compose(poseBaseComputation, poseComputation), forwardTraversal)(jstate, lstate, lstate2);
+
+     //================================end of the definition===========================//
+    
+    //print the results
+#ifdef VERBOSE_MAIN
+    for (unsigned int i = 0; i < complexTree.getNrOfSegments(); i++)
+    {
+        std::cout << lstate2[i].segmentName << std::endl;
+        std::cout << std::endl << lstate2[i].X << std::endl;
+        std::cout << std::endl << lstate2[i].Xtotal << std::endl;
+    }
+
+#endif
+
+    //compare the result with standard kdl tree fkpose  solver
+    TreeFkSolverPos_recursive solverPose(complexTree);
+    JntArray q_in(complexTree.getNrOfJoints());
+    Frame outputPose;
+
+    q_in(0) = jstate[0].q;
+    q_in(1) = jstate[1].q;
+    q_in(2) = jstate[2].q;
+    q_in(3) = jstate[3].q;
+    q_in(4) = jstate[4].q;
+
+    //choose the desired link for which fkpose needs to be computed
+    solverPose.JntToCart(q_in, outputPose, "link078");
+    std::cout << outputPose << std::endl;
 
     return (EXIT_SUCCESS);
 }

@@ -117,6 +117,7 @@ int main(int argc, char** argv)
     lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
     lstate[0].Xdotdot = rootAcc;
 
+    //================================Definition of an algorithm=========================//
     // declare a computation to be performed
     kdle::transform<tree_iterator, pose> poseComputation;
     kdle::accumulate<tree_iterator> poseBaseComputation(lstate[0]);
@@ -127,7 +128,7 @@ int main(int argc, char** argv)
 
     //declare a traversal operation on the give topology
     traverseGraph_ver2(twoBranchTree, compose(poseBaseComputation, poseComputation), forwardTraversal)(jstate, lstate, lstate2);
-
+    //================================end of the definition===========================//
     //print the results
 #ifdef VERBOSE_MAIN
     for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)

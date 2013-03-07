@@ -11,18 +11,8 @@
 
 #include <graphviz/gvc.h>
 #include <graphviz/graph.h>
-#include <cstring>
-#include <cstdlib>
-#include <vector>
-#include <kdl/frames.hpp>
-#include <kdl/joint.hpp>
-#include <kdl/chain.hpp>
-#include <kdl/tree.hpp>
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
-
-
-
 
 
 using namespace std;
@@ -223,6 +213,7 @@ void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& roo
     JntArray torques(achain.getNrOfJoints());
     KDL::Wrenches f_ext;
     f_ext.resize(achain.getNrOfSegments());
+    f_ext[achain.getNrOfSegments()-1];
     std::cout << endl << endl << endl;
     printf("RNE dynamics values \n");
 
@@ -235,8 +226,7 @@ void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& roo
         printf("q, qdot %f, %f\n", q(i), q_dot(i));
     }
 
-//    while(1)
-        rneDynamics->CartToJnt(q, q_dot, q_dotdot, f_ext, torques);
+    rneDynamics->CartToJnt(q, q_dot, q_dotdot, f_ext, torques);
 
     for (unsigned int i = 0; i < achain.getNrOfJoints(); ++i)
     {

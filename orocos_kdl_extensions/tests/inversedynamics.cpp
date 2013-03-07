@@ -9,13 +9,7 @@
 
 #define VERBOSE_CHECK_MAIN // switches on console output in main
 
-#include <cstring>
-#include <cstdlib>
-#include <vector>
-#include <kdl/frames.hpp>
-#include <kdl/joint.hpp>
-#include <kdl/chain.hpp>
-#include <kdl/tree.hpp>
+
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
 
 using namespace std;
@@ -128,6 +122,7 @@ int main(int argc, char** argv)
     lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
     lstate[0].Xdotdot = rootAcc;
 
+    //================================Definition of an algorithm=========================//
     printf("Templated inverse dynamics for Tree \n");
     kdle::transform<tree_iterator, pose> _comp1;
     kdle::transform<tree_iterator, twist> _comp2;
@@ -179,6 +174,8 @@ int main(int argc, char** argv)
 
     traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jstate, jstate, lstate2, lstate3);
 
+    //================================end of the definition===========================//
+    
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << std::endl << std::endl << "LSTATE3" << std::endl << std::endl;
     for (KDL::SegmentMap::const_reverse_iterator iter = twoBranchTree.getSegments().rbegin(); iter != twoBranchTree.getSegments().rend(); ++iter)
