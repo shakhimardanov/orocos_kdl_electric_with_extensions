@@ -5,7 +5,7 @@
  * Created on December 21, 2011, 11:46 AM
  */
 
-//#define VERBOSE_CHECK //switches on console output in kdl related methods
+#define VERBOSE_CHECK //switches on console output in kdl related methods
 
 #define VERBOSE_CHECK_MAIN // switches on console output in main
 
@@ -105,6 +105,7 @@ int main(int argc, char** argv)
     Vector angularAcc(0.0, 0.0, 0.0);
     Twist rootAcc(linearAcc, angularAcc);
 
+
     std::vector<kdle::JointState> jstate;
     jstate.resize(twoBranchTree.getNrOfSegments() + 1);
     jstate[0].q = PI / 3.0;
@@ -121,6 +122,27 @@ int main(int argc, char** argv)
     std::vector<kdle::SegmentState> lstate2;
     lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
     lstate[0].Xdotdot = rootAcc;
+
+    int lastSegmentId = twoBranchTree.getNrOfSegments() - 1 ;
+    Vector forceComponent(-2.0, 2.0, 2.0); //gravitational acceleration along Z
+    Vector torqueComponent(0.0, 0.0, 0.0);
+    Wrench extForceLastSegment(forceComponent, torqueComponent);
+
+    lstate[0].Fext = extForceLastSegment;
+    lstate[1].Fext = extForceLastSegment;
+    std::cout << lstate[0].Fext << std::endl;
+    std::cout << lstate[1].Fext << std::endl;
+
+    std::cout << std::endl << std::endl << "LSTATE0" << std::endl << std::endl;
+    for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
+    {
+        std::cout << lstate[i].segmentName << std::endl;
+        std::cout << std::endl << lstate[i].X << std::endl;
+        std::cout << lstate[i].Xdot << std::endl;
+        std::cout << lstate[i].Xdotdot << std::endl;
+        std::cout << lstate[i].F << std::endl;
+        std::cout << lstate[i].Fext << std::endl;
+    }
 
     //================================Definition of an algorithm=========================//
     printf("Templated inverse dynamics for Tree \n");
@@ -147,7 +169,7 @@ int main(int argc, char** argv)
     traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, lstate, lstate2);
 
 #ifdef VERBOSE_CHECK_MAIN
-    std::cout << std::endl << std::endl << "LSTATE" << std::endl << std::endl;
+    std::cout << std::endl << std::endl << "LSTATE1" << std::endl << std::endl;
     for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
     {
         std::cout << lstate[i].segmentName << std::endl;
@@ -155,6 +177,7 @@ int main(int argc, char** argv)
         std::cout << lstate[i].Xdot << std::endl;
         std::cout << lstate[i].Xdotdot << std::endl;
         std::cout << lstate[i].F << std::endl;
+        std::cout << lstate[i].Fext << std::endl;
     }
     std::cout << std::endl << std::endl << "LSTATE2" << std::endl << std::endl;
     for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
@@ -164,6 +187,7 @@ int main(int argc, char** argv)
         std::cout << lstate2[i].Xdot << std::endl;
         std::cout << lstate2[i].Xdotdot << std::endl;
         std::cout << lstate2[i].F << std::endl;
+        std::cout << lstate[i].Fext << std::endl;
     }
 #endif
 
@@ -185,6 +209,7 @@ int main(int argc, char** argv)
         std::cout << lstate3[iter->second.q_nr].Xdot << std::endl;
         std::cout << lstate3[iter->second.q_nr].Xdotdot << std::endl;
         std::cout << lstate3[iter->second.q_nr].F << std::endl;
+        std::cout << lstate3[iter->second.q_nr].Fext << std::endl;
         std::cout << "Joint index and torque " << iter->second.q_nr << "  " << jstate[iter->second.q_nr].torque << std::endl;
     }
 #endif

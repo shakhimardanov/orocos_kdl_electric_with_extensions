@@ -31,6 +31,7 @@ SegmentState::SegmentState(const SegmentState& copy)
     Xdot = copy.Xdot;
     Xdotdot = copy.Xdotdot;
     F = copy.F;
+    Fext = copy.Fext;
     Z = copy.Z;
     Vj = copy.Vj;
     jointIndex = copy.jointIndex;
@@ -47,6 +48,7 @@ SegmentState& SegmentState::operator=(const SegmentState& copy)
         Xdot = copy.Xdot;
         Xdotdot = copy.Xdotdot;
         F = copy.F;
+        Fext = copy.Fext;
         Z = copy.Z;
         Vj = copy.Vj;
         jointIndex = copy.jointIndex;
