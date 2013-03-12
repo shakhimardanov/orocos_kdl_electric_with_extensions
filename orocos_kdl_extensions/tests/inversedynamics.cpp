@@ -84,11 +84,11 @@ void createMyTree(KDL::Tree& twoBranchTree)
     twoBranchTree.addSegment(segment3, "L2");
     twoBranchTree.addSegment(segment4, "L3");
     twoBranchTree.addSegment(segment10, "L4");
-    twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
-    twoBranchTree.addSegment(segment6, "L5");
-    twoBranchTree.addSegment(segment7, "L6");
-    twoBranchTree.addSegment(segment8, "L7");
-    twoBranchTree.addSegment(segment9, "L8");
+//    twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
+//    twoBranchTree.addSegment(segment6, "L5");
+//    twoBranchTree.addSegment(segment7, "L6");
+//    twoBranchTree.addSegment(segment8, "L7");
+//    twoBranchTree.addSegment(segment9, "L8");
 
 }
 
@@ -106,8 +106,9 @@ int main(int argc, char** argv)
     Twist rootAcc(linearAcc, angularAcc);
 
 
-    std::vector<kdle::JointState> jstate;
+    std::vector<kdle::JointState> jstate, jstateOut;
     jstate.resize(twoBranchTree.getNrOfSegments() + 1);
+    jstateOut.resize(twoBranchTree.getNrOfSegments() + 1);
     jstate[0].q = PI / 3.0;
     jstate[0].qdot = 0.2;
     jstate[1].q = -PI / 3.0;
@@ -128,21 +129,20 @@ int main(int argc, char** argv)
     Vector torqueComponent(0.0, 0.0, 0.0);
     Wrench extForceLastSegment(forceComponent, torqueComponent);
 
-    lstate[0].Fext = extForceLastSegment;
-    lstate[1].Fext = extForceLastSegment;
-    std::cout << lstate[0].Fext << std::endl;
-    std::cout << lstate[1].Fext << std::endl;
+    lstate[lastSegmentId].Fext = extForceLastSegment;
+    std::cout << lstate[lastSegmentId].Fext << std::endl;
 
-    std::cout << std::endl << std::endl << "LSTATE0" << std::endl << std::endl;
-    for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
-    {
-        std::cout << lstate[i].segmentName << std::endl;
-        std::cout << std::endl << lstate[i].X << std::endl;
-        std::cout << lstate[i].Xdot << std::endl;
-        std::cout << lstate[i].Xdotdot << std::endl;
-        std::cout << lstate[i].F << std::endl;
-        std::cout << lstate[i].Fext << std::endl;
-    }
+//    Initial link computational state
+//    std::cout << std::endl << std::endl << "LSTATE0" << std::endl << std::endl;
+//    for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
+//    {
+//        std::cout << lstate[i].segmentName << std::endl;
+//        std::cout << std::endl << lstate[i].X << std::endl;
+//        std::cout << lstate[i].Xdot << std::endl;
+//        std::cout << lstate[i].Xdotdot << std::endl;
+//        std::cout << lstate[i].F << std::endl;
+//        std::cout << lstate[i].Fext << std::endl;
+//    }
 
     //================================Definition of an algorithm=========================//
     printf("Templated inverse dynamics for Tree \n");
@@ -166,7 +166,9 @@ int main(int argc, char** argv)
 
     std::cout << std::endl << std::endl << "FORWARD TRAVERSAL" << std::endl << std::endl;
 
-    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, lstate, lstate2);
+//    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, lstate, lstate2); // 3 argument walk takes opers with 4 args
+//    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, jstateOut, lstate, lstate2); // 4 argument walk takes opers with 5 args
+    traverseGraph_ver2(twoBranchTree, composite1, mypolicy2)(jstate, jstateOut, lstate, lstate2); // 4 argument walk takes opers with 5 args
 
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << std::endl << std::endl << "LSTATE1" << std::endl << std::endl;
@@ -196,7 +198,7 @@ int main(int argc, char** argv)
 
     std::cout << std::endl << std::endl << "REVERSE TRAVERSAL" << std::endl << std::endl;
 
-    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jstate, jstate, lstate2, lstate3);
+    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jstate, jstateOut, lstate2, lstate3);
 
     //================================end of the definition===========================//
     
@@ -210,7 +212,7 @@ int main(int argc, char** argv)
         std::cout << lstate3[iter->second.q_nr].Xdotdot << std::endl;
         std::cout << lstate3[iter->second.q_nr].F << std::endl;
         std::cout << lstate3[iter->second.q_nr].Fext << std::endl;
-        std::cout << "Joint index and torque " << iter->second.q_nr << "  " << jstate[iter->second.q_nr].torque << std::endl;
+        std::cout << "Joint index and torque " << iter->second.q_nr << "  " << jstateOut[iter->second.q_nr].torque << std::endl;
     }
 #endif
 

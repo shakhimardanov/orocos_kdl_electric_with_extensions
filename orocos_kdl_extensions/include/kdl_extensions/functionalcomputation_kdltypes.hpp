@@ -102,8 +102,8 @@ public:
     typedef SegmentState Param3T;
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
-            ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
-            ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
+                                ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
         //check for joint type None should be tree serialization function.
         std::cout << "Inside pose operation Ext Wrench value" << p_segmentState.Fext << std::endl<< std::endl;
@@ -127,6 +127,25 @@ public:
         return a_segmentState;
 
     };
+
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
+    {
+        return a_segmentState;
+    };
+
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState2,
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
+    {
+        return a_segmentState;
+    };
+
+
 private:
     ReturnType a_segmentState;
 
@@ -208,6 +227,25 @@ public:
 #endif
         return a_segmentState;
     };
+
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
+    {
+        return a_segmentState;
+    };
+
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState2,
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
+    {
+        return a_segmentState;
+    };
+
+
 private:
     ReturnType a_segmentState;
 };
@@ -275,6 +313,24 @@ public:
 #endif
         return a_segmentState;
     };
+
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
+    {
+        return a_segmentState;
+    };
+
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState2,
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
+    {
+        return a_segmentState;
+    };
+
 private:
     ReturnType a_segmentState;
 
@@ -374,6 +430,24 @@ public:
 #endif
         return a_segmentState;
     };
+
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
+    {
+        return a_segmentState;
+    };
+
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState2,
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
+    {
+        return a_segmentState;
+    };
+
 private:
     ReturnType a_segmentState;
 
@@ -425,6 +499,24 @@ public:
     {
         return segmentId->second.segment.getInertia();
     };
+    
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
+    {
+        return segmentId->second.segment.getInertia();
+    };
+
+    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
+                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState2,
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
+                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
+    {
+        return segmentId->second.segment.getInertia();
+    };
+
 };
 
 template<>
@@ -450,9 +542,9 @@ public:
     };
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
-            ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
-            ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's state (current's body force)
-            ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState2) //current's child's state (child's total force)
+            ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
+            ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
+            ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
     {
 
         a_segmentState = p_segmentState;
@@ -475,10 +567,10 @@ public:
     };
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
-            ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+            ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
             ParameterTypeQualifier<Param2T>::RefToArgT p_jointState2,
-            ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's state (current's body force)
-            ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState2) //current's child's state (child's total force)
+            ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
+            ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
     {
 
         a_segmentState = p_segmentState;
@@ -505,160 +597,158 @@ private:
 };
 
 
-
-
 //TODO: Deprecate this policy in favor of DFSPolicy_ver2
-template<>
-class DFSPolicy<KDL::Chain>
-{
-public:
-
-    DFSPolicy()
-    {
-    };
-
-    ~DFSPolicy()
-    {
-    };
-
-    template <typename OP>
-    inline static bool forwardwalk(typename ParameterTypeQualifier<KDL::Chain>::RefToConstT a_topology,
-                                   typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
-                                   typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorIn,
-                                   typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
-                                   OP a_op)
-    {
-        int jointindex = 0;
-        for (chain_iterator iter = a_topology.segments.begin(); iter != a_topology.segments.end(); ++iter)
-        {
-
-            a_linkStateVectorIn[jointindex] = a_op(iter, a_jointStateVectorIn[jointindex], a_linkStateVectorIn[jointindex]);
-            ++jointindex;
-        };
-
-        return true;
-    };
-
-};
-
-template<>
-class DFSPolicy<KDL::Tree>
-{
-public:
-
-    DFSPolicy()
-    {
-    };
-
-    ~DFSPolicy()
-    {
-    };
-
-    //TODO: fix this parameters(state vectors are passed by value). As in the case of operations it should be ref to const.
-    //we should also provide a global computational state to the operations
-    //how do we refer to the previous element in the link state vector
-    //maybe composed operation itself should not be called  directly but through another helper operation which also takes
-    //vector length info since we always need previous link state info
-
-    template <typename OP>
-    inline static bool forwardwalk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
-                                   typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
-                                   //typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorIn, //introduce a separate mutable state representation, now is used for testing
-                                   typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorIn,
-                                   typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
-                                   OP a_op)
-    {
-
-        //this is forward/outward iterative walk
-        for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
-        {
-            const KDL::TreeElement parentElement = iter->second;
-#ifdef VERBOSE_CHECK
-            std::cout << "Parent element name in current iteration " << parentElement.segment.getName() << std::endl;
-            std::cout << "Current/parent joint index and value " << parentElement.q_nr << " " << a_jointStateVectorIn[parentElement.q_nr].q << std::endl;
-#endif
-            a_linkStateVectorOut[parentElement.q_nr] = a_linkStateVectorIn[parentElement.q_nr];
-            for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
-            {
-#ifdef VERBOSE_CHECK
-                std::cout << "Child element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
-                std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
-#endif
-
-                a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[parentElement.q_nr]);
-
-            }
-        }
-
-#ifdef VERBOSE_CHECK
-        std::cout << std::endl << "This is reverse iteration/inward" << std::endl;
-#endif
-        //this is reverse/inward iterative walk
-        for (KDL::SegmentMap::const_reverse_iterator iter = a_topology.getSegments().rbegin(); iter != a_topology.getSegments().rend(); ++iter)
-        {
-            const KDL::TreeElement parentElement = iter->second;
-#ifdef VERBOSE_CHECK
-
-            std::cout << "Parent element name in current reverse iteration " << parentElement.segment.getName() << std::endl;
-            std::cout << "Current/parent joint index and value in reverse iteration " << parentElement.q_nr << " " << a_jointStateVectorIn[parentElement.q_nr].q << std::endl << std::endl;
-#endif
-            //TODO: make torque accessible. In order to do this we need to introduce mutable joint computational state.
-            //in total having 4 (2 immutable and mutable per link and per joint)
-            //also need to put this iteration into a separate reverse walk
-            for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
-            {
-                //                  torques(j--)=dot(S[i],f[i]);
-                //                  f[i - 1] = f[i - 1] + X[i] * f[i];
-                //the second term should be summed for all children of the parent and then added to the parent's force.
-                a_linkStateVectorIn[parentElement.q_nr].F = a_linkStateVectorIn[parentElement.q_nr].F + a_linkStateVectorIn[(*childIter)->second.q_nr].X * a_linkStateVectorIn[(*childIter)->second.q_nr].F;
-                double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
-
-
-
-#ifdef VERBOSE_CHECK
-
-                std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
-                std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
-                std::cout << "Total spatial force on a parent " << a_linkStateVectorIn[parentElement.q_nr].F << std::endl;
-                std::cout << "Total spatial force on a child " << a_linkStateVectorIn[(*childIter)->second.q_nr].F << std::endl;
-                std::cout << "Torque at the curent joint " << torque << std::endl << std::endl;
-#endif
-
-            }
-
-        }
-
-        return true;
-    };
-
-};
-
-template<>
-class BFSPolicy<KDL::Tree>
-{
-public:
-
-    BFSPolicy()
-    {
-    };
-
-    ~BFSPolicy()
-    {
-    };
-
-    template <typename OP>
-    inline static bool walk(KDL::Tree a_topology, std::vector<typename OP::Param2T> a_jointStateVectorIn, std::vector<typename OP::Param3T> a_linkStateVectorIn,
-                            std::vector<typename OP::Param3T> a_linkStateVectorOut, OP a_op)
-    {
-        //just a simple test, will implement DFS algorithm
-        for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
-        {
-            a_op(iter, a_jointStateVectorIn[0], a_linkStateVectorIn[0]);
-        };
-        return true;
-    };
-
-};
+//template<>
+//class DFSPolicy<KDL::Chain>
+//{
+//public:
+//
+//    DFSPolicy()
+//    {
+//    };
+//
+//    ~DFSPolicy()
+//    {
+//    };
+//
+//    template <typename OP>
+//    inline static bool forwardwalk(typename ParameterTypeQualifier<KDL::Chain>::RefToConstT a_topology,
+//                                   typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
+//                                   typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorIn,
+//                                   typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
+//                                   OP a_op)
+//    {
+//        int jointindex = 0;
+//        for (chain_iterator iter = a_topology.segments.begin(); iter != a_topology.segments.end(); ++iter)
+//        {
+//
+//            a_linkStateVectorIn[jointindex] = a_op(iter, a_jointStateVectorIn[jointindex], a_linkStateVectorIn[jointindex]);
+//            ++jointindex;
+//        };
+//
+//        return true;
+//    };
+//
+//};
+//
+//template<>
+//class DFSPolicy<KDL::Tree>
+//{
+//public:
+//
+//    DFSPolicy()
+//    {
+//    };
+//
+//    ~DFSPolicy()
+//    {
+//    };
+//
+//    //TODO: fix this parameters(state vectors are passed by value). As in the case of operations it should be ref to const.
+//    //we should also provide a global computational state to the operations
+//    //how do we refer to the previous element in the link state vector
+//    //maybe composed operation itself should not be called  directly but through another helper operation which also takes
+//    //vector length info since we always need previous link state info
+//
+//    template <typename OP>
+//    inline static bool forwardwalk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
+//                                   typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
+//                                   //typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorIn, //introduce a separate mutable state representation, now is used for testing
+//                                   typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorIn,
+//                                   typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
+//                                   OP a_op)
+//    {
+//
+//        //this is forward/outward iterative walk
+//        for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
+//        {
+//            const KDL::TreeElement parentElement = iter->second;
+//#ifdef VERBOSE_CHECK
+//            std::cout << "Parent element name in current iteration " << parentElement.segment.getName() << std::endl;
+//            std::cout << "Current/parent joint index and value " << parentElement.q_nr << " " << a_jointStateVectorIn[parentElement.q_nr].q << std::endl;
+//#endif
+//            a_linkStateVectorOut[parentElement.q_nr] = a_linkStateVectorIn[parentElement.q_nr];
+//            for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
+//            {
+//#ifdef VERBOSE_CHECK
+//                std::cout << "Child element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
+//                std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
+//#endif
+//
+//                a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[parentElement.q_nr]);
+//
+//            }
+//        }
+//
+//#ifdef VERBOSE_CHECK
+//        std::cout << std::endl << "This is reverse iteration/inward" << std::endl;
+//#endif
+//        //this is reverse/inward iterative walk
+//        for (KDL::SegmentMap::const_reverse_iterator iter = a_topology.getSegments().rbegin(); iter != a_topology.getSegments().rend(); ++iter)
+//        {
+//            const KDL::TreeElement parentElement = iter->second;
+//#ifdef VERBOSE_CHECK
+//
+//            std::cout << "Parent element name in current reverse iteration " << parentElement.segment.getName() << std::endl;
+//            std::cout << "Current/parent joint index and value in reverse iteration " << parentElement.q_nr << " " << a_jointStateVectorIn[parentElement.q_nr].q << std::endl << std::endl;
+//#endif
+//            //TODO: make torque accessible. In order to do this we need to introduce mutable joint computational state.
+//            //in total having 4 (2 immutable and mutable per link and per joint)
+//            //also need to put this iteration into a separate reverse walk
+//            for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
+//            {
+//                //                  torques(j--)=dot(S[i],f[i]);
+//                //                  f[i - 1] = f[i - 1] + X[i] * f[i];
+//                //the second term should be summed for all children of the parent and then added to the parent's force.
+//                a_linkStateVectorIn[parentElement.q_nr].F = a_linkStateVectorIn[parentElement.q_nr].F + a_linkStateVectorIn[(*childIter)->second.q_nr].X * a_linkStateVectorIn[(*childIter)->second.q_nr].F;
+//                double torque = dot(a_linkStateVectorIn[(*childIter)->second.q_nr].Z, a_linkStateVectorIn[(*childIter)->second.q_nr].F);
+//
+//
+//
+//#ifdef VERBOSE_CHECK
+//
+//                std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
+//                std::cout << "Current/child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
+//                std::cout << "Total spatial force on a parent " << a_linkStateVectorIn[parentElement.q_nr].F << std::endl;
+//                std::cout << "Total spatial force on a child " << a_linkStateVectorIn[(*childIter)->second.q_nr].F << std::endl;
+//                std::cout << "Torque at the curent joint " << torque << std::endl << std::endl;
+//#endif
+//
+//            }
+//
+//        }
+//
+//        return true;
+//    };
+//
+//};
+//
+//template<>
+//class BFSPolicy<KDL::Tree>
+//{
+//public:
+//
+//    BFSPolicy()
+//    {
+//    };
+//
+//    ~BFSPolicy()
+//    {
+//    };
+//
+//    template <typename OP>
+//    inline static bool walk(KDL::Tree a_topology, std::vector<typename OP::Param2T> a_jointStateVectorIn, std::vector<typename OP::Param3T> a_linkStateVectorIn,
+//                            std::vector<typename OP::Param3T> a_linkStateVectorOut, OP a_op)
+//    {
+//        //just a simple test, will implement DFS algorithm
+//        for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
+//        {
+//            a_op(iter, a_jointStateVectorIn[0], a_linkStateVectorIn[0]);
+//        };
+//        return true;
+//    };
+//
+//};
 
 
 
@@ -685,16 +775,52 @@ public:
                             OP a_op)
     {
 
+//        //this is forward/outward iterative walk
+//        for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
+//        {
+//            const KDL::TreeElement currentElement = iter->second;
+//#ifdef VERBOSE_CHECK
+//            std::cout << "Parent element name in current iteration " << currentElement.segment.getName() << std::endl;
+//            std::cout << "State vector input " << a_linkStateVectorIn[currentElement.q_nr].segmentName << std::endl;
+//            std::cout << "Parent Fext " << currentElement.q_nr << " " << a_linkStateVectorIn[currentElement.q_nr].Fext << std::endl;
+//#endif
+//            a_linkStateVectorOut[currentElement.q_nr] = a_linkStateVectorIn[currentElement.q_nr];
+//
+//            for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
+//            {
+//
+//#ifdef VERBOSE_CHECK
+//                std::cout << "Current element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
+//                std::cout << "Current joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
+//#endif
+//                a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorOut[currentElement.q_nr]);
+//            }
+//        }
+
+        return true;
+    };
+
+    template <typename OP>
+    inline static bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorIn,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorOut, //introduce a separate mutable state representation, now is used for testing
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorIn,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
+                            OP a_op)
+    {
+        SegmentState tempState;
+
         //this is forward/outward iterative walk
         for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
         {
             const KDL::TreeElement currentElement = iter->second;
+            tempState = a_linkStateVectorIn[currentElement.q_nr];
 #ifdef VERBOSE_CHECK
             std::cout << "Parent element name in current iteration " << currentElement.segment.getName() << std::endl;
             std::cout << "State vector input " << a_linkStateVectorIn[currentElement.q_nr].segmentName << std::endl;
             std::cout << "Parent Fext " << currentElement.q_nr << " " << a_linkStateVectorIn[currentElement.q_nr].Fext << std::endl;
 #endif
-            a_linkStateVectorOut[currentElement.q_nr] = a_linkStateVectorIn[currentElement.q_nr];
+//            a_linkStateVectorOut[currentElement.q_nr] = a_linkStateVectorIn[currentElement.q_nr];
 
             for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
             {
@@ -702,27 +828,17 @@ public:
 #ifdef VERBOSE_CHECK
                 std::cout << "Current element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
                 std::cout << "Current joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
-#endif               
-                a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorOut[currentElement.q_nr]);
+#endif
+//                a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorOut[currentElement.q_nr]);
+                tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_jointStateVectorOut[(*childIter)->second.q_nr], a_linkStateVectorIn[currentElement.q_nr], a_linkStateVectorOut[(*childIter)->second.q_nr]);
+                
             }
         }
-
-        return true;
-    };
-
-    template <typename OP>
-    inline static bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
-                            typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
-                            typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorOut, //introduce a separate mutable state representation, now is used for testing
-                            typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToConstT a_linkStateVectorIn,
-                            typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
-                            OP a_op)
-    {
-
         return true;
     };
 
 };
+
 
 template<>
 class DFSPolicy_ver2<KDL::Tree, inward>
@@ -752,7 +868,7 @@ public:
 
     template <typename OP>
     inline static bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
-                            typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorIn,
                             typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorOut, //introduce a separate mutable state representation, now is used for testing
                             typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorIn,
                             typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
@@ -813,6 +929,8 @@ public:
     };
 
 };
+
+
 
 };
 

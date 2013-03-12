@@ -90,14 +90,22 @@ public:
      //overloaded for four params
     //compose(f,g)(x,y,z,t) will give the following result
     //f(x,y,z,w) where w = g(x,y,z,t)
-    inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT a_param1,
-                                 typename ParameterTypeQualifier<Param2T>::RefToConstT a_param2,
-                                 typename ParameterTypeQualifier<Param3T>::RefToConstT a_param3,
-                                 typename ParameterTypeQualifier<Param4T>::RefToConstT a_param4)
+    inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToArgT a_param1,
+                                 typename ParameterTypeQualifier<Param2T>::RefToArgT a_param2,
+                                 typename ParameterTypeQualifier<Param3T>::RefToArgT a_param3,
+                                 typename ParameterTypeQualifier<Param4T>::RefToArgT a_param4)
     {
         return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, a_param2, a_param3, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2, a_param3, a_param4));
     };
 
+        inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToArgT a_param1,
+                                 typename ParameterTypeQualifier<Param2T>::RefToArgT a_param2,
+                                 typename ParameterTypeQualifier<Param3T>::RefToArgT a_param3,
+                                 typename ParameterTypeQualifier<Param4T>::RefToArgT a_param4,
+                                 typename ParameterTypeQualifier<Param5T>::RefToArgT a_param5)
+    {
+        return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, a_param2, a_param3, a_param4, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2, a_param3, a_param4, a_param5));
+    };
     //can add further overloads when needed
 
 };
@@ -246,7 +254,7 @@ public:
     };
 
 
-    inline bool operator()(typename ParameterTypeQualifier<std::vector<Param2T> >::RefToConstT a_param1,
+    inline bool operator()(typename ParameterTypeQualifier<std::vector<Param2T> >::RefToArgT a_param1,
                            typename ParameterTypeQualifier<std::vector<Param2T> >::RefToArgT   a_param2,
                            typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_param3,
                            typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_param4)
