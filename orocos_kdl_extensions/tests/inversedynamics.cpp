@@ -5,9 +5,9 @@
  * Created on December 21, 2011, 11:46 AM
  */
 
-#define VERBOSE_CHECK //switches on console output in kdl related methods
+//#define VERBOSE_CHECK //switches on console output in kdl related methods
 
-#define VERBOSE_CHECK_MAIN // switches on console output in main
+//#define VERBOSE_CHECK_MAIN // switches on console output in main
 
 
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
@@ -122,10 +122,10 @@ int main(int argc, char** argv)
 
     std::vector<kdle::SegmentState> lstate2;
     lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
-    lstate[0].Xdotdot = rootAcc;
+    lstate[0].Xdotdot = rootAcc; //gravitational acceleration along Z
 
     int lastSegmentId = twoBranchTree.getNrOfSegments() - 1 ;
-    Vector forceComponent(-2.0, 2.0, 2.0); //gravitational acceleration along Z
+    Vector forceComponent(-2.0, 2.0, 2.0); 
     Vector torqueComponent(0.0, 0.0, 0.0);
     Wrench extForceLastSegment(forceComponent, torqueComponent);
 
@@ -168,7 +168,8 @@ int main(int argc, char** argv)
 
 //    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, lstate, lstate2); // 3 argument walk takes opers with 4 args
 //    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, jstateOut, lstate, lstate2); // 4 argument walk takes opers with 5 args
-    traverseGraph_ver2(twoBranchTree, composite1, mypolicy2)(jstate, jstateOut, lstate, lstate2); // 4 argument walk takes opers with 5 args
+    traverseGraph_ver2(twoBranchTree, _comp1, mypolicy2)(jstate, jstateOut, lstate, lstate2); // 4 argument walk takes opers with 5 args
+
 
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << std::endl << std::endl << "LSTATE1" << std::endl << std::endl;

@@ -74,6 +74,7 @@ public:
     inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT a_param1,
                                  typename ParameterTypeQualifier<Param2T>::RefToConstT a_param2)
     {
+        std::cout << "2 argument composition call" << std::endl;
         return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2));
     };
 
@@ -84,6 +85,7 @@ public:
                                  typename ParameterTypeQualifier<Param2T>::RefToConstT a_param2,
                                  typename ParameterTypeQualifier<Param3T>::RefToConstT a_param3)
     {
+        std::cout << "3 argument composition call" << std::endl;
         return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, a_param2, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2, a_param3));
     };
 
@@ -95,15 +97,17 @@ public:
                                  typename ParameterTypeQualifier<Param3T>::RefToArgT a_param3,
                                  typename ParameterTypeQualifier<Param4T>::RefToArgT a_param4)
     {
+        std::cout << "4 argument composition call" << std::endl;
         return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, a_param2, a_param3, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2, a_param3, a_param4));
     };
 
-        inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToArgT a_param1,
+        inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT a_param1,
                                  typename ParameterTypeQualifier<Param2T>::RefToArgT a_param2,
                                  typename ParameterTypeQualifier<Param3T>::RefToArgT a_param3,
                                  typename ParameterTypeQualifier<Param4T>::RefToArgT a_param4,
                                  typename ParameterTypeQualifier<Param5T>::RefToArgT a_param5)
     {
+        std::cout << "5 argument composition call" << std::endl;
         return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, a_param2, a_param3, a_param4, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2, a_param3, a_param4, a_param5));
     };
     //can add further overloads when needed
@@ -250,6 +254,7 @@ public:
                            typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_param2,
                            typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_param3)
     {
+        std::cout << "3 argument traverse call" << std::endl;
         return a_policy.walk(a_graph, a_param1, a_param2, a_param3, a_op);
     };
 
@@ -259,6 +264,7 @@ public:
                            typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_param3,
                            typename ParameterTypeQualifier<std::vector<Param3T> >::RefToArgT a_param4)
     {
+        std::cout << "4 argument traverse call" << std::endl;
         return a_policy.walk(a_graph, a_param1, a_param2, a_param3, a_param4, a_op);
     };
 private:

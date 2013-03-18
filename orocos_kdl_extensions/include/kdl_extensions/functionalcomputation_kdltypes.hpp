@@ -123,7 +123,9 @@ public:
 //        std::cout << "Inside pose operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
 //        std::cout << "Inside pose operation Wrench value" << a_segmentState.F << std::endl;
         std::cout << "Inside pose operation Ext Wrench value" << a_segmentState.Fext << std::endl<< std::endl;
-#endif 
+#endif
+
+        std::cout << "3 argument function call" << std::endl;
         return a_segmentState;
 
     };
@@ -133,6 +135,7 @@ public:
                                 ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
                                 ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
     {
+        std::cout << "4 argument function call" << std::endl;
         return a_segmentState;
     };
 
@@ -142,6 +145,7 @@ public:
                                 ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
                                 ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
     {
+        std::cout << "5 argument function call" << std::endl;
         return a_segmentState;
     };
 
@@ -225,6 +229,8 @@ public:
 //        std::cout << "Inside twist operation Wrench value" << a_segmentState.F << std::endl;
         std::cout << "Inside twist operation Ext Wrench value" << a_segmentState.Fext << std::endl<< std::endl;
 #endif
+        
+        std::cout << "3 argument function call" << std::endl;
         return a_segmentState;
     };
 
@@ -233,6 +239,7 @@ public:
                                 ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
                                 ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
     {
+        std::cout << "4 argument function call" << std::endl;
         return a_segmentState;
     };
 
@@ -242,6 +249,7 @@ public:
                                 ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
                                 ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
     {
+        std::cout << "5 argument function call" << std::endl;
         return a_segmentState;
     };
 
@@ -775,27 +783,27 @@ public:
                             OP a_op)
     {
 
-//        //this is forward/outward iterative walk
-//        for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
-//        {
-//            const KDL::TreeElement currentElement = iter->second;
-//#ifdef VERBOSE_CHECK
-//            std::cout << "Parent element name in current iteration " << currentElement.segment.getName() << std::endl;
-//            std::cout << "State vector input " << a_linkStateVectorIn[currentElement.q_nr].segmentName << std::endl;
-//            std::cout << "Parent Fext " << currentElement.q_nr << " " << a_linkStateVectorIn[currentElement.q_nr].Fext << std::endl;
-//#endif
-//            a_linkStateVectorOut[currentElement.q_nr] = a_linkStateVectorIn[currentElement.q_nr];
-//
-//            for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
-//            {
-//
-//#ifdef VERBOSE_CHECK
-//                std::cout << "Current element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
-//                std::cout << "Current joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
-//#endif
-//                a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorOut[currentElement.q_nr]);
-//            }
-//        }
+        //this is forward/outward iterative walk
+        for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
+        {
+            const KDL::TreeElement currentElement = iter->second;
+#ifdef VERBOSE_CHECK
+            std::cout << "Parent element name in current iteration " << currentElement.segment.getName() << std::endl;
+            std::cout << "State vector input " << a_linkStateVectorIn[currentElement.q_nr].segmentName << std::endl;
+            std::cout << "Parent Fext " << currentElement.q_nr << " " << a_linkStateVectorIn[currentElement.q_nr].Fext << std::endl;
+#endif
+            a_linkStateVectorOut[currentElement.q_nr] = a_linkStateVectorIn[currentElement.q_nr];
+
+            for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
+            {
+
+#ifdef VERBOSE_CHECK
+                std::cout << "Current element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
+                std::cout << "Current joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
+#endif
+                a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorOut[currentElement.q_nr]);
+            }
+        }
 
         return true;
     };
@@ -831,7 +839,7 @@ public:
 #endif
 //                a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorOut[currentElement.q_nr]);
                 tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_jointStateVectorOut[(*childIter)->second.q_nr], a_linkStateVectorIn[currentElement.q_nr], a_linkStateVectorOut[(*childIter)->second.q_nr]);
-                
+
             }
         }
         return true;
