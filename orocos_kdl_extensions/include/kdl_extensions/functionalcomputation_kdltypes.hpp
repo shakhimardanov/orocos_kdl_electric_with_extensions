@@ -131,19 +131,19 @@ public:
     };
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
-                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
-                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
-                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
+                                ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's state (current's body force)
+                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState2) //current's child's state (child's total force)
     {
         std::cout << "4 argument function call" << std::endl;
         return a_segmentState;
     };
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
-                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
+                                ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
                                 ParameterTypeQualifier<Param2T>::RefToArgT p_jointState2,
-                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
-                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
+                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's state (current's body force)
+                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState2) //current's child's state (child's total force)
     {
         std::cout << "5 argument function call" << std::endl;
         return a_segmentState;
@@ -235,24 +235,23 @@ public:
     };
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
-                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
-                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
-                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
+                                ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's state (current's body force)
+                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState2) //current's child's state (child's total force)
     {
         std::cout << "4 argument function call" << std::endl;
         return a_segmentState;
     };
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
-                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
+                                ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
                                 ParameterTypeQualifier<Param2T>::RefToArgT p_jointState2,
-                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
-                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
+                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's state (current's body force)
+                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState2) //current's child's state (child's total force)
     {
         std::cout << "5 argument function call" << std::endl;
         return a_segmentState;
     };
-
 
 private:
     ReturnType a_segmentState;
@@ -575,9 +574,9 @@ public:
     };
 
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
-            ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
+            ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
             ParameterTypeQualifier<Param2T>::RefToArgT p_jointState2,
-            ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
+            ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's state (current's body force)
             ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
     {
 
@@ -810,10 +809,10 @@ public:
 
     template <typename OP>
     inline static bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
-                            typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorIn,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
                             typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorOut, //introduce a separate mutable state representation, now is used for testing
-                            typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorIn,
-                            typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToConstT a_linkStateVectorIn,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToConstT a_linkStateVectorOut,
                             OP a_op)
     {
         SegmentState tempState;
@@ -837,8 +836,8 @@ public:
                 std::cout << "Current element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
                 std::cout << "Current joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
 #endif
-//                a_linkStateVectorIn[(*childIter)->second.q_nr] = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorOut[currentElement.q_nr]);
-                tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_jointStateVectorOut[(*childIter)->second.q_nr], a_linkStateVectorIn[currentElement.q_nr], a_linkStateVectorOut[(*childIter)->second.q_nr]);
+                tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorOut[currentElement.q_nr], a_linkStateVectorOut[currentElement.q_nr]);
+//                tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_jointStateVectorOut[(*childIter)->second.q_nr], a_linkStateVectorIn[currentElement.q_nr], a_linkStateVectorOut[(*childIter)->second.q_nr]);
 
             }
         }
@@ -876,9 +875,9 @@ public:
 
     template <typename OP>
     inline static bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
-                            typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorIn,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
                             typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorOut, //introduce a separate mutable state representation, now is used for testing
-                            typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorIn,
+                            typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToConstT a_linkStateVectorIn,
                             typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
                             OP a_op)
     {

@@ -167,8 +167,8 @@ int main(int argc, char** argv)
     std::cout << std::endl << std::endl << "FORWARD TRAVERSAL" << std::endl << std::endl;
 
 //    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, lstate, lstate2); // 3 argument walk takes opers with 4 args
-//    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, jstateOut, lstate, lstate2); // 4 argument walk takes opers with 5 args
-    traverseGraph_ver2(twoBranchTree, _comp1, mypolicy2)(jstate, jstateOut, lstate, lstate2); // 4 argument walk takes opers with 5 args
+    traverseGraph_ver2(twoBranchTree, composite1, mypolicy2)(jstate, jstateOut, lstate, lstate2); // 4 argument walk takes opers with 5 args
+//    traverseGraph_ver2(twoBranchTree, _comp1, mypolicy2)(jstate, jstateOut, lstate, lstate2); // 4 argument walk takes opers with 5 args
 
 
 #ifdef VERBOSE_CHECK_MAIN
