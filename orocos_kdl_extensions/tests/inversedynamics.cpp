@@ -1,5 +1,5 @@
 /*
- * File:   simpleKDLTree.cpp
+ * File:   inversedynamics.cpp
  * Author: azamat
  *
  * Created on December 21, 2011, 11:46 AM
@@ -166,10 +166,9 @@ int main(int argc, char** argv)
 
     std::cout << std::endl << std::endl << "FORWARD TRAVERSAL" << std::endl << std::endl;
 
-//    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, lstate, lstate2); // 3 argument walk takes opers with 4 args
-    traverseGraph_ver2(twoBranchTree, composite1, mypolicy2)(jstate, jstateOut, lstate, lstate2); // 4 argument walk takes opers with 5 args
-//    traverseGraph_ver2(twoBranchTree, _comp1, mypolicy2)(jstate, jstateOut, lstate, lstate2); // 4 argument walk takes opers with 5 args
-
+    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, lstate, lstate2); // 3 argument walk takes opers with 4 args
+    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, jstateOut, lstate, lstate2); // 4 argument walk takes opers with 5 args
+   
 
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << std::endl << std::endl << "LSTATE1" << std::endl << std::endl;
@@ -200,6 +199,7 @@ int main(int argc, char** argv)
     std::cout << std::endl << std::endl << "REVERSE TRAVERSAL" << std::endl << std::endl;
 
     traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jstate, jstateOut, lstate2, lstate3);
+    traverseGraph_ver2(twoBranchTree, composite1, mypolicy1)(jstate, jstateOut, lstate2, lstate3);
 
     //================================end of the definition===========================//
     

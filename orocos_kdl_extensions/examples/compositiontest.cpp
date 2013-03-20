@@ -1,5 +1,5 @@
 /* 
- * File:   simpleKDLTree.cpp
+ * File:   compositiontest.cpp
  * Author: azamat
  *
  * Created on December 21, 2011, 11:46 AM

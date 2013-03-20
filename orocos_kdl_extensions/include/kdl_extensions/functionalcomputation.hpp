@@ -101,17 +101,19 @@ public:
         return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, a_param2, a_param3, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2, a_param3, a_param4));
     };
 
-        inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT a_param1,
+    inline ReturnType operator()(typename ParameterTypeQualifier<Param1T>::RefToConstT a_param1,
                                  typename ParameterTypeQualifier<Param2T>::RefToConstT a_param2,
-                                 typename ParameterTypeQualifier<Param3T>::RefToArgT a_param3,
-                                 typename ParameterTypeQualifier<Param4T>::RefToConstT a_param4,
+                                 typename ParameterTypeQualifier<Param3T>::RefToConstT a_param3,
+                                 typename ParameterTypeQualifier<Param4T>::RefToArgT a_param4,
                                  typename ParameterTypeQualifier<Param5T>::RefToConstT a_param5)
     {
         std::cout << "5 argument composition call" << std::endl;
         return OperationTDerived<OperationT1, 1 > ::operator()(a_param1, a_param2, a_param3, a_param4, OperationTDerived<OperationT2, 2 > ::operator()(a_param1, a_param2, a_param3, a_param4, a_param5));
     };
+
     //can add further overloads when needed
 
+    
 };
 
 //convinience function for composition functor

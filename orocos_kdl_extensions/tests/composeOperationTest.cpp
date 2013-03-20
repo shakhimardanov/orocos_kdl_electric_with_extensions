@@ -49,6 +49,7 @@ void ComposeOperationTest::testComposition()
 {
     kdle::SegmentState a_segmentState1;
     kdle::SegmentState a_segmentState2;
+    kdle::JointState a_jointState1;
 
     a_jointState.q = KDL::PI / 3.0;
     a_jointState.qdot = 0.2;
@@ -61,8 +62,14 @@ void ComposeOperationTest::testComposition()
     printf("initial twist z %f\n", a_segmentState.Xdot.vel[2]);
     //    update a state by performing two consecutive operations on it
     //    in this case it is first pose transform and then twist transform
+    //3 arguments
     a_segmentState1 = a_operation1(testTree.getSegment("TestSegment"), a_jointState, a_segmentState);
     a_segmentState2 = a_operation2(testTree.getSegment("TestSegment"), a_jointState, a_segmentState1);
+
+  
+    //5 arguments
+    a_segmentState1 = a_operation1(testTree.getSegment("TestSegment"), a_jointState, a_segmentState, a_jointState, a_segmentState1);
+    a_segmentState2 = a_operation2(testTree.getSegment("TestSegment"), a_jointState, a_segmentState, a_jointState, a_segmentState1);
 
     printf("without composition: updated pose x %f\n", a_segmentState2.X.p[0]);
     printf("without composition: updated pose y %f\n", a_segmentState2.X.p[1]);
@@ -72,8 +79,11 @@ void ComposeOperationTest::testComposition()
     printf("without composition: updated twist rot-z %f\n", a_segmentState2.Xdot.rot[2]);
 
     //    update a state applying composed operations on it
-    //    in this case pose and twist transform operations are functionally composed
+        //    in this case pose and twist transform operations are functionally composed
     a_segmentState1 = kdle::compose(a_operation2, a_operation1) (testTree.getSegment("TestSegment"), a_jointState, a_segmentState);
+
+    //4 arguments
+     a_segmentState2 = kdle::compose(a_operation2, a_operation1) (testTree.getSegment("TestSegment"), a_jointState, a_segmentState, a_jointState1, a_segmentState1);
 
     printf("composition: updated pose x %f\n", a_segmentState1.X.p[0]);
     printf("composition: updated pose y %f\n", a_segmentState1.X.p[1]);
@@ -99,6 +109,7 @@ void ComposeOperationTest::testFailedComposition()
 
     //    update a state by applying complex operation, created by a nested composition
     a_segmentState1 = kdle::compose(kdle::compose(a_operation4, a_operation3), kdle::compose(a_operation2, a_operation1)) (testTree.getSegment("TestSegment"), a_jointState, a_segmentState);
+    a_segmentState1 = kdle::compose(kdle::compose(a_operation4, a_operation3), kdle::compose(a_operation2, a_operation1)) (testTree.getSegment("TestSegment"), a_jointState, a_segmentState, a_jointState, a_segmentState2);
 
 
     CPPUNIT_ASSERT(a_segmentState2 != a_segmentState1);
