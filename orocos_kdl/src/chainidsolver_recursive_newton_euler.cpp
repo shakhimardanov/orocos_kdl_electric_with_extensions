@@ -77,7 +77,7 @@ namespace KDL{
             //Collect RigidBodyInertia and external forces
             RigidBodyInertia Ii=chain.getSegment(i).getInertia();
             f[i]=Ii*a[i]+v[i]*(Ii*v[i])-f_ext[i];
-            //std::cout << i << " f_ext_link" << f_ext[i] << std::endl;
+            std::cout << i << " f_ext_link" << f_ext[i] << std::endl;
             std::cout << " Force at link" << i << std::endl << f[i] << std::endl;
         }
         //Sweep from leaf to root

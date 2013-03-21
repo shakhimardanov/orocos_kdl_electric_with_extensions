@@ -120,14 +120,13 @@ public:
         a_segmentState.jointName = p_jointState.jointName;
         a_segmentState.segmentName = segmentId->first;
 #ifdef VERBOSE_CHECK
-//        std::cout << "Inside pose operation Transform value" << std::endl << a_segmentState.X << std::endl;
-//        std::cout << "Inside pose operation Twist value" << a_segmentState.Xtotal << std::endl;
-//        std::cout << "Inside pose operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
-//        std::cout << "Inside pose operation Wrench value" << a_segmentState.F << std::endl;
+        std::cout << "Inside pose operation 3 argument function call" << std::endl;
+        std::cout << "Inside pose operation Transform value" << std::endl << a_segmentState.X << std::endl;
+        std::cout << "Inside pose operation Twist value" << a_segmentState.Xtotal << std::endl;
+        std::cout << "Inside pose operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
+        std::cout << "Inside pose operation Wrench value" << a_segmentState.F << std::endl;
         std::cout << "Inside pose operation Ext Wrench value" << a_segmentState.Fext << std::endl<< std::endl;
 #endif
-
-        std::cout << "3 argument function call" << std::endl;
         return a_segmentState;
 
     };
@@ -139,7 +138,26 @@ public:
                                 ParameterTypeQualifier<Param4T>::RefToArgT p_jointState2,
                                 ParameterTypeQualifier<Param5T>::RefToConstT p_segmentState2) //current's child's state (child's total force)
     {
-        std::cout << "5 argument function call" << std::endl;
+        //check for joint type None should be tree serialization function.
+        std::cout << "Inside pose operation Ext Wrench value" << p_segmentState.Fext << std::endl<< std::endl;
+        //a_segmentState.X =  a_p3.X * segmentId->second.segment.pose(p_jointState.q); //in base coordinates
+        a_segmentState.Xdot = p_segmentState.Xdot;
+        a_segmentState.Xdotdot = p_segmentState.Xdotdot;
+        a_segmentState.F = p_segmentState.F;
+        a_segmentState.Fext = p_segmentState.Fext;
+        a_segmentState.X = segmentId->second.segment.pose(p_jointState.q);
+        a_segmentState.Xtotal = p_segmentState.Xtotal;
+        a_segmentState.jointIndex = p_jointState.jointIndex;
+        a_segmentState.jointName = p_jointState.jointName;
+        a_segmentState.segmentName = segmentId->first;
+#ifdef VERBOSE_CHECK
+        std::cout << "Inside pose operation 5 argument function call" << std::endl;
+        std::cout << "Inside pose operation Transform value" << std::endl << a_segmentState.X << std::endl;
+        std::cout << "Inside pose operation Twist value" << a_segmentState.Xtotal << std::endl;
+        std::cout << "Inside pose operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
+        std::cout << "Inside pose operation Wrench value" << a_segmentState.F << std::endl;
+        std::cout << "Inside pose operation Ext Wrench value" << a_segmentState.Fext << std::endl<< std::endl;
+#endif
         return a_segmentState;
     };
 
@@ -207,7 +225,7 @@ public:
             ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
             ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
-         std::cout << "Inside twist operation Ext Wrench value" << p_segmentState.Fext << std::endl<< std::endl;
+        std::cout << "Inside twist operation Ext Wrench value" << p_segmentState.Fext << std::endl<< std::endl;
         a_segmentState.X = p_segmentState.X;
         a_segmentState.Xdotdot = p_segmentState.Xdotdot;
         a_segmentState.F = p_segmentState.F;
@@ -219,14 +237,13 @@ public:
         //if so, somehow an information about whether a segment is root or not should be sent here
         a_segmentState.Xdot = a_segmentState.X.Inverse(p_segmentState.Xdot) + a_segmentState.Vj;
 #ifdef VERBOSE_CHECK
-//        std::cout << "Inside twist operation Transform value" << a_segmentState.X << std::endl;
-//        std::cout << "Inside twist operation Twist value" << std::endl << a_segmentState.Xdot << std::endl;
-//        std::cout << "Inside twist operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
-//        std::cout << "Inside twist operation Wrench value" << a_segmentState.F << std::endl;
+        std::cout << "Inside twist operation 3 argument function call" << std::endl;
+        std::cout << "Inside twist operation Transform value" << a_segmentState.X << std::endl;
+        std::cout << "Inside twist operation Twist value" << std::endl << a_segmentState.Xdot << std::endl;
+        std::cout << "Inside twist operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
+        std::cout << "Inside twist operation Wrench value" << a_segmentState.F << std::endl;
         std::cout << "Inside twist operation Ext Wrench value" << a_segmentState.Fext << std::endl<< std::endl;
 #endif
-        
-        std::cout << "3 argument function call" << std::endl;
         return a_segmentState;
     };
 
@@ -237,7 +254,26 @@ public:
                                 ParameterTypeQualifier<Param4T>::RefToArgT p_jointState2,
                                 ParameterTypeQualifier<Param5T>::RefToConstT p_segmentState2) //current's child's state (child's total force)
     {
-        std::cout << "5 argument function call" << std::endl;
+        std::cout << "Inside twist operation Ext Wrench value" << p_segmentState.Fext << std::endl<< std::endl;
+        a_segmentState.X = p_segmentState.X;
+        a_segmentState.Xdotdot = p_segmentState.Xdotdot;
+        a_segmentState.F = p_segmentState.F;
+        a_segmentState.Fext = p_segmentState.Fext;
+        a_segmentState.Z = a_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, 1.0));
+        a_segmentState.Vj = a_segmentState.X.M.Inverse(segmentId->second.segment.twist(p_jointState.q, p_jointState.qdot));
+
+        //do we check here for the index of a joint (whether the joint is first/root in the chain)
+        //if so, somehow an information about whether a segment is root or not should be sent here
+        a_segmentState.Xdot = a_segmentState.X.Inverse(p_segmentState.Xdot) + a_segmentState.Vj;
+
+#ifdef VERBOSE_CHECK
+        std::cout << "Inside twist operation 5 argument function call" << std::endl;
+        std::cout << "Inside twist operation Transform value" << a_segmentState.X << std::endl;
+        std::cout << "Inside twist operation Twist value" << std::endl << a_segmentState.Xdot << std::endl;
+        std::cout << "Inside twist operation AccTwist value" << a_segmentState.Xdotdot << std::endl;
+        std::cout << "Inside twist operation Wrench value" << a_segmentState.F << std::endl;
+        std::cout << "Inside twist operation Ext Wrench value" << a_segmentState.Fext << std::endl<< std::endl;
+#endif
         return a_segmentState;
     };
 
@@ -303,20 +339,13 @@ public:
         a_segmentState = p_segmentState;
         a_segmentState.Xdotdot = p_segmentState.X.Inverse(p_segmentState.Xdotdot) + p_segmentState.Z * p_jointState.qdotdot + p_segmentState.Xdot * p_segmentState.Vj;
 #ifdef VERBOSE_CHECK
-//        std::cout << "Inside acctwist operation Transform value" << a_segmentState.X << std::endl;
-//        std::cout << "Inside acctwist operation Twist value" << a_segmentState.Xdot << std::endl;
-//        std::cout << "Inside acctwist operation AccTwist value" << std::endl << a_segmentState.Xdotdot << std::endl;
-//        std::cout << "Inside acctwist operation Wrench value" << a_segmentState.F << std::endl;
+        std::cout << "Inside accTwist operation 3 argument function call" << std::endl;
+        std::cout << "Inside acctwist operation Transform value" << a_segmentState.X << std::endl;
+        std::cout << "Inside acctwist operation Twist value" << a_segmentState.Xdot << std::endl;
+        std::cout << "Inside acctwist operation AccTwist value" << std::endl << a_segmentState.Xdotdot << std::endl;
+        std::cout << "Inside acctwist operation Wrench value" << a_segmentState.F << std::endl;
         std::cout << "Inside acctwist operation Ext Wrench value" << a_segmentState.Fext << std::endl<< std::endl;
 #endif
-        return a_segmentState;
-    };
-
-    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
-                                ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
-                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's state (current's body force)
-                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState2) //current's child's state (child's total force)
-    {
         return a_segmentState;
     };
 
@@ -326,7 +355,18 @@ public:
                                 ParameterTypeQualifier<Param4T>::RefToArgT p_jointState2,
                                 ParameterTypeQualifier<Param5T>::RefToConstT p_segmentState2) //current's child's state (child's total force)
     {
-        std::cout << "5 argument function call" << std::endl;
+        std::cout << "Inside acctwist operation Ext Wrench value" << p_segmentState.Fext << std::endl<< std::endl;
+        a_segmentState = p_segmentState;
+        a_segmentState.Xdotdot = p_segmentState.X.Inverse(p_segmentState.Xdotdot) + p_segmentState.Z * p_jointState.qdotdot + p_segmentState.Xdot * p_segmentState.Vj;
+        
+#ifdef VERBOSE_CHECK
+        std::cout << "Inside accTwist operation 5 argument function call" << std::endl;
+        std::cout << "Inside acctwist operation Transform value" << a_segmentState.X << std::endl;
+        std::cout << "Inside acctwist operation Twist value" << a_segmentState.Xdot << std::endl;
+        std::cout << "Inside acctwist operation AccTwist value" << std::endl << a_segmentState.Xdotdot << std::endl;
+        std::cout << "Inside acctwist operation Wrench value" << a_segmentState.F << std::endl;
+        std::cout << "Inside acctwist operation Ext Wrench value" << a_segmentState.Fext << std::endl<< std::endl;
+#endif
         return a_segmentState;
     };
 
@@ -423,11 +463,13 @@ public:
         std::cout << "Inside wrench operation Ext Wrench value" << p_segmentState.Fext << std::endl<< std::endl;
         a_segmentState = p_segmentState;
         a_segmentState.F = segmentId->second.segment.getInertia() * a_segmentState.Xdotdot + a_segmentState.Xdot * (segmentId->second.segment.getInertia() * a_segmentState.Xdot) - a_segmentState.Fext;
+        
 #ifdef VERBOSE_CHECK
-//        std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
-//        std::cout << "Inside wrench operation Twist value " << a_segmentState.Xdot << std::endl;
-//        std::cout << "Inside wrench operation AccTwist value " << a_segmentState.Xdotdot << std::endl;
-//        std::cout << "Inside wrench operation Wrench value " << std::endl << a_segmentState.F << std::endl << std::endl;
+        std::cout << "Inside wrench operation 3 argument function call " << std::endl;
+        std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
+        std::cout << "Inside wrench operation Twist value " << a_segmentState.Xdot << std::endl;
+        std::cout << "Inside wrench operation AccTwist value " << a_segmentState.Xdotdot << std::endl;
+        std::cout << "Inside wrench operation Wrench value " << std::endl << a_segmentState.F << std::endl << std::endl;
         std::cout << "Inside wrench operation External wrench value " << std::endl << a_segmentState.Fext << std::endl << std::endl;
 #endif
         return a_segmentState;
@@ -439,6 +481,18 @@ public:
                                 ParameterTypeQualifier<Param4T>::RefToArgT p_jointState2,
                                 ParameterTypeQualifier<Param5T>::RefToConstT p_segmentState2) //current's child's state (child's total force)
     {
+        std::cout << "Inside wrench operation Ext Wrench value" << p_segmentState.Fext << std::endl<< std::endl;
+        a_segmentState = p_segmentState;
+        a_segmentState.F = segmentId->second.segment.getInertia() * a_segmentState.Xdotdot + a_segmentState.Xdot * (segmentId->second.segment.getInertia() * a_segmentState.Xdot) - a_segmentState.Fext;
+
+#ifdef VERBOSE_CHECK
+        std::cout << "Inside wrench operation 5 argument fucntion call " << std::endl;
+        std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
+        std::cout << "Inside wrench operation Twist value " << a_segmentState.Xdot << std::endl;
+        std::cout << "Inside wrench operation AccTwist value " << a_segmentState.Xdotdot << std::endl;
+        std::cout << "Inside wrench operation Wrench value " << std::endl << a_segmentState.F << std::endl << std::endl;
+        std::cout << "Inside wrench operation External wrench value " << std::endl << a_segmentState.Fext << std::endl << std::endl;
+#endif
         return a_segmentState;
     };
 
@@ -500,17 +554,10 @@ public:
     inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
                                 ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
                                 ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
-                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
-    {
-        return segmentId->second.segment.getInertia();
-    };
-
-    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
-                                ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
-                                ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
                                 ParameterTypeQualifier<Param4T>::RefToArgT p_jointState2,
                                 ParameterTypeQualifier<Param5T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
     {
+        std::cout << "Inside project inertial operation 5 argument function call " << std::endl;
         return segmentId->second.segment.getInertia();
     };
 
@@ -538,31 +585,6 @@ public:
             ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
     {
         //TODO: Place holder for future use
-        return a_segmentState;
-    };
-
-    inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
-            ParameterTypeQualifier<Param2T>::RefToArgT p_jointState,
-            ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState, //current's state (current's body force)
-            ParameterTypeQualifier<Param3T>::RefToArgT p_segmentState2) //current's child's state (child's total force)
-    {
-
-        a_segmentState = p_segmentState;
-        JointState a_jointState = p_jointState;
-
-#ifdef VERBOSE_CHECK
-        std::cout << "Inside wrench operation Input Wrench of current element (current's body wrench) " << std::endl << p_segmentState.F << std::endl << std::endl;
-        std::cout << "Inside wrench operation Input Wrench of a child (child's total wrench) " << std::endl << p_segmentState2.F << std::endl << std::endl;
-        //        std::cout << "Inside wrench operation Input Wrench copy of current element "<< std::endl << a_segmentState.F << std::endl << std::endl;
-#endif
-
-        a_jointState.torque = dot(p_segmentState2.Z, p_segmentState2.F);
-        a_segmentState.F = p_segmentState.F + p_segmentState2.X * p_segmentState2.F;
-
-#ifdef VERBOSE_CHECK
-        std::cout << "Inside wrench operation updated Wrench of current element " << std::endl << a_segmentState.F << std::endl << std::endl;
-        std::cout << "Inside wrench operation computed Torque of current joint " << std::endl << a_jointState.torque << std::endl << std::endl;
-#endif
         return a_segmentState;
     };
 
@@ -625,7 +647,6 @@ public:
 #ifdef VERBOSE_CHECK
             std::cout << "Parent element name in current iteration " << currentElement.segment.getName() << std::endl;
             std::cout << "State vector input " << a_linkStateVectorIn[currentElement.q_nr].segmentName << std::endl;
-            std::cout << "Parent Fext " << currentElement.q_nr << " " << a_linkStateVectorIn[currentElement.q_nr].Fext << std::endl;
 #endif
             a_linkStateVectorOut[currentElement.q_nr] = a_linkStateVectorIn[currentElement.q_nr];
 
@@ -673,8 +694,8 @@ public:
                 std::cout << "Current element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
                 std::cout << "Current joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
 #endif
-//                tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorOut[currentElement.q_nr], a_linkStateVectorOut[currentElement.q_nr]);
-                tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[currentElement.q_nr], a_jointStateVectorOut[(*childIter)->second.q_nr], tempState0);
+                  //TODO: Operation call needs to be corrected
+//                tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], a_linkStateVectorIn[currentElement.q_nr], a_jointStateVectorOut[(*childIter)->second.q_nr], tempState0);
 
             }
         }

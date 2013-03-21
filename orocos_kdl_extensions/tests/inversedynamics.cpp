@@ -124,26 +124,6 @@ int main(int argc, char** argv)
     lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
     lstate[0].Xdotdot = rootAcc; //gravitational acceleration along Z
 
-    int lastSegmentId = twoBranchTree.getNrOfSegments() - 1 ;
-    Vector forceComponent(-2.0, 2.0, 2.0); 
-    Vector torqueComponent(0.0, 0.0, 0.0);
-    Wrench extForceLastSegment(forceComponent, torqueComponent);
-
-    lstate[lastSegmentId].Fext = extForceLastSegment;
-    std::cout << lstate[lastSegmentId].Fext << std::endl;
-
-//    Initial link computational state
-//    std::cout << std::endl << std::endl << "LSTATE0" << std::endl << std::endl;
-//    for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
-//    {
-//        std::cout << lstate[i].segmentName << std::endl;
-//        std::cout << std::endl << lstate[i].X << std::endl;
-//        std::cout << lstate[i].Xdot << std::endl;
-//        std::cout << lstate[i].Xdotdot << std::endl;
-//        std::cout << lstate[i].F << std::endl;
-//        std::cout << lstate[i].Fext << std::endl;
-//    }
-
     //================================Definition of an algorithm=========================//
     printf("Templated inverse dynamics for Tree \n");
     kdle::transform<tree_iterator, pose> _comp1;
@@ -167,8 +147,7 @@ int main(int argc, char** argv)
     std::cout << std::endl << std::endl << "FORWARD TRAVERSAL" << std::endl << std::endl;
 
     traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, lstate, lstate2); // 3 argument walk takes opers with 4 args
-    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, jstateOut, lstate, lstate2); // 4 argument walk takes opers with 5 args
-   
+      
 
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << std::endl << std::endl << "LSTATE1" << std::endl << std::endl;
@@ -199,7 +178,6 @@ int main(int argc, char** argv)
     std::cout << std::endl << std::endl << "REVERSE TRAVERSAL" << std::endl << std::endl;
 
     traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jstate, jstateOut, lstate2, lstate3);
-    traverseGraph_ver2(twoBranchTree, composite1, mypolicy1)(jstate, jstateOut, lstate2, lstate3);
 
     //================================end of the definition===========================//
     

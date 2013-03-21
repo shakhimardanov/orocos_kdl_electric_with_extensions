@@ -6,14 +6,12 @@
  */
 
 #define VERBOSE_CHECK //switches on console output in kdl related methods
-
-#define VERBOSE_CHECK_MAIN // switches on console output in main
+// #define VERBOSE_CHECK_MAIN // switches on console output in main
 
 #include <graphviz/gvc.h>
 #include <graphviz/graph.h>
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
-
 
 using namespace std;
 using namespace KDL;
@@ -43,7 +41,6 @@ void createMyTree(KDL::Tree& twoBranchTree)
     Frame frame9(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
     Frame frame10(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
 
-    //Segment (const Joint &joint=Joint(Joint::None), const Frame &f_tip=Frame::Identity(), const RigidBodyInertia &I=RigidBodyInertia::Zero())
     Segment segment1 = Segment("L1", joint1, frame1);
     Segment segment2 = Segment("L2", joint2, frame2);
     Segment segment3 = Segment("L3", joint3, frame3);
@@ -54,10 +51,9 @@ void createMyTree(KDL::Tree& twoBranchTree)
     Segment segment8 = Segment("L8", joint8, frame8);
     Segment segment9 = Segment("L9", joint9, frame9);
     Segment segment10 = Segment("M0", joint10, frame10);
-    // 	RotationalInertia (double Ixx=0, double Iyy=0, double Izz=0, double Ixy=0, double Ixz=0, double Iyz=0)
+
     RotationalInertia rotInerSeg1(0.0, 0.0, 0.0, 0.0, 0.0, 0.0); //around symmetry axis of rotation
     double pointMass = 0.25; //in kg
-    //RigidBodyInertia (double m=0, const Vector &oc=Vector::Zero(), const RotationalInertia &Ic=RotationalInertia::Zero())
     RigidBodyInertia inerSegment1(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
     RigidBodyInertia inerSegment2(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
     RigidBodyInertia inerSegment3(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
@@ -81,17 +77,16 @@ void createMyTree(KDL::Tree& twoBranchTree)
     segment10.setInertia(inerSegment10);
 
     //Tree twoBranchTree("L0");
-
     twoBranchTree.addSegment(segment1, "L0");
     twoBranchTree.addSegment(segment2, "L1");
     twoBranchTree.addSegment(segment3, "L2");
     twoBranchTree.addSegment(segment4, "L3");
     twoBranchTree.addSegment(segment10, "L4");
-    twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
-    twoBranchTree.addSegment(segment6, "L5");
-    twoBranchTree.addSegment(segment7, "L6");
-    twoBranchTree.addSegment(segment8, "L7");
-    twoBranchTree.addSegment(segment9, "L8");
+    // twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
+    // twoBranchTree.addSegment(segment6, "L5");
+    // twoBranchTree.addSegment(segment7, "L6");
+    // twoBranchTree.addSegment(segment8, "L7");
+    // twoBranchTree.addSegment(segment9, "L8");
 
 }
 
@@ -151,8 +146,6 @@ void drawMyTree(KDL::Tree& twoBranchTree)
 
     }
 
-
-
     //fill in edge vector by iterating over joints in the tree
     for (SegmentMap::const_iterator iter = twoBranchTree.getSegments().begin(); iter != twoBranchTree.getSegments().end(); ++iter)
 
@@ -184,7 +177,7 @@ void drawMyTree(KDL::Tree& twoBranchTree)
 
     /* Write the graph according to -T and -o options */
     //gvRenderJobs(gvc, g);
-    gvRenderFilename(gvc, g, "ps", "tests.ps");
+    gvRenderFilename(gvc, g, "ps", "test-fext.ps");
 
     /* Free layout data */
     gvFreeLayout(gvc, g);
@@ -196,7 +189,6 @@ void drawMyTree(KDL::Tree& twoBranchTree)
     /* close output file, free context, and return number of errors */
     return;
 }
-
 
 void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& rootLink, const std::string& tipLink, KDL::Vector& grav,
                                 std::vector<kdle::JointState>& jointState, std::vector<kdle::SegmentState>& linkState)
@@ -211,12 +203,18 @@ void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& roo
     KDL::JntArray q_dot(achain.getNrOfJoints());
     KDL::JntArray q_dotdot(achain.getNrOfJoints());
     JntArray torques(achain.getNrOfJoints());
+    
     KDL::Wrenches f_ext;
     f_ext.resize(achain.getNrOfSegments());
-    f_ext[achain.getNrOfSegments()-1];
+    
+    Vector forceComponent(-2.0, 2.0, 0.0);
+    Vector torqueComponent(0.0, 0.0, 0.0);
+    Wrench extForceLastSegment(forceComponent, torqueComponent);
+
+    f_ext[achain.getNrOfSegments()-1] = extForceLastSegment;
     std::cout << endl << endl << endl;
     printf("RNE dynamics values \n");
-
+    std::cout << f_ext[achain.getNrOfSegments()-1] << std::endl;
 
     for (unsigned int i = 0; i < achain.getNrOfJoints(); ++i)
     {
@@ -238,8 +236,6 @@ void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& roo
 void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav, std::vector<kdle::JointState>& jointState,
                                      std::vector<kdle::SegmentState>& linkState, std::vector<kdle::SegmentState>& linkState2)
 {
-
-    
     printf("Templated dynamics values for Tree \n");
     kdle::transform<tree_iterator, pose> _comp1;
     kdle::transform<tree_iterator, twist> _comp2;
@@ -253,9 +249,6 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     std::cout << "Acc Twist initial state" << std::endl << linkState[0].Xdotdot << std::endl;
     std::cout << "Wrench initial state" << std::endl << linkState[0].F << std::endl << std::endl;
 #endif
-// This is for a single link
-//    linkState[1] = kdle::compose(_comp2, _comp1) (twoBranchTree.getSegment("L1"), jointState[0], linkState[0]);
-//    linkState[1] = kdle::compose(kdle::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1)) (twoBranchTree.getSegment("L1"), jointState[0], linkState[0]);
 
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << "Transform L1" << linkState[1].X << std::endl;
@@ -263,8 +256,6 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     std::cout << "Acc Twist L1" << linkState[1].Xdotdot << std::endl;
     std::cout << "Wrench L1" << linkState[1].F << std::endl << std::endl;
 #endif
-    //
-   // linkState[2] = kdle::compose(kdle::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1))(twoBranchTree.getSegment("L2"), jointState[1], linkState[1]);
 
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << "Transform L2" << linkState[2].X << std::endl;
@@ -287,10 +278,8 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
 
     std::cout << std::endl << std::endl << "FORWARD TRAVERSAL" << std::endl << std::endl;
 
-    //traverseGraph(twoBranchTree, composite2, mypolicy)(jointState, linkState, linkState2);
-
-    kdle::IterateOver_ver2<KDL::Tree, kdle::transform<tree_iterator,pose>, outward, kdle::DFSPolicy_ver2> traversal;
-    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, linkState, linkState2);
+    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, jointState, linkState, linkState2);
+    // traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, linkState, linkState2);
 
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << std::endl << std::endl << "LSTATE" << std::endl << std::endl;
@@ -316,12 +305,10 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     std::vector<kdle::SegmentState> linkState3;
     linkState3.resize(twoBranchTree.getNrOfSegments()+1);
     std::cout << std::endl << std::endl << "REVERSE TRAVERSAL" << std::endl << std::endl;
-//    while(1)
+
     traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, jointState, linkState2, linkState3);
     //version 1 traversal
-    //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);
-    //traverseGraph(twoBranchTree, kdl_extensions::compose(kdl_extensions::compose(_comp3, _comp2), _comp1), mypolicy)(jointState, linkState, linkState2);
-    
+    //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);    
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << std::endl << std::endl << "LSTATE3" << std::endl << std::endl;
     for (KDL::SegmentMap::const_reverse_iterator iter = twoBranchTree.getSegments().rbegin(); iter != twoBranchTree.getSegments().rend(); ++iter)
@@ -334,7 +321,6 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
         std::cout << "Joint index and torque " << iter->second.q_nr << "  " << jointState[iter->second.q_nr].torque << std::endl;
     }
 #endif
-
     return;
 }
 
@@ -342,7 +328,6 @@ int main(int argc, char** argv)
 {
     Tree twoBranchTree("L0");
     createMyTree(twoBranchTree);
-
 
     //arm root acceleration
     Vector linearAcc(0.0, 0.0, -9.8); //gravitational acceleration along Z
@@ -357,15 +342,26 @@ int main(int argc, char** argv)
     jstate[1].qdot = 0.4;
     jstate[2].q = PI / 4.0;
     jstate[2].qdot = -0.2;
+
     std::vector<kdle::SegmentState> lstate;
     lstate.resize(twoBranchTree.getNrOfSegments() + 1);
+    std::vector<kdle::SegmentState> lstate2;
+    lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
+
     printf("Number of Joints %d\n", twoBranchTree.getNrOfJoints());
     printf("Number of Segments %d\n", twoBranchTree.getNrOfSegments());
 
-    std::vector<kdle::SegmentState> lstate2;
-    lstate2.resize(twoBranchTree.getNrOfSegments() + 1);
     lstate[0].Xdotdot = rootAcc;
 
+    //Add external forces
+    int lastSegmentId = twoBranchTree.getNrOfSegments() - 1 ;
+    Vector forceComponent(-2.0, 2.0, 0.0);
+    Vector torqueComponent(0.0, 0.0, 0.0);
+    Wrench extForceLastSegment(forceComponent, torqueComponent);
+
+    //external force on the last link
+    lstate[lastSegmentId].Fext = extForceLastSegment;
+    std::cout << lstate[lastSegmentId].Fext << std::endl;
 
 
     computeTemplatedDynamicsForTree(twoBranchTree, linearAcc, jstate, lstate, lstate2);
@@ -378,7 +374,7 @@ int main(int argc, char** argv)
     lstate4.resize(twoBranchTree.getNrOfSegments() + 1);
     lstate3[0].Xdotdot = rootAcc;
     
-//    computeTemplatedDynamicsForChain(twoBranchTree, rootLink, tipLink, linearAcc, jstate, lstate3, lstate4);
+
     //This is just used as a reference to compare to our result.
     //using standard KDL forward pose and vel solvers
     rootLink = "L0";
