@@ -208,6 +208,7 @@ void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& roo
     f_ext.resize(achain.getNrOfSegments());
     
     Vector forceComponent(-2.0, 2.0, 0.0);
+//    Vector forceComponent(0.0, 0.0, 0.0);
     Vector torqueComponent(0.0, 0.0, 0.0);
     Wrench extForceLastSegment(forceComponent, torqueComponent);
 
@@ -278,8 +279,8 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
 
     std::cout << std::endl << std::endl << "FORWARD TRAVERSAL" << std::endl << std::endl;
 
-    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, jointState, linkState, linkState2);
-    // traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, linkState, linkState2);
+//    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, jointState, linkState, linkState2);
+     traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, linkState, linkState2);
 
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << std::endl << std::endl << "LSTATE" << std::endl << std::endl;
@@ -356,12 +357,13 @@ int main(int argc, char** argv)
     //Add external forces
     int lastSegmentId = twoBranchTree.getNrOfSegments() - 1 ;
     Vector forceComponent(-2.0, 2.0, 0.0);
+//    Vector forceComponent(0.0, 0.0, 0.0);
     Vector torqueComponent(0.0, 0.0, 0.0);
     Wrench extForceLastSegment(forceComponent, torqueComponent);
 
     //external force on the last link
-    lstate[lastSegmentId].Fext = extForceLastSegment;
-    std::cout << lstate[lastSegmentId].Fext << std::endl;
+    jstate[lastSegmentId].Fext = extForceLastSegment;
+    std::cout << jstate[lastSegmentId].Fext << std::endl;
 
 
     computeTemplatedDynamicsForTree(twoBranchTree, linearAcc, jstate, lstate, lstate2);

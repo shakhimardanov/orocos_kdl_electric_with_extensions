@@ -39,7 +39,7 @@ public:
     KDL::Frame Xtotal; //should this be in here or be computed in "accumulate" functor
     KDL::Twist Xdot;
     KDL::Twist Xdotdot;
-    KDL::Wrench Fext;
+//    KDL::Wrench Fext; // Fext is independent of any other segment's Fext
     KDL::Wrench F;
     KDL::Twist Z; //supporting/driving joint unit twist/projection/Dof
     KDL::Twist Vj;
@@ -61,6 +61,7 @@ public:
     double qdot;
     double qdotdot;
     double torque;
+    KDL::Wrench Fext; // this is a hack and should be put somewhere else
     unsigned int jointIndex; //joint name/index
     std::string jointName;
     virtual ~JointState();
