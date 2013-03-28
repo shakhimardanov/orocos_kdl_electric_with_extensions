@@ -64,6 +64,9 @@ public:
     typedef JointState Param2T;
     typedef SegmentState Param3T;
 
+    accumulate()
+    {
+    };
     //this needs to be changes, currently this is just overwritten
     accumulate(ParameterTypeQualifier<Param3T>::RefToConstT initialValue)
     {
