@@ -482,11 +482,11 @@ public:
     };
 
     template <typename OP>
-    inline static bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
+    inline bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
                             typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
                             typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorIn,
                             typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
-                            OP a_op)
+                            OP& a_op)
     {
 
         //this is forward/outward iterative walk. It works when there is no F_ext
@@ -514,12 +514,12 @@ public:
     };
 
     template <typename OP>
-    inline static bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
+    inline bool walk(typename ParameterTypeQualifier<KDL::Tree>::RefToConstT a_topology,
                             typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
                             typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorOut, //introduce a separate mutable state representation, now is used for testing
                             typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToConstT a_linkStateVectorIn,
                             typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
-                            OP a_op)
+                            OP& a_op)
     {
         SegmentState tempState;
         
@@ -543,7 +543,7 @@ public:
                 std::cout << "Current joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
 #endif
                   //TODO: Operation call needs to be corrected
-               tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], tempState, a_jointStateVectorOut[(*childIter)->second.q_nr], a_linkStateVectorOut[(*childIter)->second.q_nr] );
+//               tempState = a_op(*childIter, a_jointStateVectorIn[(*childIter)->second.q_nr], tempState, a_jointStateVectorOut[(*childIter)->second.q_nr], a_linkStateVectorOut[(*childIter)->second.q_nr] );
 
             }
         }

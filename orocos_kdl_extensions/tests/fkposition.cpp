@@ -9,11 +9,11 @@
 #define VERBOSE_MAIN
 
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
+#include <kdl/frames.hpp>
 
 using namespace std;
 using namespace KDL;
 using namespace kdle;
-
 
 void createMyTree(KDL::Tree& twoBranchTree)
 {
@@ -80,11 +80,11 @@ void createMyTree(KDL::Tree& twoBranchTree)
     twoBranchTree.addSegment(segment3, "L2");
     twoBranchTree.addSegment(segment4, "L3");
     twoBranchTree.addSegment(segment10, "L4");
-    twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
-    twoBranchTree.addSegment(segment6, "L5");
-    twoBranchTree.addSegment(segment7, "L6");
-    twoBranchTree.addSegment(segment8, "L7");
-    twoBranchTree.addSegment(segment9, "L8");
+    //    twoBranchTree.addSegment(segment5, "L2"); //branches connect at joint 3 and j5 is co-located with j3
+    //    twoBranchTree.addSegment(segment6, "L5");
+    //    twoBranchTree.addSegment(segment7, "L6");
+    //    twoBranchTree.addSegment(segment8, "L7");
+    //    twoBranchTree.addSegment(segment9, "L8");
 
 }
 
@@ -118,28 +118,44 @@ int main(int argc, char** argv)
     lstate[0].Xdotdot = rootAcc;
 
     //================================Definition of an algorithm=========================//
+    typedef Composite< kdle::accumulate<tree_iterator>, kdle::transform<tree_iterator, pose> > compositeOperType;
     // declare a computation to be performed
     kdle::transform<tree_iterator, pose> poseComputation;
     kdle::accumulate<tree_iterator> poseBaseComputation(lstate[0]);
 
-
+    compositeOperType fkoperation = compose(poseBaseComputation, poseComputation);
     //declare a policy for a tree traversal
     kdle::DFSPolicy_ver2<Tree, outward> forwardTraversal;
 
+
+    typedef IterateOver_ver2< KDL::Tree, compositeOperType, outward, kdle::DFSPolicy_ver2 > traversalType;
     //declare a traversal operation on the give topology
-    traverseGraph_ver2(twoBranchTree, compose(poseBaseComputation, poseComputation), forwardTraversal)(jstate, lstate, lstate2);
-    //================================end of the definition===========================//
-    //print the results
-#ifdef VERBOSE_MAIN
-    for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
+    traversalType outwardSweep = traverseGraph_ver2(twoBranchTree, fkoperation, forwardTraversal);
+
+    //simulate the loop. Note that joint values are not changing
+    while (1)
     {
-        std::cout << lstate2[i].segmentName << std::endl;
-        std::cout << std::endl << lstate2[i].X << std::endl;
-        std::cout << std::endl << lstate2[i].Xtotal << std::endl;
-    }
+        outwardSweep(jstate, lstate, lstate2);
+        //================================end of the definition===========================//
+
+        //print the results
+        std::cout << " Lstate AFTER THE SWEEP " << std::endl;
+#ifdef VERBOSE_MAIN
+        for (unsigned int i = 0; i < twoBranchTree.getNrOfSegments(); i++)
+        {
+            std::cout << lstate2[i].segmentName << std::endl;
+            std::cout << std::endl << lstate2[i].X << std::endl;
+            std::cout << std::endl << lstate2[i].Xtotal << std::endl;
+            //this is needed for the 3 argument traversal which needs to be re-written
+            lstate[i].X.M = Rotation::Identity();
+            lstate[i].X.p = Vector::Zero();
+            lstate[i].Xtotal.M = Rotation::Identity();
+            lstate[i].Xtotal.p = Vector::Zero();
+
+        }
 
 #endif
-
+    }
     return (EXIT_SUCCESS);
 }
 

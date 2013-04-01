@@ -59,6 +59,7 @@ public:
               typename ParameterTypeQualifier<OperationT2>::RefToConstT a_p2) :
               OperationTDerived<OperationT1, 1 > (a_p1), OperationTDerived<OperationT2, 2 > (a_p2)
     {
+        std::cout << "Composite operation is created " << std::endl;
     };
 
     //overloaded for one param
@@ -177,7 +178,7 @@ public:
                 typename ParameterTypeQualifier<TraversalPolicy<Topology> >::RefToConstT policy) :
                 a_graph(a_topol), a_op(a_oper), a_policy(policy)
     {
-
+        std::cout << "Traverse operation is created " << std::endl;
     };
 
     ~IterateOver()
