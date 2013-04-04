@@ -5,8 +5,8 @@
  * Created on December 21, 2011, 11:46 AM
  */
 
-#define VERBOSE_CHECK //switches on console output in kdl related methods
-// #define VERBOSE_CHECK_MAIN // switches on console output in main
+//#define VERBOSE_CHECK //switches on console output in kdl related methods
+ #define VERBOSE_CHECK_MAIN // switches on console output in main
 
 #include <graphviz/gvc.h>
 #include <graphviz/graph.h>
@@ -270,7 +270,7 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     typedef Composite< kdle::balance<tree_iterator, force>, kdle::transform<tree_iterator, accTwist> > compositeType2;
     typedef Composite<compositeType2, compositeType1> compositeType3;
 
-    compositeType1 composite1 = kdle::compose(_comp2, _comp1);
+//    compositeType1 composite1 = kdle::compose(_comp2, _comp1);
     compositeType3 composite2 = kdle::compose(kdle::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1));
 
     //kdle::DFSPolicy<KDL::Tree> mypolicy;
@@ -306,8 +306,9 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     std::vector<kdle::SegmentState> linkState3;
     linkState3.resize(twoBranchTree.getNrOfSegments()+1);
     std::cout << std::endl << std::endl << "REVERSE TRAVERSAL" << std::endl << std::endl;
-
-    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, jointState, linkState2, linkState3);
+    std::vector<kdle::JointState> jstate1;
+    jstate1.resize(twoBranchTree.getNrOfSegments() + 1);
+    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, jstate1, linkState2, linkState3);
     //version 1 traversal
     //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);    
 #ifdef VERBOSE_CHECK_MAIN
@@ -319,7 +320,7 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
         std::cout << linkState3[iter->second.q_nr].Xdot << std::endl;
         std::cout << linkState3[iter->second.q_nr].Xdotdot << std::endl;
         std::cout << linkState3[iter->second.q_nr].F << std::endl;
-        std::cout << "Joint index and torque " << iter->second.q_nr << "  " << jointState[iter->second.q_nr].torque << std::endl;
+        std::cout << "Joint index and torque " << iter->second.q_nr << "  " << jstate1[iter->second.q_nr].torque << std::endl;
     }
 #endif
     return;

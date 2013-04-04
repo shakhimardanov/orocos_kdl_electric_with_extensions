@@ -211,8 +211,7 @@ private:
 template <typename Topology, typename OP, template <typename > class Policy>
 inline IterateOver<Topology, OP, Policy> traverseGraph(Topology a_graph, OP a_op, Policy<Topology> a_policy)
 {
-    //Policy<Topology>::forwardwalk(a_graph, a_op, a_p1,a_p2,a_p3);
-
+  
     return IterateOver<Topology, OP, Policy > (a_graph, a_op, a_policy);
 };
 
@@ -225,7 +224,6 @@ class IterateOver_ver2
 {
 public:
     typedef typename OperationT::ReturnType ReturnType;
-
     typedef typename OperationTParameterType<OperationT, 1 > ::Type Param1T;
     typedef typename OperationTParameterType<OperationT, 2 > ::Type Param2T;
     typedef typename OperationTParameterType<OperationT, 3 > ::Type Param3T;
@@ -236,7 +234,9 @@ public:
 
     //TODO: check parameter qualifiers
     IterateOver_ver2()
-    {};
+    {
+        std::cout << "Traverse operation is created " << std::endl;
+    };
     //Constructor
     IterateOver_ver2(typename ParameterTypeQualifier<Topology>::RefToConstT a_topol,
                 typename ParameterTypeQualifier<OperationT>::RefToConstT a_oper,
@@ -244,7 +244,7 @@ public:
                 typename ParameterTypeQualifier<TraversalPolicy<Topology, sweepDirection> >::RefToConstT policy) :
                 a_graph(a_topol), a_op(a_oper), a_policy(policy)
     {
-
+        std::cout << "Traverse operation is created " << std::endl;
     };
 
     ~IterateOver_ver2()
@@ -281,8 +281,7 @@ private:
 template <typename Topology, typename OP, Direction sweepDir, template <typename, Direction> class Policy>
 inline IterateOver_ver2<Topology, OP, sweepDir , Policy> traverseGraph_ver2(Topology a_graph, OP a_op, Policy<Topology, sweepDir> a_policy)
 {
-    //Policy<Topology>::forwardwalk(a_graph, a_op, a_p1,a_p2,a_p3);
-
+   
     return IterateOver_ver2<Topology, OP, sweepDir, Policy > (a_graph, a_op, sweepDir, a_policy);
 };
 
