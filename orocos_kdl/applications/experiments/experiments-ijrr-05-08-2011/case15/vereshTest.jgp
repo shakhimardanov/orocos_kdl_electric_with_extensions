@@ -315,7 +315,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt/>
-            <do_plot>true</do_plot>
+            <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="27">
@@ -326,7 +326,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt/>
-            <do_plot>true</do_plot>
+            <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="28">
@@ -381,7 +381,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt/>
-            <do_plot>true</do_plot>
+            <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="33">
@@ -392,7 +392,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt/>
-            <do_plot>true</do_plot>
+            <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="34">
@@ -491,7 +491,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt/>
-            <do_plot>true</do_plot>
+            <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="43">
@@ -502,7 +502,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt/>
-            <do_plot>true</do_plot>
+            <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="44">
@@ -557,12 +557,144 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt/>
-            <do_plot>true</do_plot>
+            <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="49">
             <class>jgp.JGPDataSet</class>
             <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-extForceYcomp-betaXcomp-x-const</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="50">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/test4dof-control</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="51">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/test4dof-control</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="52">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/test4dof-actual</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="53">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/test4dof-actual</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="54">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/test4dof-desired</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="55">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/test4dof-desired</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="56">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-and-y-const-betacontrol</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="57">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-and-y-const-betacontrol</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="58">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-and-y-const-nocontrol</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="59">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-and-y-const-nocontrol</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="60">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-const-betacontrol</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="61">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-and-y-const-fextcontrol</filename>
             <datastring>1:3</datastring>
             <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
             <color>auto</color>
