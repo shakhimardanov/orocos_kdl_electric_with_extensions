@@ -7,6 +7,8 @@
 #include <kinfam_io.hpp>
 #include <iostream>
 
+//in this experiment only constraint control is present and no posture control
+
 int main()
 {
 
@@ -185,7 +187,7 @@ int main()
     Kp[1] = 0.232/(timeToSettle*timeToSettle);
     double Kv[2];
     Kv[0] = 2.5978*ksi[0]/timeToSettle; // 2.5978 for x const only
-    Kv[1] = 2.05989*ksi[1]/timeToSettle; // added control around Y using fext improves stability of constraint by Y never follows desired path
+    Kv[1] = 2.55989*ksi[1]/timeToSettle; // added control around Y using fext improves stability of constraint by Y never follows desired path
     double Ki[2] = {0.0, 0.0};
     double K = 0.005;
     /*
@@ -224,8 +226,8 @@ int main()
     
     double b0_y = 0.678053; //should come from initial joint configuration
     double b1_y = 0.0;
-    double b2_y =  ((0.678053 - b0_y)*3.0 / (simulationTime * simulationTime)); //xFinal= 0.723350 yFinal = 0.143883 
-    double b3_y = -((0.678053 - b0_y)*2.0 / (simulationTime * simulationTime * simulationTime));
+    double b2_y =  ((0.143883 - b0_y)*3.0 / (simulationTime * simulationTime)); //xFinal= 0.723350 yFinal = 0.143883 
+    double b3_y = -((0.143883 - b0_y)*2.0 / (simulationTime * simulationTime * simulationTime));
 
     double b0_x = 0.391474; //should come from initial joint configuration
     double b1_x = 0.0;
@@ -303,7 +305,7 @@ int main()
         constraintSolver.getLinkCartesianPose(cartX[0]);
         constraintSolver.getLinkCartesianVelocity(cartXDot[0]);
         constraintSolver.getLinkCartesianAcceleration(cartXDotDot[0]);
-        printf("%f          %f      %f     %f         %f        %f      %f\n", t, cartX[0][3].p.x(), cartX[0][3].p.y(), cartXDot[0][3].vel[0], cartXDot[0][3].vel[1], cartXDotDot[0][3].vel[0], cartXDotDot[0][3].vel[1]);
+        // printf("%f          %f      %f     %f         %f        %f      %f\n", t, cartX[0][3].p.x(), cartX[0][3].p.y(), cartXDot[0][3].vel[0], cartXDot[0][3].vel[1], cartXDotDot[0][3].vel[0], cartXDotDot[0][3].vel[1]);
         // printf("Actual cartesian values: %f          %f      %f     %f         %f        %f      %f\n", t, cartX[0][3].p.x(), cartX[0][3].p.y(), cartXDot[0][3].vel[0], cartXDot[0][3].vel[1], cartXDotDot[0][3].vel[0], cartXDotDot[0][3].vel[1]);
 
         //Integration(robot joint values for rates and poses; actual) at the given "instanteneous" interval for joint position and velocity.
@@ -340,7 +342,7 @@ int main()
         cartXDotDot[2][3].vel[1] = cartXDotDot[1][3].vel[1] - cartXDotDot[0][3].vel[1];
         cartX[3][3].p[0] += timeDelta * cartX[2][3].p[0]; //for integral term;
         cartX[3][3].p[1] += timeDelta * cartX[2][3].p[1];
-        // printf("%f          %f      %f     %f         %f        %f      %f\n", t, cartX[2][3].p[0], cartX[2][3].p[1], cartXDot[2][3].vel[0], cartXDot[2][3].vel[1], cartXDotDot[2][3].vel[1], cartXDotDot[2][3].vel[1]);
+        printf("%f          %f      %f     %f         %f        %f      %f\n", t, cartX[2][3].p[0], cartX[2][3].p[1], cartXDot[2][3].vel[0], cartXDot[2][3].vel[1], cartXDotDot[2][3].vel[1], cartXDotDot[2][3].vel[1]);
 
         //Regulator or controller
         //acceleration energy control

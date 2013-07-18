@@ -183,10 +183,10 @@ int main(int argc, char** argv)
     //Acceleration energy at  the end-effector
     JntArray betha(1); //set to zero
     betha(0) = 0.0;
-    q(0) = M_PI/2.0;
-    q(2) = M_PI/2.0;
-    q(4) = M_PI/3.0;
-    qDot(0) = 2.0;
+    q(0) = 0.0; //M_PI/2.0;
+    q(2) = 0.0; //M_PI/2.0;
+    q(4) = 0.0;//M_PI/3.0;
+    qDot(0) = 0.0;//2.0;
 
     std::cout << "j0/L1 " << q(0) << " j2/L3 " << q(2) << " j4/L5 " << q(4) << std::endl;
     
