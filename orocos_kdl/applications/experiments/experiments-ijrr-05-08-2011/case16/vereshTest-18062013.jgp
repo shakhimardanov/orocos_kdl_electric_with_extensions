@@ -144,9 +144,9 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
         </dataset>
         <dataset id="11">
             <class>jgp.JGPDataSet</class>
-            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/posture-test</filename>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-posture-q1control-cartesian</filename>
             <datastring>1:2</datastring>
-            <dataset_title>Xposture</dataset_title>
+            <dataset_title>X-const-with-q1control-posture</dataset_title>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt>lw 2</add_style_opt>
@@ -155,9 +155,9 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
         </dataset>
         <dataset id="12">
             <class>jgp.JGPDataSet</class>
-            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/posture-test</filename>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-posture-q1control-cartesian</filename>
             <datastring>1:3</datastring>
-            <dataset_title>Yposture</dataset_title>
+            <dataset_title>Y-fext-with-q1control-posture</dataset_title>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt>lw 2</add_style_opt>
@@ -172,7 +172,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt>lw 2</add_style_opt>
-            <do_plot>true</do_plot>
+            <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="14">
@@ -183,7 +183,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt>lw 2</add_style_opt>
-            <do_plot>true</do_plot>
+            <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="15">
