@@ -3,7 +3,7 @@
     <version>0.1.2</version>
     <plot_tile/>
     <plot_type>TWO_DIM</plot_type>
-    <max_x_range>1.5</max_x_range>
+    <max_x_range/>
     <min_x_range/>
     <max_y_range/>
     <min_y_range/>
@@ -573,7 +573,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
         </dataset>
         <dataset id="50">
             <class>jgp.JGPDataSet</class>
-            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/test4dof-control</filename>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/test4dof-control</filename>
             <datastring>1:2</datastring>
             <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
             <color>auto</color>
@@ -584,7 +584,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
         </dataset>
         <dataset id="51">
             <class>jgp.JGPDataSet</class>
-            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/test4dof-control</filename>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/test4dof-control</filename>
             <datastring>1:3</datastring>
             <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
             <color>auto</color>
@@ -595,7 +595,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
         </dataset>
         <dataset id="52">
             <class>jgp.JGPDataSet</class>
-            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/test4dof-actual</filename>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/test4dof-actual</filename>
             <datastring>1:2</datastring>
             <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
             <color>auto</color>
@@ -606,7 +606,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
         </dataset>
         <dataset id="53">
             <class>jgp.JGPDataSet</class>
-            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/test4dof-actual</filename>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/test4dof-actual</filename>
             <datastring>1:3</datastring>
             <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
             <color>auto</color>
@@ -617,53 +617,53 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
         </dataset>
         <dataset id="54">
             <class>jgp.JGPDataSet</class>
-            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/test4dof-desired</filename>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/test4dof-desired</filename>
             <datastring>1:2</datastring>
-            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <dataset_title>Xdes</dataset_title>
             <color>auto</color>
             <style>lines</style>
-            <add_style_opt/>
+            <add_style_opt>lw 2</add_style_opt>
             <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="55">
             <class>jgp.JGPDataSet</class>
-            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/test4dof-desired</filename>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/test4dof-desired</filename>
             <datastring>1:3</datastring>
-            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <dataset_title>Ydes</dataset_title>
             <color>auto</color>
             <style>lines</style>
-            <add_style_opt/>
+            <add_style_opt>lw 2</add_style_opt>
             <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="56">
             <class>jgp.JGPDataSet</class>
-            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-and-y-const-betacontrol</filename>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/test4dof-control-joints-matlab</filename>
             <datastring>1:2</datastring>
-            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <dataset_title>q1</dataset_title>
             <color>auto</color>
             <style>lines</style>
-            <add_style_opt/>
+            <add_style_opt>lw 2</add_style_opt>
             <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="57">
             <class>jgp.JGPDataSet</class>
-            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-and-y-const-betacontrol</filename>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/test4dof-control-joints-matlab</filename>
             <datastring>1:3</datastring>
-            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <dataset_title>q2</dataset_title>
             <color>auto</color>
             <style>lines</style>
-            <add_style_opt/>
+            <add_style_opt>lw 2</add_style_opt>
             <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="58">
             <class>jgp.JGPDataSet</class>
-            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-and-y-const-nocontrol</filename>
-            <datastring>1:2</datastring>
-            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/test4dof-control-joints-matlab</filename>
+            <datastring>1:4</datastring>
+            <dataset_title>q3</dataset_title>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt/>
@@ -672,6 +672,94 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
         </dataset>
         <dataset id="59">
             <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/test4dof-control-joints-matlab</filename>
+            <datastring>1:5</datastring>
+            <dataset_title>q4</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="60">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/test4dof-control-matlab</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>X</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="61">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/test4dof-control-matlab</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Y</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="62">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/test4dof-nocontrol-matlab</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>X-nocontrol</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="63">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/test4dof-nocontrol-matlab</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Y-nocontrol</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="64">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-and-y-const-betacontrol</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="65">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-and-y-const-betacontrol</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="66">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-and-y-const-nocontrol</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt/>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="67">
+            <class>jgp.JGPDataSet</class>
             <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-and-y-const-nocontrol</filename>
             <datastring>1:3</datastring>
             <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
@@ -681,18 +769,18 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
-        <dataset id="60">
+        <dataset id="68">
             <class>jgp.JGPDataSet</class>
-            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-const-betacontrol</filename>
+            <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-and-y-const-fextcontrol</filename>
             <datastring>1:2</datastring>
             <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt/>
-            <do_plot>true</do_plot>
+            <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
-        <dataset id="61">
+        <dataset id="69">
             <class>jgp.JGPDataSet</class>
             <filename>/home/azamat/programming/rosfull/simulator_gazebo/vereshagintests/bin/experiments-05-08-2011/case15/tempCartDataActual-13062013-x-and-y-const-fextcontrol</filename>
             <datastring>1:3</datastring>
@@ -700,7 +788,29 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt/>
-            <do_plot>true</do_plot>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="70">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case15/test</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>x-noconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="71">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case15/test</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-noconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
     </datasets>

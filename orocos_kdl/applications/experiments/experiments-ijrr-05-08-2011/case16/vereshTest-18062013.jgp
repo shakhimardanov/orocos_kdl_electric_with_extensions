@@ -1,0 +1,896 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<jGNUplot_config>
+    <version>0.1.2</version>
+    <plot_tile/>
+    <plot_type>TWO_DIM</plot_type>
+    <max_x_range/>
+    <min_x_range/>
+    <max_y_range/>
+    <min_y_range/>
+    <min_z_range/>
+    <min_z_range/>
+    <x_label>time (sec)</x_label>
+    <y_label>position (m)</y_label>
+    <z_label>position (m)</z_label>
+    <logscale_x_axis>false</logscale_x_axis>
+    <logscale_y_axis>false</logscale_y_axis>
+    <logscale_z_axis>false</logscale_z_axis>
+    <pre_plot_string>#set term post enh color  "Helvetica" 16
+#set output 'plot.eps'
+set grid
+#set key bottom left
+set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
+    <datasets>
+        <dataset id="0">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-posture-matlab</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>q1-controlled</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="1">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-noposture-matlab</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>q1-no</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="2">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-posture-matlab</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>q2</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="3">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-noposture-matlab</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>q2-no</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="4">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-posture-matlab</filename>
+            <datastring>1:4</datastring>
+            <dataset_title>q3</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="5">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-noposture-matlab</filename>
+            <datastring>1:4</datastring>
+            <dataset_title>q3</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="6">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-posture-matlab</filename>
+            <datastring>1:5</datastring>
+            <dataset_title>q4</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="7">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-posture-desired-matlab</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>q1DES</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="8">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-posture-desired-matlab</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>q2DES</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="9">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-posture-desired-matlab</filename>
+            <datastring>1:4</datastring>
+            <dataset_title>q3DES</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="10">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-posture-desired-matlab</filename>
+            <datastring>1:5</datastring>
+            <dataset_title>q4DES</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="11">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/posture-test</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>Xposture</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="12">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/posture-test</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Yposture</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="13">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-desired-matlab</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>Xdes</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="14">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-desired-matlab</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Ydes</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>true</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="15">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-control-matlab</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>X-betacontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="16">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-control-matlab</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Y-nocontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="17">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-control2-matlab</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>X-betacontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="18">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-control2-matlab</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Y-fextcontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="19">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-nocontrol-matlab</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>X-nocontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="20">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-nocontrol-matlab</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Y-nocontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="21">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-13062013-x-and-y-const-betacontrol</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>X-betacontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="22">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-13062013-x-and-y-const-betacontrol</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Y-betacontrol-yconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="23">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-13062013-x-and-y-const-nocontrol</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>X-nocontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="24">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-13062013-x-and-y-const-nocontrol</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Y-nocontrol-yconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="25">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-13062013-x-and-y-const-fextcontrol</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>X-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="26">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-13062013-x-and-y-const-fextcontrol</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="27">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-13062013-x-const-fextcontrol</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="28">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-13062013-x-const-fextcontrol</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="29">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-13062013-x-const-betacontrol</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="30">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-13062013-x-const-betacontrol</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="31">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-13062013-x-const-nocontrol</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="32">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-13062013-x-const-nocontrol</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-f-ext-beta-x-const actual</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="33">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-noconst-nocontrol-matlab</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>X-noconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="34">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-noconst-nocontrol-matlab</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Y-noconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="35">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-xconst-nocontrol-matlab</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>X-nocontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="36">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-xconst-nocontrol-matlab</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Y-nocontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="37">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-xconst-betacontrol-matlab</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>X-betacontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="38">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-xconst-betacontrol-matlab</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Y-fextcontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="39">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-desired-matlab</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>Xdes</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="40">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-desired-matlab</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Ydes</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="41">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-xconst-yconst-betacontrol</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>X-betacontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="42">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-xconst-yconst-betacontrol</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Y-betacontrol-yconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="43">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-xconst-yconst-nocontrol</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>X-nocontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="44">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test2dof-xconst-yconst-nocontrol</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>Y-nocontrol-yconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="45">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-des</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>x-des</dataset_title>
+            <color>9999ff</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="46">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-des</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-des</dataset_title>
+            <color>ff3333</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="47">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-des</filename>
+            <datastring>1:4</datastring>
+            <dataset_title>z-des</dataset_title>
+            <color>9999ff</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="48">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>x-betacontrol-xconst1</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="49">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest2</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>x-betacontrol-xconst2</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="50">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-fextcontrol-xconst</dataset_title>
+            <color>33ff33</color>
+            <style>points</style>
+            <add_style_opt>ps 0.75</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="51">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest2</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-fextcontrol-xconst1</dataset_title>
+            <color>33ff33</color>
+            <style>points</style>
+            <add_style_opt>ps 0.75</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="52">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest</filename>
+            <datastring>1:4</datastring>
+            <dataset_title>z-nocontrol-xconst1</dataset_title>
+            <color>009999</color>
+            <style>points</style>
+            <add_style_opt>ps 0.75</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="53">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest2</filename>
+            <datastring>1:4</datastring>
+            <dataset_title>z-fextcontrol-xconst2</dataset_title>
+            <color>ff3333</color>
+            <style>points</style>
+            <add_style_opt>ps 0.75</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="54">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest</filename>
+            <datastring>1:5</datastring>
+            <dataset_title>alfa1-noZcontrol</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="55">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest2</filename>
+            <datastring>1:5</datastring>
+            <dataset_title>alfa2-Zfextcontrol</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="56">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest</filename>
+            <datastring>1:6</datastring>
+            <dataset_title>gamma1-noZcontrol</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="57">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest2</filename>
+            <datastring>1:6</datastring>
+            <dataset_title>gamma2-Zfextcontrol</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="58">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest</filename>
+            <datastring>1:7</datastring>
+            <dataset_title>beta1-noZcontrol</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="59">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest2</filename>
+            <datastring>1:7</datastring>
+            <dataset_title>beta2-Zfextcontrol</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="60">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-twists</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>twistX</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="61">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-twists</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>twistY</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="62">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-twists</filename>
+            <datastring>1:4</datastring>
+            <dataset_title>twistZ</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="63">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-twists</filename>
+            <datastring>1:5</datastring>
+            <dataset_title>twistXrot</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="64">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-twists</filename>
+            <datastring>1:6</datastring>
+            <dataset_title>twistYrot</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="65">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-twists</filename>
+            <datastring>1:7</datastring>
+            <dataset_title>twistZrot</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="66">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-error</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>x-betacontrol-xconst</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="67">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-error</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>y-nocontrol-xconst</dataset_title>
+            <color>999999</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="68">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-error</filename>
+            <datastring>1:4</datastring>
+            <dataset_title>z-nocontrol-xconst</dataset_title>
+            <color>000000</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="69">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-joints</filename>
+            <datastring>1:2</datastring>
+            <dataset_title>q0</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="70">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-joints</filename>
+            <datastring>1:3</datastring>
+            <dataset_title>q1</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="71">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-joints</filename>
+            <datastring>1:4</datastring>
+            <dataset_title>q2</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="72">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-joints</filename>
+            <datastring>1:5</datastring>
+            <dataset_title>q3</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="73">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-joints</filename>
+            <datastring>1:6</datastring>
+            <dataset_title>q4</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="74">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-joints</filename>
+            <datastring>1:7</datastring>
+            <dataset_title>q0dot</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="75">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-joints</filename>
+            <datastring>1:8</datastring>
+            <dataset_title>q1dot</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="76">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-joints</filename>
+            <datastring>1:9</datastring>
+            <dataset_title>q2dot</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="77">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-joints</filename>
+            <datastring>1:10</datastring>
+            <dataset_title>q3dot</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+        <dataset id="78">
+            <class>jgp.JGPDataSet</class>
+            <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/tempTest-joints</filename>
+            <datastring>1:11</datastring>
+            <dataset_title>q4dot</dataset_title>
+            <color>auto</color>
+            <style>lines</style>
+            <add_style_opt>lw 2</add_style_opt>
+            <do_plot>false</do_plot>
+            <pre_process_program/>
+        </dataset>
+    </datasets>
+    <labels/>
+    <variables/>
+</jGNUplot_config>
