@@ -113,6 +113,7 @@ int main()
     JntArray jointRates[k];
     JntArray jointAccelerations[k];
     JntArray jointTorques[k];
+    JntArray nullTorques[k];
     JntArray biasqDotDot(chain.getNrOfJoints());
     for (int i = 0; i < k; i++)
     {
@@ -121,6 +122,7 @@ int main()
         jointRates[i] = jointValues;
         jointAccelerations[i] = jointValues;
         jointTorques[i] = jointValues;
+        nullTorques[i] = jointValues;
     }
 
 
@@ -283,12 +285,12 @@ int main()
         // printf("%f         %f          %f      %f       %f     %f       %f      %f      %f\n", t, jointPoses[1](0), jointPoses[1](1), jointPoses[1](2), jointPoses[1](3), jointRates[1](0), jointRates[1](1), jointRates[1](2), jointRates[1](3));
         
 
-        status = constraintSolver.CartToJnt(jointPoses[0], jointRates[0], jointAccelerations[0],alpha, betha, externalNetForce, jointTorques[0]);  
+        status = constraintSolver.CartToJnt(jointPoses[0], jointRates[0], jointAccelerations[0],alpha, betha, externalNetForce, jointTorques[0], nullTorques[0]);  
 
         constraintSolver.getLinkCartesianPose(cartX[0]);
         constraintSolver.getLinkCartesianVelocity(cartXDot[0]);
         constraintSolver.getLinkCartesianAcceleration(cartXDotDot[0]);
-        printf("%f          %f      %f     %f         %f        %f      %f\n", t, cartX[0][3].p.x(), cartX[0][3].p.y(), cartXDot[0][3].vel[0], cartXDot[0][3].vel[1], cartXDotDot[0][3].vel[0], cartXDotDot[0][3].vel[1]);
+        // printf("%f          %f      %f     %f         %f        %f      %f\n", t, cartX[0][3].p.x(), cartX[0][3].p.y(), cartXDot[0][3].vel[0], cartXDot[0][3].vel[1], cartXDotDot[0][3].vel[0], cartXDotDot[0][3].vel[1]);
         // printf("Actual cartesian values: %f          %f      %f     %f         %f        %f      %f\n", t, cartX[0][3].p.x(), cartX[0][3].p.y(), cartXDot[0][3].vel[0], cartXDot[0][3].vel[1], cartXDotDot[0][3].vel[0], cartXDotDot[0][3].vel[1]);
 
         //Integration(robot joint values for rates and poses; actual) at the given "instanteneous" interval for joint position and velocity.
@@ -303,7 +305,7 @@ int main()
         jointPoses[0](3) = jointPoses[0](3) + (jointRates[0](3) - jointAccelerations[0](3) * timeDelta / 2.0) * timeDelta;
         // printf("%f\n", jointPoses[0](2));
         // printf("%f          %f      %f       %f     %f       %f      %f     %f      %f\n", t, jointPoses[0](0), jointPoses[0](1), jointPoses[0](2), jointPoses[0](3), jointAccelerations[0](0), jointAccelerations[0](1), jointAccelerations[0](2), jointAccelerations[0](3));
-        // printf("Actual joint values: %f          %f      %f       %f     %f       %f      %f     %f      %f\n", t, jointPoses[0](0), jointPoses[0](1), jointRates[0](0), jointRates[0](1), jointAccelerations[0](0), jointAccelerations[0](1), jointTorques[0](0), jointTorques[0](1));
+        printf("Actual joint values: %f          %f      %f       %f     %f       %f      %f     %f      %f\n", t, jointPoses[0](0), jointPoses[0](1), jointRates[0](0), jointRates[0](1), jointTorques[0](0), jointTorques[0](1), nullTorques[0](0), nullTorques[0](1));
         
         //Error
         jointPoses[2](0) = jointPoses[1](0) - jointPoses[0](0);
@@ -345,7 +347,8 @@ int main()
         // feedforwardJointTorque2 = jointAccelerations[1](2) + (Kpq[2])*jointPoses[2](2) + (Kvq[2])*jointRates[2](2);
         // feedforwardJointTorque3 = jointAccelerations[1](3) + (Kpq[3])*jointPoses[2](3) + (Kvq[3])*jointRates[2](3);
         
-        jointTorques[0](0) = jointTorques[0](0) + feedforwardJointTorque0;
+        nullTorques[0](0) = feedforwardJointTorque0;
+        // jointTorques[0](0) = jointTorques[0](0) + feedforwardJointTorque0;
         // jointTorques[0](1) = jointTorques[0](1) + feedforwardJointTorque1;
         // jointTorques[0](2) = jointTorques[0](2) + feedforwardJointTorque2;
         // jointTorques[0](3) = jointTorques[0](3) + feedforwardJointTorque3;

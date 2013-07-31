@@ -36,7 +36,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <class>jgp.JGPDataSet</class>
             <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-noposture-matlab</filename>
             <datastring>1:2</datastring>
-            <dataset_title>q1-no</dataset_title>
+            <dataset_title>q1-nocontrol</dataset_title>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt>lw 2</add_style_opt>
@@ -47,44 +47,44 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <class>jgp.JGPDataSet</class>
             <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-posture-matlab</filename>
             <datastring>1:3</datastring>
-            <dataset_title>q2</dataset_title>
+            <dataset_title>q2-withq1control</dataset_title>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt>lw 2</add_style_opt>
-            <do_plot>false</do_plot>
+            <do_plot>true</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="3">
             <class>jgp.JGPDataSet</class>
             <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-noposture-matlab</filename>
             <datastring>1:3</datastring>
-            <dataset_title>q2-no</dataset_title>
+            <dataset_title>q2-nocontrol</dataset_title>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt>lw 2</add_style_opt>
-            <do_plot>false</do_plot>
+            <do_plot>true</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="4">
             <class>jgp.JGPDataSet</class>
             <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-posture-matlab</filename>
             <datastring>1:4</datastring>
-            <dataset_title>q3</dataset_title>
+            <dataset_title>q3-withq1control</dataset_title>
             <color>auto</color>
-            <style>lines</style>
-            <add_style_opt>lw 2</add_style_opt>
-            <do_plot>false</do_plot>
+            <style>points</style>
+            <add_style_opt>ps 0.5</add_style_opt>
+            <do_plot>true</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="5">
             <class>jgp.JGPDataSet</class>
             <filename>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/applications/experiments/experiments-ijrr-05-08-2011/case16/test4dof-noposture-matlab</filename>
             <datastring>1:4</datastring>
-            <dataset_title>q3</dataset_title>
+            <dataset_title>q3-nocontrol</dataset_title>
             <color>auto</color>
-            <style>lines</style>
-            <add_style_opt>lw 2</add_style_opt>
-            <do_plot>false</do_plot>
+            <style>points</style>
+            <add_style_opt>ps 0.5</add_style_opt>
+            <do_plot>true</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="6">
@@ -117,7 +117,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt>lw 2</add_style_opt>
-            <do_plot>false</do_plot>
+            <do_plot>true</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="9">
@@ -126,9 +126,9 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <datastring>1:4</datastring>
             <dataset_title>q3DES</dataset_title>
             <color>auto</color>
-            <style>lines</style>
-            <add_style_opt>lw 2</add_style_opt>
-            <do_plot>false</do_plot>
+            <style>points</style>
+            <add_style_opt>ps 0.5</add_style_opt>
+            <do_plot>true</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="10">
@@ -150,7 +150,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt>lw 2</add_style_opt>
-            <do_plot>true</do_plot>
+            <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="12">
@@ -161,7 +161,7 @@ set style line 1 linetype 1 linewidth 2 lc rgb "red"</pre_plot_string>
             <color>auto</color>
             <style>lines</style>
             <add_style_opt>lw 2</add_style_opt>
-            <do_plot>true</do_plot>
+            <do_plot>false</do_plot>
             <pre_process_program/>
         </dataset>
         <dataset id="13">
