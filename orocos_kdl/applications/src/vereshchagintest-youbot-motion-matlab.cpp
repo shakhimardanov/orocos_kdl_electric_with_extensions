@@ -25,20 +25,20 @@ int main()
       return false;
    }
  
-   else
-   {
+   // else
+   // {
        
-       // std::cout << "succeeded " << youBotTree.getNrOfJoints()<< std::endl;
-       // std::cout << "succeeded " << youBotTree.getNrOfSegments()<< std::endl;
+   //     std::cout << "succeeded " << youBotTree.getNrOfJoints()<< std::endl;
+   //     std::cout << "succeeded " << youBotTree.getNrOfSegments()<< std::endl;
        
-       // for(SegmentMap::const_iterator it = youBotTree.getSegments().begin(); it != youBotTree.getSegments().end(); it++ )
-       // {
-       //     joints.push_back(it->second.segment.getJoint());
-       //     std::cout << it->second.segment.getJoint().getName() << std::endl;
-       //     std::cout << it->second.segment.getJoint().getTypeName() << std::endl;
-       //     std::cout << it->first << std::endl;
-       // }
-   }
+   //     for(SegmentMap::const_iterator it = youBotTree.getSegments().begin(); it != youBotTree.getSegments().end(); it++ )
+   //     {
+   //         joints.push_back(it->second.segment.getJoint());
+   //         std::cout << it->second.segment.getJoint().getName() << std::endl;
+   //         std::cout << it->second.segment.getJoint().getTypeName() << std::endl;
+   //         std::cout << it->first << std::endl;
+   //     }
+   // }
  
     KDL::Chain chain;
     youBotTree.getChain("arm_link_0","arm_link_5",chain);
@@ -162,7 +162,7 @@ int main()
     double taskTimeConstant = 2; //Time required to complete the task move(frameinitialPose, framefinalPose) default T=10.0
     double simulationTime = 2.5 * taskTimeConstant;
     double timeDelta = 0.001;
-    double timeToSettle = 0.015;
+    double timeToSettle = 0.5;
 
     int status;
     double roll,pitch,yaw;

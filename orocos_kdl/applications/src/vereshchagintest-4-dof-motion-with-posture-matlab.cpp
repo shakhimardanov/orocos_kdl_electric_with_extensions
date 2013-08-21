@@ -114,6 +114,7 @@ int main()
     JntArray jointRates[k];
     JntArray jointAccelerations[k];
     JntArray jointTorques[k];
+    JntArray jointControlTorques[k];
     JntArray biasqDotDot(chain.getNrOfJoints());
     for (int i = 0; i < k; i++)
     {
@@ -122,6 +123,7 @@ int main()
         jointRates[i] = jointValues;
         jointAccelerations[i] = jointValues;
         jointTorques[i] = jointValues;
+        jointControlTorques[i] = jointValues;
     }
 
 
@@ -196,12 +198,12 @@ int main()
     //For joint space control without constraints using computed torque
     // double ksi[2] = {1.0, 1.0}; //damping factor
     double Kpq[4];
-    Kpq[0] = 30.5/(timeToSettle*timeToSettle); //q1 gain performs well for timeToSettle = 0.015 and Kpq = 0.1/...
-    Kpq[1] = 30.2/(timeToSettle*timeToSettle);
-    Kpq[2] = 25.1/(timeToSettle*timeToSettle);
+    Kpq[0] = 100.5/(timeToSettle*timeToSettle); //q1 gain performs well for timeToSettle = 0.015 and Kpq = 0.1/...
+    Kpq[1] = 100.2/(timeToSettle*timeToSettle);
+    Kpq[2] = 75.1/(timeToSettle*timeToSettle);
     Kpq[3] = 40.1/(timeToSettle*timeToSettle);
     double Kvq[4];
-    Kvq[0] = 12.0*ksi[0]/timeToSettle;   //q1 gain performs well for timeToSettle = 0.015 and Kvq = 2/...
+    Kvq[0] = 2.0*ksi[0]/timeToSettle;   //q1 gain performs well for timeToSettle = 0.015 and Kvq = 2/...
     Kvq[1] = 10.0*ksi[1]/timeToSettle;
     Kvq[2] = 3.0*ksi[1]/timeToSettle;
     Kvq[3] = 3.0*ksi[1]/timeToSettle;
@@ -283,7 +285,7 @@ int main()
         // printf("%f         %f          %f      %f       %f     %f       %f      %f      %f\n", t, jointPoses[1](0), jointPoses[1](1), jointPoses[1](2), jointPoses[1](3), jointRates[1](0), jointRates[1](1), jointRates[1](2), jointRates[1](3));
         
 
-        status = constraintSolver.CartToJnt(jointPoses[0], jointRates[0], jointAccelerations[0],alpha, betha, externalNetForce, jointTorques[0]);  
+        status = constraintSolver.CartToJnt(jointPoses[0], jointRates[0], jointAccelerations[0],alpha, betha, externalNetForce, jointTorques[0], jointControlTorques[0]);  
 
         constraintSolver.getLinkCartesianPose(cartX[0]);
         constraintSolver.getLinkCartesianVelocity(cartXDot[0]);
@@ -301,10 +303,10 @@ int main()
         jointPoses[0](2) = jointPoses[0](2) + (jointRates[0](2) - jointAccelerations[0](2) * timeDelta / 2.0) * timeDelta; //Trapezoidal rule
         jointRates[0](3) = jointRates[0](3) + jointAccelerations[0](3) * timeDelta; //Euler Forward
         jointPoses[0](3) = jointPoses[0](3) + (jointRates[0](3) - jointAccelerations[0](3) * timeDelta / 2.0) * timeDelta;
-        printf("%f\n", jointPoses[0](3));
-        // printf("%f      %f      %f       %f     %f       %f      %f     %f      %f     %f      %f     %f      %f      %f      %f     %f      %f\n", 
-        //         t, jointPoses[0](0), jointPoses[0](1), jointPoses[0](2), jointPoses[0](3), jointRates[0](0), jointRates[0](1), jointRates[0](2), jointRates[0](3),
-        //         jointAccelerations[0](0), jointAccelerations[0](1), jointAccelerations[0](2), jointAccelerations[0](3), jointTorques[0](0), jointTorques[0](1), jointTorques[0](2), jointTorques[0](3));
+        // printf("%f\n", jointPoses[0](3));
+        printf("%f      %f      %f       %f     %f       %f      %f     %f      %f     %f      %f     %f      %f      %f      %f     %f      %f\n", 
+                t, jointPoses[0](0), jointPoses[0](1), jointPoses[0](2), jointPoses[0](3), jointRates[0](0), jointRates[0](1), jointRates[0](2), jointRates[0](3),
+                jointAccelerations[0](0), jointAccelerations[0](1), jointAccelerations[0](2), jointAccelerations[0](3), jointTorques[0](0), jointTorques[0](1), jointTorques[0](2), jointTorques[0](3));
         
         //Error
         jointPoses[2](0) = jointPoses[1](0) - jointPoses[0](0);
@@ -341,16 +343,22 @@ int main()
         betha(0) = alpha(0, 0)*(K * cartXDotDot[2][3].vel[0] + (Kv[0]) * cartXDot[2][3].vel[0] + (Kp[0]) * cartX[2][3].p[0]+ Ki[1] * cartX[3][3].p[0]); // 0.5xgain
         // betha(1) = alpha(1, 1)*(K * cartXDotDot[2][3].vel[1] + (Kv[1]) * cartXDot[2][3].vel[1] + (Kp[1]) * cartX[2][3].p[1] + Ki[1] * cartX[3][3].p[1]);
         
-        feedforwardJointTorque0 =  (Kpq[0])*jointPoses[2](0) + (Kvq[0])*jointRates[2](0);
-        feedforwardJointTorque1 =  (Kpq[1])*jointPoses[2](1) + (Kvq[1])*jointRates[2](1);//computed joint torque control
-        feedforwardJointTorque2 = jointAccelerations[1](2) + (Kpq[2])*jointPoses[2](2) + (Kvq[2])*jointRates[2](2);
-        feedforwardJointTorque3 = (Kpq[3])*jointPoses[2](3) + (Kvq[3])*jointRates[2](3);
+        //priority posture control
+        // jointControlTorques[0](0) = jointAccelerations[1](0) + (Kpq[0])*jointPoses[2](0) + (Kvq[0])*jointRates[2](0);
+        // jointControlTorques[0](1) = jointAccelerations[1](1) + (Kpq[1])*jointPoses[2](1) + (Kvq[1])*jointRates[2](1);//computed joint torque control
+        // jointControlTorques[0](2) = jointAccelerations[1](2) + (Kpq[2])*jointPoses[2](2) + (Kvq[2])*jointRates[2](2);
+        // jointControlTorques[0](3) = jointAccelerations[1](3) + (Kpq[3])*jointPoses[2](3) + (Kvq[3])*jointRates[2](3);
         
-       
+        //priority constraint control
+        feedforwardJointTorque0 = jointAccelerations[1](0) + (Kpq[0])*jointPoses[2](0) + (Kvq[0])*jointRates[2](0);
+        feedforwardJointTorque1 = jointAccelerations[1](1) + (Kpq[1])*jointPoses[2](1) + (Kvq[1])*jointRates[2](1);//computed joint torque control
+        feedforwardJointTorque2 = jointAccelerations[1](2) + (Kpq[2])*jointPoses[2](2) + (Kvq[2])*jointRates[2](2);
+        feedforwardJointTorque3 = jointAccelerations[1](3) + (Kpq[3])*jointPoses[2](3) + (Kvq[3])*jointRates[2](3);
         jointTorques[0](0) = jointTorques[0](0) + feedforwardJointTorque0;
         jointTorques[0](1) = jointTorques[0](1) + feedforwardJointTorque1;
         jointTorques[0](2) = jointTorques[0](2) + feedforwardJointTorque2;
         jointTorques[0](3) = jointTorques[0](3) + feedforwardJointTorque3;
+
         /*
         //For cartesian space control one needs to calculate from the obtained joint space value, new cartesian space poses.
         //Then based on the difference of the signal (desired-actual) we define a regulation function (controller)
