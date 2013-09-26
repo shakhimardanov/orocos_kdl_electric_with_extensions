@@ -71,18 +71,22 @@ int main()
     Twist constraintForcesX(constrainXLinear, constrainXAngular);
     Twist constraintForcesY(constrainYLinear, constrainYAngular);
     Twist constraintForcesZ(constrainZLinear, constrainZAngular);
+
     Jacobian alpha(numberOfConstraints);
     alpha.setColumn(0, constraintForcesX);
     // alpha.setColumn(1, constraintForcesY);
     //Acceleration energy at  the end-effector
     JntArray betha(numberOfConstraints); //set to zero
+    JntArray bethaControl(numberOfConstraints); //set to zero
     betha(0) = 0.0;
+    bethaControl(0) = 0.0;
     // betha(1) = 0.0;
     //betha(2) = 0.0;
     //arm root acceleration
     Vector linearAcc(0.0, 9.8, 0.0); //gravitational acceleration along Y
     Vector angularAcc(0.0, 0.0, 0.0);
     Twist twist1(linearAcc, angularAcc);
+
     //external forces on the arm
     Vector externalForce1(0.0, 0.0, 0.0);
     Vector externalTorque1(0.0, 0.0, 0.0);
@@ -126,19 +130,20 @@ int main()
         jointControlTorques[i] = jointValues;
     }
 
-
     //cartesian space/link values
     //0-actual, 1-desire, 2-error, 3-errorsum
+    unsigned int numberOfLinks = chain.getNrOfSegments();
     k = 4;
     Frames cartX[k];
     Twists cartXDot[k];
     Twists cartXDotDot[k];
     Twist accLink;
+    KDL::Frame frameTemp;
     for (int i = 0; i < k; i++) //i is number of variables (actual, desired, error)
     {
-        for (int j = 0; j < 4; j++) //j is number of links, in this case 4
+        for (int j = 0; j < numberOfLinks; j++) //j is number of links, in this case 4
         {
-            cartX[i].push_back(frame1);
+            cartX[i].push_back(frameTemp);
             cartXDot[i].push_back(accLink);
             cartXDotDot[i].push_back(accLink);
         }
@@ -175,8 +180,8 @@ int main()
     //~Definition of solver and initial configuration
     //-------------------------------------------------------------------------------------//
 
+
     //Definition of process main loop
-    //-------------------------------------------------------------------------------------//
     //-------------------------------------------------------------------------------------//
     double taskTimeConstant = 2.5; //Time required to complete the task move(frameinitialPose, framefinalPose) default T=10.0
     double simulationTime = 2*taskTimeConstant;
@@ -188,12 +193,12 @@ int main()
     double ksi[2] = {1.0, 1.0}; //damping factor
     double Kp[2];
     Kp[0] = 70.345/(timeToSettle*timeToSettle); // 1.345 for x const only  with timeToSettle= 0.015 and q1 is controlled
-    Kp[1] = 370.232/(timeToSettle*timeToSettle);
+    Kp[1] = 770.232/(timeToSettle*timeToSettle);
     double Kv[2];
     Kv[0] = 95.5978*ksi[0]/timeToSettle; // 2.5978 for x const only with timeToSettle= 0.015 and q1 is controlled
     Kv[1] = 25.55989*ksi[1]/timeToSettle; // added control around Y using fext improves stability of constraint by Y never follows desired path
     double Ki[2] = {0.0, 0.0};
-    double K = 0.005;
+    double K = 0.0;
   
     //For joint space control without constraints using computed torque
     // double ksi[2] = {1.0, 1.0}; //damping factor
@@ -247,8 +252,10 @@ int main()
     double feedforwardJointTorque1 = 0.0;
     double feedforwardJointTorque2 = 0.0;
     double feedforwardJointTorque3 = 0.0;
-    
+    //---------------------------------------------------------------------------------------//
 
+
+    //Main simulation loop
     for (double t = 0.0; t <= simulationTime; t = t + timeDelta)
     {
         
@@ -285,28 +292,28 @@ int main()
         // printf("%f         %f          %f      %f       %f     %f       %f      %f      %f\n", t, jointPoses[1](0), jointPoses[1](1), jointPoses[1](2), jointPoses[1](3), jointRates[1](0), jointRates[1](1), jointRates[1](2), jointRates[1](3));
         
 
-        status = constraintSolver.CartToJnt(jointPoses[0], jointRates[0], jointAccelerations[0],alpha, betha, externalNetForce, jointTorques[0], jointControlTorques[0]);  
+        status = constraintSolver.CartToJnt(jointPoses[0], jointRates[0], jointAccelerations[0],alpha, betha, bethaControl, externalNetForce, jointTorques[0], jointControlTorques[0]);  
 
         constraintSolver.getLinkCartesianPose(cartX[0]);
         constraintSolver.getLinkCartesianVelocity(cartXDot[0]);
         constraintSolver.getLinkCartesianAcceleration(cartXDotDot[0]);
-        // printf("%f          %f      %f     %f         %f        %f      %f\n", t, cartX[0][3].p.x(), cartX[0][3].p.y(), cartXDot[0][3].vel[0], cartXDot[0][3].vel[1], cartXDotDot[0][3].vel[0], cartXDotDot[0][3].vel[1]);
+        printf("%f          %f      %f     %f         %f        %f      %f\n", t, cartX[0][3].p.x(), cartX[0][3].p.y(), cartXDot[0][3].vel[0], cartXDot[0][3].vel[1], cartXDotDot[0][3].vel[0], cartXDotDot[0][3].vel[1]);
         // printf("Actual cartesian values: %f          %f      %f     %f         %f        %f      %f\n", t, cartX[0][3].p.x(), cartX[0][3].p.y(), cartXDot[0][3].vel[0], cartXDot[0][3].vel[1], cartXDotDot[0][3].vel[0], cartXDotDot[0][3].vel[1]);
+        // printf("%f          %f      %f     %f         %f        %f      %f\n", t, cartXDotDot[0][3].vel[0], cartXDotDot[0][3].vel[1], cartXDotDot[0][3].vel[2], cartXDotDot[0][3].rot[0], cartXDotDot[0][3].rot[1], cartXDotDot[0][3].rot[2]);
 
         //Integration(robot joint values for rates and poses; actual) at the given "instanteneous" interval for joint position and velocity.
         jointRates[0](0) = jointRates[0](0) + jointAccelerations[0](0) * timeDelta; //Euler Forward
         jointPoses[0](0) = jointPoses[0](0) + (jointRates[0](0) - jointAccelerations[0](0) * timeDelta / 2.0) * timeDelta; //Trapezoidal rule
         jointRates[0](1) = jointRates[0](1) + jointAccelerations[0](1) * timeDelta; //Euler Forward
         jointPoses[0](1) = jointPoses[0](1) + (jointRates[0](1) - jointAccelerations[0](1) * timeDelta / 2.0) * timeDelta;
-
         jointRates[0](2) = jointRates[0](2) + jointAccelerations[0](2) * timeDelta; //Euler Forward
         jointPoses[0](2) = jointPoses[0](2) + (jointRates[0](2) - jointAccelerations[0](2) * timeDelta / 2.0) * timeDelta; //Trapezoidal rule
         jointRates[0](3) = jointRates[0](3) + jointAccelerations[0](3) * timeDelta; //Euler Forward
         jointPoses[0](3) = jointPoses[0](3) + (jointRates[0](3) - jointAccelerations[0](3) * timeDelta / 2.0) * timeDelta;
-        // printf("%f\n", jointPoses[0](3));
-        printf("%f      %f      %f       %f     %f       %f      %f     %f      %f     %f      %f     %f      %f      %f      %f     %f      %f\n", 
-                t, jointPoses[0](0), jointPoses[0](1), jointPoses[0](2), jointPoses[0](3), jointRates[0](0), jointRates[0](1), jointRates[0](2), jointRates[0](3),
-                jointAccelerations[0](0), jointAccelerations[0](1), jointAccelerations[0](2), jointAccelerations[0](3), jointTorques[0](0), jointTorques[0](1), jointTorques[0](2), jointTorques[0](3));
+        // printf("%f      %f      %f       %f     %f       %f      %f     %f      %f     %f      %f     %f      %f      %f      %f     %f      %f     %f    %f     %f    %f\n", 
+        //         t, jointPoses[0](0), jointPoses[0](1), jointPoses[0](2), jointPoses[0](3), jointRates[0](0), jointRates[0](1), jointRates[0](2), jointRates[0](3),
+        //         jointAccelerations[0](0), jointAccelerations[0](1), jointAccelerations[0](2), jointAccelerations[0](3), jointTorques[0](0), jointTorques[0](1), jointTorques[0](2), jointTorques[0](3),
+        //         feedforwardJointTorque0, feedforwardJointTorque1, feedforwardJointTorque2, feedforwardJointTorque3);
         
         //Error
         jointPoses[2](0) = jointPoses[1](0) - jointPoses[0](0);
@@ -338,12 +345,13 @@ int main()
         cartX[3][3].p[1] += timeDelta * cartX[2][3].p[1];
         // printf("%f          %f      %f     %f         %f        %f      %f\n", t, cartX[2][3].p[0], cartX[2][3].p[1], cartXDot[2][3].vel[0], cartXDot[2][3].vel[1], cartXDotDot[2][3].vel[1], cartXDotDot[2][3].vel[1]);
 
+
         //Regulator or controller
         //acceleration energy control
-        betha(0) = alpha(0, 0)*(K * cartXDotDot[2][3].vel[0] + (Kv[0]) * cartXDot[2][3].vel[0] + (Kp[0]) * cartX[2][3].p[0]+ Ki[1] * cartX[3][3].p[0]); // 0.5xgain
+        bethaControl(0) = alpha(0, 0)*(K * cartXDotDot[2][3].vel[0] + (Kv[0]) * cartXDot[2][3].vel[0] + (Kp[0]) * cartX[2][3].p[0]+ Ki[1] * cartX[3][3].p[0]); // 0.5xgain
         // betha(1) = alpha(1, 1)*(K * cartXDotDot[2][3].vel[1] + (Kv[1]) * cartXDot[2][3].vel[1] + (Kp[1]) * cartX[2][3].p[1] + Ki[1] * cartX[3][3].p[1]);
         
-        //priority posture control
+        // priority posture control
         // jointControlTorques[0](0) = jointAccelerations[1](0) + (Kpq[0])*jointPoses[2](0) + (Kvq[0])*jointRates[2](0);
         // jointControlTorques[0](1) = jointAccelerations[1](1) + (Kpq[1])*jointPoses[2](1) + (Kvq[1])*jointRates[2](1);//computed joint torque control
         // jointControlTorques[0](2) = jointAccelerations[1](2) + (Kpq[2])*jointPoses[2](2) + (Kvq[2])*jointRates[2](2);
@@ -353,7 +361,7 @@ int main()
         feedforwardJointTorque0 = jointAccelerations[1](0) + (Kpq[0])*jointPoses[2](0) + (Kvq[0])*jointRates[2](0);
         feedforwardJointTorque1 = jointAccelerations[1](1) + (Kpq[1])*jointPoses[2](1) + (Kvq[1])*jointRates[2](1);//computed joint torque control
         feedforwardJointTorque2 = jointAccelerations[1](2) + (Kpq[2])*jointPoses[2](2) + (Kvq[2])*jointRates[2](2);
-        feedforwardJointTorque3 = jointAccelerations[1](3) + (Kpq[3])*jointPoses[2](3) + (Kvq[3])*jointRates[2](3);
+        // feedforwardJointTorque3 = jointAccelerations[1](3) + (Kpq[3])*jointPoses[2](3) + (Kvq[3])*jointRates[2](3);
         jointTorques[0](0) = jointTorques[0](0) + feedforwardJointTorque0;
         jointTorques[0](1) = jointTorques[0](1) + feedforwardJointTorque1;
         jointTorques[0](2) = jointTorques[0](2) + feedforwardJointTorque2;
