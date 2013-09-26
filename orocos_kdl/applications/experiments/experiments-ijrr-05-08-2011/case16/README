@@ -1,0 +1,84 @@
+* posture-test contains log data for 4dof planar robot with timeconstant of 0.5, constraint in X and 
+simple impedance controller (using Fext) on Y, PD controllers for each joint
+
+* tempTest files contain data for youbot kinematic chain. For these datga timeconstant of 0.015 was used.
+
+* application files for the data above are in ros-diamondback/.../vereshchagintests and the implementation of 
+the algorithm is in ros-diamondback/.../kdl-vereshchagin
+
+==========================================================================================================================
+
+
+ - multitask-priority-constraint-* are created using the following setup:
+   controlled joint torques are already taken into account in the first inward recursion for force computations
+   all joint torques are controlled using computed torque controller (qdotdotDes+Kv*qdotErr+Kp*qErr)
+   There are constraints at EE (X is fully constraint and Y is to follow a trajectory).
+   X constraint is controlled using beta, whereas Y is controlled using simple impedance controller 
+   (Fext = Kv*YdotErr+Kp*YErr)
+   Gains are: 
+    //for cartesian space
+    Kp[0] = 70.345/(timeToSettle*timeToSettle); 
+    Kp[1] = 370.232/(timeToSettle*timeToSettle);
+    Kv[0] = 95.5978*ksi[0]/timeToSettle; 
+    Kv[1] = 25.55989*ksi[1]/timeToSettle; 
+    double Ki[2] = {0.0, 0.0};
+    double K = 0.005;
+  
+    //For joint space control without constraints using computed torque
+    Kpq[0] = 30.5/(timeToSettle*timeToSettle);
+    Kpq[1] = 30.2/(timeToSettle*timeToSettle);
+    Kpq[2] = 5.1/(timeToSettle*timeToSettle);
+    Kpq[3] = 10.1/(timeToSettle*timeToSettle);
+
+    Kvq[0] = 12.0*ksi[0]/timeToSettle;  
+    Kvq[1] = 10.0*ksi[1]/timeToSettle;
+    Kvq[2] = 3.0*ksi[1]/timeToSettle;
+    Kvq[3] = 3.0*ksi[1]/timeToSettle;
+
+    taskTimeConstant = 2.5; //Time required to complete the task move(frameinitialPose, framefinalPose)
+    double simulationTime = 2*taskTimeConstant;
+    double timeDelta = 0.001;
+    double timeToSettle = 0.5; //change 
+
+
+
+- multitask-priority-constraint-*data2 are created using the following setup:
+   the setup is exactly the same, but for q4 joint is not controlled. This extra free (not-controlled) DoF 
+
+
+
+- multitask-priority-posture-*data are created using the following setup:
+   controlled joint torques are  taken into account in the last outward recursion for joint acceleration computations
+   all joint torques are controlled using computed torque controller (qdotdotDes+Kv*qdotErr+Kp*qErr)
+   There are constraints at EE (X is fully constraint and Y is to follow a trajectory).
+   X constraint is controlled using beta, whereas Y is controlled using simple impedance controller 
+   (Fext = Kv*YdotErr+Kp*YErr)
+   Gains are: 
+    //for cartesian space
+    Kp[0] = 70.345/(timeToSettle*timeToSettle); 
+    Kp[1] = 370.232/(timeToSettle*timeToSettle);
+    Kv[0] = 95.5978*ksi[0]/timeToSettle; 
+    Kv[1] = 25.55989*ksi[1]/timeToSettle; 
+    double Ki[2] = {0.0, 0.0};
+    double K = 0.005;
+  
+    //For joint space control without constraints using computed torque
+    Kpq[0] = 30.5/(timeToSettle*timeToSettle);
+    Kpq[1] = 30.2/(timeToSettle*timeToSettle);
+    Kpq[2] = 35.1/(timeToSettle*timeToSettle);
+    Kpq[3] = 60.1/(timeToSettle*timeToSettle);
+
+    Kvq[0] = 12.0*ksi[0]/timeToSettle;  
+    Kvq[1] = 10.0*ksi[1]/timeToSettle;
+    Kvq[2] = 3.0*ksi[1]/timeToSettle;
+    Kvq[3] = 3.0*ksi[1]/timeToSettle;
+
+    taskTimeConstant = 2.5; //Time required to complete the task move(frameinitialPose, framefinalPose)
+    double simulationTime = 2*taskTimeConstant;
+    double timeDelta = 0.001;
+    double timeToSettle = 0.5; //change 
+
+
+
+ - multitask-priority-posture-*data2 are created using the following setup:
+   the setup is exactly the same, but for q4 joint is not controlled. There is extra free (not-controlled) DoF 
