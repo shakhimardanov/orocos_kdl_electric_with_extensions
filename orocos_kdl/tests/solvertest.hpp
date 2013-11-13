@@ -10,7 +10,7 @@
 #include <chainiksolvervel_pinv_givens.hpp>
 #include <chainiksolverpos_nr.hpp>
 #include <chainjnttojacsolver.hpp>
-#include <chainidsolver_vereshchagin.hpp>
+// #include <chainidsolver_vereshchagin.hpp>
 
 using namespace KDL;
 
@@ -21,7 +21,7 @@ class SolverTest : public CppUnit::TestFixture
     CPPUNIT_TEST(FkVelAndJacTest );
     CPPUNIT_TEST(FkVelAndIkVelTest );
     CPPUNIT_TEST(FkPosAndIkPosTest );
-    CPPUNIT_TEST(VereshchaginTest );
+    // CPPUNIT_TEST(VereshchaginTest );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -32,7 +32,7 @@ public:
     void FkVelAndJacTest();
     void FkVelAndIkVelTest();
     void FkPosAndIkPosTest();
-    void VereshchaginTest();
+    // void VereshchaginTest();
 
 private:
 

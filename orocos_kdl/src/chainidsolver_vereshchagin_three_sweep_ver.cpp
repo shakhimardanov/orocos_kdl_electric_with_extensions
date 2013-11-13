@@ -19,7 +19,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#include "chainidsolver_vereshchagin.hpp"
+#include "chainidsolver_vereshchagin_three_sweep_ver.hpp"
 #include "frames_io.hpp"
 #include "utilities/svd_eigen_HH.hpp"
 
