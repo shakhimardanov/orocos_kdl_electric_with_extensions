@@ -70,8 +70,6 @@ ENDIF(ENABLE_TESTS )
 OPTION(ENABLE_EXAMPLES OFF "Enable building of examples")
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-#Azamat added this to statisfy ros
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 
 add_definitions(-DEIGEN2_SUPPORT)
