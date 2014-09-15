@@ -9,9 +9,9 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/orocos_kdl_extensions</url>
 
-  <depend package="kdl"/>
-  <!--depend package="geometric_semantics"/>
-  <depend package="geometric_semantics_kdl"/-->
+  <depend package="orocos_kdl"/>
+  <depend package="geometric_semantics"/>
+  <depend package="geometric_semantics_kdl"/>
   
   <!--rosdep name="graphviz-dev"/>
   <rosdep name="graphviz"/-->

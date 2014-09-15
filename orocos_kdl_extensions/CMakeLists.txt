@@ -25,14 +25,16 @@ rosbuild_add_library(${PROJECT_NAME} include/kdl_extensions/functionalcomputatio
 
 rosbuild_add_compile_flags(${PROJECT_NAME} "-O0")
 
-#target_link_libraries(${PROJECT_NAME} orocos-kdl geometric_semantics_kdl)
-target_link_libraries(${PROJECT_NAME} orocos-kdl)
+target_link_libraries(${PROJECT_NAME} orocos-kdl geometric_semantics_kdl geometric_semantics)
+#target_link_libraries(${PROJECT_NAME} orocos-kdl)
 
 rosbuild_add_executable(compositiontest examples/compositiontest.cpp)
+rosbuild_add_executable(composition_geometricsemantics examples/composition_geometricsemantics.cpp)
 rosbuild_add_compile_flags(${PROJECT_NAME} "-O0")
 
 target_link_libraries(compositiontest ${PROJECT_NAME} graph gvc)
-target_link_libraries(compositiontest ${PROJECT_NAME})
+target_link_libraries(composition_geometricsemantics ${PROJECT_NAME} graph gvc)
+#target_link_libraries(compositiontest ${PROJECT_NAME})
 
 
 ADD_SUBDIRECTORY( tests )

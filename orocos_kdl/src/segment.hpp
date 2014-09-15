@@ -149,7 +149,8 @@ namespace KDL {
         Frame getFrameToTip()const
         {
             
-            return joint.pose(0)*f_tip;
+//            return joint.pose(0)*f_tip;
+            return f_tip;
         }
 
     };
