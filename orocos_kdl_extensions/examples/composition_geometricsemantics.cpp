@@ -13,9 +13,25 @@
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
 #include <kdl/chainfksolverpos_recursive.hpp>
 #include <kdl_extensions/functionalcomputation_kdltypes.hpp>
+#include <Position/Position.h>
+#include <Orientation/Orientation.h>
 #include <Pose/Pose.h>
+#include <LinearVelocity/LinearVelocity.h>
+#include <AngularVelocity/AngularVelocity.h>
 #include <Twist/Twist.h>
+#include <Force/Force.h>
+#include <Torque/Torque.h>
 #include <Wrench/Wrench.h>
+
+#include <Position/PositionCoordinatesKDL.h>
+#include <Orientation/OrientationCoordinatesKDL.h>
+#include <Pose/PoseCoordinatesKDL.h>
+#include <LinearVelocity/LinearVelocityCoordinatesKDL.h>
+#include <AngularVelocity/AngularVelocityCoordinatesKDL.h>
+#include <Twist/TwistCoordinatesKDL.h>
+#include <Force/ForceCoordinatesKDL.h>
+#include <Torque/TorqueCoordinatesKDL.h>
+#include <Wrench/WrenchCoordinatesKDL.h>
 
 namespace grs = geometric_semantics;
 
@@ -109,13 +125,9 @@ int main(int argc, char** argv)
     grs::Orientation<KDL::Rotation> orientation_l1_j1_q("J1","Segment1.Joint1", "L1","Segment1.Link1","L1", orientation);
     
     bool y = twist_j1.changePointBody(position_l1_j1_q);
-    std::cout << " return status " << std::boolalpha << y << std::endl;
-    if(y)
-        std::cout << "Y " << twist_j1 << std::endl;
+    std::cout << "Change reference point of joint twist " << twist_j1 << std::endl;//segment.twist returns this. Segment tip twist with respect to previous segment tip
     bool x = twist_j1.changeCoordinateFrame(orientation_l1_j1_q);
-    std::cout << " return status " << std::boolalpha << x << std::endl;
-    if(x)
-        std::cout << "X " << twist_j1 << std::endl;
+    std::cout << "Change coordinate it is expressed in " << twist_j1 << std::endl; //M.Inv(segment.twist) returns this. Segment tip twist with respect to joint frame
   
     
     grs::LinearVelocityCoordinatesSemantics linear_vel_coord_seman_l1("l1","Segment1.Link1","Base","B");
