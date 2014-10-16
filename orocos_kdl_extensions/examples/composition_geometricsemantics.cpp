@@ -55,12 +55,12 @@ void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& roo
 int main(int argc, char** argv)
 {
     KDL::JntArray q(3);
-    q(0)=M_PI/6.0;
+    q(0)=-M_PI/6.0;
     q(1)=M_PI/4.0;
-    q(2)=M_PI/3.0;
+    q(2)=-M_PI/12.0;
     KDL::JntArray qdot(3);
-    qdot(0)=0.15;
-    qdot(1)=0.25;
+    qdot(0)=0.5;
+    qdot(1)=-0.25;
     qdot(2)=0.35;
     
 //SEGMENT1
@@ -118,8 +118,7 @@ int main(int argc, char** argv)
     // l1 on Segment1.Link1 twist w.r.t Base
     //distance between points j1 and l1 at changing value of q; at 0 it is pose_l1_j1_0.p
     // needs to be put in different coordinates with the same origin.
-    
-    grs::PositionCoordinates<KDL::Vector> distance = posejoint1_q_B.getCoordinates().getCoordinates().M.Inverse()*pose_l1_j1_0.getCoordinates().getCoordinates().p;
+    grs::PositionCoordinates<KDL::Vector> distance = posejoint1_q_B.getCoordinates().getCoordinates().M * (-1*pose_l1_j1_0.getCoordinates().getCoordinates().p);
     grs::Position<KDL::Vector> position_l1_j1_q("j1","Segment1.Joint1","l1", "Segment1.Link1", "J1", distance);
     std::cout<< "distance " << distance << std::endl;
     
@@ -204,7 +203,7 @@ int main(int argc, char** argv)
     // l1 on Segment1.Link1 twist w.r.t Base
     //distance between points j1 and l1 at changing value of q; at 0 it is pose_l1_j1_0.p
     // needs to be put in different coordinates with the same origin.
-    grs::PositionCoordinates<KDL::Vector> distance2 = posejoint2_q_L1.getCoordinates().getCoordinates().M.Inverse()*pose_l2_j2_0.getCoordinates().getCoordinates().p;
+    grs::PositionCoordinates<KDL::Vector> distance2 = posejoint2_q_L1.getCoordinates().getCoordinates().M * (-1*pose_l2_j2_0.getCoordinates().getCoordinates().p);
     grs::Position<KDL::Vector> position_l2_l1_q("j2","Segment2.Joint2","l2", "Segment1.Link2", "L1", distance2);
     std::cout<< "distance " << distance2 << std::endl;
     
@@ -288,7 +287,7 @@ int main(int argc, char** argv)
     // l1 on Segment1.Link1 twist w.r.t Base
     //distance between points j1 and l1 at changing value of q; at 0 it is pose_l1_j1_0.p
     // needs to be put in different coordinates with the same origin.
-    grs::PositionCoordinates<KDL::Vector> distance3 = posejoint3_q_L2.getCoordinates().getCoordinates().M.Inverse()*pose_l3_j3_0.getCoordinates().getCoordinates().p;
+    grs::PositionCoordinates<KDL::Vector> distance3 = posejoint3_q_L2.getCoordinates().getCoordinates().M * (-1* pose_l3_j3_0.getCoordinates().getCoordinates().p);
     grs::Position<KDL::Vector> position_l3_l2_q("j3","Segment3.Joint3","l3", "Segment2.Link3", "L2", distance3);
     std::cout<< "distance " << distance3 << std::endl;
     
@@ -357,13 +356,15 @@ int main(int argc, char** argv)
 //        std::cout <<"Segment name " << achain.getSegment(i).getName()<< std::endl;
 //        std::cout <<"Joint origin " << achain.getSegment(i).getJoint().JointOrigin() << std::endl;
 //        std::cout <<"Joint axis " << achain.getSegment(i).getJoint().JointAxis()<< std::endl;
-//        std::cout <<"Tip Frame " << achain.getSegment(i).getFrameToTip()<< std::endl;
+        std::cout <<"Tip Frame " << achain.getSegment(i).getFrameToTip()<< std::endl;
         tempLocal[i]=achain.getSegment(i).pose(jointInitialPose(i));
         std::cout <<"Segment tip pose " << achain.getSegment(i).pose(jointInitialPose(i)) << std::endl;
 //        std::cout <<"New reference point V_AB vector " << achain.getSegment(i).pose(jointInitialPose(i)).M *achain.getSegment(i).getFrameToTip().p << std::endl;
         std::cout <<"Joint twist " << achain.getSegment(i).getJoint().twist(jointInitialRate.qdot(i)) << std::endl;
         std::cout <<"Segment tip twist " << achain.getSegment(i).twist(jointInitialPose(i), jointInitialRate.qdot(i)) << std::endl;
         std::cout <<"Segment tip twist inv " << tempLocal[i].M.Inverse(achain.getSegment(i).twist(jointInitialPose(i), jointInitialRate.qdot(i))) << std::endl;
+//        std::cout <<"Segment tip Unit twist inv " << tempLocal[i].M.Inverse(achain.getSegment(i).twist(jointInitialPose(i), 1.0)) << std::endl;
+//        std::cout <<"Segment root Unit twist inv " << tempLocal[i]*tempLocal[i].M.Inverse(achain.getSegment(i).twist(jointInitialPose(i), 1.0)) << std::endl;
         if(i == 0)
         {
             tempTwist[i] = tempLocal[i].M.Inverse(achain.getSegment(i).twist(jointInitialPose(i), jointInitialRate.qdot(i)));
