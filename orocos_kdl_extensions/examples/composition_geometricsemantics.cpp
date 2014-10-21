@@ -40,18 +40,6 @@ using namespace std;
 using namespace KDL;
 using namespace kdle;
 
-void createMyTree(KDL::Tree& twoBranchTree);
-
-void drawMyTree(KDL::Tree& twoBranchTree);
-
-void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav, std::vector<kdle::JointState>& jointState,
-                                     std::vector<kdle::SegmentState>& linkState, std::vector<kdle::SegmentState>& linkState2);
-
-void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& rootLink, const std::string& tipLink, KDL::Vector& grav,
-                                std::vector<kdle::JointState>& jointState, std::vector<kdle::SegmentState>& linkState);
-
-
-
 int main(int argc, char** argv)
 {
     KDL::JntArray q(3);
@@ -62,9 +50,13 @@ int main(int argc, char** argv)
     qdot(0)=0.5;
     qdot(1)=-0.25;
     qdot(2)=0.35;
-    
-//SEGMENT1
+    KDL::JntArray qdotdot(3);
+    qdotdot(0)=0.115;
+    qdotdot(1)=-0.225;
+    qdotdot(2)=0.375;
 
+//SEGMENT1
+    
     //SEGMENT METADATA
     // joint1 with respect to Base/World. In ideal case one should have a frame data to construct a joint
     KDL::Vector joint1_position1_B = KDL::Vector(0,0,0); //position of joint frame's origin
@@ -87,6 +79,7 @@ int main(int argc, char** argv)
     //~SEGMENT METADATA
     
     //POSES
+    std::cout << std::endl<< std::endl<< "POSES" <<  std::endl<<std::endl<< std::endl;
     //Link1 tip with respect to joint1 at 0 defines the length of the segment
     grs::Pose<KDL::Frame> pose_l1_j1_0 = grs::compose(posejoint1_B.inverse2(), poselink1tip_B);
     // joint1 with respect to Base/World at some value q=M_PI/2.0    
@@ -103,15 +96,15 @@ int main(int argc, char** argv)
     //~POSES
     
     //TWISTS
+    std::cout << std::endl<< std::endl<< "TWISTS " <<  std::endl<<std::endl<< std::endl;
     //j1 on Segment1.Joint1 twist w.r.t Base
-    grs::LinearVelocityCoordinatesSemantics linear_vel_coord_seman_j1("j1","Segment1.Joint1","Base","J1");
+    grs::LinearVelocityCoordinatesSemantics linear_vel_coord_seman_j1("j1","Segment1","Base","J1");
     KDL::Vector coordinatesLinearVelocity_j1 = joint1.twist(qdot(0)).vel;
     grs::LinearVelocity<KDL::Vector> linearVelocity_j1(linear_vel_coord_seman_j1 ,coordinatesLinearVelocity_j1);
 
-    grs::AngularVelocityCoordinatesSemantics ang_vel_coord_seman_j1("Segment1.Joint1","Base","J1");
+    grs::AngularVelocityCoordinatesSemantics ang_vel_coord_seman_j1("Segment1","Base","J1");
     KDL::Vector coordinatesAngularVelocity_j1 = joint1.twist(qdot(0)).rot;
     grs::AngularVelocity<KDL::Vector> angularVelocity_j1(ang_vel_coord_seman_j1, coordinatesAngularVelocity_j1);
-    
     //joint.twist returns this.
     grs::Twist<KDL::Vector,KDL::Vector> twist_j1(linearVelocity_j1, angularVelocity_j1);
     
@@ -119,32 +112,122 @@ int main(int argc, char** argv)
     //distance between points j1 and l1 at changing value of q; at 0 it is pose_l1_j1_0.p
     // needs to be put in different coordinates with the same origin.
     grs::PositionCoordinates<KDL::Vector> distance = posejoint1_q_B.getCoordinates().getCoordinates().M * (-1*pose_l1_j1_0.getCoordinates().getCoordinates().p);
-    grs::Position<KDL::Vector> position_l1_j1_q("j1","Segment1.Joint1","l1", "Segment1.Link1", "J1", distance);
-    std::cout<< "distance " << distance << std::endl;
+    grs::Position<KDL::Vector> position_l1_j1_q("j1","Segment1","l1", "Segment1", "J1", distance);
+    //std::cout<< "distance " << distance << std::endl;
     
     grs::OrientationCoordinates<KDL::Rotation> orientation = pose_l1_b_q.getCoordinates().getCoordinates().M.Inverse();
-    grs::Orientation<KDL::Rotation> orientation_l1_j1_q("J1","Segment1.Joint1", "L1","Segment1.Link1","L1", orientation);
-    std::cout<< "orientation " << orientation << std::endl;
+    grs::Orientation<KDL::Rotation> orientation_l1_j1_q("J1","Segment1", "L1","Segment1","L1", orientation);
+    //std::cout<< "orientation " << orientation << std::endl;
     
-    bool y = twist_j1.changePointBody(position_l1_j1_q);
-    std::cout << "Change reference point of joint twist " << std::endl << twist_j1 << std::endl;//segment.twist returns this. Segment tip twist with respect to previous segment tip
-    bool x = twist_j1.changeCoordinateFrame(orientation_l1_j1_q);
-    std::cout << "Change coordinate it is expressed in " << std::endl << twist_j1 << std::endl; //M.Inv(segment.twist) returns this. Segment tip twist with respect to joint frame
-  
+    if(twist_j1.changePointBody(position_l1_j1_q))
+    {
+    //std::cout << "Change reference point of joint twist " << std::endl << twist_j1 << std::endl;//segment.twist returns this. Segment tip twist with respect to previous segment tip
+        if(twist_j1.changeCoordinateFrame(orientation_l1_j1_q))
+        {
+            std::cout << "J1 TWIST CONTRIBUTION " << std::endl << twist_j1 << std::endl; //M.Inv(segment.twist) returns this. Segment tip twist with respect to joint frame
+        }
+    }
     //l1 on Segment1.Link1 twist w.r.t Joint1 expressed in L1
     //for the 1st link twist01 = twist_j1 (in terms of values)
-    grs::LinearVelocityCoordinatesSemantics twist01_lin_sem("l1","Segment1.Link1","Segment1.Joint1", "J1");
+    grs::LinearVelocityCoordinatesSemantics twist01_lin_sem("l1","Segment1","Segment1", "L1");
     KDL::Vector twist01_lin_coord = twist_j1.getLinearVelocity().getCoordinates().getCoordinates();
     grs::LinearVelocity<KDL::Vector> twist01_lin(twist01_lin_sem,twist01_lin_coord);
     
-    grs::AngularVelocityCoordinatesSemantics twist01_ang_sem("Segment1.Link1","Segment1.Joint1", "J1");
+    grs::AngularVelocityCoordinatesSemantics twist01_ang_sem("Segment1","Segment1", "L1");
     KDL::Vector twist01_ang_coord = twist_j1.getAngularVelocity().getCoordinates().getCoordinates();
     grs::AngularVelocity<KDL::Vector> twist01_ang(twist01_ang_sem, twist01_ang_coord);
     
-     //M.Inv(segment.twist) returns this. Segment tip twist with respect to joint frame
+  
     grs::Twist<KDL::Vector, KDL::Vector> twist01(twist01_lin, twist01_ang);
-    std::cout << "L1 twist01 " << std::endl << twist01 << std::endl << std::endl;
+    std::cout << "L1 TWIST01 " << std::endl << twist01 << std::endl << std::endl;
+  
+    //UNIT TWIST in Segment tip frame
+    grs::LinearVelocityCoordinatesSemantics linear_vel_coord_seman_j1_unit("j1","Segment1","Base","J1");
+    KDL::Vector coordinatesLinearVelocity_j1_unit = joint1.twist(1.0).vel;
+    grs::LinearVelocity<KDL::Vector> linearVelocity_j1_unit(linear_vel_coord_seman_j1_unit ,coordinatesLinearVelocity_j1_unit);
+
+    grs::AngularVelocityCoordinatesSemantics ang_vel_coord_seman_j1_unit("Segment1","Base","J1");
+    KDL::Vector coordinatesAngularVelocity_j1_unit = joint1.twist(1.0).rot;
+    grs::AngularVelocity<KDL::Vector> angularVelocity_j1_unit(ang_vel_coord_seman_j1_unit, coordinatesAngularVelocity_j1_unit);
     
+    //unit joint.twist
+    grs::Twist<KDL::Vector,KDL::Vector> twist_j1_unit(linearVelocity_j1_unit, angularVelocity_j1_unit);
+    
+    //unit twist in segment tip frame
+    //it is computed in the same manner as the tip frame twist
+    twist_j1_unit.changePointBody(position_l1_j1_q);
+    twist_j1_unit.changeCoordinateFrame(orientation_l1_j1_q);
+    std::cout << "L1 UNIT TWIST " << std::endl << twist_j1_unit << std::endl;
+    
+    //ACC TWIST
+    std::cout << std::endl<< std::endl<< std::endl<< "ACCTWISTS " <<  std::endl<<std::endl<< std::endl;
+    //acctwist consists of 3 components: PARENT acctwist; JOINT acctwist; BIAS acctwist
+    //all the constraints and operation on velocity twists apply here
+    
+    //JOINT ACCTWIST
+    //it can also be computed by multiplying qdotdot with unit twist
+    //here we compute by changing its ref. point
+    grs::LinearVelocityCoordinatesSemantics linear_acc_coord_seman_j1("j1","Segment1","Base","J1");
+    KDL::Vector coordinatesLinearAcc_j1 = joint1.twist(qdotdot(0)).vel;
+    grs::LinearVelocity<KDL::Vector> linearAcc_j1(linear_acc_coord_seman_j1 ,coordinatesLinearAcc_j1);
+
+    grs::AngularVelocityCoordinatesSemantics ang_acc_coord_seman_j1("Segment1","Base","J1");
+    KDL::Vector coordinatesAngularAcc_j1 = joint1.twist(qdotdot(0)).rot;
+    grs::AngularVelocity<KDL::Vector> angularAcc_j1(ang_acc_coord_seman_j1, coordinatesAngularAcc_j1);
+
+    grs::Twist<KDL::Vector,KDL::Vector> acctwist_j1(linearAcc_j1, angularAcc_j1);    
+    if(acctwist_j1.changePointBody(position_l1_j1_q))
+    {
+        if(acctwist_j1.changeCoordinateFrame(orientation_l1_j1_q))
+        {
+            std::cout << "J1 ACCTWIST CONTRIBUTION " << std::endl << acctwist_j1 << std::endl; //M.Inv(segment.twist) returns this. Segment tip twist with respect to joint frame
+        }
+    }
+//    grs::LinearVelocityCoordinatesSemantics acctwist01_lin_sem("l1","Segment1","Segment1", "J1");
+//    KDL::Vector acctwist01_lin_coord = acctwist_j1.getLinearVelocity().getCoordinates().getCoordinates();
+//    grs::LinearVelocity<KDL::Vector> acctwist01_lin(acctwist01_lin_sem, acctwist01_lin_coord);
+//    
+//    grs::AngularVelocityCoordinatesSemantics acctwist01_ang_sem("Segment1","Segment1", "J1");
+//    KDL::Vector acctwist01_ang_coord = acctwist_j1.getAngularVelocity().getCoordinates().getCoordinates();
+//    grs::AngularVelocity<KDL::Vector> acctwist01_ang(acctwist01_ang_sem, acctwist01_ang_coord);
+//    grs::Twist<KDL::Vector, KDL::Vector> acctwist01(acctwist01_lin, acctwist01_ang);
+//    
+    //BIAS ACCTWIST
+    grs::LinearVelocityCoordinatesSemantics biasacctwist01_lin_sem("l1","Segment1","Segment1", "L1");
+    KDL::Vector biasacctwist01_lin_coord = acctwist_j1.getAngularVelocity().getCoordinates().getCoordinates()*acctwist_j1.getLinearVelocity().getCoordinates().getCoordinates() + acctwist_j1.getLinearVelocity().getCoordinates().getCoordinates()*acctwist_j1.getAngularVelocity().getCoordinates().getCoordinates();
+    grs::LinearVelocity<KDL::Vector> biasacctwist01_lin(biasacctwist01_lin_sem, biasacctwist01_lin_coord);
+    
+    grs::AngularVelocityCoordinatesSemantics biasacctwist01_ang_sem("Segment1","Segment1", "L1");
+    KDL::Vector biasacctwist01_ang_coord = acctwist_j1.getAngularVelocity().getCoordinates().getCoordinates()*acctwist_j1.getAngularVelocity().getCoordinates().getCoordinates();
+    grs::AngularVelocity<KDL::Vector> biasacctwist01_ang(biasacctwist01_ang_sem, biasacctwist01_ang_coord);
+    
+    grs::Twist<KDL::Vector, KDL::Vector> biasacctwist01(biasacctwist01_lin, biasacctwist01_ang);
+    std::cout << "BIAS ACCTWIST CONTRIBUTION " << std::endl << biasacctwist01 << std::endl<< std::endl;;
+    
+    //PARENT(here it is BASE) ACCTWIST
+    grs::LinearVelocityCoordinatesSemantics acctwist00_lin_sem("b","Base","World", "B");
+    KDL::Vector acctwist00_lin_coord = KDL::Vector(0, 0, 9.8);
+    grs::LinearVelocity<KDL::Vector> acctwist00_lin(acctwist00_lin_sem, acctwist00_lin_coord);
+    
+    grs::AngularVelocityCoordinatesSemantics acctwist00_ang_sem("Base","World", "B");
+    KDL::Vector acctwist00_ang_coord = KDL::Vector::Zero();
+    grs::AngularVelocity<KDL::Vector> acctwist00_ang(acctwist00_ang_sem, acctwist00_ang_coord);
+    grs::Twist<KDL::Vector, KDL::Vector> acctwist00(acctwist00_lin, acctwist00_ang);
+    
+  
+    grs::Position<KDL::Vector> position_l1_b_q("b","Base","l1", "Segment1", "B", distance);
+    grs::Orientation<KDL::Rotation> orientation_l1_b_q("B","Base", "L1","Segment1","L1", orientation);
+    
+    if(acctwist00.changePointBody(position_l1_b_q))
+    { 
+        if(acctwist00.changeCoordinateFrame(orientation_l1_b_q))
+        {
+            std::cout << "L1 ACCTWIST PARENT " << std::endl << acctwist00 << std::endl;
+        }
+    }
+    std::cout << std::endl << "L1 ACCTWIST COMPOSITIONS" << std::endl<< std::endl;
+    grs::Twist<KDL::Vector, KDL::Vector> acctwist1 = grs::compose(grs::compose(acctwist_j1,acctwist00), biasacctwist01);
+    std::cout << "L1 ACCTWIST " << std::endl << acctwist1 << std::endl;
     //~TWISTS
 //~SEGMENT1
 
@@ -172,6 +255,7 @@ int main(int argc, char** argv)
     //~SEGMENT METADATA
     
     //POSES
+    std::cout << std::endl<< std::endl<< "POSES" <<  std::endl<<std::endl<< std::endl;
     //Link2 tip with respect to joint2 at 0 defines the length of the segment
     grs::Pose<KDL::Frame> pose_l2_j2_0 = grs::compose(posejoint2_L1.inverse2() ,poselink2tip_L1);
     // joint2 with respect to L1 at some value q=M_PI/2.0    
@@ -188,48 +272,70 @@ int main(int argc, char** argv)
     //~POSES
     
     //TWISTS
+    std::cout << std::endl<< std::endl<< std::endl<< std::endl<< "TWISTS " <<  std::endl << std::endl;
    //j2 on Segment2.Joint2 twist w.r.t Segment1.Link1
-    grs::LinearVelocityCoordinatesSemantics linear_vel_coord_seman_j2("j2","Segment2.Joint2","Segment1.Link1","L1");
+    grs::LinearVelocityCoordinatesSemantics linear_vel_coord_seman_j2("j2","Segment2","Segment1","J2");
     KDL::Vector coordinatesLinearVelocity_j2 = joint2.twist(qdot(1)).vel;
     grs::LinearVelocity<KDL::Vector> linearVelocity_j2(linear_vel_coord_seman_j2 ,coordinatesLinearVelocity_j2);
 
-    grs::AngularVelocityCoordinatesSemantics ang_vel_coord_seman_j2("Segment2.Joint2","Segment1.Link1","L1");
+    grs::AngularVelocityCoordinatesSemantics ang_vel_coord_seman_j2("Segment2","Segment1","J2");
     KDL::Vector coordinatesAngularVelocity_j2 = joint2.twist(qdot(1)).rot;
     grs::AngularVelocity<KDL::Vector> angularVelocity_j2(ang_vel_coord_seman_j2, coordinatesAngularVelocity_j2);
     
     //joint.twist returns this.
     grs::Twist<KDL::Vector,KDL::Vector> twist_j2(linearVelocity_j2, angularVelocity_j2);
     
-    // l1 on Segment1.Link1 twist w.r.t Base
-    //distance between points j1 and l1 at changing value of q; at 0 it is pose_l1_j1_0.p
+    // l2 on Segment2.Link2 twist w.r.t Segment1.Link1
+    //distance between points j2 and l2 at changing value of q; at 0 it is pose_l2_j2_0.p
     // needs to be put in different coordinates with the same origin.
     grs::PositionCoordinates<KDL::Vector> distance2 = posejoint2_q_L1.getCoordinates().getCoordinates().M * (-1*pose_l2_j2_0.getCoordinates().getCoordinates().p);
-    grs::Position<KDL::Vector> position_l2_l1_q("j2","Segment2.Joint2","l2", "Segment1.Link2", "L1", distance2);
-    std::cout<< "distance " << distance2 << std::endl;
+    grs::Position<KDL::Vector> position_l2_j2_q("j2","Segment2","l2", "Segment2", "J2", distance2);
+    //std::cout<< "distance " << distance2 << std::endl;
     
     grs::OrientationCoordinates<KDL::Rotation> orientation2 = pose_l2_l1_q.getCoordinates().getCoordinates().M.Inverse(); 
-    grs::Orientation<KDL::Rotation> orientation_l2_j2_q("J1","Segment1.Joint1", "L1","Segment1.Link1","L1", orientation2);
-    std::cout<< "orientation " << orientation2 << std::endl;
+    grs::Orientation<KDL::Rotation> orientation_l2_j2_q("J2","Segment2", "L2","Segment2","L2", orientation2);
+    //std::cout<< "orientation " << orientation2 << std::endl;
     
-    bool y2 = twist_j2.changePointBody(position_l2_l1_q);
-    std::cout << "Change reference point of joint twist " << std::endl << twist_j2 << std::endl;//segment.twist returns this. Segment tip twist with respect to previous segment tip
-    bool x2 = twist_j2.changeCoordinateFrame(orientation_l2_j2_q);
-    std::cout << "Change coordinate it is expressed in " << std::endl << twist_j2 << std::endl; //M.Inv(segment.twist) returns this. Segment tip twist with respect to joint frame
-    
+    std::cout << std::endl<< std::endl<< std::endl<<"CHANGE POINT OF JOINT " << std::endl<< std::endl<< std::endl;
+    if(twist_j2.changePointBody(position_l2_j2_q))
+    {
+    //std::cout << "Change reference point of joint twist " << std::endl << twist_j2 << std::endl;//segment.twist returns this. Segment tip twist with respect to previous segment tip
+        std::cout << std::endl<< std::endl<< std::endl<<"CHANGE FRAME OF JOINT " << std::endl<< std::endl<< std::endl;
+        if(twist_j2.changeCoordinateFrame(orientation_l2_j2_q))
+        {
+            std::cout << "J2 TWIST CONTRIBUTION " << std::endl << twist_j2 << std::endl; //M.Inv(segment.twist) returns this. Segment tip twist with respect to joint frame
+        }
+    }
     //l1 on Segment1.Link1 twist w.r.t Joint1 expressed in L1
     //for the 2st link twist02 = twist01 + twist_j2 (in terms of values)
-    bool t1 = twist01.changePointBody(position_l2_l1_q);
-    if(t1)
-        std::cout << "Change reference point of L1 twist01 " << std::endl << twist01 << std::endl;
-    
-    bool t2 = twist01.changeCoordinateFrame(orientation_l2_j2_q);
-    if(t2)
-        std::cout << "Change coordinate of L1 twist01 " << std::endl << twist01 << std::endl;
-    
-//    grs::TwistCoordinatesSemantics twist_coord_sem02("l2","Segment2.Link2","Segment2.Joint2","L2"); 
-//    KDL::Twist coordinatesTwist02;
+    // std::cout << std::endl<< std::endl<< std::endl<<"CHANGE POINT OF LINK " << std::endl<< std::endl<< std::endl;
+    grs::Position<KDL::Vector> position_l2_l1_q("l1","Segment1","l2", "Segment2", "L1", distance2);
+    twist01.changePointBody(position_l2_l1_q);
+    // std::cout << std::endl<< std::endl<< std::endl<<"CHANGE FRAME OF LINK " << std::endl<< std::endl<< std::endl;
+    grs::Orientation<KDL::Rotation> orientation_l2_l1_q("L1","Segment1", "L2","Segment2","L2", orientation2);
+    twist01.changeCoordinateFrame(orientation_l2_l1_q);
+    std::cout << std::endl<< std::endl<< std::endl<<"LINK CONTRIBUTION " << std::endl << twist01 << std::endl<< std::endl;
+    std::cout << std::endl<< std::endl<< std::endl<<"COMPOSITION " << std::endl<< std::endl<< std::endl;
     grs::Twist<KDL::Vector, KDL::Vector> twist02 = grs::compose(twist_j2,twist01);
-    std::cout << "L2 twist02 " << std::endl << twist02 << std::endl << std::endl;
+    std::cout << "L2 TWIST02 " << std::endl << twist02 << std::endl << std::endl;
+    
+    //UNIT TWIST in Segment tip frame
+    grs::LinearVelocityCoordinatesSemantics linear_vel_coord_seman_j2_unit("j2","Segment2","Segment1","J2");
+    KDL::Vector coordinatesLinearVelocity_j2_unit = joint2.twist(1.0).vel;
+    grs::LinearVelocity<KDL::Vector> linearVelocity_j2_unit(linear_vel_coord_seman_j2_unit ,coordinatesLinearVelocity_j2_unit);
+
+    grs::AngularVelocityCoordinatesSemantics ang_vel_coord_seman_j2_unit("Segment2","Segment1","J2");
+    KDL::Vector coordinatesAngularVelocity_j2_unit = joint2.twist(1.0).rot;
+    grs::AngularVelocity<KDL::Vector> angularVelocity_j2_unit(ang_vel_coord_seman_j2_unit, coordinatesAngularVelocity_j2_unit);
+    
+    //unit joint.twist
+    grs::Twist<KDL::Vector,KDL::Vector> twist_j2_unit(linearVelocity_j2_unit, angularVelocity_j2_unit);
+    
+    //unit twist in segment tip frame
+    //it is computed in the same manner as the tip frame twist
+    twist_j2_unit.changePointBody(position_l2_j2_q);
+    twist_j2_unit.changeCoordinateFrame(orientation_l2_j2_q);
+    std::cout << "L2 UNIT TWIST " << std::endl << twist_j2_unit << std::endl;
     
     //~TWISTS
 //~SEGMENT2
@@ -255,6 +361,7 @@ int main(int argc, char** argv)
     //~SEGMENT METADATA
     
     //POSES
+    std::cout << std::endl<< std::endl<< "POSES" <<  std::endl<<std::endl<< std::endl;
     //Link3 tip with respect to joint3 at 0 defines the length of the segment
     grs::Pose<KDL::Frame> pose_l3_j3_0 = grs::compose(posejoint3_L2.inverse2() ,poselink3tip_L2);
     // joint3 with respect to L2 at some value q=M_PI/2.0    
@@ -272,12 +379,13 @@ int main(int argc, char** argv)
     //~POSES
     
     //TWISTS
+    std::cout << std::endl<< std::endl<< std::endl<< std::endl<< "TWISTS " <<  std::endl << std::endl;
     //j3 on Segment3.Joint3 twist w.r.t Segment2.Link2
-    grs::LinearVelocityCoordinatesSemantics linear_vel_coord_seman_j3("j3","Segment3.Joint3","Segment2.Link2","L2");
+    grs::LinearVelocityCoordinatesSemantics linear_vel_coord_seman_j3("j3","Segment3","Segment2","J3");
     KDL::Vector coordinatesLinearVelocity_j3 = joint3.twist(qdot(2)).vel;
     grs::LinearVelocity<KDL::Vector> linearVelocity_j3(linear_vel_coord_seman_j3 ,coordinatesLinearVelocity_j3);
 
-    grs::AngularVelocityCoordinatesSemantics ang_vel_coord_seman_j3("Segment3.Joint3","Segment2.Link2","L2");
+    grs::AngularVelocityCoordinatesSemantics ang_vel_coord_seman_j3("Segment3","Segment2","J3");
     KDL::Vector coordinatesAngularVelocity_j3 = joint3.twist(qdot(2)).rot;
     grs::AngularVelocity<KDL::Vector> angularVelocity_j3(ang_vel_coord_seman_j3, coordinatesAngularVelocity_j3);
     
@@ -288,30 +396,55 @@ int main(int argc, char** argv)
     //distance between points j1 and l1 at changing value of q; at 0 it is pose_l1_j1_0.p
     // needs to be put in different coordinates with the same origin.
     grs::PositionCoordinates<KDL::Vector> distance3 = posejoint3_q_L2.getCoordinates().getCoordinates().M * (-1* pose_l3_j3_0.getCoordinates().getCoordinates().p);
-    grs::Position<KDL::Vector> position_l3_l2_q("j3","Segment3.Joint3","l3", "Segment2.Link3", "L2", distance3);
-    std::cout<< "distance " << distance3 << std::endl;
+    grs::Position<KDL::Vector> position_l3_j3_q("j3","Segment3","l3", "Segment3", "J3", distance3);
+    //std::cout<< "distance " << distance3 << std::endl;
     
     grs::OrientationCoordinates<KDL::Rotation> orientation3 = pose_l3_l2_q.getCoordinates().getCoordinates().M.Inverse(); 
-    grs::Orientation<KDL::Rotation> orientation_l3_j3_q("J2","Segment2.Joint2", "L3","Segment2.Link2","L2", orientation3);
-    std::cout<< "orientation " << orientation3 << std::endl;
+    grs::Orientation<KDL::Rotation> orientation_l3_j3_q("J3","Segment2", "L3","Segment2","L3", orientation3);
+    //std::cout<< "orientation " << orientation3 << std::endl;
     
-    y2 = twist_j3.changePointBody(position_l3_l2_q);
-    std::cout << "Change reference point of joint twist " << std::endl << twist_j3 << std::endl;//segment.twist returns this. Segment tip twist with respect to previous segment tip
-    x2 = twist_j3.changeCoordinateFrame(orientation_l3_j3_q);
-    std::cout << "Change coordinate it is expressed in " << std::endl << twist_j3 << std::endl; //M.Inv(segment.twist) returns this. Segment tip twist with respect to joint frame
+    std::cout << std::endl<< std::endl<< std::endl<<"CHANGE POINT OF JOINT " << std::endl<< std::endl<< std::endl;
+    if(twist_j3.changePointBody(position_l3_j3_q))
+    {
+    std::cout << std::endl<< std::endl<< std::endl<<"CHANGE FRAME OF JOINT " << std::endl<< std::endl<< std::endl;
+    //std::cout << "Change reference point of joint twist " << std::endl << twist_j3 << std::endl;//segment.twist returns this. Segment tip twist with respect to previous segment tip
+         if(twist_j3.changeCoordinateFrame(orientation_l3_j3_q))
+         {
+            std::cout << "J3 TWIST CONTRIBUTION " << std::endl << twist_j3 << std::endl; //M.Inv(segment.twist) returns this. Segment tip twist with respect to joint frame
+         }
+    }
     
     //l1 on Segment1.Link1 twist w.r.t Joint1 expressed in L1
     //for the 2st link twist02 = twist01 + twist_j2 (in terms of values)
-    t1 = twist02.changePointBody(position_l3_l2_q);
-    if(t1)
-        std::cout << "Change reference point of L2 twist02 " << std::endl << twist02 << std::endl;
+    std::cout << std::endl<< std::endl<< std::endl<<"CHANGE POINT OF LINK " << std::endl<< std::endl<< std::endl;
+    grs::Position<KDL::Vector> position_l3_l2_q("l2","Segment2","l3", "Segment3", "L2", distance3);
+    twist02.changePointBody(position_l3_l2_q);
+    std::cout << std::endl<< std::endl<< std::endl<<"CHANGE FRAME OF LINK " << std::endl<< std::endl<< std::endl;
+    grs::Orientation<KDL::Rotation> orientation_l3_l2_q("L2","Segment2", "L3","Segment3","L3", orientation2);
+    //std::cout << "Change reference point of L2 twist02 " << std::endl << twist02 << std::endl;
+    twist02.changeCoordinateFrame(orientation_l3_l2_q);
+    std::cout << std::endl<< std::endl<< std::endl<<"LINK CONTRIBUTION " << std::endl << twist02 << std::endl<< std::endl;
+    std::cout << std::endl<< std::endl<< std::endl<<"COMPOSITION " << std::endl<< std::endl<< std::endl;
+    grs::Twist<KDL::Vector, KDL::Vector> twist03 = grs::compose(twist02,twist_j3);
+    std::cout << "L3 TWIST03 " << twist03 << std::endl << std::endl;
     
-    t2 = twist02.changeCoordinateFrame(orientation_l3_j3_q);
-    if(t2)
-        std::cout << "Change coordinate of L2 twist02 " << std::endl << twist02 << std::endl;
+    //UNIT TWIST in Segment tip frame
+    grs::LinearVelocityCoordinatesSemantics linear_vel_coord_seman_j3_unit("j3","Segment3","Segment2","J3");
+    KDL::Vector coordinatesLinearVelocity_j3_unit = joint3.twist(1.0).vel;
+    grs::LinearVelocity<KDL::Vector> linearVelocity_j3_unit(linear_vel_coord_seman_j3_unit ,coordinatesLinearVelocity_j3_unit);
+
+    grs::AngularVelocityCoordinatesSemantics ang_vel_coord_seman_j3_unit("Segment3","Segment2","J3");
+    KDL::Vector coordinatesAngularVelocity_j3_unit = joint3.twist(1.0).rot;
+    grs::AngularVelocity<KDL::Vector> angularVelocity_j3_unit(ang_vel_coord_seman_j3_unit, coordinatesAngularVelocity_j3_unit);
     
-    grs::Twist<KDL::Vector, KDL::Vector> twist03 = grs::compose(twist_j3,twist02);
-    std::cout << "L3 twist03 " << twist03 << std::endl << std::endl;
+    //unit joint.twist
+    grs::Twist<KDL::Vector,KDL::Vector> twist_j3_unit(linearVelocity_j3_unit, angularVelocity_j3_unit);
+    
+    //unit twist in segment tip frame
+    //it is computed in the same manner as the tip frame twist
+    twist_j3_unit.changePointBody(position_l3_j3_q);
+    twist_j3_unit.changeCoordinateFrame(orientation_l3_j3_q);
+    std::cout << "L3 UNIT TWIST " << std::endl << twist_j3_unit << std::endl;
     
     //~TWISTS
     
@@ -351,7 +484,8 @@ int main(int argc, char** argv)
     jointInitialRate.qdot(2)= qdot(2);
     
     for(unsigned int i=0; i<achain.getNrOfSegments();i++)
-    {
+    {   
+        std::cout << std::endl << std::endl;
 //        std::cout <<"Segment joint name " << achain.getSegment(i).getJoint().getName() << std::endl;
 //        std::cout <<"Segment name " << achain.getSegment(i).getName()<< std::endl;
 //        std::cout <<"Joint origin " << achain.getSegment(i).getJoint().JointOrigin() << std::endl;
@@ -363,7 +497,8 @@ int main(int argc, char** argv)
         std::cout <<"Joint twist " << achain.getSegment(i).getJoint().twist(jointInitialRate.qdot(i)) << std::endl;
         std::cout <<"Segment tip twist " << achain.getSegment(i).twist(jointInitialPose(i), jointInitialRate.qdot(i)) << std::endl;
         std::cout <<"Segment tip twist inv " << tempLocal[i].M.Inverse(achain.getSegment(i).twist(jointInitialPose(i), jointInitialRate.qdot(i))) << std::endl;
-//        std::cout <<"Segment tip Unit twist inv " << tempLocal[i].M.Inverse(achain.getSegment(i).twist(jointInitialPose(i), 1.0)) << std::endl;
+        std::cout <<"Segment tip Unit twist inv " << tempLocal[i].M.Inverse(achain.getSegment(i).twist(jointInitialPose(i), 1.0)) << std::endl;
+        std::cout <<"Segment tip ACC twist Joint Cont" << tempLocal[i].M.Inverse(achain.getSegment(i).twist(jointInitialPose(i), 1.0))*qdotdot(0) << std::endl;
 //        std::cout <<"Segment root Unit twist inv " << tempLocal[i]*tempLocal[i].M.Inverse(achain.getSegment(i).twist(jointInitialPose(i), 1.0)) << std::endl;
         if(i == 0)
         {
@@ -371,7 +506,8 @@ int main(int argc, char** argv)
             std::cout <<"Total twist " << tempTwist[i] << std::endl;
         }
         if(i!=0)
-        {       tempTwist[i] = tempLocal[i].Inverse(tempTwist[i-1]) + tempLocal[i].M.Inverse(achain.getSegment(i).twist(jointInitialPose(i), jointInitialRate.qdot(i))) ;
+        {       
+            tempTwist[i] = tempLocal[i].Inverse(tempTwist[i-1]) + tempLocal[i].M.Inverse(achain.getSegment(i).twist(jointInitialPose(i), jointInitialRate.qdot(i))) ;
             std::cout <<"Total twist " << tempTwist[i] << std::endl;
         }
         fksolvertest.JntToCart(jointInitialPose, tempEEtest[i], i+1);

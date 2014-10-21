@@ -1,484 +1,225 @@
-Number of Joints 5
-Number of Segments 5
-Templated dynamics values for Tree 
-Transform initial state
-[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,           0,           0]]
-Twist initial state
-[           0,           0,           0,           0,           0,           0]
-Acc Twist initial state
-[           0,           0,        -9.8,           0,           0,           0]
-Wrench initial state
-[           0,           0,           0,           0,           0,           0]
-
-Transform L1[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,           0,           0]]
-Twist L1[           0,           0,           0,           0,           0,           0]
-Acc Twist L1[           0,           0,           0,           0,           0,           0]
-Wrench L1[           0,           0,           0,           0,           0,           0]
-
-Transform L2[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,           0,           0]]
-Twist L2[           0,           0,           0,           0,           0,           0]
-Acc Twist L2[           0,           0,           0,           0,           0,           0]
-Wrench L2[           0,           0,           0,           0,           0,           0]
 
 
+POSES
 
-FORWARD TRAVERSAL
 
-Current element name in current iteration L1
-Current joint index and value 0 1.0472
-Inside pose operation Transform value
-[[         0.5,   -0.866025,           0;
-     0.866025,         0.5,           0;
+Tip L1 with respect to B at value q  Pose((l1,[L1])|Segment1.Link1,(b,[B])|Base,[B]) with coordinates:[[    0.866025,         0.5,           0;
+         -0.5,    0.866025,           0;
             0,           0,           1]
 [     0.34641,        -0.2,           0]]
-Inside twist operation Twist value
-[        0.08,-2.82909e-18,           0,           0,           0,         0.2]
-Inside acctwist operation AccTwist value
-[           0,           0,        -9.8,           0,           0,           0]
-Inside wrench operation Wrench value 
-[ 1.41455e-19,       0.008,       -2.45,        0.98,           0, 5.65818e-20]
 
-Current element name in current iteration L2
-Current joint index and value 1 -1.0472
-Inside pose operation Transform value
-[[         0.5,    0.866025,           0;
-    -0.866025,         0.5,           0;
-            0,           0,           1]
-[    -0.34641,        -0.2,           0]]
-Inside twist operation Twist value
-[        0.28,    0.069282,           0,           0,           0,         0.6]
-Inside acctwist operation AccTwist value
-[   0.0277128,      -0.016,        -9.8,           0,           0,           0]
-Inside wrench operation Wrench value 
-[  -0.0034641,       0.074,       -2.45,        0.98,           0, -0.00138564]
 
-Current element name in current iteration L3
-Current joint index and value 2 0.785398
-Inside pose operation Transform value
-[[    0.707107,   -0.707107,           0;
+
+TWISTS 
+
+
+J1 TWIST CONTRIBUTION 
+Twist(l1|Segment1,Base,[L1]) with linearVelocity coordinates:[-5.92245e-18,         0.2,           0] and angularVelocity coordinates: [           0,           0,         0.5]
+L1 TWIST01 
+Twist(l1|Segment1,Segment1,[L1]) with linearVelocity coordinates:[-5.92245e-18,         0.2,           0] and angularVelocity coordinates: [           0,           0,         0.5]
+
+L1 UNIT TWIST 
+Twist(l1|Segment1,Base,[L1]) with linearVelocity coordinates:[-1.18449e-17,         0.4,           0] and angularVelocity coordinates: [           0,           0,           1]
+
+
+
+ACCTWISTS 
+
+
+J1 ACCTWIST CONTRIBUTION 
+Twist(l1|Segment1,Base,[L1]) with linearVelocity coordinates:[-2.40049e-18,       0.046,           0] and angularVelocity coordinates: [           0,           0,       0.115]
+BIAS ACCTWIST CONTRIBUTION 
+Twist(l1|Segment1,Segment1,[L1]) with linearVelocity coordinates:[           0,           0,           0] and angularVelocity coordinates: [           0,           0,           0]
+
+L1 ACCTWIST PARENT 
+Twist(l1|Base,World,[L1]) with linearVelocity coordinates:[           0,           0,         9.8] and angularVelocity coordinates: [           0,           0,           0]
+
+L1 ACCTWIST COMPOSITIONS
+
+L1 ACCTWIST 
+Twist(l1|Segment1,World,[L1]) with linearVelocity coordinates:[-2.40049e-18,       0.046,         9.8] and angularVelocity coordinates: [           0,           0,       0.115]
+
+
+POSES
+
+
+Tip L2 with respect to L1 at value q  Pose((l2,[L2])|Segment2.Link2,(l1,[L1])|Segment1.Link1,[L1]) with coordinates:[[    0.707107,   -0.707107,           0;
      0.707107,    0.707107,           0;
             0,           0,           1]
-[    0.282843,   -0.282843,           0]]
-Inside twist operation Twist value
-[     0.40698,      -0.149,           0,           0,           0,         0.4]
-Inside acctwist operation AccTwist value
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
-Inside wrench operation Wrench value 
-[   0.0244206,   0.0613195,       -2.45,        0.98,           0,  0.00976823]
+[    0.282843,    0.282843,           0]]
 
-Current element name in current iteration L4
-Current joint index and value 3 0
-Inside pose operation Transform value
-[[           1,           0,           0;
+
+
+
+
+TWISTS 
+
+
+
+
+CHANGE POINT OF JOINT 
+
+
+
+
+
+CHANGE FRAME OF JOINT 
+
+
+J2 TWIST CONTRIBUTION 
+Twist(l2|Segment2,Segment1,[L2]) with linearVelocity coordinates:[-1.96173e-18,        -0.1,           0] and angularVelocity coordinates: [          -0,           0,       -0.25]
+
+
+
+LINK CONTRIBUTION 
+Twist(l2|Segment1,Segment1,[L2]) with linearVelocity coordinates:[    0.141421,    0.341421,           0] and angularVelocity coordinates: [           0,           0,         0.5]
+
+
+
+
+COMPOSITION 
+
+
+L2 TWIST02 
+Twist(l2|Segment2,Segment1,[L2]) with linearVelocity coordinates:[    0.141421,    0.241421,           0] and angularVelocity coordinates: [           0,           0,        0.25]
+
+L2 UNIT TWIST 
+Twist(l2|Segment2,Segment1,[L2]) with linearVelocity coordinates:[ 7.84691e-18,         0.4,           0] and angularVelocity coordinates: [           0,           0,           1]
+
+
+POSES
+
+
+Tip L3 with respect to L2 at value q  Pose((l3,[L3])|Segment3.Link3,(l2,[L2])|Segment2.Link2,[L2]) with coordinates:[[    0.965926,    0.258819,           0;
+    -0.258819,    0.965926,           0;
+            0,           0,           1]
+[    0.482963,    -0.12941,           0]]
+
+
+
+
+
+TWISTS 
+
+
+
+
+CHANGE POINT OF JOINT 
+
+
+
+
+
+CHANGE FRAME OF JOINT 
+
+
+J3 TWIST CONTRIBUTION 
+Twist(l3|Segment3,Segment2,[L3]) with linearVelocity coordinates:[ 7.18284e-19,       0.175,           0] and angularVelocity coordinates: [           0,           0,        0.35]
+
+
+
+CHANGE POINT OF LINK 
+
+
+
+
+
+CHANGE FRAME OF LINK 
+
+
+
+
+
+LINK CONTRIBUTION 
+Twist(l3|Segment2,Segment1,[L3]) with linearVelocity coordinates:[    0.378964,    0.133211,           0] and angularVelocity coordinates: [           0,           0,        0.25]
+
+
+
+
+COMPOSITION 
+
+
+L3 TWIST03 Twist(l3|Segment3,Segment1,[L3]) with linearVelocity coordinates:[    0.378964,    0.308211,           0] and angularVelocity coordinates: [           0,           0,         0.6]
+
+L3 UNIT TWIST 
+Twist(l3|Segment3,Segment2,[L3]) with linearVelocity coordinates:[           0,         0.5,           0] and angularVelocity coordinates: [           0,           0,           1]
+Tip L3 with respect to B at value q  Pose((l3,[L3])|Segment3.Link3,(b,[B])|Base,[B]) with coordinates:[[           1,           0,           0;
             0,           1,           0;
             0,           0,           1]
-[           0,        -0.4,           0]]
-Inside twist operation Twist value
-[     0.56698,      -0.149,           0,           0,           0,         0.4]
-Inside acctwist operation AccTwist value
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
-Inside wrench operation Wrench value 
-[   0.0244206,   0.0773195,       -2.45,        0.98,           0,  0.00976823]
+[     1.23278,  -0.0964724,           0]]
 
-Current element name in current iteration M0
-Current joint index and value 4 0
-Inside pose operation Transform value
-[[           1,           0,           0;
+
+
+Tip Frame [[           1,           0,           0;
             0,           1,           0;
             0,           0,           1]
-[           0,        -0.4,           0]]
-Inside twist operation Twist value
-[     0.72698,      -0.149,           0,           0,           0,         0.4]
-Inside acctwist operation AccTwist value
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
-Inside wrench operation Wrench value 
-[   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
-
-
-
-LSTATE
-
- 
-
-[[         0.5,   -0.866025,           0;
-     0.866025,         0.5,           0;
+[         0.4,           0,           0]]
+Segment tip pose [[    0.866025,         0.5,           0;
+         -0.5,    0.866025,           0;
             0,           0,           1]
 [     0.34641,        -0.2,           0]]
-[        0.08,-2.82909e-18,           0,           0,           0,         0.2]
-[           0,           0,        -9.8,           0,           0,           0]
-[ 1.41455e-19,       0.008,       -2.45,        0.98,           0, 5.65818e-20]
- 
-
-[[         0.5,    0.866025,           0;
-    -0.866025,         0.5,           0;
+Joint twist [           0,           0,           0,           0,           0,         0.5]
+Segment tip twist [         0.1,    0.173205,           0,           0,           0,         0.5]
+Segment tip twist inv [-5.92245e-18,         0.2,           0,           0,           0,         0.5]
+Segment tip Unit twist inv [-1.18449e-17,         0.4,           0,           0,           0,           1]
+Segment tip ACC twist Joint Cont[-1.36216e-18,       0.046,           0,           0,           0,       0.115]
+Total twist [-5.92245e-18,         0.2,           0,           0,           0,         0.5]
+FK Pose of link 1 [[    0.866025,         0.5,           0;
+         -0.5,    0.866025,           0;
             0,           0,           1]
-[    -0.34641,        -0.2,           0]]
-[        0.28,    0.069282,           0,           0,           0,         0.6]
-[   0.0277128,      -0.016,        -9.8,           0,           0,           0]
-[  -0.0034641,       0.074,       -2.45,        0.98,           0, -0.00138564]
- 
+[     0.34641,        -0.2,           0]]
 
-[[    0.707107,   -0.707107,           0;
+
+FK Vel of link 1 [         0.1,    0.173205,           0,           0,           0,         0.5]
+
+
+
+
+Tip Frame [[           1,           0,           0;
+            0,           1,           0;
+            0,           0,           1]
+[         0.4,           0,           0]]
+Segment tip pose [[    0.707107,   -0.707107,           0;
      0.707107,    0.707107,           0;
             0,           0,           1]
-[    0.282843,   -0.282843,           0]]
-[     0.40698,      -0.149,           0,           0,           0,         0.4]
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
-[   0.0244206,   0.0613195,       -2.45,        0.98,           0,  0.00976823]
- 
+[    0.282843,    0.282843,           0]]
+Joint twist [           0,           0,           0,          -0,          -0,       -0.25]
+Segment tip twist [   0.0707107,  -0.0707107,           0,          -0,          -0,       -0.25]
+Segment tip twist inv [-1.96173e-18,        -0.1,           0,          -0,           0,       -0.25]
+Segment tip Unit twist inv [ 7.84691e-18,         0.4,           0,           0,           0,           1]
+Segment tip ACC twist Joint Cont[ 9.02395e-19,       0.046,           0,           0,           0,       0.115]
+Total twist [    0.141421,    0.241421,           0,           0,           0,        0.25]
+FK Pose of link 2 [[    0.965926,   -0.258819,           0;
+     0.258819,    0.965926,           0;
+            0,           0,           1]
+[     0.73278,  -0.0964724,           0]]
 
-[[           1,           0,           0;
+
+FK Vel of link 2 [   0.0741181,    0.269798,           0,           0,           0,        0.25]
+
+
+
+
+Tip Frame [[           1,           0,           0;
             0,           1,           0;
             0,           0,           1]
-[           0,        -0.4,           0]]
-[     0.56698,      -0.149,           0,           0,           0,         0.4]
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
-[   0.0244206,   0.0773195,       -2.45,        0.98,           0,  0.00976823]
- 
-
-[[           1,           0,           0;
+[         0.5,           0,           0]]
+Segment tip pose [[    0.965926,    0.258819,           0;
+    -0.258819,    0.965926,           0;
+            0,           0,           1]
+[    0.482963,    -0.12941,           0]]
+Joint twist [           0,           0,           0,           0,           0,        0.35]
+Segment tip twist [   0.0452933,    0.169037,           0,           0,           0,        0.35]
+Segment tip twist inv [ 7.18284e-19,       0.175,           0,           0,           0,        0.35]
+Segment tip Unit twist inv [           0,         0.5,           0,           0,           0,           1]
+Segment tip ACC twist Joint Cont[           0,      0.0575,           0,           0,           0,       0.115]
+Total twist [   0.0741181,    0.569798,           0,           0,           0,         0.6]
+FK Pose of link 3 [[           1,           0,           0;
             0,           1,           0;
             0,           0,           1]
-[           0,        -0.4,           0]]
-[     0.72698,      -0.149,           0,           0,           0,         0.4]
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
-[   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
+[     1.23278,  -0.0964724,           0]]
 
 
-LSTATE2
-
- 
-
-[[         0.5,   -0.866025,           0;
-     0.866025,         0.5,           0;
-            0,           0,           1]
-[     0.34641,        -0.2,           0]]
-[        0.08,-2.82909e-18,           0,           0,           0,         0.2]
-[           0,           0,        -9.8,           0,           0,           0]
-[ 1.41455e-19,       0.008,       -2.45,        0.98,           0, 5.65818e-20]
- 
-
-[[         0.5,    0.866025,           0;
-    -0.866025,         0.5,           0;
-            0,           0,           1]
-[    -0.34641,        -0.2,           0]]
-[        0.28,    0.069282,           0,           0,           0,         0.6]
-[   0.0277128,      -0.016,        -9.8,           0,           0,           0]
-[  -0.0034641,       0.074,       -2.45,        0.98,           0, -0.00138564]
- 
-
-[[    0.707107,   -0.707107,           0;
-     0.707107,    0.707107,           0;
-            0,           0,           1]
-[    0.282843,   -0.282843,           0]]
-[     0.40698,      -0.149,           0,           0,           0,         0.4]
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
-[   0.0244206,   0.0613195,       -2.45,        0.98,           0,  0.00976823]
- 
-
-[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,        -0.4,           0]]
-[     0.56698,      -0.149,           0,           0,           0,         0.4]
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
-[   0.0244206,   0.0773195,       -2.45,        0.98,           0,  0.00976823]
- 
-
-[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,        -0.4,           0]]
-[     0.72698,      -0.149,           0,           0,           0,         0.4]
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
-[   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
+FK Vel of link 3 [   0.0741181,    0.569798,           0,           0,           0,         0.6]
 
 
-REVERSE TRAVERSAL
-
-
-This is reverse iteration/inward
-Current element name in current reverse iteration M0
-Current joint index and value in reverse iteration 4 0
-Spatial BODY force on a current element [   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
-Total Spatial force on a current element [   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
-Torque on a current supporting joint 0
-
-Current element name in current reverse iteration L4
-Current joint index and value in reverse iteration 3 0
-Spatial BODY force on a current element [   0.0244206,   0.0773195,       -2.45,        0.98,           0,  0.00976823]
-Child element name in current  reverse iteration M0
-Child joint index and value 4 0
-Total spatial force on a child [   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
-Inside wrench operation Input Wrench of current element (current's body wrench) 
-[   0.0244206,   0.0773195,       -2.45,        0.98,           0,  0.00976823]
-
-Inside wrench operation Input Wrench of a child (child's total wrench) 
-[   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
-
-Inside wrench operation updated Wrench of current element 
-[   0.0488411,    0.170639,        -4.9,        2.94,           0,   0.0293047]
-
-Inside wrench operation computed Torque of current joint 
-0.0195365
-
-Torque on a current supporting joint 4 0.0195365
-
-Total Spatial force on a current element [   0.0488411,    0.170639,        -4.9,        2.94,           0,   0.0293047]
-Torque on a current supporting joint 0
-
-Current element name in current reverse iteration L3
-Current joint index and value in reverse iteration 2 0.785398
-Spatial BODY force on a current element [   0.0244206,   0.0613195,       -2.45,        0.98,           0,  0.00976823]
-Child element name in current  reverse iteration L4
-Child joint index and value 3 0
-Total spatial force on a child [   0.0488411,    0.170639,        -4.9,        2.94,           0,   0.0293047]
-Inside wrench operation Input Wrench of current element (current's body wrench) 
-[   0.0244206,   0.0613195,       -2.45,        0.98,           0,  0.00976823]
-
-Inside wrench operation Input Wrench of a child (child's total wrench) 
-[   0.0488411,    0.170639,        -4.9,        2.94,           0,   0.0293047]
-
-Inside wrench operation updated Wrench of current element 
-[   0.0732617,    0.231959,       -7.35,        5.88,           0,   0.0586094]
-
-Inside wrench operation computed Torque of current joint 
-0.0488411
-
-Torque on a current supporting joint 3 0.0488411
-
-Total Spatial force on a current element [   0.0732617,    0.231959,       -7.35,        5.88,           0,   0.0586094]
-Torque on a current supporting joint 0
-
-Current element name in current reverse iteration L2
-Current joint index and value in reverse iteration 1 -1.0472
-Spatial BODY force on a current element [  -0.0034641,       0.074,       -2.45,        0.98,           0, -0.00138564]
-Child element name in current  reverse iteration L3
-Child joint index and value 2 0.785398
-Total spatial force on a child [   0.0732617,    0.231959,       -7.35,        5.88,           0,   0.0586094]
-Inside wrench operation Input Wrench of current element (current's body wrench) 
-[  -0.0034641,       0.074,       -2.45,        0.98,           0, -0.00138564]
-
-Inside wrench operation Input Wrench of a child (child's total wrench) 
-[   0.0732617,    0.231959,       -7.35,        5.88,           0,   0.0586094]
-
-Inside wrench operation updated Wrench of current element 
-[    -0.11568,    0.289823,        -9.8,     7.21668,     6.23668,   0.0865284]
-
-Inside wrench operation computed Torque of current joint 
-0.087914
-
-Torque on a current supporting joint 2 0.087914
-
-Total Spatial force on a current element [    -0.11568,    0.289823,        -9.8,     7.21668,     6.23668,   0.0865284]
-Torque on a current supporting joint 0
-
-Current element name in current reverse iteration L1
-Current joint index and value in reverse iteration 0 1.0472
-Spatial BODY force on a current element [ 1.41455e-19,       0.008,       -2.45,        0.98,           0, 5.65818e-20]
-Child element name in current  reverse iteration L2
-Child joint index and value 1 -1.0472
-Total spatial force on a child [    -0.11568,    0.289823,        -9.8,     7.21668,     6.23668,   0.0865284]
-Inside wrench operation Input Wrench of current element (current's body wrench) 
-[ 1.41455e-19,       0.008,       -2.45,        0.98,           0, 5.65818e-20]
-
-Inside wrench operation Input Wrench of a child (child's total wrench) 
-[    -0.11568,    0.289823,        -9.8,     7.21668,     6.23668,   0.0865284]
-
-Inside wrench operation updated Wrench of current element 
-[    0.193155,    0.253093,      -12.25,     11.9495,    -6.52631,   0.0402565]
-
-Inside wrench operation computed Torque of current joint 
-0.0402565
-
-Torque on a current supporting joint 1 0.0402565
-
-Total Spatial force on a current element [    0.193155,    0.253093,      -12.25,     11.9495,    -6.52631,   0.0402565]
-Torque on a current supporting joint 0
-
-Current element name in current reverse iteration L0
-Current joint index and value in reverse iteration 0 1.0472
-Spatial BODY force on a current element [ 1.41455e-19,       0.008,       -2.45,        0.98,           0, 5.65818e-20]
-Child element name in current  reverse iteration L1
-Child joint index and value 0 1.0472
-Total spatial force on a child [    0.193155,    0.253093,      -12.25,     11.9495,    -6.52631,   0.0402565]
-Inside wrench operation Input Wrench of current element (current's body wrench) 
-[ 1.41455e-19,       0.008,       -2.45,        0.98,           0, 5.65818e-20]
-
-Inside wrench operation Input Wrench of a child (child's total wrench) 
-[    0.193155,    0.253093,      -12.25,     11.9495,    -6.52631,   0.0402565]
-
-Inside wrench operation updated Wrench of current element 
-[   -0.122608,    0.301823,       -14.7,     15.0567,     11.3289,    0.117518]
-
-Inside wrench operation computed Torque of current joint 
-0.117518
-
-Torque on a current supporting joint 0 0.117518
-
-Total Spatial force on a current element [    0.193155,    0.253093,      -12.25,     11.9495,    -6.52631,   0.0402565]
-Torque on a current supporting joint 0.117518
-
-
-
-LSTATE3
-
-
-M0
-[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,        -0.4,           0]]
-[     0.72698,      -0.149,           0,           0,           0,         0.4]
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
-[   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
-Joint index and torque 4  0.0195365
-
-L4
-[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,        -0.4,           0]]
-[     0.56698,      -0.149,           0,           0,           0,         0.4]
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
-[   0.0488411,    0.170639,        -4.9,        2.94,           0,   0.0293047]
-Joint index and torque 3  0.0488411
-
-L3
-[[    0.707107,   -0.707107,           0;
-     0.707107,    0.707107,           0;
-            0,           0,           1]
-[    0.282843,   -0.282843,           0]]
-[     0.40698,      -0.149,           0,           0,           0,         0.4]
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
-[   0.0732617,    0.231959,       -7.35,        5.88,           0,   0.0586094]
-Joint index and torque 2  0.087914
-
-L2
-[[         0.5,    0.866025,           0;
-    -0.866025,         0.5,           0;
-            0,           0,           1]
-[    -0.34641,        -0.2,           0]]
-[        0.28,    0.069282,           0,           0,           0,         0.6]
-[   0.0277128,      -0.016,        -9.8,           0,           0,           0]
-[    -0.11568,    0.289823,        -9.8,     7.21668,     6.23668,   0.0865284]
-Joint index and torque 1  0.0402565
-
-L1
-[[         0.5,   -0.866025,           0;
-     0.866025,         0.5,           0;
-            0,           0,           1]
-[     0.34641,        -0.2,           0]]
-[        0.08,-2.82909e-18,           0,           0,           0,         0.2]
-[           0,           0,        -9.8,           0,           0,           0]
-[    0.193155,    0.253093,      -12.25,     11.9495,    -6.52631,   0.0402565]
-Joint index and torque 0  0.117518
-
-L0
-[[         0.5,   -0.866025,           0;
-     0.866025,         0.5,           0;
-            0,           0,           1]
-[     0.34641,        -0.2,           0]]
-[        0.08,-2.82909e-18,           0,           0,           0,         0.2]
-[           0,           0,        -9.8,           0,           0,           0]
-[    0.193155,    0.253093,      -12.25,     11.9495,    -6.52631,   0.0402565]
-Joint index and torque 0  0.117518
-
-
-
-RNE dynamics values 
-q, qdot 1.047198, 0.200000
-q, qdot -1.047198, 0.400000
-q, qdot 0.785398, -0.200000
-q, qdot 0.000000, 0.000000
-q, qdot 0.000000, 0.000000
- Segment name L1
- F0
-[[         0.5,   -0.866025,           0;
-     0.866025,         0.5,           0;
-            0,           0,           1]
-[     0.34641,        -0.2,           0]]
- Velocity of link0
-[        0.08,-2.82909e-18,           0,           0,           0,         0.2]
- Acceleration of link 0
-[           0,           0,        -9.8,           0,           0,           0]
- Force at link0
-[ 1.41455e-19,       0.008,       -2.45,        0.98,           0, 5.65818e-20]
- Segment name L2
- F1
-[[         0.5,    0.866025,           0;
-    -0.866025,         0.5,           0;
-            0,           0,           1]
-[    -0.34641,        -0.2,           0]]
- Velocity of link1
-[        0.28,    0.069282,           0,           0,           0,         0.6]
- Acceleration of link 1
-[   0.0277128,      -0.016,        -9.8,           0,           0,           0]
- Force at link1
-[  -0.0034641,       0.074,       -2.45,        0.98,           0, -0.00138564]
- Segment name L3
- F2
-[[    0.707107,   -0.707107,           0;
-     0.707107,    0.707107,           0;
-            0,           0,           1]
-[    0.282843,   -0.282843,           0]]
- Velocity of link2
-[     0.40698,      -0.149,           0,           0,           0,         0.4]
- Acceleration of link 2
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
- Force at link2
-[   0.0244206,   0.0613195,       -2.45,        0.98,           0,  0.00976823]
- Segment name L4
- F3
-[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,        -0.4,           0]]
- Velocity of link3
-[     0.56698,      -0.149,           0,           0,           0,         0.4]
- Acceleration of link 3
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
- Force at link3
-[   0.0244206,   0.0773195,       -2.45,        0.98,           0,  0.00976823]
- Segment name M0
- F4
-[[           1,           0,           0;
-            0,           1,           0;
-            0,           0,           1]
-[           0,        -0.4,           0]]
- Velocity of link4
-[     0.72698,      -0.149,           0,           0,           0,         0.4]
- Acceleration of link 4
-[   0.0380822,   0.0184863,        -9.8,           0,           0,           0]
- Force at link4
-[   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
-4 S[i] in inward sweep [         0.4,           0,           0,           0,           0,           1]
-4 F[i] in inward sweep [   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
-4 Force in force rec[   0.0244206,   0.0933195,       -2.45,        0.98,           0,  0.00976823]
-3 S[i] in inward sweep [         0.4,           0,           0,           0,           0,           1]
-3 F[i] in inward sweep [   0.0488411,    0.170639,        -4.9,        2.94,           0,   0.0293047]
-3 Force in force rec[   0.0488411,    0.170639,        -4.9,        2.94,           0,   0.0293047]
-2 S[i] in inward sweep [         0.4,-7.84691e-18,           0,           0,           0,           1]
-2 F[i] in inward sweep [   0.0732617,    0.231959,       -7.35,        5.88,           0,   0.0586094]
-2 Force in force rec[   0.0732617,    0.231959,       -7.35,        5.88,           0,   0.0586094]
-1 S[i] in inward sweep [         0.4, 8.11796e-18,           0,           0,           0,           1]
-1 F[i] in inward sweep [    -0.11568,    0.289823,        -9.8,     7.21668,     6.23668,   0.0865284]
-1 Force in force rec[    -0.11568,    0.289823,        -9.8,     7.21668,     6.23668,   0.0865284]
-0 S[i] in inward sweep [         0.4,-8.11796e-18,           0,           0,           0,           1]
-0 F[i] in inward sweep [    0.193155,    0.253093,      -12.25,     11.9495,    -6.52631,   0.0402565]
-0 Force in force rec[    0.193155,    0.253093,      -12.25,     11.9495,    -6.52631,   0.0402565]
-
-index, q, qdot, torques 0, 1.047198, 0.200000, 0.117518
-index, q, qdot, torques 1, -1.047198, 0.400000, 0.040256
-index, q, qdot, torques 2, 0.785398, -0.200000, 0.087914
-index, q, qdot, torques 3, 0.000000, 0.000000, 0.048841
-index, q, qdot, torques 4, 0.000000, 0.000000, 0.019536

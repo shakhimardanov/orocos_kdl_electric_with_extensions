@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="89">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="Modules"
+                   displayName="Modules"
+                   projectFiles="true"
+                   root="/usr/share/cmake-2.8/Modules">
+      <itemPath>/usr/share/cmake-2.8/Modules/CMakeCCompilerABI.c</itemPath>
+      <itemPath>/usr/share/cmake-2.8/Modules/CMakeCXXCompilerABI.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="orocos_kdl"
+                   displayName="orocos_kdl"
+                   projectFiles="true"
+                   root=".">
+      <logicalFolder name="build" displayName="build" projectFiles="true">
+        <logicalFolder name="CMakeFiles" displayName="CMakeFiles" projectFiles="true">
+          <logicalFolder name="CompilerIdC" displayName="CompilerIdC" projectFiles="true">
+            <itemPath>build/CMakeFiles/CompilerIdC/CMakeCCompilerId.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="CompilerIdCXX"
+                         displayName="CompilerIdCXX"
+                         projectFiles="true">
+            <itemPath>build/CMakeFiles/CompilerIdCXX/CMakeCXXCompilerId.cpp</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+        <logicalFolder name="src" displayName="src" projectFiles="true">
+          <itemPath>build/src/liborocos-kdl.so.1.1.99</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="models" displayName="models" projectFiles="true">
+        <itemPath>models/kukaLWR_DHnew.cpp</itemPath>
+        <itemPath>models/puma560.cpp</itemPath>
+      </logicalFolder>
+      <logicalFolder name="src" displayName="src" projectFiles="true">
+        <logicalFolder name="utilities" displayName="utilities" projectFiles="true">
+          <itemPath>src/utilities/error_stack.cxx</itemPath>
+          <itemPath>src/utilities/svd_HH.cpp</itemPath>
+          <itemPath>src/utilities/svd_eigen_HH.cpp</itemPath>
+          <itemPath>src/utilities/utility.cxx</itemPath>
+          <itemPath>src/utilities/utility_io.cxx</itemPath>
+        </logicalFolder>
+        <itemPath>src/articulatedbodyinertia.cpp</itemPath>
+        <itemPath>src/chain.cpp</itemPath>
+        <itemPath>src/chaindynparam.cpp</itemPath>
+        <itemPath>src/chainfksolverpos_recursive.cpp</itemPath>
+        <itemPath>src/chainfksolvervel_recursive.cpp</itemPath>
+        <itemPath>src/chainhdsolver_vereshchagin.cpp</itemPath>
+        <itemPath>src/chainidsolver_recursive_newton_euler.cpp</itemPath>
+        <itemPath>src/chainidsolver_vereshchagin_three_sweep_ver.cpp</itemPath>
+        <itemPath>src/chainiksolverpos_lma.cpp</itemPath>
+        <itemPath>src/chainiksolverpos_nr.cpp</itemPath>
+        <itemPath>src/chainiksolverpos_nr_jl.cpp</itemPath>
+        <itemPath>src/chainiksolvervel_pinv.cpp</itemPath>
+        <itemPath>src/chainiksolvervel_pinv_givens.cpp</itemPath>
+        <itemPath>src/chainiksolvervel_pinv_nso.cpp</itemPath>
+        <itemPath>src/chainiksolvervel_wdls.cpp</itemPath>
+        <itemPath>src/chainjnttojacsolver.cpp</itemPath>
+        <itemPath>src/frameacc.cpp</itemPath>
+        <itemPath>src/frames.cpp</itemPath>
+        <itemPath>src/frames_io.cpp</itemPath>
+        <itemPath>src/framevel.cpp</itemPath>
+        <itemPath>src/jacobian.cpp</itemPath>
+        <itemPath>src/jntarray.cpp</itemPath>
+        <itemPath>src/jntarrayacc.cpp</itemPath>
+        <itemPath>src/jntarrayvel.cpp</itemPath>
+        <itemPath>src/jntspaceinertiamatrix.cpp</itemPath>
+        <itemPath>src/joint.cpp</itemPath>
+        <itemPath>src/kinfam_io.cpp</itemPath>
+        <itemPath>src/path.cpp</itemPath>
+        <itemPath>src/path_circle.cpp</itemPath>
+        <itemPath>src/path_composite.cpp</itemPath>
+        <itemPath>src/path_cyclic_closed.cpp</itemPath>
+        <itemPath>src/path_line.cpp</itemPath>
+        <itemPath>src/path_point.cpp</itemPath>
+        <itemPath>src/path_roundedcomposite.cpp</itemPath>
+        <itemPath>src/rigidbodyinertia.cpp</itemPath>
+        <itemPath>src/rotational_interpolation.cpp</itemPath>
+        <itemPath>src/rotational_interpolation_sa.cpp</itemPath>
+        <itemPath>src/rotationalinertia.cpp</itemPath>
+        <itemPath>src/segment.cpp</itemPath>
+        <itemPath>src/trajectory.cpp</itemPath>
+        <itemPath>src/trajectory_composite.cpp</itemPath>
+        <itemPath>src/trajectory_segment.cpp</itemPath>
+        <itemPath>src/trajectory_stationary.cpp</itemPath>
+        <itemPath>src/tree.cpp</itemPath>
+        <itemPath>src/treefksolverpos_recursive.cpp</itemPath>
+        <itemPath>src/treeiksolverpos_nr_jl.cpp</itemPath>
+        <itemPath>src/treeiksolverpos_online.cpp</itemPath>
+        <itemPath>src/treeiksolvervel_wdls.cpp</itemPath>
+        <itemPath>src/treejnttojacsolver.cpp</itemPath>
+        <itemPath>src/velocityprofile.cpp</itemPath>
+        <itemPath>src/velocityprofile_dirac.cpp</itemPath>
+        <itemPath>src/velocityprofile_rect.cpp</itemPath>
+        <itemPath>src/velocityprofile_spline.cpp</itemPath>
+        <itemPath>src/velocityprofile_trap.cpp</itemPath>
+        <itemPath>src/velocityprofile_traphalf.cpp</itemPath>
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="tests"
+                   displayName="tests"
+                   projectFiles="true"
+                   root="tests">
+      <itemPath>tests/framestest.cpp</itemPath>
+      <itemPath>tests/framestest.hpp</itemPath>
+      <itemPath>tests/inertiatest.cpp</itemPath>
+      <itemPath>tests/inertiatest.hpp</itemPath>
+      <itemPath>tests/jacobiantest.cpp</itemPath>
+      <itemPath>tests/jacobiantest.hpp</itemPath>
+      <itemPath>tests/kinfamtest.cpp</itemPath>
+      <itemPath>tests/kinfamtest.hpp</itemPath>
+      <itemPath>tests/solvertest.cpp</itemPath>
+      <itemPath>tests/solvertest.hpp</itemPath>
+      <itemPath>tests/test-runner.cpp</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/CMakeLists.txt</itemPath>
+      <itemPath>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/Makefile</itemPath>
+      <itemPath>Makefile-orocos_kdl.mk</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile-orocos_kdl.mk</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>GNU|GNU</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath></executablePath>
+          <cTool>
+            <incDir>
+              <pElem>build/CMakeFiles/CMakeTmp</pElem>
+            </incDir>
+          </cTool>
+          <ccTool>
+            <incDir>
+              <pElem>build/tests</pElem>
+              <pElem>/usr/include/eigen3</pElem>
+              <pElem>src</pElem>
+              <pElem>build/models</pElem>
+              <pElem>/usr/include/eigen3</pElem>
+              <pElem>build/src</pElem>
+              <pElem>build/CMakeFiles/CMakeTmp</pElem>
+            </incDir>
+            <preprocessorList>
+              <Elem>EIGEN2_SUPPORT</Elem>
+              <Elem>EIGEN2_SUPPORT</Elem>
+              <Elem>NDEBUG</Elem>
+              <Elem>NDEBUG</Elem>
+              <Elem>NDEBUG</Elem>
+              <Elem>orocos_kdl_EXPORTS</Elem>
+              <Elem>orocos_kdl_models_EXPORTS</Elem>
+            </preprocessorList>
+          </ccTool>
+        </makeTool>
+      </makefileType>
+      <item path="/usr/share/cmake-2.8/Modules/CMakeCCompilerABI.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="/usr/share/cmake-2.8/Modules/CMakeCXXCompilerABI.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="build/CMakeFiles/CompilerIdC/CMakeCCompilerId.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="build/CMakeFiles/CompilerIdCXX/CMakeCXXCompilerId.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="build/src/liborocos-kdl.so.1.1.99" ex="false" tool="1" flavor2="0">
+      </item>
+      <folder path="tests">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>src</pElem>
+            <pElem>build/tests</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>EIGEN2_SUPPORT</Elem>
+            <Elem>NDEBUG</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <item path="models/kukaLWR_DHnew.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="models/puma560.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/articulatedbodyinertia.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/chain.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/chaindynparam.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/chainfksolverpos_recursive.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/chainfksolvervel_recursive.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/chainhdsolver_vereshchagin.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/chainidsolver_recursive_newton_euler.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/chainidsolver_vereshchagin_three_sweep_ver.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/chainiksolverpos_lma.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/chainiksolverpos_nr.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/chainiksolverpos_nr_jl.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/chainiksolvervel_pinv.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/chainiksolvervel_pinv_givens.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/chainiksolvervel_pinv_nso.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/chainiksolvervel_wdls.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/chainjnttojacsolver.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/frameacc.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/frames.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/frames_io.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/framevel.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/jacobian.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/jntarray.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/jntarrayacc.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/jntarrayvel.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/jntspaceinertiamatrix.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/joint.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/kinfam_io.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/path.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/path_circle.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/path_composite.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/path_cyclic_closed.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/path_line.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/path_point.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/path_roundedcomposite.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/rigidbodyinertia.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/rotational_interpolation.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/rotational_interpolation_sa.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/rotationalinertia.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/segment.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/trajectory.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/trajectory_composite.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/trajectory_segment.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/trajectory_stationary.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/tree.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/treefksolverpos_recursive.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/treeiksolverpos_nr_jl.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/treeiksolverpos_online.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/treeiksolvervel_wdls.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/treejnttojacsolver.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/utilities/error_stack.cxx" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/utilities/svd_HH.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/utilities/svd_eigen_HH.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/utilities/utility.cxx" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/utilities/utility_io.cxx" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/velocityprofile.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/velocityprofile_dirac.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/velocityprofile_rect.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/velocityprofile_spline.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/velocityprofile_trap.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/velocityprofile_traphalf.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/framestest.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>TESTNAME="framestest"</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="tests/inertiatest.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>TESTNAME="inertiatest"</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="tests/jacobiantest.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>TESTNAME="jacobiantest"</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="tests/kinfamtest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/solvertest.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>TESTNAME="solvertest"</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="tests/test-runner.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+          <preprocessorList>
+            <Elem>TESTNAME="framestest"</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

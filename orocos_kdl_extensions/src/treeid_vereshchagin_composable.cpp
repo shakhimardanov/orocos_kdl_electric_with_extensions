@@ -1,5 +1,5 @@
 #include "kdl_extensions/treeid_vereshchagin_composable.hpp"
-//#define CHECK
+//#define CHECK_
 namespace KDL
 {
 
@@ -204,7 +204,7 @@ SegmentState& transformTwist::operator ()(SegmentMap::const_iterator segmentId, 
     //do we check here for the index of a joint (whether the joint is first in the chain)
     a_segmentState.Xdot = a_segmentState.X.Inverse(p_segmentState.Xdot) + a_segmentState.Vj;
 
-#ifdef CHECK
+#ifdef CHECK_
     std::cout << p_jointState.qdot << std::endl;
     std::cout << "Xdot" << m_segmentState.Xdot << std::endl;
 #endif
@@ -295,7 +295,7 @@ iterateOverSegment::~iterateOverSegment()
 SegmentState& iterateOverSegment::operator ()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, BaseOperation& p_computation)
 {
     a_segmentState = p_computation(segmentId, p_jointState, p_segmentState);
-#ifdef CHECK
+#ifdef CHECK_
     std::cout << p_jointState.q << std::endl;
     std::cout << p_computation.m_segmentState.X << std::endl;
 #endif
@@ -305,7 +305,7 @@ SegmentState& iterateOverSegment::operator ()(SegmentMap::const_iterator segment
 SegmentState& iterateOverSegment::operator ()(SegmentMap::const_iterator segmentId, const JointState& p_jointState, const SegmentState& p_segmentState, transformTwist& p_computation)
 {
     a_segmentState = p_computation(segmentId, p_jointState, p_segmentState);
-#ifdef CHECK
+#ifdef CHECK_
     std::cout << p_jointState.qdot << std::endl;
     std::cout << "Xdot" << p_computation.m_segmentState.Xdot << std::endl;
 #endif
