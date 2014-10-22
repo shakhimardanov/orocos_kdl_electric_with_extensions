@@ -50,43 +50,43 @@ void initChainSemantics(SemanticData *bodyframes, const unsigned int size)
     
     bodyframes[2].point = "j1";
     bodyframes[2].frame = "J1";
-    bodyframes[2].body = "Segment1.Joint1";
+    bodyframes[2].body = "Segment1";
 
     bodyframes[3].point = "l1";
     bodyframes[3].frame = "L1";
-    bodyframes[3].body = "Segment1.Link1";
+    bodyframes[3].body = "Segment1";
     
     bodyframes[4].point = "j2";
     bodyframes[4].frame = "J2";
-    bodyframes[4].body = "Segment2.Joint2";
+    bodyframes[4].body = "Segment2";
     
     bodyframes[5].point = "l2";
     bodyframes[5].frame = "L2";
-    bodyframes[5].body = "Segment2.Link2";
+    bodyframes[5].body = "Segment2";
     
     bodyframes[6].point = "j3";
     bodyframes[6].frame = "J3";
-    bodyframes[6].body = "Segment3.Joint3";
+    bodyframes[6].body = "Segment3";
 
     bodyframes[7].point = "l3";
     bodyframes[7].frame = "L3";
-    bodyframes[7].body = "Segment3.Link3";
+    bodyframes[7].body = "Segment3";
 
     bodyframes[8].point = "j4";
     bodyframes[8].frame = "J4";
-    bodyframes[8].body = "Segment4.Joint4";
+    bodyframes[8].body = "Segment4";
 
     bodyframes[9].point = "l4";
     bodyframes[9].frame = "L4";
-    bodyframes[9].body = "Segment4.Link4";
+    bodyframes[9].body = "Segment4";
     
     bodyframes[10].point = "j5";
     bodyframes[10].frame = "J5";
-    bodyframes[10].body = "Segment5.Joint5";
+    bodyframes[10].body = "Segment5";
 
     bodyframes[11].point = "l5";
     bodyframes[11].frame = "L5";
-    bodyframes[11].body = "Segment5.Link5";    
+    bodyframes[11].body = "Segment5";    
 }
 
 int main(int argc, char** argv)
@@ -267,12 +267,14 @@ int main(int argc, char** argv)
             grs::Orientation<KDL::Rotation> orientation_parent_l_child_l_q(bodyframes[i-1].frame,bodyframes[i-1].body, bodyframes[i+1].frame,bodyframes[i+1].body,bodyframes[i+1].frame, orientation);
             if(j != 0)
             {
-                if(link_twists[j-1].changePointBody(position_parent_l_child_l_q))
+                //need to copy first and then call methods, otherwise it performs in place modifications
+                grs::Twist<KDL::Vector, KDL::Vector> link_twist_copy = link_twists[j-1];
+                if(link_twist_copy.changePointBody(position_parent_l_child_l_q))
                 {
-                    if(link_twists[j-1].changeCoordinateFrame(orientation_parent_l_child_l_q))
+                    if(link_twist_copy.changeCoordinateFrame(orientation_parent_l_child_l_q))
                     {
-                        std::cout << std::endl<< std::endl<< std::endl<<"LINK CONTRIBUTION " << std::endl << link_twists[j-1] << std::endl<< std::endl;
-                        grs::Twist<KDL::Vector, KDL::Vector> link_twist = grs::compose(joint_twists[j],link_twists[j-1]);
+                        std::cout << std::endl<< std::endl<< std::endl<<"LINK CONTRIBUTION " << std::endl << link_twist_copy << std::endl<< std::endl;
+                        grs::Twist<KDL::Vector, KDL::Vector> link_twist = grs::compose(joint_twists[j],link_twist_copy);
                         link_twists.push_back(link_twist);
                         std::cout << "TOTAL LINK " << j << " TWIST" << std::endl << link_twists[j] << std::endl << std::endl;
                     }
@@ -338,14 +340,16 @@ int main(int argc, char** argv)
             //PARENT ACCTWIST
             if(j!=0)
             {
-                if(link_acctwists[j-1].changePointBody(position_parent_l_child_l_q))
+                //need to copy first and then call methods, otherwise it performs in place modifications
+                grs::Twist<KDL::Vector, KDL::Vector> link_acctwist_copy = link_acctwists[j-1];
+                if(link_acctwist_copy.changePointBody(position_parent_l_child_l_q))
                 { 
-                    if(link_acctwists[j-1].changeCoordinateFrame(orientation_parent_l_child_l_q))
+                    if(link_acctwist_copy.changeCoordinateFrame(orientation_parent_l_child_l_q))
                     {
-                        std::cout << "LINK ACCTWIST PARENT CONTRIBUTION " << std::endl << link_acctwists[j-1] << std::endl;
+                        std::cout << "LINK ACCTWIST PARENT CONTRIBUTION " << std::endl << link_acctwist_copy << std::endl;
                     }
                 }
-                grs::Twist<KDL::Vector, KDL::Vector> acctwist = grs::compose(grs::compose(joint_acctwists[j],link_acctwists[j-1]), link_biasacctwists[j]);
+                grs::Twist<KDL::Vector, KDL::Vector> acctwist = grs::compose(grs::compose(joint_acctwists[j],link_acctwist_copy), link_biasacctwists[j]);
                 link_acctwists.push_back(acctwist);
                 std::cout << "TOTAL LINK " << j << " ACCTWIST" << std::endl << link_acctwists[j] << std::endl << std::endl;
             }
@@ -385,19 +389,22 @@ int main(int argc, char** argv)
     for(unsigned int k = 0; k<link_tip_poses_relative.size(); k++)
     {
         std::cout << "Relative link tip poses " << std::endl;
-        std::cout << link_tip_poses_relative[k] << std::endl;
+        std::cout << link_tip_poses_relative[k] << std::endl<< std::endl;
     }
     //FK
     grs::Pose<KDL::Frame> fk_pose_L3_B_q = grs::compose(link_tip_poses_relative[0], grs::compose(link_tip_poses_relative[1],link_tip_poses_relative[2]) );
-    std::cout <<"Tip L3 with respect to B at value q  " << fk_pose_L3_B_q << std::endl;    
-    cout << endl;  
- 
+    std::cout <<"Tip L3 with respect to B at value q  " << std::endl<< fk_pose_L3_B_q << std::endl<< std::endl; 
 
     for(unsigned int i = 0; i<link_twists.size(); i++)
     {
         std::cout << "Relative link tip twists " << std::endl;
-        std::cout << link_twists[i] << std::endl;
+        std::cout << link_twists[i] << std::endl<< std::endl;
     }
 
+    for(unsigned int i = 0; i<link_acctwists.size(); i++)
+    {
+        std::cout << "Relative link tip acctwists " << std::endl;
+        std::cout << link_acctwists[i] << std::endl;
+    }
     return 0;
 }
