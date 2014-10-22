@@ -41,7 +41,7 @@ int main(int argc, char** argv)
 {
     KDL::JntArray q(3);
     q(0)=-M_PI/6.0;
-    q(1)=M_PI/4.0;
+    q(1)=M_PI/24.0;
     q(2)=-M_PI/12.0;
     KDL::JntArray qdot(3);
     qdot(0)=0.5;
@@ -384,7 +384,7 @@ int main(int argc, char** argv)
 
     //Link3 tip frame3
     grs::PoseCoordinatesSemantics pose_link3tip_L2("l3","L3","Segment3.Link3","l2","L2","Segment2.Link2","L2");
-    Vector link3tip_position3_L2 = Vector(0.5, 0.0, 0);
+    Vector link3tip_position3_L2 = Vector(0.4, 0.0, 0);
     Rotation link3tip_coord_orientation3_L2 = Rotation::Identity();
     grs::PoseCoordinates<KDL::Frame> pose_coord_link3tip_L2(KDL::Frame(link3tip_coord_orientation3_L2, link3tip_position3_L2));
     grs::Pose<KDL::Frame> poselink3tip_L2(pose_link3tip_L2, pose_coord_link3tip_L2);
@@ -432,7 +432,7 @@ int main(int argc, char** argv)
     //std::cout<< "distance " << distance3 << std::endl;
     
     grs::OrientationCoordinates<KDL::Rotation> orientation3 = pose_l3_l2_q.getCoordinates().getCoordinates().M.Inverse(); 
-    grs::Orientation<KDL::Rotation> orientation_l3_j3_q("J3","Segment2", "L3","Segment2","L3", orientation3);
+    grs::Orientation<KDL::Rotation> orientation_l3_j3_q("J3","Segment3", "L3","Segment3","L3", orientation3);
     //std::cout<< "orientation " << orientation3 << std::endl;
     
     if(twist_j3.changePointBody(position_l3_j3_q))
