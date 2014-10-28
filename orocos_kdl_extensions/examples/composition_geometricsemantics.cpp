@@ -239,7 +239,7 @@ int main(int argc, char** argv)
     grs::PoseCoordinates<KDL::Frame> pose_coord_link2tip_L1(KDL::Frame(link2tip_coord_orientation2_L1, link2tip_position2_L1));
     grs::PoseCoordinatesSemantics pose_link2tip_L1_semantics("l2","L2","Segment2.Link2","l1","L1","Segment1.Link1","L1");
     grs::Pose<KDL::Frame> poselink2tip_L1(pose_link2tip_L1_semantics, pose_coord_link2tip_L1);
-    KDL::Frame tip_frame2 = poselink1tip_B.getCoordinates().getCoordinates();
+    KDL::Frame tip_frame2 = poselink2tip_L1.getCoordinates().getCoordinates();
     Segment segment2 = Segment("Segment2.Link2", joint2, tip_frame2);
     //~SEGMENT METADATA
     

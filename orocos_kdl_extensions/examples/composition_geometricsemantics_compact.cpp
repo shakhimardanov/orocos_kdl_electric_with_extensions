@@ -36,9 +36,21 @@ typedef struct
     std::string point;
     std::string frame;
     std::string body;
-} SemanticData;
+} ChainSemanticData;
 
-void initChainSemantics(SemanticData *bodyframes, const unsigned int size)
+typedef struct
+{
+    KDL::Vector joint_origin_position_coord;
+    KDL::Rotation joint_origin_orientation_coord;
+    KDL::Vector link_tip_position_coord;
+    KDL::Rotation link_tip_orientation_coord;
+    double joint_inertia;
+    KDL::RigidBodyInertia link_inertia;
+} ChainGeometricInertialData;
+
+
+
+void initChainSemantics(ChainSemanticData *bodyframes, const unsigned int size)
 {
     bodyframes[0].point = "w";
     bodyframes[0].frame = "W";
@@ -89,6 +101,36 @@ void initChainSemantics(SemanticData *bodyframes, const unsigned int size)
     bodyframes[11].body = "Segment5";    
 }
 
+void initChainGeometry(ChainGeometricInertialData *segmentgeoms, const unsigned int size)
+{
+    segmentgeoms[0].joint_origin_position_coord = KDL::Vector(0,0,0);
+    segmentgeoms[0].joint_origin_orientation_coord =  KDL::Rotation::RotZ(0.0);
+    segmentgeoms[0].link_tip_position_coord = KDL::Vector(0.2,0.0,0.0);
+    segmentgeoms[0].link_tip_orientation_coord = KDL::Rotation::Identity();
+    //    RotationalInertia rotInerSeg1(0.0, 0.0, 0.0, 0.0, 0.0, 0.0); //around symmetry axis of rotation
+    //    double pointMass = 0.25; //in kg
+    //    RigidBodyInertia inerSegment1(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
+    segmentgeoms[1].joint_origin_position_coord = KDL::Vector(0,0,0);
+    segmentgeoms[1].joint_origin_orientation_coord =  KDL::Rotation::RotZ(0.0);
+    segmentgeoms[1].link_tip_position_coord = KDL::Vector(0.3,0.0,0.0);
+    segmentgeoms[1].link_tip_orientation_coord = KDL::Rotation::Identity();
+
+    segmentgeoms[2].joint_origin_position_coord = KDL::Vector(0,0,0);
+    segmentgeoms[2].joint_origin_orientation_coord =  KDL::Rotation::RotZ(0.0);
+    segmentgeoms[2].link_tip_position_coord = KDL::Vector(0.4,0.0,0.0);
+    segmentgeoms[2].link_tip_orientation_coord = KDL::Rotation::Identity();
+
+    segmentgeoms[3].joint_origin_position_coord = KDL::Vector(0,0,0);
+    segmentgeoms[3].joint_origin_orientation_coord =  KDL::Rotation::RotZ(0.0);
+    segmentgeoms[3].link_tip_position_coord = KDL::Vector(0.5,0.0,0.0);
+    segmentgeoms[3].link_tip_orientation_coord = KDL::Rotation::Identity();
+
+    segmentgeoms[4].joint_origin_position_coord = KDL::Vector(0,0,0);
+    segmentgeoms[4].joint_origin_orientation_coord =  KDL::Rotation::RotZ(0.0);
+    segmentgeoms[4].link_tip_position_coord = KDL::Vector(0.6,0.0,0.0);
+    segmentgeoms[4].link_tip_orientation_coord = KDL::Rotation::Identity();
+}
+
 int main(int argc, char** argv)
 {
     unsigned int numberOfDOF = 5;
@@ -115,9 +157,14 @@ int main(int argc, char** argv)
     unsigned int size = numberOfDOF*2+2; //each segment has 2 x body,point,frame + world and base
     
     //init chain semantic data
-    SemanticData bodyframes[size];
+    ChainSemanticData bodyframes[size];
     initChainSemantics(bodyframes, size);
+    
+    // init chagin geometric data
+    ChainGeometricInertialData segmentgeoms[numberOfDOF];
+    initChainGeometry(segmentgeoms, numberOfDOF);
 
+    //containment for chain joint/segment and their names
     std::vector<KDL::Joint> chainjoints;
     std::vector<std::string> chainjointnames;
     std::vector<KDL::Segment> chainlinks;
@@ -159,25 +206,21 @@ int main(int argc, char** argv)
     {
         //SEGMENT DATA
             //joint geometry data; it can be vector of its own
-            KDL::Vector joint_position = KDL::Vector(0,0,0);
-            KDL::Rotation joint_coord_orientation = KDL::Rotation::RotZ(0.0);
             KDL::Vector joint_rotation_axis;
-            double starting_angle = joint_coord_orientation.GetRotAngle(joint_rotation_axis,0.00001);
+            double starting_angle = segmentgeoms[j].joint_origin_orientation_coord.GetRotAngle(joint_rotation_axis,0.00001);
 
             //joint semantic data
             grs::PoseCoordinatesSemantics joint_pose_semantics(bodyframes[i].point,bodyframes[i].frame,bodyframes[i].body,bodyframes[i-1].point,bodyframes[i-1].frame,bodyframes[i-1].body,bodyframes[i-1].frame);
-            grs::PoseCoordinates<KDL::Frame> joint_pose_coord(KDL::Frame(joint_coord_orientation, joint_position));
+            grs::PoseCoordinates<KDL::Frame> joint_pose_coord(KDL::Frame(segmentgeoms[j].joint_origin_orientation_coord, segmentgeoms[j].joint_origin_position_coord));
             grs::Pose<KDL::Frame> joint_pose(joint_pose_semantics, joint_pose_coord);
             std::cout << "Joint data" << joint_pose <<std::endl;
-            KDL::Joint joint = KDL::Joint(chainjointnames[j], joint_position, joint_rotation_axis, Joint::RotAxis, 1, 0, 0.01);
+            KDL::Joint joint = KDL::Joint(chainjointnames[j], segmentgeoms[j].joint_origin_position_coord, joint_rotation_axis, Joint::RotAxis, 1, 0, 0.01);
             joint_poses.push_back(joint_pose);
             chainjoints.push_back(joint);
 
             // link geometry data; it can be vector of its own
-            KDL::Vector link_tip_position = KDL::Vector(0.4, 0.0, 0.0);
-            KDL::Rotation link_tip_coord_orientation = KDL::Rotation::Identity();
             //link semantic data
-            grs::PoseCoordinates<KDL::Frame> link_tip_pose_coord(KDL::Frame(link_tip_coord_orientation, link_tip_position));
+            grs::PoseCoordinates<KDL::Frame> link_tip_pose_coord(KDL::Frame(segmentgeoms[j].link_tip_orientation_coord, segmentgeoms[j].link_tip_position_coord));
             grs::PoseCoordinatesSemantics link_tip_pose_semantics(bodyframes[i+1].point,bodyframes[i+1].frame,bodyframes[i+1].body,bodyframes[i-1].point,bodyframes[i-1].frame,bodyframes[i-1].body,bodyframes[i-1].frame);
             grs::Pose<KDL::Frame> link_tip_pose(link_tip_pose_semantics, link_tip_pose_coord);
             std::cout << "Link data "<<link_tip_pose <<std::endl;
@@ -192,7 +235,7 @@ int main(int argc, char** argv)
             grs::Pose<KDL::Frame> pose_l_j = grs::compose(joint_pose.inverse2(), link_tip_pose);
             // joint pose with respect to previous link tip pose at some value q    
             KDL::Rotation joint_coord_orientation_j_l_q = joint.pose(q(j)).M;
-            grs::PoseCoordinates<KDL::Frame> joint_pose_coord_j_l_q(KDL::Frame(joint_coord_orientation_j_l_q, joint_position));
+            grs::PoseCoordinates<KDL::Frame> joint_pose_coord_j_l_q(KDL::Frame(joint_coord_orientation_j_l_q, segmentgeoms[j].joint_origin_position_coord));
             grs::Pose<KDL::Frame> joint_pose_j_l_q(joint_pose_semantics, joint_pose_coord_j_l_q);
             //Link tip pose with respect to previous link tip pose at value q (segment.pose(q))
             grs::Pose<KDL::Frame> pose_l_q = grs::compose(joint_pose_j_l_q,pose_l_j);
@@ -382,7 +425,9 @@ int main(int argc, char** argv)
                 std::cout << "TOTAL LINK " << j << " ACCTWIST" << std::endl << link_acctwists[j] << std::endl << std::endl;
             }
         //~ACCTWIST
-
+        
+        // WRENCHES
+        //~WRENCHES
         j++;
     }
 
