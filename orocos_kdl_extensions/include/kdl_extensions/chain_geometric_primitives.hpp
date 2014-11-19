@@ -226,7 +226,7 @@ namespace kdle
         	 *
         	 * \param a list of joint attachment frame poses
         	 */
-            Link<PoseT>& getSegmentLink()
+            Link<PoseT> & getSegmentLink()
             {
                 return linkOfSegment;
             };            
@@ -248,6 +248,16 @@ namespace kdle
     boost::uuids::uuid Segment<PoseT>::modelID = uuid_generator("TypeNameSegment");
     
     /**
+     * \brief constraints on how to qualify joint attachment frames
+     *
+     */
+    enum class SemanticConstraint : char
+    {
+        CoincidentJointFrames = 'C', // this indicates that joint frames initially  coincide
+        SameReferenceFrame = 'S', //this indicates requirements on additional segment info
+    };
+    
+    /**
      * \brief Joint specification requires two segment instances and pose information of joint attachment frames on each of these segments
      *
      */
@@ -256,13 +266,12 @@ namespace kdle
     {
         public:
             Joint()=default;
-            Joint(const std::string &givenName, AttachmentFrame<PoseT> const& segmentJointFrame, AttachmentFrame<PoseT> const& refSegmentJointFrame, const JointProperties &properties )
+            Joint(const std::string &givenName, AttachmentFrame<PoseT> const& segmentJointFrame, Segment<PoseT> & firstSegmentID, 
+                    AttachmentFrame<PoseT> const& refSegmentJointFrame, Segment<PoseT> & refSegmentID, JointProperties const& properties )
+                    :successorFrame(segmentJointFrame), predecessorFrame(refSegmentJointFrame), jointprops(properties), targetSegment(&firstSegmentID), refSegment(&refSegmentID)
             {
                 classData.instanceName = givenName;
                 classData.instanceID = uuid_generator(classData.instanceName);
-                successorFrame = segmentJointFrame;
-                predecessorFrame = refSegmentJointFrame;
-                jointprops = properties;
             };
             
             /**
@@ -332,17 +341,22 @@ namespace kdle
                 }
             };
             std::vector<Segment<PoseT> > const& getSegments() const{};
+            
             //return the name, uuid, and classuuid
             std::string const& getName() const {return classData.instanceName;};
             boost::uuids::uuid const& getUID() const {return classData.instanceID;};
             boost::uuids::uuid const& getClassUID() const {return modelID;};
             ~Joint(){};
+            
         private:
             struct MetaData classData;
             static boost::uuids::uuid modelID;
-            AttachmentFrame<PoseT> predecessorFrame;
             AttachmentFrame<PoseT> successorFrame;
+            AttachmentFrame<PoseT> predecessorFrame;
             JointProperties jointprops;
+            Segment<PoseT>  *targetSegment;
+            Segment<PoseT>  *refSegment;
+            
         protected:
             bool getPoseOfJointFramesImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT posetochange);
             bool getTipToTipPoseImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose);
@@ -402,9 +416,29 @@ namespace kdle
     template <>
     bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getPoseOfJointFramesImpl(std::vector<double> const& jointvalues, grs::Pose<KDL::Vector, KDL::Rotation> &posetochange)
     {
+        //refJoint Frame w.r.t. some global ref B
+        grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentRootToTipFramePose = refSegment->getSegmentLink().getCurrentTipToCurrentRootPose().inverse2();
+//        std::cout << "tempSegmentRootToTipFramePose " << tempSegmentRootToTipFramePose << std::endl; 
+        grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentTipToTipFramePose = refSegment->getSegmentLink().getCurrentTipToPredecessorTipPose();
+//        std::cout << "tempSegmentTipToTipFramePose " << tempSegmentTipToTipFramePose << std::endl;
+        grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentJointToRootFramePose = grs::compose(grs::compose(tempSegmentTipToTipFramePose,tempSegmentRootToTipFramePose), predecessorFrame.poseData);
+//        std::cout << "tempSegmentJointToRootFramePose " << tempSegmentJointToRootFramePose << std::endl;
+        //targetJoint Frame w.r.t. some ref B
+        tempSegmentRootToTipFramePose = targetSegment->getSegmentLink().getCurrentTipToCurrentRootPose().inverse2();
+//        std::cout << "tempSegmentRootToTipFramePose " << tempSegmentRootToTipFramePose << std::endl; 
+        tempSegmentTipToTipFramePose = targetSegment->getSegmentLink().getCurrentTipToPredecessorTipPose();
+//        std::cout << "tempSegmentTipToTipFramePose " << tempSegmentTipToTipFramePose << std::endl;
+        grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentJointToRootFramePose2 =grs::compose(grs::compose(tempSegmentTipToTipFramePose,tempSegmentRootToTipFramePose), successorFrame.poseData);
+//        std::cout << "tempSegmentJointToRootFramePose " << tempSegmentJointToRootFramePose2  << std::endl;
+        //targetJoint Frame w.r.t. refJoint Frame
+        posetochange = grs::compose(tempSegmentJointToRootFramePose2,tempSegmentJointToRootFramePose.inverse2());
+//        std::cout << "posetochange " <<  posetochange   << std::endl;
+        grs::Orientation<KDL::Rotation> newOrientation = grs::Orientation<KDL::Rotation>(posetochange.getOrientation<KDL::Rotation>().getSemantics(), KDL::Rotation::RotZ(jointvalues[0]));
+//        std::cout <<   newOrientation   << std::endl;
+//        posetochange.changeCoordinateFrame(grs::Orientation<KDL::Rotation>(posetochange.getOrientation<KDL::Rotation>().getSemantics(), KDL::Rotation::RotZ(jointvalues[0])));
         
-//        posetochange = grs::compose(predecessorFrame.poseData.inverse2(),successorFrame.poseData);
-        grs::OrientationCoordinates<KDL::Rotation> newOrientationCoord = KDL::Rotation::RotZ(jointvalues[0]);
+       
+        
         return true;
     }
     
