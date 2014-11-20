@@ -70,7 +70,7 @@ int main(int argc, char** argv)
         //two argument pose
         //LINK2 FRAMES
         // root frame pose wrt base
-        KDL::Vector rootFramePositionCoord2 = KDL::Vector(0.0,0,0); //position of joint frame's origin
+        KDL::Vector rootFramePositionCoord2 = KDL::Vector(0.1,0,0); //position of joint frame's origin
         grs::Position<KDL::Vector> rootFramePosition2(grs::Point("f2.Segment2.Link2"),grs::Body("Segment2.Link2"),
                                                       grs::Point("b.Base"), grs::Body("Base"), grs::OrientationFrame("B.Base"), rootFramePositionCoord2);
         KDL::Rotation rootFrameOrientationCoord2 = KDL::Rotation::RotZ(0.0);
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
         
         //LINK3 FRAMES
         // root frame pose wrt base
-        KDL::Vector rootFramePositionCoord3 = KDL::Vector(0,0,0); //position of joint frame's origin
+        KDL::Vector rootFramePositionCoord3 = KDL::Vector(0.2,0,0); //position of joint frame's origin
         grs::Position<KDL::Vector> rootFramePosition3(grs::Point("f3.Segment3.Link3"),grs::Body("Segment3.Link3"),
                                                       grs::Point("b.Base"), grs::Body("Base"), grs::OrientationFrame("B.Base"), rootFramePositionCoord3);
         KDL::Rotation rootFrameOrientationCoord3 = KDL::Rotation::RotZ(0.0);
@@ -114,7 +114,7 @@ int main(int argc, char** argv)
         
         //LINK4 FRAMES
         // root frame pose wrt base
-        KDL::Vector rootFramePositionCoord4 = KDL::Vector(0,0,0); //position of joint frame's origin
+        KDL::Vector rootFramePositionCoord4 = KDL::Vector(0.0,0,0.15); //position of joint frame's origin
         grs::Position<KDL::Vector> rootFramePosition4(grs::Point("f4.Segment4.Link4"),grs::Body("Segment4.Link4"),
                                                       grs::Point("b.Base"), grs::Body("Base"), grs::OrientationFrame("B.Base"), rootFramePositionCoord4);
         KDL::Rotation rootFrameOrientationCoord4 = KDL::Rotation::RotZ(0.0);
@@ -123,7 +123,7 @@ int main(int argc, char** argv)
         grs::Pose<KDL::Vector, KDL::Rotation> rootFramePose4(rootFramePosition4, rootFrameOrientation4);
         
         //tip frame wrt base
-        KDL::Vector tipFramePositionCoord4 = KDL::Vector(0.5, 0.0, 0.0);
+        KDL::Vector tipFramePositionCoord4 = KDL::Vector(0.0, 0.0, 0.650);
         grs::Position<KDL::Vector> tipFramePosition4(grs::Point("l4.Segment4.Link4"),grs::Body("Segment4.Link4"),
                                                      grs::Point("f4.Segment4.Link4"),grs::Body("Segment4.Link4"), grs::OrientationFrame("F4.Segment4.Link4"), tipFramePositionCoord4);
         KDL::Rotation tipFrameOrientationCoord4 = KDL::Rotation::Identity();
@@ -146,7 +146,7 @@ int main(int argc, char** argv)
         grs::Pose<KDL::Frame> link1Joint1FramePose(link1Joint1FramePoseSemantics, link1Joint1FramePoseCoord);
         
         //Joint2
-        KDL::Vector link1Joint2FramePositionCoord = KDL::Vector(0.5,0,0); //position of joint frame's origin
+        KDL::Vector link1Joint2FramePositionCoord = KDL::Vector(0.35,0,0); //position of joint frame's origin
         KDL::Rotation link1Joint2FrameOrientationCoord = KDL::Rotation::RotZ(0.0);
         grs::PoseCoordinates<KDL::Frame> link1Joint2FramePoseCoord(KDL::Frame(link1Joint2FrameOrientationCoord,link1Joint2FramePositionCoord));
         grs::PoseCoordinatesSemantics link1Joint2FramePoseSemantics(grs::Point("j2.Segment1.Link1"),grs::OrientationFrame("J2.Segment1.Link1"),grs::Body("Segment1.Link1"),
@@ -161,7 +161,7 @@ int main(int argc, char** argv)
         
         //LINK2 JOINT FRAMES
         //Joint1
-        KDL::Vector link2Joint1FramePositionCoord = KDL::Vector(0.0,0,0); //position of joint frame's origin
+        KDL::Vector link2Joint1FramePositionCoord = KDL::Vector(0.15,0,0); //position of joint frame's origin
         grs::Position<KDL::Vector> link2Joint1FramePosition(grs::Point("j1.Segment2.Link2"),grs::Body("Segment2.Link2"),
                                                             grs::Point("f2.Segment2.Link2"), grs::Body("Segment2.Link2"), grs::OrientationFrame("F2.Segment2.Link2"), link2Joint1FramePositionCoord);
         KDL::Rotation link2Joint1FrameOrientationCoord = KDL::Rotation::RotZ(0.0);
@@ -170,7 +170,7 @@ int main(int argc, char** argv)
         grs::Pose<KDL::Vector, KDL::Rotation> link2Joint1FramePose(link2Joint1FramePosition, link2Joint1FrameOrientation);
         
         //Joint2
-        KDL::Vector link2Joint2FramePositionCoord = KDL::Vector(0.5,0,0); //position of joint frame's origin
+        KDL::Vector link2Joint2FramePositionCoord = KDL::Vector(0.45,0,0); //position of joint frame's origin
         grs::Position<KDL::Vector> link2Joint2FramePosition(grs::Point("j2.Segment2.Link2"),grs::Body("Segment2.Link2"),
                                                             grs::Point("f2.Segment2.Link2"),grs::Body("Segment2.Link2"), grs::OrientationFrame("F2.Segment2.Link2"), link2Joint2FramePositionCoord);
         KDL::Rotation link2Joint2FrameOrientationCoord = KDL::Rotation::RotZ(0.0);
@@ -186,23 +186,17 @@ int main(int argc, char** argv)
         frameList2.push_back(kdle::createAttachmentFrame(link2Joint2FramePose, kdle::FrameType::JOINT));
         
         //LINK3 JOINT FRAMES
-        KDL::Vector link3Joint1FramePositionCoord = KDL::Vector(0.0,0,0); //position of joint frame's origin
+        //Joint1
+        KDL::Vector link3Joint1FramePositionCoord = KDL::Vector(0.10,0,0); //position of joint frame's origin
         grs::Position<KDL::Vector> link3Joint1FramePosition(grs::Point("j1.Segment3.Link3"),grs::Body("Segment3.Link3"),
                                                             grs::Point("f3.Segment3.Link3"),grs::Body("Segment3.Link3"),grs::OrientationFrame("F3.Segment3.Link3"), link3Joint1FramePositionCoord);
         KDL::Rotation link3Joint1FrameOrientationCoord = KDL::Rotation::RotZ(0.0);
         grs::Orientation<KDL::Rotation> link3Joint1FrameOrientation(grs::OrientationFrame("J1.Segment3.Link3"),grs::Body("Segment3.Link3"),
                                                                     grs::OrientationFrame("F3.Segment3.Link3"),grs::Body("Segment3.Link3"),grs::OrientationFrame("F3.Segment3.Link3"), link3Joint1FrameOrientationCoord);
         grs::Pose<KDL::Vector, KDL::Rotation> link3Joint1FramePose(link3Joint1FramePosition, link3Joint1FrameOrientation);
-        
-        //Joint1
-//        KDL::Vector link3Joint1FramePositionCoord = KDL::Vector(0.0,0,0); //position of joint frame's origin
-//        grs::Position<KDL::Vector> link3Joint1FramePosition("j1","Segment3.Link3","f3", "Segment3.Link3", "F3", link3Joint1FramePositionCoord);
-//        KDL::Rotation link3Joint1FrameOrientationCoord = KDL::Rotation::RotZ(0.0);
-//        grs::Orientation<KDL::Rotation> link3Joint1FrameOrientation("J1","Segment3.Link3", "F3","Segment3.Link3","F3", link3Joint1FrameOrientationCoord);
-//        grs::Pose<KDL::Vector, KDL::Rotation> link3Joint1FramePose(link3Joint1FramePosition, link3Joint1FrameOrientation);
-        
+               
         //Joint2
-        KDL::Vector link3Joint2FramePositionCoord = KDL::Vector(0.5,0,0); //position of joint frame's origin
+        KDL::Vector link3Joint2FramePositionCoord = KDL::Vector(0.35,0,0); //position of joint frame's origin
         grs::Position<KDL::Vector> link3Joint2FramePosition(grs::Point("j2.Segment3.Link3"),grs::Body("Segment3.Link3"),
                                                             grs::Point("f3.Segment3.Link3"),grs::Body("Segment3.Link3"),grs::OrientationFrame("F3.Segment3.Link3"), link3Joint2FramePositionCoord);
         KDL::Rotation link3Joint2FrameOrientationCoord = KDL::Rotation::RotZ(0.0);
@@ -225,7 +219,7 @@ int main(int argc, char** argv)
         grs::Pose<KDL::Vector, KDL::Rotation> link4Joint1FramePose(link4Joint1FramePosition, link4Joint1FrameOrientation);
         
         //Joint2
-        KDL::Vector link4Joint2FramePositionCoord = KDL::Vector(0.5,0,0); //position of joint frame's origin
+        KDL::Vector link4Joint2FramePositionCoord = KDL::Vector(0.0,0,0.15); //position of joint frame's origin
         grs::Position<KDL::Vector> link4Joint2FramePosition(grs::Point("j2.Segment4.Link4"),grs::Body("Segment4.Link4"),
                                                             grs::Point("f4.Segment4.Link4"),grs::Body("Segment4.Link4"),grs::OrientationFrame("F4.Segment4.Link4"), link4Joint2FramePositionCoord);
         KDL::Rotation link4Joint2FrameOrientationCoord = KDL::Rotation::RotZ(0.0);
@@ -249,7 +243,7 @@ int main(int argc, char** argv)
 
         kdle::JointProperties joint1_props, joint2_props;
         joint1_props = std::make_tuple(KDL::Joint::JointType::RotZ, 0.02, 150.0, -140.0);
-        joint2_props = std::make_tuple(KDL::Joint::JointType::RotZ, 0.025, 145.0, -135.0);
+        joint2_props = std::make_tuple(KDL::Joint::JointType::RotX, 0.025, 145.0, -135.0);
         
         kdle::Joint< grs::Pose<KDL::Vector, KDL::Rotation> > joint2("Joint1", segment3_grs.getAttachmentFrames()[0], segment3_grs, segment2_grs.getAttachmentFrames()[1], segment2_grs, joint1_props);
         kdle::Joint< grs::Pose<KDL::Vector, KDL::Rotation> > joint3("Joint2", segment4_grs.getAttachmentFrames()[0], segment4_grs, segment3_grs.getAttachmentFrames()[1], segment3_grs,  joint2_props);
@@ -258,16 +252,19 @@ int main(int argc, char** argv)
         kdle::TransmissionProperties trans_props = std::make_tuple(0.2,0.2,0.2);
         kdle::make_transmission(joint2,trans_props);
         grs::Pose<KDL::Vector, KDL::Rotation> currentJointPose;
+        grs::Pose<KDL::Vector, KDL::Rotation> currentJointPose1;
         grs::Twist<KDL::Vector, KDL::Vector> currentJointTwist;
         grs::Twist<KDL::Twist> twisttemp;
         //joint value is of type vector whose size changes according to the joint's DoF
         std::vector<double> jointvalue(1,M_PI/4.0);
+        std::vector<double> jointvalue1(1,-M_PI/6.0);
+        std::cout << "Rotation Z " << KDL::Rotation::RotZ(jointvalue[0]) << std::endl;
         joint2.getPoseOfJointFrames(jointvalue, currentJointPose );
-        joint3.getPoseOfJointFrames(jointvalue, currentJointPose );
-//        joint2.getCurrentTipToPredecessorTipPose(jointvalue, currentJointPose );
-//        joint2.getCurrentRootToPredecessorTipTwist(jointvalue, currentJointTwist);
-//        joint2.getCurrentTipToPredecessorTipTwist(jointvalue, currentJointTwist);
-//        joint2.getCurrentRootToPredecessorTipTwist(jointvalue, twisttemp);
+        joint2.getCurrentDistalToPredecessorDistalPose(jointvalue, currentJointPose1 );
+        joint3.getPoseOfJointFrames(jointvalue1, currentJointPose1 );
+        joint3.getCurrentDistalToPredecessorDistalPose(jointvalue1, currentJointPose);
+
+//        joint2.getCurrentProximalToPredecessorDistalTwist(jointvalue, twisttemp);
         
         std::vector< kdle::Joint< grs::Pose<KDL::Vector, KDL::Rotation> > > jointlist;
         jointlist.push_back(joint2);
