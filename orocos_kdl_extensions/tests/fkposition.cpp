@@ -8,7 +8,7 @@
 //#define VERBOSE_CHECK
 #define VERBOSE_MAIN
 
-#include <kdl_extensions/functionalcomputation_kdltypes.hpp>
+#include <kdl_extensions/functionalcomputation_kdl.hpp>
 #include <kdl/frames.hpp>
 
 using namespace std;

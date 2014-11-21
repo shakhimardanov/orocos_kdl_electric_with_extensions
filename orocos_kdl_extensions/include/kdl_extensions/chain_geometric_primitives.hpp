@@ -294,7 +294,7 @@ namespace kdle
         	 * \param jointtwistvalues is a vector of doubles for multiDoF, for 1 DoF it is of size 1
         	 */
             template <typename TwistT>
-            void getCurrentDistalToPredecessorDistalTwist(std::vector<double> const& jointtwistvalues, TwistT &relativeTwist);
+            void getCurrentDistalToPredecessorDistalTwist(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist);
             
             /**
         	 * \brief compute and return relative twist between to joint frames of two segments: current root and previous tip frames
@@ -302,7 +302,7 @@ namespace kdle
         	 * \param jointFramePose is a vector of doubles for multiDoF, for 1 DoF it is of size 1
         	 */
             template <typename TwistT>
-            void getCurrentProximalToPredecessorDistalTwist(std::vector<double> const& jointtwistvalues, TwistT &relativeTwist);
+            void getTwistOfJointFrames(std::vector<double> const& jointtwistvalues, TwistT &relativeTwist);
             
             /**
              * \brief return type of the joint, e.g 1 DoF rotational around Z axis
@@ -361,9 +361,9 @@ namespace kdle
             bool getPoseOfJointFramesImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT posetochange);
             bool getDistalToDistalPoseImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose);
             template <typename TwistT>
-            bool getDistalToDistalTwistImpl(std::vector<double> const& jointtwistvalues, TwistT &relativeTwist){};
+            bool getDistalToDistalTwistImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist){};
             template <typename TwistT>
-            bool getProximalToDistalTwistImpl(std::vector<double> const& jointtwistvalues, TwistT &relativeTwist){};
+            bool getTwistOfJointFramesImpl(std::vector<double> const& jointtwistvalues, TwistT &relativeTwist){};
     };
     
     template <typename PoseT>
@@ -392,9 +392,9 @@ namespace kdle
     
     template <typename PoseT>
         template <typename TwistT>
-    void Joint<PoseT>::getCurrentDistalToPredecessorDistalTwist(std::vector<double> const& jointtwistvalues, TwistT &relativeTwist)
+    void Joint<PoseT>::getCurrentDistalToPredecessorDistalTwist(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist)
     {
-        if(!getDistalToDistalTwistImpl(jointtwistvalues, relativeTwist))
+        if(!getDistalToDistalTwistImpl(jointvalues, jointtwistvalues, relativeTwist))
             std::cout <<"Warning: can not return twist data " << std::endl;
         else
             std::cout << "Inside Joint DistalToDistal Twist Impl " << std::endl << relativeTwist <<std::endl;
@@ -403,12 +403,12 @@ namespace kdle
             
     template <typename PoseT>
       template <typename TwistT>
-    void Joint<PoseT>::getCurrentProximalToPredecessorDistalTwist(std::vector<double> const& jointtwistvalues, TwistT& relativeTwist)
+    void Joint<PoseT>::getTwistOfJointFrames(std::vector<double> const& jointtwistvalues, TwistT& relativeTwist)
     {
-        if(!getProximalToDistalTwistImpl(jointtwistvalues, relativeTwist))
+        if(!getTwistOfJointFramesImpl(jointtwistvalues, relativeTwist))
             std::cout <<"Warning: can not return twist data " << std::endl;
         else
-            std::cout << "Inside Joint DistalToDistal Twist Impl " << std::endl << relativeTwist <<std::endl;
+            std::cout << "Inside Joint Twist Impl " << std::endl << relativeTwist <<std::endl;
         return;
     }
     
@@ -418,97 +418,153 @@ namespace kdle
     {       
         //Constraint: Joint frame origins coincide
         //create position and orientation using semantics of provided ref and target joint frames
-        switch(getType())
+        if(!((successorFrame.tagData == FrameType::JOINT) && (predecessorFrame.tagData == FrameType::JOINT)))
         {
-            case KDL::Joint::JointType::RotZ:
-            {
-                grs::Position<KDL::Vector> originPosition(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
-                                                          predecessorFrame.poseData.getPoint(), predecessorFrame.poseData.getBody(), 
-                                                          predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(0,0,0));
-                grs::Orientation<KDL::Rotation> frameRelOrientation(successorFrame.poseData.getOrientationFrame(), successorFrame.poseData.getBody(), 
-                                                                    predecessorFrame.poseData.getOrientationFrame(), predecessorFrame.poseData.getBody(), 
-                                                                    predecessorFrame.poseData.getOrientationFrame(), KDL::Rotation::RotZ(jointvalues[0]));
-                posetochange = grs::Pose<KDL::Vector, KDL::Rotation> (originPosition,frameRelOrientation);
-                break;
-            }
-            
-            case KDL::Joint::JointType::RotX:
-            {
-                grs::Position<KDL::Vector> originPosition(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
-                                                          predecessorFrame.poseData.getPoint(), predecessorFrame.poseData.getBody(), 
-                                                          predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(0,0,0));
-                grs::Orientation<KDL::Rotation> frameRelOrientation(successorFrame.poseData.getOrientationFrame(), successorFrame.poseData.getBody(), 
-                                                                    predecessorFrame.poseData.getOrientationFrame(), predecessorFrame.poseData.getBody(), 
-                                                                    predecessorFrame.poseData.getOrientationFrame(), KDL::Rotation::RotX(jointvalues[0]));
-                posetochange = grs::Pose<KDL::Vector, KDL::Rotation> (originPosition,frameRelOrientation);
-                break;
-            }
-            
-            case KDL::Joint::JointType::RotY:
-            {
-                grs::Position<KDL::Vector> originPosition(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
-                                                          predecessorFrame.poseData.getPoint(), predecessorFrame.poseData.getBody(), 
-                                                          predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(0,0,0));
-                grs::Orientation<KDL::Rotation> frameRelOrientation(successorFrame.poseData.getOrientationFrame(), successorFrame.poseData.getBody(), 
-                                                                    predecessorFrame.poseData.getOrientationFrame(), predecessorFrame.poseData.getBody(), 
-                                                                    predecessorFrame.poseData.getOrientationFrame(), KDL::Rotation::RotY(jointvalues[0]));
-                posetochange = grs::Pose<KDL::Vector, KDL::Rotation> (originPosition,frameRelOrientation);
-                break;
-            }
+            return false;
         }
+        else
+        {
+            switch(getType())
+            {
+                case KDL::Joint::JointType::RotZ:
+                {
+                    grs::Position<KDL::Vector> originPosition(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
+                                                              predecessorFrame.poseData.getPoint(), predecessorFrame.poseData.getBody(), 
+                                                              predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(0,0,0));
+                    grs::Orientation<KDL::Rotation> frameRelOrientation(successorFrame.poseData.getOrientationFrame(), successorFrame.poseData.getBody(), 
+                                                                        predecessorFrame.poseData.getOrientationFrame(), predecessorFrame.poseData.getBody(), 
+                                                                        predecessorFrame.poseData.getOrientationFrame(), KDL::Rotation::RotZ(jointvalues[0]));
+                    posetochange = grs::Pose<KDL::Vector, KDL::Rotation> (originPosition,frameRelOrientation);
+                    break;
+                }
+
+                case KDL::Joint::JointType::RotX:
+                {
+                    grs::Position<KDL::Vector> originPosition(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
+                                                              predecessorFrame.poseData.getPoint(), predecessorFrame.poseData.getBody(), 
+                                                              predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(0,0,0));
+                    grs::Orientation<KDL::Rotation> frameRelOrientation(successorFrame.poseData.getOrientationFrame(), successorFrame.poseData.getBody(), 
+                                                                        predecessorFrame.poseData.getOrientationFrame(), predecessorFrame.poseData.getBody(), 
+                                                                        predecessorFrame.poseData.getOrientationFrame(), KDL::Rotation::RotX(jointvalues[0]));
+                    posetochange = grs::Pose<KDL::Vector, KDL::Rotation> (originPosition,frameRelOrientation);
+                    break;
+                }
+
+                case KDL::Joint::JointType::RotY:
+                {
+                    grs::Position<KDL::Vector> originPosition(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
+                                                              predecessorFrame.poseData.getPoint(), predecessorFrame.poseData.getBody(), 
+                                                              predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(0,0,0));
+                    grs::Orientation<KDL::Rotation> frameRelOrientation(successorFrame.poseData.getOrientationFrame(), successorFrame.poseData.getBody(), 
+                                                                        predecessorFrame.poseData.getOrientationFrame(), predecessorFrame.poseData.getBody(), 
+                                                                        predecessorFrame.poseData.getOrientationFrame(), KDL::Rotation::RotY(jointvalues[0]));
+                    posetochange = grs::Pose<KDL::Vector, KDL::Rotation> (originPosition,frameRelOrientation);
+                    break;
+                }
+            }
+            return true;
+        }
+            
         
-        return true;
     }
     
     //Specialization for two argument pose with KDL coordinate representation
     template<>
     bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getDistalToDistalPoseImpl(std::vector<double> const& jointvalues, grs::Pose<KDL::Vector, KDL::Rotation> &tipFramePose)
     {
-        //distal to proximal
-        grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentTipToRootFramePose = targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose();
-        //joint to proximal inverse
-        grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentJointToRootFramePose = successorFrame.poseData.inverse2();
-        //distal to target joint
-        grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentTipToJointFramePose = grs::compose(tempSegmentTipToRootFramePose,tempSegmentJointToRootFramePose);
-        //target joint to ref joint
-        getPoseOfJointFramesImpl(jointvalues, tipFramePose);
-        //distal to ref joint
-        tempSegmentTipToJointFramePose = grs::compose(tipFramePose,tempSegmentTipToJointFramePose);
-        //proximal to distal on ref segment
-        grs::Pose<KDL::Vector, KDL::Rotation> tempRefSegmentTipToRootFramePose = refSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose().inverse2();
-        //ref joint to proximal
-        grs::Pose<KDL::Vector, KDL::Rotation> tempRefSegmentJointToRootFramePose = predecessorFrame.poseData;
-        //ref joint to distal 
-        grs::Pose<KDL::Vector, KDL::Rotation> tempRefSegmentJointToTipFramePose = grs::compose(tempRefSegmentJointToRootFramePose,tempRefSegmentTipToRootFramePose);
-        tipFramePose = grs::compose(tempRefSegmentJointToTipFramePose,tempSegmentTipToJointFramePose);
         
-        std::cout << "tempSegmentTipToRootFramePose " << tempSegmentTipToRootFramePose << std::endl; 
-        std::cout << "tempSegmentJointToRootFramePose inverse " << tempSegmentJointToRootFramePose << std::endl;
-        std::cout << "tempSegmentTipToJointFramePose " << tempSegmentTipToJointFramePose << std::endl;
-        std::cout << "JtoRefJ  " << tipFramePose << std::endl;
-        std::cout << "tempSegmentTipToRefJointPose " << tempSegmentTipToJointFramePose << std::endl;
-        std::cout << "tempRefSegmentTipToRootFramePose inverse " << tempRefSegmentTipToRootFramePose << std::endl; 
-        std::cout << "tempRefSegmentJointToRootFramePose " << tempRefSegmentJointToRootFramePose << std::endl; 
-        std::cout << "tempRefSegmentJointToTipFramePose " << tempRefSegmentJointToTipFramePose << std::endl; 
-        std::cout << "tempSegmentTiptoRefSegmentTipFramePose " << tipFramePose << std::endl; 
-        return true;
+        //target joint to ref joint
+        if(!getPoseOfJointFramesImpl(jointvalues, tipFramePose))
+        {
+            return false;
+        }
+        else
+        {
+            //target distal to ref distal
+            tipFramePose = grs::compose(grs::compose(predecessorFrame.poseData,refSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose().inverse2()),
+                           grs::compose(tipFramePose,grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2())));
+            return true;
+        }
     }
   
     //Specialization for two argument vector with KDL coordinate representation
     template <>
         template <>
-    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getDistalToDistalTwistImpl(std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist)
+    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getTwistOfJointFramesImpl(std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist)
     {
-        return true;
+         if(!((successorFrame.tagData == FrameType::JOINT) && (predecessorFrame.tagData == FrameType::JOINT)))
+        {
+            return false;
+        }
+        else
+        {
+            switch(getType())
+            {
+                case KDL::Joint::JointType::RotZ:
+                {
+                    grs::LinearVelocity<KDL::Vector> originLinearVel(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
+                                                                     predecessorFrame.poseData.getBody(), predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(0,0,0));
+                    grs::AngularVelocity<KDL::Vector> frameAngularVel(successorFrame.poseData.getBody(), predecessorFrame.poseData.getBody(), 
+                                                                      predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(0, 0, jointtwistvalues[0]));
+                    relativeTwist = grs::Twist<KDL::Vector, KDL::Vector> (originLinearVel,frameAngularVel);
+                    break;
+                }
+
+                case KDL::Joint::JointType::RotX:
+                {
+                    grs::LinearVelocity<KDL::Vector> originLinearVel(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
+                                                                     predecessorFrame.poseData.getBody(), predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(0,0,0));
+                    grs::AngularVelocity<KDL::Vector> frameAngularVel(successorFrame.poseData.getBody(), predecessorFrame.poseData.getBody(), 
+                                                                      predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(jointtwistvalues[0], 0, 0));
+                    relativeTwist = grs::Twist<KDL::Vector, KDL::Vector> (originLinearVel,frameAngularVel);
+                    break;
+                }
+
+                case KDL::Joint::JointType::RotY:
+                {
+                    grs::LinearVelocity<KDL::Vector> originLinearVel(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
+                                                                     predecessorFrame.poseData.getBody(), predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(0,0,0));
+                    grs::AngularVelocity<KDL::Vector> frameAngularVel(successorFrame.poseData.getBody(), predecessorFrame.poseData.getBody(), 
+                                                                      predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(0, jointtwistvalues[0], 0));
+                    relativeTwist = grs::Twist<KDL::Vector, KDL::Vector> (originLinearVel,frameAngularVel);
+                    break;
+                }
+            }
+            return true;
+        }
     }
     
     //Specialization for two argument vector with KDL coordinate representation
     template <>
         template <>
-    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getProximalToDistalTwistImpl(std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist)
+    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getDistalToDistalTwistImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist)
     {
-        return true;
+        if(!getTwistOfJointFramesImpl(jointtwistvalues, relativeTwist))
+        {
+            return false;
+        }
+        else
+        {
+            //distal to proximal
+            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentTipToRootFramePose = targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose();
+            //joint to proximal inverse
+            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentJointToRootFramePose = successorFrame.poseData.inverse2();
+            //distal to target joint
+            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentTipToJointFramePose = grs::compose(tempSegmentTipToRootFramePose,tempSegmentJointToRootFramePose);
+            grs::Position<KDL::Vector> tempSegmentJointToTipFramePosition = tempSegmentTipToJointFramePose.getPosition< KDL::Vector >().inverse();
+            //target joint to ref joint
+            getPoseOfJointFramesImpl(jointvalues, tempSegmentJointToRootFramePose);
+            
+            grs::Orientation<KDL::Rotation> tempJointToRefJointOrientation = tempSegmentJointToRootFramePose.getOrientation<KDL::Rotation>();
+            if(tempSegmentJointToTipFramePosition.changeCoordinateFrame(tempJointToRefJointOrientation))
+                    relativeTwist.changePointBody(tempSegmentJointToTipFramePosition);
+
+;
+            return true;
+        }
     }
+    
+ 
    
     /**
      * \brief  KinematicChain specification requires a sequence of  joint instances

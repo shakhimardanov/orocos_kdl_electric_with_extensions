@@ -9,7 +9,7 @@
 #define	TRAVERSEOPERATIONTEST_H
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <kdl_extensions/functionalcomputation_kdltypes.hpp>
+#include <kdl_extensions/functionalcomputation_kdl.hpp>
 
 class TraverseOperationTest : public CPPUNIT_NS::TestFixture
 {

@@ -11,7 +11,7 @@
 
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <kdl_extensions/functionalcomputation_kdltypes.hpp>
+#include <kdl_extensions/functionalcomputation_kdl.hpp>
 
 class ForceOperationTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE(ForceOperationTest);

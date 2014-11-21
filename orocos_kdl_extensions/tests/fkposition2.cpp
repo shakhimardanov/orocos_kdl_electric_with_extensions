@@ -10,7 +10,7 @@
 
 #include <graphviz/gvc.h>
 #include <graphviz/graph.h>
-#include <kdl_extensions/functionalcomputation_kdltypes.hpp>
+#include <kdl_extensions/functionalcomputation_kdl.hpp>
 #include <kdl/treefksolverpos_recursive.hpp>
 
 using namespace std;

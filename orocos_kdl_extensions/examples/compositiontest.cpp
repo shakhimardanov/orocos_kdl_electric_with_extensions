@@ -1,9 +1,40 @@
-/* 
- * File:   compositiontest.cpp
- * Author: azamat
- *
- * Created on December 21, 2011, 11:46 AM
- */
+/****************************************************************************** 
+*           This file is part of the Geometric harmonization project          *
+*                                                                             *
+*                            (C) 2014 Azamat Shakhimardanov                   *
+*                               Herman Bruyninckx                             *
+*                        azamat.shakhimardanov@mech.kuleuven.be               *                              
+*                    Department of Mechanical Engineering,                    *
+*                   Katholieke Universiteit Leuven, Belgium.                  *
+*                                                                             *
+*       You may redistribute this software and/or modify it under either the  *
+*       terms of the GNU Lesser General Public License version 2.1 (LGPLv2.1  *
+*       <http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>) or (at your *
+*       discretion) of the Modified BSD License:                              *
+*       Redistribution and use in source and binary forms, with or without    *
+*       modification, are permitted provided that the following conditions    *
+*       are met:                                                              *
+*       1. Redistributions of source code must retain the above copyright     *
+*       notice, this list of conditions and the following disclaimer.         *
+*       2. Redistributions in binary form must reproduce the above copyright  *
+*       notice, this list of conditions and the following disclaimer in the   *
+*       documentation and/or other materials provided with the distribution.  *
+*       3. The name of the author may not be used to endorse or promote       *
+*       products derived from this software without specific prior written    *
+*       permission.                                                           *
+*       THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR  *
+*       IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED        *
+*       WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE    *
+*       ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,*
+*       INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES    *
+*       (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS       *
+*       OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) *
+*       HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,   *
+*       STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING *
+*       IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE    *
+*       POSSIBILITY OF SUCH DAMAGE.                                           *
+*                                                                             *
+*******************************************************************************/
 
 //#define VERBOSE_CHECK //switches on console output in kdl related methods
  #define VERBOSE_CHECK_MAIN // switches on console output in main
@@ -11,59 +42,59 @@
 #include <graphviz/gvc.h>
 #include <graphviz/graph.h>
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
-#include <kdl_extensions/functionalcomputation_kdltypes.hpp>
+#include <kdl_extensions/functionalcomputation_kdl.hpp>
 
 using namespace std;
-using namespace KDL;
-using namespace kdle;
+
 
 void createMyTree(KDL::Tree& twoBranchTree)
-{
-    Joint joint1 = Joint("j1", Joint::RotZ, 1, 0, 0.01);
-    Joint joint2 = Joint("j2", Joint::RotZ, 1, 0, 0.01);
-    Joint joint3 = Joint("j3", Joint::RotZ, 1, 0, 0.01);
-    Joint joint4 = Joint("j4", Joint::RotZ, 1, 0, 0.01);
-    Joint joint5 = Joint("j5", Joint::RotZ, 1, 0, 0.01);
-    Joint joint6 = Joint("j6", Joint::RotZ, 1, 0, 0.01);
-    Joint joint7 = Joint("j7", Joint::RotZ, 1, 0, 0.01);
-    Joint joint8 = Joint("j8", Joint::RotZ, 1, 0, 0.01);
-    Joint joint9 = Joint("j9", Joint::RotZ, 1, 0, 0.01);
-    Joint joint10 = Joint("j10", Joint::RotZ, 1, 0, 0.01);
+{  
+    
+    KDL::Joint joint1 = KDL::Joint("j1", KDL::Joint::RotZ, 1, 0, 0.01);
+    KDL::Joint joint2 = KDL::Joint("j2", KDL::Joint::RotZ, 1, 0, 0.01);
+    KDL::Joint joint3 = KDL::Joint("j3", KDL::Joint::RotZ, 1, 0, 0.01);
+    KDL::Joint joint4 = KDL::Joint("j4", KDL::Joint::RotZ, 1, 0, 0.01);
+    KDL::Joint joint5 = KDL::Joint("j5", KDL::Joint::RotZ, 1, 0, 0.01);
+    KDL::Joint joint6 = KDL::Joint("j6", KDL::Joint::RotZ, 1, 0, 0.01);
+    KDL::Joint joint7 = KDL::Joint("j7", KDL::Joint::RotZ, 1, 0, 0.01);
+    KDL::Joint joint8 = KDL::Joint("j8", KDL::Joint::RotZ, 1, 0, 0.01);
+    KDL::Joint joint9 = KDL::Joint("j9", KDL::Joint::RotZ, 1, 0, 0.01);
+    KDL::Joint joint10 = KDL::Joint("j10", KDL::Joint::RotZ, 1, 0, 0.01);
 
-    Frame frame1(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
-    Frame frame2(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
-    Frame frame3(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
-    Frame frame4(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
-    Frame frame5(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
-    Frame frame6(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
-    Frame frame7(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
-    Frame frame8(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
-    Frame frame9(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
-    Frame frame10(Rotation::RPY(0.0, 0.0, 0.0), Vector(0.0, -0.4, 0.0));
+    KDL::Frame frame1(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, -0.4, 0.0));
+    KDL::Frame frame2(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, -0.4, 0.0));
+    KDL::Frame frame3(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, -0.4, 0.0));
+    KDL::Frame frame4(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, -0.4, 0.0));
+    KDL::Frame frame5(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, -0.4, 0.0));
+    KDL::Frame frame6(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, -0.4, 0.0));
+    KDL::Frame frame7(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, -0.4, 0.0));
+    KDL::Frame frame8(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, -0.4, 0.0));
+    KDL::Frame frame9(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, -0.4, 0.0));
+    KDL::Frame frame10(KDL::Rotation::RPY(0.0, 0.0, 0.0), KDL::Vector(0.0, -0.4, 0.0));
 
-    Segment segment1 = Segment("L1", joint1, frame1);
-    Segment segment2 = Segment("L2", joint2, frame2);
-    Segment segment3 = Segment("L3", joint3, frame3);
-    Segment segment4 = Segment("L4", joint4, frame4);
-    Segment segment5 = Segment("L5", joint5, frame5);
-    Segment segment6 = Segment("L6", joint6, frame6);
-    Segment segment7 = Segment("L7", joint7, frame7);
-    Segment segment8 = Segment("L8", joint8, frame8);
-    Segment segment9 = Segment("L9", joint9, frame9);
-    Segment segment10 = Segment("M0", joint10, frame10);
+    KDL::Segment segment1 = KDL::Segment("L1", joint1, frame1);
+    KDL::Segment segment2 = KDL::Segment("L2", joint2, frame2);
+    KDL::Segment segment3 = KDL::Segment("L3", joint3, frame3);
+    KDL::Segment segment4 = KDL::Segment("L4", joint4, frame4);
+    KDL::Segment segment5 = KDL::Segment("L5", joint5, frame5);
+    KDL::Segment segment6 = KDL::Segment("L6", joint6, frame6);
+    KDL::Segment segment7 = KDL::Segment("L7", joint7, frame7);
+    KDL::Segment segment8 = KDL::Segment("L8", joint8, frame8);
+    KDL::Segment segment9 = KDL::Segment("L9", joint9, frame9);
+    KDL::Segment segment10 = KDL::Segment("M0", joint10, frame10);
 
-    RotationalInertia rotInerSeg1(0.0, 0.0, 0.0, 0.0, 0.0, 0.0); //around symmetry axis of rotation
+    KDL::RotationalInertia rotInerSeg1(0.0, 0.0, 0.0, 0.0, 0.0, 0.0); //around symmetry axis of rotation
     double pointMass = 0.25; //in kg
-    RigidBodyInertia inerSegment1(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
-    RigidBodyInertia inerSegment2(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
-    RigidBodyInertia inerSegment3(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
-    RigidBodyInertia inerSegment4(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
-    RigidBodyInertia inerSegment5(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
-    RigidBodyInertia inerSegment6(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
-    RigidBodyInertia inerSegment7(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
-    RigidBodyInertia inerSegment8(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
-    RigidBodyInertia inerSegment9(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
-    RigidBodyInertia inerSegment10(pointMass, Vector(0.0, -0.4, 0.0), rotInerSeg1);
+    KDL::RigidBodyInertia inerSegment1(pointMass, KDL::Vector(0.0, -0.4, 0.0), rotInerSeg1);
+    KDL::RigidBodyInertia inerSegment2(pointMass, KDL::Vector(0.0, -0.4, 0.0), rotInerSeg1);
+    KDL::RigidBodyInertia inerSegment3(pointMass, KDL::Vector(0.0, -0.4, 0.0), rotInerSeg1);
+    KDL::RigidBodyInertia inerSegment4(pointMass, KDL::Vector(0.0, -0.4, 0.0), rotInerSeg1);
+    KDL::RigidBodyInertia inerSegment5(pointMass, KDL::Vector(0.0, -0.4, 0.0), rotInerSeg1);
+    KDL::RigidBodyInertia inerSegment6(pointMass, KDL::Vector(0.0, -0.4, 0.0), rotInerSeg1);
+    KDL::RigidBodyInertia inerSegment7(pointMass, KDL::Vector(0.0, -0.4, 0.0), rotInerSeg1);
+    KDL::RigidBodyInertia inerSegment8(pointMass, KDL::Vector(0.0, -0.4, 0.0), rotInerSeg1);
+    KDL::RigidBodyInertia inerSegment9(pointMass, KDL::Vector(0.0, -0.4, 0.0), rotInerSeg1);
+    KDL::RigidBodyInertia inerSegment10(pointMass, KDL::Vector(0.0, -0.4, 0.0), rotInerSeg1);
 
     segment1.setInertia(inerSegment1);
     segment2.setInertia(inerSegment2);
@@ -117,7 +148,7 @@ void drawMyTree(KDL::Tree& twoBranchTree)
 
     int segmentIndex = 0;
     //    fill in the node vector by iterating over tree segments
-    for (SegmentMap::const_iterator iter = twoBranchTree.getSegments().begin(); iter != twoBranchTree.getSegments().end(); ++iter)
+    for (KDL::SegmentMap::const_iterator iter = twoBranchTree.getSegments().begin(); iter != twoBranchTree.getSegments().end(); ++iter)
 
     {
         //it would have been very useful if one could access list of joints of a tree
@@ -147,7 +178,7 @@ void drawMyTree(KDL::Tree& twoBranchTree)
     }
 
     //fill in edge vector by iterating over joints in the tree
-    for (SegmentMap::const_iterator iter = twoBranchTree.getSegments().begin(); iter != twoBranchTree.getSegments().end(); ++iter)
+    for (KDL::SegmentMap::const_iterator iter = twoBranchTree.getSegments().begin(); iter != twoBranchTree.getSegments().end(); ++iter)
 
     {
         //TODO: Fix node-edge connection relation
@@ -196,21 +227,21 @@ void computeRNEDynamicsForChain(KDL::Tree& twoBranchTree, const std::string& roo
     KDL::Chain achain;
 
     twoBranchTree.getChain(rootLink, tipLink, achain);
-    KDL::ChainIdSolver_RNE *rneDynamics = new ChainIdSolver_RNE(achain, -grav);
+    KDL::ChainIdSolver_RNE *rneDynamics = new KDL::ChainIdSolver_RNE(achain, -grav);
 
 
     KDL::JntArray q(achain.getNrOfJoints());
     KDL::JntArray q_dot(achain.getNrOfJoints());
     KDL::JntArray q_dotdot(achain.getNrOfJoints());
-    JntArray torques(achain.getNrOfJoints());
+    KDL::JntArray torques(achain.getNrOfJoints());
     
     KDL::Wrenches f_ext;
     f_ext.resize(achain.getNrOfSegments());
     
-    Vector forceComponent(-2.0, 2.0, 0.0);
+    KDL::Vector forceComponent(-2.0, 2.0, 0.0);
 //    Vector forceComponent(0.0, 0.0, 0.0);
-    Vector torqueComponent(0.0, 0.0, 0.0);
-    Wrench extForceLastSegment(forceComponent, torqueComponent);
+    KDL::Vector torqueComponent(0.0, 0.0, 0.0);
+    KDL::Wrench extForceLastSegment(forceComponent, torqueComponent);
 
     f_ext[achain.getNrOfSegments()-1] = extForceLastSegment;
     std::cout << endl << endl << endl;
@@ -238,11 +269,11 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
                                      std::vector<kdle::SegmentState>& linkState, std::vector<kdle::SegmentState>& linkState2)
 {
     printf("Templated dynamics values for Tree \n");
-    kdle::transform<tree_iterator, pose> _comp1;
-    kdle::transform<tree_iterator, twist> _comp2;
-    kdle::transform<tree_iterator, accTwist> _comp3;
-    kdle::balance<tree_iterator, force> _comp4;
-    kdle::project<tree_iterator,wrench> _comp5;
+    kdle::transform<kdle::tree_iterator, kdle::pose> _comp1;
+    kdle::transform<kdle::tree_iterator, kdle::twist> _comp2;
+    kdle::transform<kdle::tree_iterator, kdle::accTwist> _comp3;
+    kdle::balance<kdle::tree_iterator, kdle::force> _comp4;
+    kdle::project<kdle::tree_iterator, kdle::wrench> _comp5;
     
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << "Transform initial state" << std::endl << linkState[0].X << std::endl;
@@ -266,16 +297,16 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
 #endif
 
     //typedef Composite<kdle::func_ptr(myTestComputation), kdle::func_ptr(myTestComputation) > compositeType0;
-    typedef Composite< kdle::transform<tree_iterator, twist>, kdle::transform<tree_iterator, pose> > compositeType1;
-    typedef Composite< kdle::balance<tree_iterator, force>, kdle::transform<tree_iterator, accTwist> > compositeType2;
-    typedef Composite<compositeType2, compositeType1> compositeType3;
+    typedef kdle::Composite< kdle::transform<kdle::tree_iterator, kdle::twist>, kdle::transform<kdle::tree_iterator, kdle::pose> > compositeType1;
+    typedef kdle::Composite< kdle::balance<kdle::tree_iterator, kdle::force>, kdle::transform<kdle::tree_iterator, kdle::accTwist> > compositeType2;
+    typedef kdle::Composite<compositeType2, compositeType1> compositeType3;
 
 //    compositeType1 composite1 = kdle::compose(_comp2, _comp1);
     compositeType3 composite2 = kdle::compose(kdle::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1));
 
     //kdle::DFSPolicy<KDL::Tree> mypolicy;
-    kdle::DFSPolicy_ver2<KDL::Tree, inward> mypolicy1;
-    kdle::DFSPolicy_ver2<KDL::Tree, outward> mypolicy2;
+    kdle::DFSPolicy_ver2<KDL::Tree, kdle::inward> mypolicy1;
+    kdle::DFSPolicy_ver2<KDL::Tree, kdle::outward> mypolicy2;
 
     std::cout << std::endl << std::endl << "FORWARD TRAVERSAL" << std::endl << std::endl;
 
@@ -328,21 +359,23 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
 
 int main(int argc, char** argv)
 {
-    Tree twoBranchTree("L0");
+
+    
+    KDL::Tree twoBranchTree("L0");
     createMyTree(twoBranchTree);
 
     //arm root acceleration
-    Vector linearAcc(0.0, 0.0, -9.8); //gravitational acceleration along Z
-    Vector angularAcc(0.0, 0.0, 0.0);
-    Twist rootAcc(linearAcc, angularAcc);
+    KDL::Vector linearAcc(0.0, 0.0, -9.8); //gravitational acceleration along Z
+    KDL::Vector angularAcc(0.0, 0.0, 0.0);
+    KDL::Twist rootAcc(linearAcc, angularAcc);
 
     std::vector<kdle::JointState> jstate;
     jstate.resize(twoBranchTree.getNrOfSegments() + 1);
-    jstate[0].q = PI / 3.0;
+    jstate[0].q = KDL::PI / 3.0;
     jstate[0].qdot = 0.2;
-    jstate[1].q = -PI / 3.0;
+    jstate[1].q = -KDL::PI / 3.0;
     jstate[1].qdot = 0.4;
-    jstate[2].q = PI / 4.0;
+    jstate[2].q = KDL::PI / 4.0;
     jstate[2].qdot = -0.2;
 
     std::vector<kdle::SegmentState> lstate;
@@ -357,10 +390,10 @@ int main(int argc, char** argv)
 
     //Add external forces
     int lastSegmentId = twoBranchTree.getNrOfSegments() - 1 ;
-    Vector forceComponent(-2.0, 2.0, 0.0);
+    KDL::Vector forceComponent(-2.0, 2.0, 0.0);
 //    Vector forceComponent(0.0, 0.0, 0.0);
-    Vector torqueComponent(0.0, 0.0, 0.0);
-    Wrench extForceLastSegment(forceComponent, torqueComponent);
+    KDL::Vector torqueComponent(0.0, 0.0, 0.0);
+    KDL::Wrench extForceLastSegment(forceComponent, torqueComponent);
 
     //external force on the last link
     jstate[lastSegmentId].Fext = extForceLastSegment;

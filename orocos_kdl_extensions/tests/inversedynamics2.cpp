@@ -12,7 +12,7 @@
 
 #include <graphviz/gvc.h>
 #include <graphviz/graph.h>
-#include <kdl_extensions/functionalcomputation_kdltypes.hpp>
+#include <kdl_extensions/functionalcomputation_kdl.hpp>
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
 
 using namespace std;

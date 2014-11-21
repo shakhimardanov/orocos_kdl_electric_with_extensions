@@ -1,16 +1,47 @@
-/* 
- * File:   compositiontest.cpp
- * Author: azamat
- *
- * Created on December 21, 2011, 11:46 AM
- */
+/****************************************************************************** 
+*           This file is part of the Geometric harmonization project          *
+*                                                                             *
+*                            (C) 2014 Azamat Shakhimardanov                   *
+*                               Herman Bruyninckx                             *
+*                        azamat.shakhimardanov@mech.kuleuven.be               *                              
+*                    Department of Mechanical Engineering,                    *
+*                   Katholieke Universiteit Leuven, Belgium.                  *
+*                                                                             *
+*       You may redistribute this software and/or modify it under either the  *
+*       terms of the GNU Lesser General Public License version 2.1 (LGPLv2.1  *
+*       <http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>) or (at your *
+*       discretion) of the Modified BSD License:                              *
+*       Redistribution and use in source and binary forms, with or without    *
+*       modification, are permitted provided that the following conditions    *
+*       are met:                                                              *
+*       1. Redistributions of source code must retain the above copyright     *
+*       notice, this list of conditions and the following disclaimer.         *
+*       2. Redistributions in binary form must reproduce the above copyright  *
+*       notice, this list of conditions and the following disclaimer in the   *
+*       documentation and/or other materials provided with the distribution.  *
+*       3. The name of the author may not be used to endorse or promote       *
+*       products derived from this software without specific prior written    *
+*       permission.                                                           *
+*       THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR  *
+*       IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED        *
+*       WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE    *
+*       ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,*
+*       INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES    *
+*       (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS       *
+*       OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) *
+*       HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,   *
+*       STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING *
+*       IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE    *
+*       POSSIBILITY OF SUCH DAMAGE.                                           *
+*                                                                             *
+*******************************************************************************/
 
-#include <graphviz/gvc.h>
-#include <graphviz/graph.h>
+#define COMPARISON_TEST
+
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
 #include <kdl/chainfksolverpos_recursive.hpp>
 #include <kdl/chainfksolvervel_recursive.hpp>
-#include <kdl_extensions/functionalcomputation_kdltypes.hpp>
+#include <kdl_extensions/functionalcomputation_kdl.hpp>
 #include <Position/Position.h>
 #include <Orientation/Orientation.h>
 #include <Pose/Pose.h>
@@ -56,7 +87,7 @@ int main(int argc, char** argv)
     
     //SEGMENT METADATA
     // joint1 with respect to Base/World. In ideal case one should have a frame data to construct a joint
-    KDL::Vector joint1_position1_B = KDL::Vector(0,0,0); //position of joint frame's origin
+    KDL::Vector joint1_position1_B = KDL::Vector(0.1,0,0); //position of joint frame's origin
     KDL::Rotation joint1_coord_orientation1_B = Rotation::RotZ(0.0);
     KDL::Vector joint1_rotation_axis;
     double starting_angle = joint1_coord_orientation1_B.GetRotAngle(joint1_rotation_axis,0.00001); //rotation axis
@@ -118,7 +149,7 @@ int main(int argc, char** argv)
     
     if(twist_j1.changePointBody(position_l1_j1_q))
     {
-    //std::cout << "Change reference point of joint twist " << std::endl << twist_j1 << std::endl;//segment.twist returns this. Segment tip twist with respect to previous segment tip
+        std::cout << "Change reference point of joint twist " << std::endl << twist_j1 << std::endl;//segment.twist returns this. Segment tip twist with respect to previous segment tip
         if(twist_j1.changeCoordinateFrame(orientation_l1_j1_q))
         {
             std::cout << "J1 TWIST CONTRIBUTION " << std::endl << twist_j1 << std::endl; //M.Inv(segment.twist) returns this. Segment tip twist with respect to joint frame
@@ -223,7 +254,7 @@ int main(int argc, char** argv)
 //SEGMENT2
     //SEGMENT METADATA    
     // joint2 with respect to L1
-    KDL::Vector joint2_position2_L1 = KDL::Vector(0,0,0); //position of joint frame's origin
+    KDL::Vector joint2_position2_L1 = KDL::Vector(0.0,0,0); //position of joint frame's origin
     KDL::Rotation joint2_coord_orientation2_L1 = Rotation::RotZ(0.0);
     KDL::Vector joint2_rotation_axis;
     starting_angle = joint2_coord_orientation2_L1.GetRotAngle(joint2_rotation_axis,0.00001); //rotation axis    
@@ -375,7 +406,7 @@ int main(int argc, char** argv)
 //SEGMENT3
     //SEGMENT METADATA
     // joint3 with respect to L2
-    Joint joint3 = Joint("Segment3.Joint3", Vector(0.0, 0.0, 0),Vector(0,0,1),Joint::RotAxis, 1, 0, 0.01);
+    Joint joint3 = Joint("Segment3.Joint3", Vector(-0.1, 0.0, 0),Vector(0,0,1),Joint::RotAxis, 1, 0, 0.01);
     grs::PoseCoordinatesSemantics pose_joint3_L2("j3","J3","Segment3.Joint3","l2","L2","Segment2.Link2","L2");
     Vector joint3_position3_L2 = joint3.JointOrigin();
     Rotation joint3_coord_orientation3_L2=joint3.pose(0).M;
@@ -565,10 +596,10 @@ int main(int argc, char** argv)
         fext.resize(achain.getNrOfSegments(),KDL::Wrench());
 
         std::cout << idsolvertest.CartToJnt(q,qdot,qdotdot, fext, torques) << std::endl;
+        std::cout << std::endl << std::endl<< std::endl << std::endl;
 
         for(unsigned int i=0; i<achain.getNrOfSegments();i++)
         {   
-            std::cout << std::endl << std::endl;
             std::cout <<"Tip Frame " << achain.getSegment(i).getFrameToTip()<< std::endl;
             tempLocal[i]=achain.getSegment(i).pose(jointInitialPose(i));
             std::cout <<"Segment tip pose " << achain.getSegment(i).pose(jointInitialPose(i)) << std::endl;

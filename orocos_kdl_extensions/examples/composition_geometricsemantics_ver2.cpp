@@ -5,12 +5,11 @@
  * Created on December 21, 2011, 11:46 AM
  */
 
-#include <graphviz/gvc.h>
-#include <graphviz/graph.h>
+
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
 #include <kdl/chainfksolverpos_recursive.hpp>
 #include <kdl/chainfksolvervel_recursive.hpp>
-#include <kdl_extensions/functionalcomputation_kdltypes.hpp>
+#include <kdl_extensions/functionalcomputation_kdl.hpp>
 #include <Position/Position.h>
 #include <Orientation/Orientation.h>
 #include <Pose/Pose.h>
@@ -57,7 +56,7 @@ int main(int argc, char** argv)
     //SEGMENT METADATA
         // joint1 with respect to Base/World. In ideal case one should have a frame data to construct a joint
         grs::PoseCoordinatesSemantics pose_joint1_B_semantics("j1","J1","Segment1.Joint1","b","B","Base","B");
-        KDL::Vector joint1_position1_B = KDL::Vector(0,0,0); //position of joint frame's origin
+        KDL::Vector joint1_position1_B = KDL::Vector(0.1,0,0); //position of joint frame's origin
         grs::Position<KDL::Vector> joint1_origin_position("j1","Segment1","b", "Base", "B", joint1_position1_B);
 
         KDL::Rotation joint1_coord_orientation1_B = Rotation::RotZ(0.0);
@@ -111,11 +110,11 @@ int main(int argc, char** argv)
     //TWISTS
     std::cout << std::endl<< std::endl<< "TWISTS " <<  std::endl<<std::endl<< std::endl;
     //j1 on Segment1.Joint1 twist w.r.t Base
-    grs::LinearVelocityCoordinatesSemantics linear_vel_coord_seman_j1("j1","Segment1","Base","J1");
+    grs::LinearVelocityCoordinatesSemantics linear_vel_coord_seman_j1("j1","Segment1","Base","B");
     KDL::Vector coordinatesLinearVelocity_j1 = joint1.twist(qdot(0)).vel;
     grs::LinearVelocity<KDL::Vector> linearVelocity_j1(linear_vel_coord_seman_j1 ,coordinatesLinearVelocity_j1);
 
-    grs::AngularVelocityCoordinatesSemantics ang_vel_coord_seman_j1("Segment1","Base","J1");
+    grs::AngularVelocityCoordinatesSemantics ang_vel_coord_seman_j1("Segment1","Base","B");
     KDL::Vector coordinatesAngularVelocity_j1 = joint1.twist(qdot(0)).rot;
     grs::AngularVelocity<KDL::Vector> angularVelocity_j1(ang_vel_coord_seman_j1, coordinatesAngularVelocity_j1);
     //joint.twist returns this.
@@ -148,9 +147,9 @@ int main(int argc, char** argv)
 //    grs::Orientation<KDL::Rotation> orientation_l1_j1_q("J1","Segment1", "L1","Segment1","L1", orientation);
         std::cout<< "orientation " << temp_orientation << std::endl;
     }
-    //std::cout << "Change reference point of joint twist " << std::endl << twist_j1 << std::endl;//segment.twist returns this. Segment tip twist with respect to previous segment tip
     if(twist_j1.changePointBody(temp_position_l1_j1_q))
     {
+        std::cout << "Change reference point of joint twist " << std::endl << twist_j1 << std::endl;//segment.twist returns this. Segment tip twist with respect to previous segment tip
         //M.Inv(segment.twist) returns this. Segment tip twist with respect to joint frame
         if(twist_j1.changeCoordinateFrame(temp_orientation))
         {

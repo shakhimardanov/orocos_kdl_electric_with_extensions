@@ -9,7 +9,7 @@
 #define	POSEOPERATIONTEST_HPP
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <kdl_extensions/functionalcomputation_kdltypes.hpp>
+#include <kdl_extensions/functionalcomputation_kdl.hpp>
 
 class PoseOperationTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE(PoseOperationTest);

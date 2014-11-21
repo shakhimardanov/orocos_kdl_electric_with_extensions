@@ -254,17 +254,21 @@ int main(int argc, char** argv)
         grs::Pose<KDL::Vector, KDL::Rotation> currentJointPose;
         grs::Pose<KDL::Vector, KDL::Rotation> currentJointPose1;
         grs::Twist<KDL::Vector, KDL::Vector> currentJointTwist;
-        grs::Twist<KDL::Twist> twisttemp;
+        grs::Twist<KDL::Vector,KDL::Vector> twisttemp;
+        grs::Twist<KDL::Twist> twisttemp1;
         //joint value is of type vector whose size changes according to the joint's DoF
         std::vector<double> jointvalue(1,M_PI/4.0);
+        std::vector<double> jointtwistvalue(1,0.855);
         std::vector<double> jointvalue1(1,-M_PI/6.0);
-        std::cout << "Rotation Z " << KDL::Rotation::RotZ(jointvalue[0]) << std::endl;
+        
         joint2.getPoseOfJointFrames(jointvalue, currentJointPose );
         joint2.getCurrentDistalToPredecessorDistalPose(jointvalue, currentJointPose1 );
         joint3.getPoseOfJointFrames(jointvalue1, currentJointPose1 );
         joint3.getCurrentDistalToPredecessorDistalPose(jointvalue1, currentJointPose);
 
-//        joint2.getCurrentProximalToPredecessorDistalTwist(jointvalue, twisttemp);
+        joint2.getTwistOfJointFrames(jointtwistvalue, twisttemp);
+        joint3.getTwistOfJointFrames(jointtwistvalue ,twisttemp);
+        joint2.getCurrentDistalToPredecessorDistalTwist(jointvalue, jointtwistvalue, twisttemp);
         
         std::vector< kdle::Joint< grs::Pose<KDL::Vector, KDL::Rotation> > > jointlist;
         jointlist.push_back(joint2);
