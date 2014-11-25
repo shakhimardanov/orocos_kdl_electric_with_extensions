@@ -15,7 +15,6 @@
 
 using namespace std;
 using namespace KDL;
-using namespace kdle;
 
 void createMyTree(KDL::Tree& a_tree)
 {
@@ -324,14 +323,14 @@ int main(int argc, char** argv)
 
     //================================Definition of an algorithm=========================//
     // declare a computation to be performed
-    kdle::transform<tree_iterator, pose> poseComputation;
-    kdle::accumulate<tree_iterator> poseBaseComputation(lstate[0]);
+    kdle::transform<kdle::tree_iterator, kdle::pose> poseComputation;
+    kdle::accumulate<kdle::tree_iterator> poseBaseComputation(lstate[0]);
 
     //declare a policy for a tree traversal
-    kdle::DFSPolicy_ver2<Tree, outward> forwardTraversal;
+    kdle::DFSPolicy<Tree, kdle::outward> forwardTraversal;
 
     //declare a traversal operation on the given topology
-    traverseGraph_ver2(complexTree, compose(poseBaseComputation, poseComputation), forwardTraversal)(jstate, lstate, lstate2);
+    kdle::traverseGraph(complexTree, kdle::compose(poseBaseComputation, poseComputation), forwardTraversal)(jstate, lstate, lstate2);
 
      //================================end of the definition===========================//
     

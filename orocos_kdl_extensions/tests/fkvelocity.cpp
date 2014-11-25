@@ -11,7 +11,6 @@
 #include <kdl_extensions/functionalcomputation_kdl.hpp>
 
 using namespace KDL;
-using namespace kdle;
 
 void createMyTree(KDL::Tree& twoBranchTree)
 {
@@ -116,15 +115,15 @@ int main(int argc, char** argv) {
 
     //================================Definition of an algorithm=========================//
     // declare a computation to be performed
-    kdle::transform<tree_iterator, pose> poseComputation;
-    kdle::transform<tree_iterator, twist> twistComputation;
+    kdle::transform<kdle::tree_iterator, kdle::pose> poseComputation;
+    kdle::transform<kdle::tree_iterator, kdle::twist> twistComputation;
     
 
     //declare a policy for a tree traversal
-    kdle::DFSPolicy_ver2<Tree, outward> forwardTraversal;
+    kdle::DFSPolicy<Tree, kdle::outward> forwardTraversal;
 
     //declare a traversal operation on the give topology
-    traverseGraph_ver2(twoBranchTree, kdle::compose(twistComputation, poseComputation), forwardTraversal)(jstate, lstate, lstate2);
+    kdle::traverseGraph(twoBranchTree, kdle::compose(twistComputation, poseComputation), forwardTraversal)(jstate, lstate, lstate2);
     //================================end of the definition===========================//
 
     //print the results

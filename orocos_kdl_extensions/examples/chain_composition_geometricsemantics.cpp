@@ -36,6 +36,7 @@
 *                                                                             *
 *******************************************************************************/
 #include <kdl_extensions/chain_geometric_primitives.hpp>
+#include <kdl_extensions/functionalcomputation_kdl.hpp>
 
 using namespace std;
 
@@ -242,8 +243,8 @@ int main(int argc, char** argv)
         kdle::Segment< grs::Pose<KDL::Vector, KDL::Rotation> > segment4_grs("Segment4", link4, frameList4);
 
         kdle::JointProperties joint1_props, joint2_props;
-        joint1_props = std::make_tuple(KDL::Joint::JointType::RotZ, 0.02, 150.0, -140.0);
-        joint2_props = std::make_tuple(KDL::Joint::JointType::RotX, 0.025, 145.0, -135.0);
+        joint1_props = std::make_tuple(kdle::JointTypes::REVOLUTE_Z, 0.02, 150.0, -140.0);
+        joint2_props = std::make_tuple(kdle::JointTypes::REVOLUTE_X, 0.025, 145.0, -135.0);
         
         kdle::Joint< grs::Pose<KDL::Vector, KDL::Rotation> > joint2("Joint1", segment3_grs.getAttachmentFrames()[0], segment3_grs, segment2_grs.getAttachmentFrames()[1], segment2_grs, joint1_props);
         kdle::Joint< grs::Pose<KDL::Vector, KDL::Rotation> > joint3("Joint2", segment4_grs.getAttachmentFrames()[0], segment4_grs, segment3_grs.getAttachmentFrames()[1], segment3_grs,  joint2_props);
@@ -251,14 +252,14 @@ int main(int argc, char** argv)
         
         kdle::TransmissionProperties trans_props = std::make_tuple(0.2,0.2,0.2);
         kdle::make_transmission(joint2,trans_props);
-        grs::Pose<KDL::Vector, KDL::Rotation> currentJointPose;
-        grs::Pose<KDL::Vector, KDL::Rotation> currentJointPose1;
-        grs::Twist<KDL::Vector, KDL::Vector> currentJointTwist;
-        grs::Twist<KDL::Vector,KDL::Vector> twisttemp;
+        grs::Pose<KDL::Vector, KDL::Rotation> currentJointPose1, currentJointPose;
+        grs::Twist<KDL::Vector, KDL::Vector> currentJointTwist, twisttemp;
         grs::Twist<KDL::Twist> twisttemp1;
+        
         //joint value is of type vector whose size changes according to the joint's DoF
         std::vector<double> jointvalue(1,M_PI/4.0);
         std::vector<double> jointtwistvalue(1,0.855);
+        std::vector<double> jointtwistvalue1(1,2.25);
         std::vector<double> jointvalue1(1,-M_PI/6.0);
         
         joint2.getPoseOfJointFrames(jointvalue, currentJointPose );
@@ -267,26 +268,43 @@ int main(int argc, char** argv)
         joint3.getCurrentDistalToPredecessorDistalPose(jointvalue1, currentJointPose);
 
         joint2.getTwistOfJointFrames(jointtwistvalue, twisttemp);
-        joint3.getTwistOfJointFrames(jointtwistvalue ,twisttemp);
-        joint2.getCurrentDistalToPredecessorDistalTwist(jointvalue, jointtwistvalue, twisttemp);
+        joint2.getCurrentDistalToPredecessorJointTwist(jointvalue, jointtwistvalue, twisttemp);
+        joint3.getTwistOfJointFrames(jointtwistvalue1 ,twisttemp);
+        joint3.getCurrentDistalToPredecessorJointTwist(jointvalue1, jointtwistvalue1, twisttemp);
         
-        std::vector< kdle::Joint< grs::Pose<KDL::Vector, KDL::Rotation> > > jointlist;
+        typedef std::vector< kdle::Joint< grs::Pose<KDL::Vector, KDL::Rotation> > > JointList;
+        JointList jointlist;
         jointlist.push_back(joint2);
         jointlist.push_back(joint3);
         
         kdle::KinematicChain< grs::Pose<KDL::Vector, KDL::Rotation> > mychain("MyKinematicChain", jointlist);
-        int tempNr = mychain.getNrOfJoints();
-        mychain.addJoint(joint3);
-        tempNr = mychain.getNrOfSegments();
-       
+        std::cout << "Number of joints " << mychain.getNrOfJoints() << std::endl;
+        std::cout << "Number of segments " << mychain.getNrOfSegments() << std::endl;
+        JointList::const_iterator iter = mychain.addJoint(joint3);
+        std::cout << "Number of joints " << mychain.getNrOfJoints() << std::endl;
+        std::cout << "Number of segments " << mychain.getNrOfSegments() << std::endl;
+        std::cout << "Joint " << iter->getName() << " has " << std::endl;
         
     //~SEGMENT METADATA
     //Computational operation
-        kdle::transform<kdle::tree_iterator, kdle::pose> comp1;
+        kdle::accumulate<kdle::tree_iterator> forwardKinematics;
     //Traversal policy
-        kdle::DFSPolicy_ver2< kdle::KinematicChain< grs::Pose<KDL::Vector, KDL::Rotation> > > policy;
+        kdle::DFSPolicy< kdle::KinematicChain< grs::Pose<KDL::Vector, KDL::Rotation> > > policy;
+        std::vector<kdle::JointState> jstate;
+        jstate.resize(mychain.getNrOfJoints());
+        jstate[0].q = KDL::PI / 3.0;
+        jstate[0].qdot = 0.2;
+        jstate[1].q = -KDL::PI / 3.0;
+        jstate[1].qdot = 0.4;
+        jstate[2].q = KDL::PI / 4.0;
+        jstate[2].qdot = -0.2;
+
+        std::vector<kdle::SegmentState> lstate;
+        lstate.resize(mychain.getNrOfJoints());
+        std::vector<kdle::SegmentState> lstate2;
+        lstate2.resize(mychain.getNrOfJoints());
     //Traversal operation
-        kdle::traverseGraph_ver2(mychain, comp1,policy);
+        kdle::traverseGraph(mychain, forwardKinematics, policy)(jstate, lstate, lstate2);
     return 0;
 }
 

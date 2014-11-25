@@ -13,7 +13,6 @@
 
 using namespace std;
 using namespace KDL;
-using namespace kdle;
 
 void createMyTree(KDL::Tree& twoBranchTree)
 {
@@ -118,19 +117,19 @@ int main(int argc, char** argv)
     lstate[0].Xdotdot = rootAcc;
 
     //================================Definition of an algorithm=========================//
-    typedef Composite< kdle::accumulate<tree_iterator>, kdle::transform<tree_iterator, pose> > compositeOperType;
+    typedef kdle::Composite< kdle::accumulate<kdle::tree_iterator>, kdle::transform<kdle::tree_iterator, kdle::pose> > compositeOperType;
     // declare a computation to be performed
-    kdle::transform<tree_iterator, pose> poseComputation;
-    kdle::accumulate<tree_iterator> poseBaseComputation(lstate[0]);
+    kdle::transform<kdle::tree_iterator, kdle::pose> poseComputation;
+    kdle::accumulate<kdle::tree_iterator> poseBaseComputation(lstate[0]);
 
-    compositeOperType fkoperation = compose(poseBaseComputation, poseComputation);
+    compositeOperType fkoperation = kdle::compose(poseBaseComputation, poseComputation);
     //declare a policy for a tree traversal
-    kdle::DFSPolicy_ver2<Tree, outward> forwardTraversal;
+    kdle::DFSPolicy<Tree, kdle::outward> forwardTraversal;
 
 
-    typedef IterateOver_ver2< KDL::Tree, compositeOperType, outward, kdle::DFSPolicy_ver2 > traversalType;
+    typedef kdle::IterateOver< KDL::Tree, compositeOperType, kdle::outward, kdle::DFSPolicy > traversalType;
     //declare a traversal operation on the give topology
-    traversalType outwardSweep = traverseGraph_ver2(twoBranchTree, fkoperation, forwardTraversal);
+    traversalType outwardSweep = kdle::traverseGraph(twoBranchTree, fkoperation, forwardTraversal);
 
     //simulate the loop. Note that joint values are not changing
     while (1)

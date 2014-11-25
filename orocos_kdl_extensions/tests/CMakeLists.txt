@@ -19,4 +19,4 @@ target_link_libraries(inversedynamics-test2 ${PROJECT_NAME} graph gvc)
 
 rosbuild_add_executable(testSuite testrunner.cpp poseOperationTest.cpp twistOperationTest.cpp accTwistOperationTest.cpp
                         forceOperationTest.cpp composeOperationTest.cpp traverseOperationTest.cpp)
-target_link_libraries(testSuite ${PROJECT_NAME} cppunit)
+target_link_libraries(testSuite cppunit ${PROJECT_NAME})

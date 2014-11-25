@@ -14,7 +14,6 @@
 
 using namespace std;
 using namespace KDL;
-using namespace kdle;
 
 void createMyTree(KDL::Tree& twoBranchTree)
 {
@@ -126,27 +125,27 @@ int main(int argc, char** argv)
 
     //================================Definition of an algorithm=========================//
     printf("Templated inverse dynamics for Tree \n");
-    kdle::transform<tree_iterator, pose> _comp1;
-    kdle::transform<tree_iterator, twist> _comp2;
-    kdle::transform<tree_iterator, accTwist> _comp3;
-    kdle::balance<tree_iterator, force> _comp4;
-    kdle::project<tree_iterator, wrench> _comp5;
+    kdle::transform<kdle::tree_iterator, kdle::pose> _comp1;
+    kdle::transform<kdle::tree_iterator, kdle::twist> _comp2;
+    kdle::transform<kdle::tree_iterator, kdle::accTwist> _comp3;
+    kdle::balance<kdle::tree_iterator, kdle::force> _comp4;
+    kdle::project<kdle::tree_iterator, kdle::wrench> _comp5;
 
     //typedef Composite<kdle::func_ptr(myTestComputation), kdle::func_ptr(myTestComputation) > compositeType0;
-    typedef Composite< kdle::transform<tree_iterator, twist>, kdle::transform<tree_iterator, pose> > compositeType1;
-    typedef Composite< kdle::balance<tree_iterator, force>, kdle::transform<tree_iterator, accTwist> > compositeType2;
-    typedef Composite<compositeType2, compositeType1> compositeType3;
+    typedef kdle::Composite< kdle::transform<kdle::tree_iterator, kdle::twist>, kdle::transform<kdle::tree_iterator, kdle::pose> > compositeType1;
+    typedef kdle::Composite< kdle::balance<kdle::tree_iterator, kdle::force>, kdle::transform<kdle::tree_iterator, kdle::accTwist> > compositeType2;
+    typedef kdle::Composite<compositeType2, compositeType1> compositeType3;
 
     compositeType1 composite1 = kdle::compose(_comp2, _comp1);
     compositeType3 composite2 = kdle::compose(kdle::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1));
 
     //kdle::DFSPolicy<KDL::Tree> mypolicy;
-    kdle::DFSPolicy_ver2<KDL::Tree, inward> mypolicy1;
-    kdle::DFSPolicy_ver2<KDL::Tree, outward> mypolicy2;
+    kdle::DFSPolicy<KDL::Tree, kdle::inward> mypolicy1;
+    kdle::DFSPolicy<KDL::Tree, kdle::outward> mypolicy2;
 
     std::cout << std::endl << std::endl << "FORWARD TRAVERSAL" << std::endl << std::endl;
 
-    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jstate, lstate, lstate2); // 3 argument walk takes opers with 4 args
+    kdle::traverseGraph(twoBranchTree, composite2, mypolicy2)(jstate, lstate, lstate2); // 3 argument walk takes opers with 4 args
       
 
 #ifdef VERBOSE_CHECK_MAIN
@@ -177,7 +176,7 @@ int main(int argc, char** argv)
 
     std::cout << std::endl << std::endl << "REVERSE TRAVERSAL" << std::endl << std::endl;
 
-    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jstate, jstateOut, lstate2, lstate3);
+    kdle::traverseGraph(twoBranchTree, _comp5, mypolicy1)(jstate, jstateOut, lstate2, lstate3);
 
     //================================end of the definition===========================//
     

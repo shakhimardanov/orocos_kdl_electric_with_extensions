@@ -66,7 +66,7 @@ namespace grs = geometric_semantics;
 
 using namespace std;
 using namespace KDL;
-using namespace kdle;
+//using namespace kdle;
 
 int main(int argc, char** argv)
 {

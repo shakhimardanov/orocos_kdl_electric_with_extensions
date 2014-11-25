@@ -41,7 +41,8 @@
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
 #include <kdl/chainfksolverpos_recursive.hpp>
 #include <kdl/chainfksolvervel_recursive.hpp>
-#include <kdl_extensions/functionalcomputation_kdl.hpp>
+#include <kdl/frames_io.hpp>
+//#include <kdl_extensions/functionalcomputation_kdl.hpp>
 #include <Position/Position.h>
 #include <Orientation/Orientation.h>
 #include <Pose/Pose.h>
@@ -66,7 +67,7 @@ namespace grs = geometric_semantics;
 
 using namespace std;
 using namespace KDL;
-using namespace kdle;
+//using namespace kdle;
 
 
 typedef struct

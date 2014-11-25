@@ -305,13 +305,13 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     compositeType3 composite2 = kdle::compose(kdle::compose(_comp4, _comp3), kdle::compose(_comp2, _comp1));
 
     //kdle::DFSPolicy<KDL::Tree> mypolicy;
-    kdle::DFSPolicy_ver2<KDL::Tree, kdle::inward> mypolicy1;
-    kdle::DFSPolicy_ver2<KDL::Tree, kdle::outward> mypolicy2;
+    kdle::DFSPolicy<KDL::Tree, kdle::inward> mypolicy1;
+    kdle::DFSPolicy<KDL::Tree, kdle::outward> mypolicy2;
 
     std::cout << std::endl << std::endl << "FORWARD TRAVERSAL" << std::endl << std::endl;
 
-//    traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, jointState, linkState, linkState2);
-     traverseGraph_ver2(twoBranchTree, composite2, mypolicy2)(jointState, linkState, linkState2);
+//    traverseGraph(twoBranchTree, composite2, mypolicy2)(jointState, jointState, linkState, linkState2);
+     traverseGraph(twoBranchTree, composite2, mypolicy2)(jointState, linkState, linkState2);
 
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << std::endl << std::endl << "LSTATE" << std::endl << std::endl;
@@ -339,7 +339,7 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
     std::cout << std::endl << std::endl << "REVERSE TRAVERSAL" << std::endl << std::endl;
     std::vector<kdle::JointState> jstate1;
     jstate1.resize(twoBranchTree.getNrOfSegments() + 1);
-    traverseGraph_ver2(twoBranchTree, _comp5, mypolicy1)(jointState, jstate1, linkState2, linkState3);
+    traverseGraph(twoBranchTree, _comp5, mypolicy1)(jointState, jstate1, linkState2, linkState3);
     //version 1 traversal
     //traverseGraph(twoBranchTree, kdl_extensions::func_ptr(myTestComputation), mypolicy)(1, 2, 3);    
 #ifdef VERBOSE_CHECK_MAIN

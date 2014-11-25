@@ -39,23 +39,37 @@
 #ifndef _CHAIN_GEOMETRIC_PRIMITIVES_HPP_
 #define _CHAIN_GEOMETRIC_PRIMITIVES_HPP_
 
-#include <cstdlib>
-#include <list>
 #include <vector>
 #include <tuple>
-#include <algorithm>
-#include <functional>
-#include <string>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <kdl_extensions/functionalcomputation_util.hpp>
 #include <kdl_extensions/geometric_semantics_kdl.hpp>
-#include <kdl_extensions/functionalcomputation_kdl.hpp>
+
 
 namespace kdle
 {
+    enum class JointTypes : int
+    { 
+        REVOLUTE_AXI = 0,
+        REVOLUTE_X,
+        REVOLUTE_Y,
+        REVOLUTE_Z,
+        PRISMATIC_AXIS,
+        PRISMATIC_X,
+        PRISMATIC_Y,
+        PRISMATIC_Z,
+        HELICAL,
+        CYLINDRICAL,
+        PLANAR,
+        SPHERICAL,
+        FREEMOTION,
+        NONE,
+    };
+    
     //should also include polarity of the joint, it defines forward and reverse relation between successor and predecessor segments
-    typedef std::tuple<KDL::Joint::JointType, double, double, double> JointProperties;
+    typedef std::tuple<JointTypes, double, double, double> JointProperties;
     
     // Metadata of the language
     static boost::uuids::uuid temp;
@@ -164,7 +178,7 @@ namespace kdle
         BODY='B',
     };
     
-    std::ostream& operator<<(std::ostream &out, FrameType tag )
+    inline std::ostream& operator<<(std::ostream &out, FrameType tag )
     {
         return out << static_cast<char>(tag);
     };
@@ -294,7 +308,7 @@ namespace kdle
         	 * \param jointtwistvalues is a vector of doubles for multiDoF, for 1 DoF it is of size 1
         	 */
             template <typename TwistT>
-            void getCurrentDistalToPredecessorDistalTwist(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist);
+            void getCurrentDistalToPredecessorJointTwist(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist);
             
             /**
         	 * \brief compute and return relative twist between to joint frames of two segments: current root and previous tip frames
@@ -308,36 +322,36 @@ namespace kdle
              * \brief return type of the joint, e.g 1 DoF rotational around Z axis
              *
              */
-            KDL::Joint::JointType const& getType() const {return std::get<0>(jointprops); };
+            JointTypes const& getType() const {return std::get<0>(jointprops); };
             
             /**
-             * \brief return string name of the type of the joint, e.g "RotZ" for 1 DoF rotational around Z axis
+             * \brief return string name of the type of the joint, e.g "REVOLUTE_Z" for 1 DoF rotational around Z axis
              *
              */
             std::string const getTypeName() const 
             {
                 switch (std::get<0>(jointprops)) 
                 {
-                    case KDL::Joint::JointType::RotAxis:
-                        return "RotAxis";
-                    case KDL::Joint::JointType::TransAxis:
-                        return "TransAxis";
-                    case KDL::Joint::JointType::RotX:
-                        return "RotX";
-                    case KDL::Joint::JointType::RotY:
-                        return "RotY";
-                    case KDL::Joint::JointType::RotZ:
-                        return "RotZ";
-                    case KDL::Joint::JointType::TransX:
-                        return "TransX";
-                    case KDL::Joint::JointType::TransY:
-                        return "TransY";
-                    case KDL::Joint::JointType::TransZ:
-                        return "TransZ";
-                    case KDL::Joint::JointType::None:
-                        return "None";
+                    case JointTypes::REVOLUTE_AXI:
+                        return "REVOLUTE_AXI";
+                    case JointTypes::PRISMATIC_AXIS:
+                        return "PRISMATIC_AXIS";
+                    case JointTypes::REVOLUTE_X:
+                        return "REVOLUTE_X";
+                    case JointTypes::REVOLUTE_Y:
+                        return "REVOLUTE_Y";
+                    case JointTypes::REVOLUTE_Z:
+                        return "REVOLUTE_Z";
+                    case JointTypes::PRISMATIC_X:
+                        return "PRISMATIC_X";
+                    case JointTypes::PRISMATIC_Y:
+                        return "PRISMATIC_Y";
+                    case JointTypes::PRISMATIC_Z:
+                        return "PRISMATIC_Z";
+                    case JointTypes::NONE:
+                        return "NONE";
                     default:
-                        return "None";
+                        return "NONE";
                 }
             };
             std::vector<Segment<PoseT> > const& getSegments() const{};
@@ -361,7 +375,7 @@ namespace kdle
             bool getPoseOfJointFramesImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT posetochange);
             bool getDistalToDistalPoseImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose);
             template <typename TwistT>
-            bool getDistalToDistalTwistImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist){};
+            bool getCurrentDistalToPredecessorJointTwistImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist);
             template <typename TwistT>
             bool getTwistOfJointFramesImpl(std::vector<double> const& jointtwistvalues, TwistT &relativeTwist){};
     };
@@ -392,9 +406,9 @@ namespace kdle
     
     template <typename PoseT>
         template <typename TwistT>
-    void Joint<PoseT>::getCurrentDistalToPredecessorDistalTwist(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist)
+    void Joint<PoseT>::getCurrentDistalToPredecessorJointTwist(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist)
     {
-        if(!getDistalToDistalTwistImpl(jointvalues, jointtwistvalues, relativeTwist))
+        if(!getCurrentDistalToPredecessorJointTwistImpl(jointvalues, jointtwistvalues, relativeTwist))
             std::cout <<"Warning: can not return twist data " << std::endl;
         else
             std::cout << "Inside Joint DistalToDistal Twist Impl " << std::endl << relativeTwist <<std::endl;
@@ -413,7 +427,7 @@ namespace kdle
     }
     
     //Specialization for two argument pose with KDL coordinate representation
-    template <>
+    template <> inline 
     bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getPoseOfJointFramesImpl(std::vector<double> const& jointvalues, grs::Pose<KDL::Vector, KDL::Rotation> &posetochange)
     {       
         //Constraint: Joint frame origins coincide
@@ -424,9 +438,9 @@ namespace kdle
         }
         else
         {
-            switch(getType())
+            switch(this->getType())
             {
-                case KDL::Joint::JointType::RotZ:
+                case JointTypes::REVOLUTE_Z:
                 {
                     grs::Position<KDL::Vector> originPosition(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
                                                               predecessorFrame.poseData.getPoint(), predecessorFrame.poseData.getBody(), 
@@ -438,7 +452,7 @@ namespace kdle
                     break;
                 }
 
-                case KDL::Joint::JointType::RotX:
+                case JointTypes::REVOLUTE_X:
                 {
                     grs::Position<KDL::Vector> originPosition(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
                                                               predecessorFrame.poseData.getPoint(), predecessorFrame.poseData.getBody(), 
@@ -450,7 +464,7 @@ namespace kdle
                     break;
                 }
 
-                case KDL::Joint::JointType::RotY:
+                case JointTypes::REVOLUTE_Y:
                 {
                     grs::Position<KDL::Vector> originPosition(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
                                                               predecessorFrame.poseData.getPoint(), predecessorFrame.poseData.getBody(), 
@@ -469,7 +483,7 @@ namespace kdle
     }
     
     //Specialization for two argument pose with KDL coordinate representation
-    template<>
+    template<> inline
     bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getDistalToDistalPoseImpl(std::vector<double> const& jointvalues, grs::Pose<KDL::Vector, KDL::Rotation> &tipFramePose)
     {
         
@@ -488,8 +502,8 @@ namespace kdle
     }
   
     //Specialization for two argument vector with KDL coordinate representation
-    template <>
-        template <>
+    template <> 
+        template <> inline
     bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getTwistOfJointFramesImpl(std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist)
     {
          if(!((successorFrame.tagData == FrameType::JOINT) && (predecessorFrame.tagData == FrameType::JOINT)))
@@ -500,7 +514,7 @@ namespace kdle
         {
             switch(getType())
             {
-                case KDL::Joint::JointType::RotZ:
+                case JointTypes::REVOLUTE_Z:
                 {
                     grs::LinearVelocity<KDL::Vector> originLinearVel(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
                                                                      predecessorFrame.poseData.getBody(), predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(0,0,0));
@@ -510,7 +524,7 @@ namespace kdle
                     break;
                 }
 
-                case KDL::Joint::JointType::RotX:
+                case JointTypes::REVOLUTE_X:
                 {
                     grs::LinearVelocity<KDL::Vector> originLinearVel(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
                                                                      predecessorFrame.poseData.getBody(), predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(0,0,0));
@@ -520,7 +534,7 @@ namespace kdle
                     break;
                 }
 
-                case KDL::Joint::JointType::RotY:
+                case JointTypes::REVOLUTE_Y:
                 {
                     grs::LinearVelocity<KDL::Vector> originLinearVel(successorFrame.poseData.getPoint(), successorFrame.poseData.getBody(), 
                                                                      predecessorFrame.poseData.getBody(), predecessorFrame.poseData.getOrientationFrame(), KDL::Vector(0,0,0));
@@ -535,9 +549,9 @@ namespace kdle
     }
     
     //Specialization for two argument vector with KDL coordinate representation
-    template <>
-        template <>
-    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getDistalToDistalTwistImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist)
+    template <> 
+        template <> inline
+    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getCurrentDistalToPredecessorJointTwistImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist)
     {
         if(!getTwistOfJointFramesImpl(jointtwistvalues, relativeTwist))
         {
@@ -545,21 +559,19 @@ namespace kdle
         }
         else
         {
-            //distal to proximal
-            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentTipToRootFramePose = targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose();
-            //joint to proximal inverse
-            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentJointToRootFramePose = successorFrame.poseData.inverse2();
-            //distal to target joint
-            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentTipToJointFramePose = grs::compose(tempSegmentTipToRootFramePose,tempSegmentJointToRootFramePose);
-            grs::Position<KDL::Vector> tempSegmentJointToTipFramePosition = tempSegmentTipToJointFramePose.getPosition< KDL::Vector >().inverse();
+            //distal to proximal: targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose();
+            //joint to proximal inverse: successorFrame.poseData.inverse2();
+            //distal to target joint: grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2());
+            grs::Position<KDL::Vector> tempSegmentJointToTipFramePosition = grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2()).getPosition< KDL::Vector >().inverse();
             //target joint to ref joint
+            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentJointToRootFramePose;
             getPoseOfJointFramesImpl(jointvalues, tempSegmentJointToRootFramePose);
             
             grs::Orientation<KDL::Rotation> tempJointToRefJointOrientation = tempSegmentJointToRootFramePose.getOrientation<KDL::Rotation>();
+            //put distalToTarget joint vector into ref joint coordinate frame
             if(tempSegmentJointToTipFramePosition.changeCoordinateFrame(tempJointToRefJointOrientation))
+            //change its reference point
                     relativeTwist.changePointBody(tempSegmentJointToTipFramePosition);
-
-;
             return true;
         }
     }
@@ -583,7 +595,7 @@ namespace kdle
                 classData.instanceID = uuid_generator(classData.instanceName);
             };
             
-            bool addJoint(Joint<PoseT> const& newjoint);
+            IteratorT addJoint(Joint<PoseT> const& newjoint);
             
             IteratorT getJoint(std::string const& jointname) const;
             
@@ -618,15 +630,19 @@ namespace kdle
     template <typename PoseT, typename ContainerT>
     bool KinematicChain<PoseT, ContainerT >::isKinematicChainValid()
     { 
+        
         return true;
     };
     
     
     template <typename PoseT, typename ContainerT>
-    bool KinematicChain<PoseT, ContainerT >::addJoint(Joint<PoseT> const& newjoint)
+    typename KinematicChain<PoseT, ContainerT >::IteratorT KinematicChain<PoseT, ContainerT >::addJoint(Joint<PoseT> const& newjoint)
     {
-        return true;
+        
+        return jointsOfChain.insert(jointsOfChain.end(), newjoint);
     }
+    
+    
     
     template <typename PoseT, typename ContainerT>
     typename KinematicChain<PoseT, ContainerT >::IteratorT KinematicChain<PoseT, ContainerT >::getJoint(std::string const& jointname) const
@@ -637,13 +653,13 @@ namespace kdle
     template <typename PoseT, typename ContainerT>
     unsigned int KinematicChain<PoseT, ContainerT >::getNrOfJoints()
     {
-    
+        return jointsOfChain.size();
     }
     
     template <typename PoseT, typename ContainerT>
     unsigned int KinematicChain<PoseT, ContainerT >::getNrOfSegments()
     {
-    
+        return jointsOfChain.size();
     }
     
     //friction, inertia, scale/ratio, offset, damping, elasticity
@@ -672,6 +688,9 @@ namespace kdle
     {
     
     };
+    
+ 
+
 
 }
 

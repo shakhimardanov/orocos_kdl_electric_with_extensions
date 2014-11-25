@@ -165,9 +165,6 @@ inline Composite<OperationT1, OperationT2> compose(OperationT1 a_p1, OperationT2
 //traversal policies
 //primary templates
 template <typename Topology>
-class DFSPolicy;
-
-template <typename Topology>
 class BFSPolicy;
 
 //this is a test DFS version which allows to define a direction of traversal
@@ -176,12 +173,9 @@ class BFSPolicy;
 enum Direction{outward=0, inward=1};
 
 template <typename Topology, Direction sweepDirection=outward>
-class DFSPolicy_ver2
-{
+class DFSPolicy;
 
-};
-
-
+/*
 //traversal/schedule function
 //there is an association between computationtable and topology
 template<typename Topology, typename ComputationTable, template <typename Topology > class TraversalPolicy = DFSPolicy >
@@ -249,12 +243,12 @@ inline IterateOver<Topology, OP, Policy> traverseGraph(Topology a_graph, OP a_op
     return IterateOver<Topology, OP, Policy > (a_graph, a_op, a_policy);
 };
 
-
+*/
 
 //this is a version of traversal which works with DFS_ver2
 template<typename Topology, typename OperationT, Direction sweepDirection, 
          template <typename Topology, Direction sweepDirection=outward> class TraversalPolicy>
-class IterateOver_ver2
+class IterateOver
 {
 public:
     typedef typename OperationT::ReturnType ReturnType;
@@ -267,12 +261,12 @@ public:
     typedef typename OperationTParameterType<OperationT, 7 > ::Type Param7T;
 
     //TODO: check parameter qualifiers
-    IterateOver_ver2()
+    IterateOver()
     {
         std::cout << "Traverse operation is created " << std::endl;
     };
     //Constructor
-    IterateOver_ver2(typename ParameterTypeQualifier<Topology>::RefToConstT a_topol,
+    IterateOver(typename ParameterTypeQualifier<Topology>::RefToConstT a_topol,
                 typename ParameterTypeQualifier<OperationT>::RefToConstT a_oper,
                 Direction sweepDir,
                 typename ParameterTypeQualifier<TraversalPolicy<Topology, sweepDirection> >::RefToConstT policy) :
@@ -281,7 +275,7 @@ public:
         std::cout << "Traverse operation is created " << std::endl;
     };
 
-    ~IterateOver_ver2()
+    ~IterateOver()
     {
 
     };
@@ -313,10 +307,10 @@ private:
 
 
 template <typename Topology, typename OP, Direction sweepDir, template <typename, Direction> class Policy>
-inline IterateOver_ver2<Topology, OP, sweepDir , Policy> traverseGraph_ver2(Topology a_graph, OP a_op, Policy<Topology, sweepDir> a_policy)
+inline IterateOver<Topology, OP, sweepDir , Policy> traverseGraph(Topology a_graph, OP a_op, Policy<Topology, sweepDir> a_policy)
 {
    
-    return IterateOver_ver2<Topology, OP, sweepDir, Policy > (a_graph, a_op, sweepDir, a_policy);
+    return IterateOver<Topology, OP, sweepDir, Policy > (a_graph, a_op, sweepDir, a_policy);
 };
 
 };

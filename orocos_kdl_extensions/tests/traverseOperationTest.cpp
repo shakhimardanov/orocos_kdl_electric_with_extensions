@@ -72,7 +72,7 @@ void TraverseOperationTest::testTraverseOperation()
     printf("initial twist z %f\n", a_segmentState[1].Xdot.vel[2]);
 
     //    root segment is used in traversal but its state does not effect those of the segments of the physical structure (arm)
-    kdle::traverseGraph_ver2(testTree, kdle::compose(a_operation2, a_operation1), a_policy1)(a_jointState, a_segmentState, a_segmentState1);
+    kdle::traverseGraph(testTree, kdle::compose(a_operation2, a_operation1), a_policy1)(a_jointState, a_segmentState, a_segmentState1);
 
     printf("traversal: updated state of TestSegment0\n");
     printf("traversal: updated pose x %f\n", a_segmentState1[0].X.p[0]);

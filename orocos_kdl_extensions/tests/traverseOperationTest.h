@@ -33,7 +33,7 @@ private:
     kdle::transform<kdle::tree_iterator, kdle::pose> a_operation1;
     kdle::transform<kdle::tree_iterator, kdle::twist> a_operation2;
     
-    kdle::DFSPolicy_ver2<KDL::Tree, kdle::outward> a_policy1;
+    kdle::DFSPolicy<KDL::Tree, kdle::outward> a_policy1;
 
     void testTraverseOperation();
     void testFailedTraverseOperation();
