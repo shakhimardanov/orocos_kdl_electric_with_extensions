@@ -42,7 +42,7 @@ void ForceOperationTest::testBalanceWrench()
 {
     kdle::SegmentState a_segmentState1;
     KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");
-    kdle::balance<kdle::tree_iterator, kdle::force> a_operation;
+    kdle::balance<kdle::kdl_tree_iterator, kdle::force> a_operation;
 
     std::cout << std::endl;
     printf("initial wrench x %f\n",a_segmentState.F.force[0]);
@@ -62,7 +62,7 @@ void ForceOperationTest::testFailedBalanceWrench()
 {
     kdle::SegmentState a_segmentState1;
     KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");
-    kdle::balance<kdle::tree_iterator, kdle::force> a_operation;
+    kdle::balance<kdle::kdl_tree_iterator, kdle::force> a_operation;
 
     std::cout << std::endl;
     printf("initial wrench x %f\n",a_segmentState.F.force[0]);

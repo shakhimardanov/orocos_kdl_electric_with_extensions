@@ -367,15 +367,15 @@ int main(int argc, char** argv)
 
     //================================Definition of an algorithm=========================//
     // declare a computation to be performed
-    kdle::transform<kdle::tree_iterator, kdle::pose> _comp1;
-    kdle::transform<kdle::tree_iterator, kdle::twist> _comp2;
-    kdle::transform<kdle::tree_iterator, kdle::accTwist> _comp3;
-    kdle::balance<kdle::tree_iterator, kdle::force> _comp4;
-    kdle::project<kdle::tree_iterator, kdle::wrench> _comp5;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::pose> _comp1;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::twist> _comp2;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::accTwist> _comp3;
+    kdle::balance<kdle::kdl_tree_iterator, kdle::force> _comp4;
+    kdle::project<kdle::kdl_tree_iterator, kdle::wrench> _comp5;
 
     //some typedef's to simplify writing of composition. This is not necessary but greatly improve code readability
-    typedef kdle::Composite< kdle::transform<kdle::tree_iterator, kdle::twist>, kdle::transform<kdle::tree_iterator, kdle::pose> > compositeType1;
-    typedef kdle::Composite< kdle::balance<kdle::tree_iterator, kdle::force>, kdle::transform<kdle::tree_iterator, kdle::accTwist> > compositeType2;
+    typedef kdle::Composite< kdle::transform<kdle::kdl_tree_iterator, kdle::twist>, kdle::transform<kdle::kdl_tree_iterator, kdle::pose> > compositeType1;
+    typedef kdle::Composite< kdle::balance<kdle::kdl_tree_iterator, kdle::force>, kdle::transform<kdle::kdl_tree_iterator, kdle::accTwist> > compositeType2;
     typedef kdle::Composite<compositeType2, compositeType1> compositeType3;
 
     //let the operations be composed into a complex operation.

@@ -81,7 +81,7 @@ namespace kdle
     typedef wrenchOperationTag wrench;
     typedef inertiaOperationTag inertia;
 
-    typedef std::map<std::string, KDL::TreeElement >::const_iterator tree_iterator;
+    typedef std::map<std::string, KDL::TreeElement >::const_iterator kdl_tree_iterator;
 
     template <typename Iterator>//, typename Operation> //accumulation operation (* or +)
     class accumulate
@@ -123,7 +123,7 @@ namespace kdle
     class transform;
 
     template<>
-    class transform<tree_iterator, pose>
+    class transform<kdl_tree_iterator, pose>
     {
     public:
 
@@ -132,7 +132,7 @@ namespace kdle
             NumberOfParams = 5
         };
         typedef SegmentState ReturnType;
-        typedef tree_iterator Param1T;
+        typedef kdl_tree_iterator Param1T;
         typedef JointState Param2T;
         typedef SegmentState Param3T;
         typedef Param2T Param4T;
@@ -204,7 +204,7 @@ namespace kdle
     };
 
     template<>
-    class transform<tree_iterator, twist>
+    class transform<kdl_tree_iterator, twist>
     {
     public:
 
@@ -213,7 +213,7 @@ namespace kdle
             NumberOfParams = 5
         };
         typedef SegmentState ReturnType;
-        typedef tree_iterator Param1T;
+        typedef kdl_tree_iterator Param1T;
         typedef JointState Param2T;
         typedef SegmentState Param3T;
         typedef Param2T Param4T;
@@ -279,7 +279,7 @@ namespace kdle
     };
 
     template<>
-    class transform<tree_iterator, accTwist>
+    class transform<kdl_tree_iterator, accTwist>
     {
     public:
 
@@ -289,7 +289,7 @@ namespace kdle
         };
 
         typedef SegmentState ReturnType;
-        typedef tree_iterator Param1T;
+        typedef kdl_tree_iterator Param1T;
         typedef JointState Param2T;
         typedef SegmentState Param3T;
         typedef Param2T Param4T;
@@ -344,7 +344,7 @@ namespace kdle
     class balance;
 
     template<>
-    class balance<tree_iterator, force>
+    class balance<kdl_tree_iterator, force>
     {
     public:
 
@@ -354,7 +354,7 @@ namespace kdle
         };
 
         typedef SegmentState ReturnType;
-        typedef tree_iterator Param1T;
+        typedef kdl_tree_iterator Param1T;
         typedef JointState Param2T;
         typedef SegmentState Param3T;
         typedef Param2T Param4T;
@@ -409,7 +409,7 @@ namespace kdle
     class project;
 
     template<>
-    class project<tree_iterator, inertia>
+    class project<kdl_tree_iterator, inertia>
     {
     public:
 
@@ -419,7 +419,7 @@ namespace kdle
         };
 
         typedef KDL::RigidBodyInertia ReturnType;
-        typedef tree_iterator Param1T;
+        typedef kdl_tree_iterator Param1T;
         typedef JointState Param2T;
         typedef SegmentState Param3T;
         typedef Param2T Param4T;
@@ -445,7 +445,7 @@ namespace kdle
     };
 
     template<>
-    class project<tree_iterator, wrench>
+    class project<kdl_tree_iterator, wrench>
     {
     public:
 
@@ -455,7 +455,7 @@ namespace kdle
         };
 
         typedef SegmentState ReturnType;
-        typedef tree_iterator Param1T;
+        typedef kdl_tree_iterator Param1T;
         typedef JointState Param2T;
         typedef SegmentState Param3T;
         typedef Param2T Param4T;
@@ -663,6 +663,50 @@ namespace kdle
 
     };
 
+    
+    typedef std::vector<Joint<grs::Pose<KDL::Vector, KDL::Rotation> > >::const_iterator grs_iterator;
+    template<>
+    class transform<grs_iterator, pose>
+    {
+    public:
+
+        enum
+        {
+            NumberOfParams = 5
+        };
+        typedef SegmentState ReturnType;
+        typedef kdl_tree_iterator Param1T;
+        typedef JointState Param2T;
+        typedef SegmentState Param3T;
+        typedef Param2T Param4T;
+        typedef Param3T Param5T;
+
+        inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
+        {
+            return a_segmentState;
+        };
+
+        //returns current's updated state
+
+        inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's (initial) state
+                ParameterTypeQualifier<Param4T>::RefToArgT p_jointState2,
+                ParameterTypeQualifier<Param5T>::RefToConstT p_segmentState2) //current's child's  or parent's state
+        {
+            return a_segmentState;
+        };
+
+
+    private:
+        ReturnType a_segmentState;
+
+    };
+
+    
+    
     /**
      * \brief Version of DFSPolicy with KinematicChain using geometric relations semantics and std::vector as container
      *
@@ -693,7 +737,8 @@ namespace kdle
             {
                 std::cout << iter->getName() << std::endl;
                 std::cout << iter->getUID() << std::endl;
-//                iter->getCurrentDistalToPredecessorDistalPose(jointvalue, currentPose);
+                std::cout << iter->getClassUID() << std::endl;
+                iter->getCurrentDistalToPredecessorDistalPose(jointvalue, currentPose);
                 i++;
                 std::cout << currentPose << std::endl;
             }

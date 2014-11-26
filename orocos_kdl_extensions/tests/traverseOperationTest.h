@@ -30,8 +30,8 @@ private:
     KDL::Tree testTree;
     std::vector<kdle::SegmentState> a_segmentState;
     std::vector<kdle::JointState> a_jointState;
-    kdle::transform<kdle::tree_iterator, kdle::pose> a_operation1;
-    kdle::transform<kdle::tree_iterator, kdle::twist> a_operation2;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::pose> a_operation1;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::twist> a_operation2;
     
     kdle::DFSPolicy<KDL::Tree, kdle::outward> a_policy1;
 

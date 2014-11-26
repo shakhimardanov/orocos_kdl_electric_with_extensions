@@ -323,8 +323,8 @@ int main(int argc, char** argv)
 
     //================================Definition of an algorithm=========================//
     // declare a computation to be performed
-    kdle::transform<kdle::tree_iterator, kdle::pose> poseComputation;
-    kdle::accumulate<kdle::tree_iterator> poseBaseComputation(lstate[0]);
+    kdle::transform<kdle::kdl_tree_iterator, kdle::pose> poseComputation;
+    kdle::accumulate<kdle::kdl_tree_iterator> poseBaseComputation(lstate[0]);
 
     //declare a policy for a tree traversal
     kdle::DFSPolicy<Tree, kdle::outward> forwardTraversal;

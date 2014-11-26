@@ -31,10 +31,10 @@ private:
     KDL::Tree testTree;
     kdle::SegmentState a_segmentState;
     kdle::JointState a_jointState;
-    kdle::transform<kdle::tree_iterator, kdle::pose> a_operation1;
-    kdle::transform<kdle::tree_iterator, kdle::twist> a_operation2;
-    kdle::transform<kdle::tree_iterator, kdle::accTwist> a_operation3;
-    kdle::balance<kdle::tree_iterator, kdle::force> a_operation4;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::pose> a_operation1;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::twist> a_operation2;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::accTwist> a_operation3;
+    kdle::balance<kdle::kdl_tree_iterator, kdle::force> a_operation4;
 
     void testComposition();
     void testFailedComposition();

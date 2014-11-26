@@ -287,7 +287,7 @@ int main(int argc, char** argv)
         
     //~SEGMENT METADATA
     //Computational operation
-        kdle::accumulate<kdle::tree_iterator> forwardKinematics;
+        kdle::accumulate<kdle::kdl_tree_iterator> forwardKinematics;
     //Traversal policy
         kdle::DFSPolicy< kdle::KinematicChain< grs::Pose<KDL::Vector, KDL::Rotation> > > policy;
         std::vector<kdle::JointState> jstate;

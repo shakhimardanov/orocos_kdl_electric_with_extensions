@@ -115,8 +115,8 @@ int main(int argc, char** argv) {
 
     //================================Definition of an algorithm=========================//
     // declare a computation to be performed
-    kdle::transform<kdle::tree_iterator, kdle::pose> poseComputation;
-    kdle::transform<kdle::tree_iterator, kdle::twist> twistComputation;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::pose> poseComputation;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::twist> twistComputation;
     
 
     //declare a policy for a tree traversal

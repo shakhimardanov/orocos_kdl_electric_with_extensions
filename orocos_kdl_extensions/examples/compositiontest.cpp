@@ -269,11 +269,11 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
                                      std::vector<kdle::SegmentState>& linkState, std::vector<kdle::SegmentState>& linkState2)
 {
     printf("Templated dynamics values for Tree \n");
-    kdle::transform<kdle::tree_iterator, kdle::pose> _comp1;
-    kdle::transform<kdle::tree_iterator, kdle::twist> _comp2;
-    kdle::transform<kdle::tree_iterator, kdle::accTwist> _comp3;
-    kdle::balance<kdle::tree_iterator, kdle::force> _comp4;
-    kdle::project<kdle::tree_iterator, kdle::wrench> _comp5;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::pose> _comp1;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::twist> _comp2;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::accTwist> _comp3;
+    kdle::balance<kdle::kdl_tree_iterator, kdle::force> _comp4;
+    kdle::project<kdle::kdl_tree_iterator, kdle::wrench> _comp5;
     
 #ifdef VERBOSE_CHECK_MAIN
     std::cout << "Transform initial state" << std::endl << linkState[0].X << std::endl;
@@ -297,8 +297,8 @@ void computeTemplatedDynamicsForTree(KDL::Tree& twoBranchTree, KDL::Vector& grav
 #endif
 
     //typedef Composite<kdle::func_ptr(myTestComputation), kdle::func_ptr(myTestComputation) > compositeType0;
-    typedef kdle::Composite< kdle::transform<kdle::tree_iterator, kdle::twist>, kdle::transform<kdle::tree_iterator, kdle::pose> > compositeType1;
-    typedef kdle::Composite< kdle::balance<kdle::tree_iterator, kdle::force>, kdle::transform<kdle::tree_iterator, kdle::accTwist> > compositeType2;
+    typedef kdle::Composite< kdle::transform<kdle::kdl_tree_iterator, kdle::twist>, kdle::transform<kdle::kdl_tree_iterator, kdle::pose> > compositeType1;
+    typedef kdle::Composite< kdle::balance<kdle::kdl_tree_iterator, kdle::force>, kdle::transform<kdle::kdl_tree_iterator, kdle::accTwist> > compositeType2;
     typedef kdle::Composite<compositeType2, compositeType1> compositeType3;
 
 //    compositeType1 composite1 = kdle::compose(_comp2, _comp1);

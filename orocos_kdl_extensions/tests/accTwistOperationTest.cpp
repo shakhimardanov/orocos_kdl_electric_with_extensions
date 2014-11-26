@@ -43,7 +43,7 @@ void AccTwistOperationTest::testTransformAccTwist()
 {
     kdle::SegmentState a_segmentState1;
     KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");
-    kdle::transform<kdle::tree_iterator, kdle::accTwist> a_operation;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::accTwist> a_operation;
 
     std::cout << std::endl;
     printf("initial acctwist x %f\n",a_segmentState.Xdotdot.vel[0]);
@@ -63,7 +63,7 @@ void AccTwistOperationTest::testFailedTransformAccTwist()
 {
     kdle::SegmentState a_segmentState1;
     KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");
-    kdle::transform<kdle::tree_iterator, kdle::accTwist> a_operation;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::accTwist> a_operation;
 
     a_segmentState.Xdotdot.vel[2] = -9.8;
 

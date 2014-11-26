@@ -33,10 +33,10 @@ void ComposeOperationTest::setUp()
     a_segmentState = kdle::SegmentState();
     a_jointState = kdle::JointState();
 
-    a_operation1 = kdle::transform<kdle::tree_iterator, kdle::pose > ();
-    a_operation2 = kdle::transform<kdle::tree_iterator, kdle::twist > ();
-    a_operation3 = kdle::transform<kdle::tree_iterator, kdle::accTwist > ();
-    a_operation4 = kdle::balance<kdle::tree_iterator, kdle::force > ();
+    a_operation1 = kdle::transform<kdle::kdl_tree_iterator, kdle::pose > ();
+    a_operation2 = kdle::transform<kdle::kdl_tree_iterator, kdle::twist > ();
+    a_operation3 = kdle::transform<kdle::kdl_tree_iterator, kdle::accTwist > ();
+    a_operation4 = kdle::balance<kdle::kdl_tree_iterator, kdle::force > ();
 
 
 }

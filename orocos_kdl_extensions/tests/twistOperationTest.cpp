@@ -45,7 +45,7 @@ void TwistOperationTest::testTransformTwist()
     
     kdle::SegmentState a_segmentState1;
     KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");
-    kdle::transform<kdle::tree_iterator, kdle::twist> a_operation;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::twist> a_operation;
 
     a_segmentState.Xdot.vel[0] = 2.0;
     a_jointState.qdot = 0.2;
@@ -67,7 +67,7 @@ void TwistOperationTest::testFailedTransformTwist()
 {
     kdle::SegmentState a_segmentState1;
     KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");
-    kdle::transform<kdle::tree_iterator, kdle::twist> a_operation;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::twist> a_operation;
 
 
     std::cout << std::endl;

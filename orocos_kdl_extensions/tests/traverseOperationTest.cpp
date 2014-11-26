@@ -45,8 +45,8 @@ void TraverseOperationTest::setUp()
     a_segmentState.resize(testTree.getSegments().size());
     a_jointState.resize(testTree.getSegments().size());
 
-    a_operation1 = kdle::transform<kdle::tree_iterator, kdle::pose > ();
-    a_operation2 = kdle::transform<kdle::tree_iterator, kdle::twist > ();
+    a_operation1 = kdle::transform<kdle::kdl_tree_iterator, kdle::pose > ();
+    a_operation2 = kdle::transform<kdle::kdl_tree_iterator, kdle::twist > ();
 
 }
 

@@ -49,7 +49,7 @@ void PoseOperationTest::testTransformPose()
     kdle::SegmentState a_segmentState1;
     
     KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");
-    kdle::transform<kdle::tree_iterator, kdle::pose> a_operation;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::pose> a_operation;
 
     std::cout << std::endl;
     printf("initial pose x %f\n",a_segmentState.X.p[0]);
@@ -72,7 +72,7 @@ void PoseOperationTest::testFailedTransformPose()
     kdle::SegmentState a_segmentState1;
     
     KDL::SegmentMap::const_iterator segmentId = testTree.getSegment("TestSegment");
-    kdle::transform<kdle::tree_iterator, kdle::pose> a_operation;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::pose> a_operation;
 
     a_jointState.q = KDL::PI/3.0;
     std::cout << std::endl;

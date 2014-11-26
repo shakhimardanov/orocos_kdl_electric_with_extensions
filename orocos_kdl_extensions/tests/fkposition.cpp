@@ -117,10 +117,10 @@ int main(int argc, char** argv)
     lstate[0].Xdotdot = rootAcc;
 
     //================================Definition of an algorithm=========================//
-    typedef kdle::Composite< kdle::accumulate<kdle::tree_iterator>, kdle::transform<kdle::tree_iterator, kdle::pose> > compositeOperType;
+    typedef kdle::Composite< kdle::accumulate<kdle::kdl_tree_iterator>, kdle::transform<kdle::kdl_tree_iterator, kdle::pose> > compositeOperType;
     // declare a computation to be performed
-    kdle::transform<kdle::tree_iterator, kdle::pose> poseComputation;
-    kdle::accumulate<kdle::tree_iterator> poseBaseComputation(lstate[0]);
+    kdle::transform<kdle::kdl_tree_iterator, kdle::pose> poseComputation;
+    kdle::accumulate<kdle::kdl_tree_iterator> poseBaseComputation(lstate[0]);
 
     compositeOperType fkoperation = kdle::compose(poseBaseComputation, poseComputation);
     //declare a policy for a tree traversal

@@ -125,15 +125,15 @@ int main(int argc, char** argv)
 
     //================================Definition of an algorithm=========================//
     printf("Templated inverse dynamics for Tree \n");
-    kdle::transform<kdle::tree_iterator, kdle::pose> _comp1;
-    kdle::transform<kdle::tree_iterator, kdle::twist> _comp2;
-    kdle::transform<kdle::tree_iterator, kdle::accTwist> _comp3;
-    kdle::balance<kdle::tree_iterator, kdle::force> _comp4;
-    kdle::project<kdle::tree_iterator, kdle::wrench> _comp5;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::pose> _comp1;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::twist> _comp2;
+    kdle::transform<kdle::kdl_tree_iterator, kdle::accTwist> _comp3;
+    kdle::balance<kdle::kdl_tree_iterator, kdle::force> _comp4;
+    kdle::project<kdle::kdl_tree_iterator, kdle::wrench> _comp5;
 
     //typedef Composite<kdle::func_ptr(myTestComputation), kdle::func_ptr(myTestComputation) > compositeType0;
-    typedef kdle::Composite< kdle::transform<kdle::tree_iterator, kdle::twist>, kdle::transform<kdle::tree_iterator, kdle::pose> > compositeType1;
-    typedef kdle::Composite< kdle::balance<kdle::tree_iterator, kdle::force>, kdle::transform<kdle::tree_iterator, kdle::accTwist> > compositeType2;
+    typedef kdle::Composite< kdle::transform<kdle::kdl_tree_iterator, kdle::twist>, kdle::transform<kdle::kdl_tree_iterator, kdle::pose> > compositeType1;
+    typedef kdle::Composite< kdle::balance<kdle::kdl_tree_iterator, kdle::force>, kdle::transform<kdle::kdl_tree_iterator, kdle::accTwist> > compositeType2;
     typedef kdle::Composite<compositeType2, compositeType1> compositeType3;
 
     compositeType1 composite1 = kdle::compose(_comp2, _comp1);
