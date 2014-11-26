@@ -104,12 +104,12 @@ namespace kdle
             /**
         	 * \brief
         	 */
-            PoseT const& getCurrentDistalToCurrentProximalPose();
+            PoseT const& getCurrentDistalToCurrentProximalPose() const;
 
             /**
         	 * \brief
         	 */
-            PoseT const& getCurrentDistalToPredecessorDistalPose();
+            PoseT const& getCurrentDistalToPredecessorDistalPose() const;
             
             //return the name, uuid, and classuuid
             std::string const& getName() const {return classData.instanceName;};
@@ -120,22 +120,22 @@ namespace kdle
         private:
             PoseT rootFrame_q0;
             PoseT tipFrame_q0;
-            PoseT tipToProximalFrame_q0;
-            PoseT tipToDistalFrame_q0;
+            mutable PoseT tipToProximalFrame_q0;
+            mutable PoseT tipToDistalFrame_q0;
             
             struct MetaData classData;
             static boost::uuids::uuid modelID;
             
         protected:
-            bool getCurrentDistalToCurrentProximalPoseImpl(PoseT &tip2rootpose);
-            bool getCurrentDistalToPredecessorDistalPoseImpl(PoseT &tip2tippose);
+            bool getCurrentDistalToCurrentProximalPoseImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2rootpose) const;
+            bool getCurrentDistalToPredecessorDistalPoseImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2tippose) const;
     };
 
     template <typename PoseT>
     boost::uuids::uuid Link<PoseT>::modelID = uuid_generator("TypeNameLink");
     
     template <typename PoseT>
-    PoseT const& Link<PoseT>::getCurrentDistalToCurrentProximalPose()  
+    PoseT const& Link<PoseT>::getCurrentDistalToCurrentProximalPose() const 
     {
         if (!getCurrentDistalToCurrentProximalPoseImpl(tipToProximalFrame_q0))
             std::cout <<"Warning: can not return pose data " << std::endl;
@@ -144,7 +144,7 @@ namespace kdle
     };
     
     template <typename PoseT>
-    PoseT const& Link<PoseT>::getCurrentDistalToPredecessorDistalPose()  
+    PoseT const& Link<PoseT>::getCurrentDistalToPredecessorDistalPose() const 
     {
         if(!getCurrentDistalToPredecessorDistalPoseImpl(tipToDistalFrame_q0))
             std::cout <<"Warning: can not return pose data " << std::endl;
@@ -153,14 +153,14 @@ namespace kdle
     };
     
     template <typename PoseT>
-    bool Link<PoseT>::getCurrentDistalToCurrentProximalPoseImpl(PoseT &tip2rootpose)
+    bool Link<PoseT>::getCurrentDistalToCurrentProximalPoseImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT  tip2rootpose) const
     {
         tip2rootpose = tipFrame_q0;
         return true; 
     };
     
     template <typename PoseT>
-    bool Link<PoseT>::getCurrentDistalToPredecessorDistalPoseImpl(PoseT &tip2tippose)
+    bool Link<PoseT>::getCurrentDistalToPredecessorDistalPoseImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2tippose) const
     {
         tip2tippose = grs::compose(rootFrame_q0,tipFrame_q0);
         return true;
@@ -193,7 +193,7 @@ namespace kdle
     {
         public:
             AttachmentFrame()=default;
-            AttachmentFrame(PoseT const& pose, FrameType const& type):poseData(pose), tagData(type){};
+            AttachmentFrame(typename ParameterTypeQualifier<PoseT>::RefToConstT pose, typename ParameterTypeQualifier<FrameType>::RefToConstT type):poseData(pose), tagData(type){};
             PoseT poseData;
             FrameType tagData;
     };
@@ -217,12 +217,10 @@ namespace kdle
     {
         public:
             Segment()=default;
-            Segment(const std::string &givenName, typename ParameterTypeQualifier< Link<PoseT> >::RefToConstT link, std::vector< AttachmentFrame<PoseT> > const& listOfFrames)
+            Segment(std::string const& givenName, typename ParameterTypeQualifier< Link<PoseT> >::RefToConstT link, std::vector< AttachmentFrame<PoseT> > const& listOfFrames) : linkOfSegment(link), attachmentFrames(listOfFrames)
             {
                 classData.instanceName = givenName;
                 classData.instanceID = uuid_generator(classData.instanceName);
-                attachmentFrames = listOfFrames;
-                linkOfSegment = link;
             };
             
             /**
@@ -230,7 +228,7 @@ namespace kdle
         	 *
         	 * \param a list of joint attachment frame poses
         	 */
-            std::vector< AttachmentFrame<PoseT> > const& getAttachmentFrames()
+            std::vector< AttachmentFrame<PoseT> > const& getAttachmentFrames() const
             {  
                 return attachmentFrames;
             };
@@ -240,7 +238,7 @@ namespace kdle
         	 *
         	 * \param a list of joint attachment frame poses
         	 */
-            Link<PoseT> & getSegmentLink()
+            Link<PoseT> const& getSegmentLink() const
             {
                 return linkOfSegment;
             };            
@@ -252,10 +250,10 @@ namespace kdle
             
             ~Segment(){};
         private:
-            std::vector< AttachmentFrame<PoseT> > attachmentFrames;
-            Link<PoseT>  linkOfSegment;
             struct MetaData classData;
             static boost::uuids::uuid modelID;
+            Link<PoseT>  linkOfSegment;
+            std::vector< AttachmentFrame<PoseT> > attachmentFrames;
     };
     
     template <typename PoseT >
@@ -280,9 +278,9 @@ namespace kdle
     {
         public:
             Joint()=default;
-            Joint(const std::string &givenName, AttachmentFrame<PoseT> const& segmentJointFrame, Segment<PoseT> & firstSegmentID, 
-                    AttachmentFrame<PoseT> const& refSegmentJointFrame, Segment<PoseT> & refSegmentID, JointProperties const& properties )
-                    :successorFrame(segmentJointFrame), predecessorFrame(refSegmentJointFrame), jointprops(properties), targetSegment(&firstSegmentID), refSegment(&refSegmentID)
+            Joint(std::string const& givenName, AttachmentFrame<PoseT> const& segmentJointFrame, Segment<PoseT> const& firstSegmentID, 
+                    AttachmentFrame<PoseT> const& refSegmentJointFrame, Segment<PoseT> const& refSegmentID, JointProperties const& properties )
+                    :successorFrame(segmentJointFrame), predecessorFrame(refSegmentJointFrame), jointprops(properties), targetSegment(firstSegmentID), refSegment(refSegmentID)
             {
                 classData.instanceName = givenName;
                 classData.instanceID = uuid_generator(classData.instanceName);
@@ -365,11 +363,11 @@ namespace kdle
         private:
             struct MetaData classData;
             static boost::uuids::uuid modelID;
-            AttachmentFrame<PoseT> successorFrame;
-            AttachmentFrame<PoseT> predecessorFrame;
+            AttachmentFrame<PoseT>  successorFrame;
+            AttachmentFrame<PoseT>  predecessorFrame;
             JointProperties jointprops;
-            Segment<PoseT>  *targetSegment;
-            Segment<PoseT>  *refSegment;
+            Segment<PoseT>  targetSegment;
+            Segment<PoseT>  refSegment;
             
         protected:
             bool getPoseOfJointFramesImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT posetochange);
@@ -377,7 +375,7 @@ namespace kdle
             template <typename TwistT>
             bool getCurrentDistalToPredecessorJointTwistImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist);
             template <typename TwistT>
-            bool getTwistOfJointFramesImpl(std::vector<double> const& jointtwistvalues, TwistT &relativeTwist){};
+            bool getTwistOfJointFramesImpl(std::vector<double> const& jointtwistvalues, TwistT &relativeTwist);
     };
     
     template <typename PoseT>
@@ -495,8 +493,8 @@ namespace kdle
         else
         {
             //target distal to ref distal
-            tipFramePose = grs::compose(grs::compose(predecessorFrame.poseData,refSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose().inverse2()),
-                           grs::compose(tipFramePose,grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2())));
+            tipFramePose = grs::compose(grs::compose(predecessorFrame.poseData,refSegment.getSegmentLink().getCurrentDistalToCurrentProximalPose().inverse2()),
+                           grs::compose(tipFramePose,grs::compose(targetSegment.getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2())));
             return true;
         }
     }
@@ -562,7 +560,7 @@ namespace kdle
             //distal to proximal: targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose();
             //joint to proximal inverse: successorFrame.poseData.inverse2();
             //distal to target joint: grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2());
-            grs::Position<KDL::Vector> tempSegmentJointToTipFramePosition = grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2()).getPosition< KDL::Vector >().inverse();
+            grs::Position<KDL::Vector> tempSegmentJointToTipFramePosition = grs::compose(targetSegment.getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2()).getPosition< KDL::Vector >().inverse();
             //target joint to ref joint
             grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentJointToRootFramePose;
             getPoseOfJointFramesImpl(jointvalues, tempSegmentJointToRootFramePose);
