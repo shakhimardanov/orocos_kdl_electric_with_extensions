@@ -669,50 +669,104 @@ namespace kdle
     template<>
     class transform<grs_iterator, pose>
     {
-    public:
+        public:
 
-        enum
-        {
-            NumberOfParams = 5
-        };
-        typedef grs_iterator Param1T;
-        typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::CartesianSpace> ReturnType;
-        typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::JointSpace >    Param2T;
-        typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::CartesianSpace> Param3T;
-        typedef Param2T Param4T;
-        typedef Param3T Param5T;
+            enum
+            {
+                NumberOfParams = 5
+            };
+            typedef grs_iterator Param1T;
+            typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::CartesianSpace> ReturnType;
+            typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::JointSpace >    Param2T;
+            typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::CartesianSpace> Param3T;
+            typedef Param2T Param4T;
+            typedef Param3T Param5T;
 
-        inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
-                ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
-                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
-        {
-                std::cout << "Calling grs version of Pose with 3 args " << std::endl;
-                std::cout << segmentId->getName() << std::endl;
-                std::cout << segmentId->getUID() << std::endl;
-                std::cout << segmentId->getClassUID() << std::endl;
+            inline ReturnType const& operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                                ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
+            {
                 segmentId->getCurrentDistalToPredecessorDistalPose(p_jointState.q, a_segmentState.X);
-            return a_segmentState;
-        };
+                return a_segmentState;
+            };
 
-        //returns current's updated state
-
-        inline ReturnType operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
-                ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
-                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's (initial) state
-                ParameterTypeQualifier<Param4T>::RefToArgT p_jointState2,
-                ParameterTypeQualifier<Param5T>::RefToConstT p_segmentState2) //current's child's  or parent's state
-        {
-            std::cout << "Calling grs version of Pose " << std::endl;
-            return a_segmentState;
-        };
-
-
-    private:
-        ReturnType a_segmentState;
+        private:
+            ReturnType a_segmentState;
 
     };
 
-    
+    template<>
+    class transform<grs_iterator, twist>
+    {
+        public:
+
+            enum
+            {
+                NumberOfParams = 5
+            };
+            
+            typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::CartesianSpace> ReturnType;
+            typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::JointSpace > Param2T;
+            typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::CartesianSpace> Param3T;
+            typedef grs_iterator Param1T;
+            typedef Param2T Param4T;
+            typedef Param3T Param5T;
+
+            inline ReturnType const& operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                                ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
+                {
+                    segmentId->getCurrentDistalToPredecessorJointTwist(p_jointState.q, p_jointState.qdot, a_segmentState.Xdot);
+                    return a_segmentState;
+                };
+
+
+            inline ReturnType const& operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                                ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's state (current's body force)
+                                                ParameterTypeQualifier<Param4T>::RefToArgT p_jointState2,
+                                                ParameterTypeQualifier<Param5T>::RefToConstT p_segmentState2); //current's child's state (child's total force)
+
+        private:
+            ReturnType a_segmentState;
+    };
+
+    template<>
+    class transform<grs_iterator, accTwist>
+    {
+        public:
+
+            enum
+            {
+                NumberOfParams = 5
+            };
+
+            typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::CartesianSpace> ReturnType;
+            typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::JointSpace > Param2T;
+            typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::CartesianSpace> Param3T;
+            typedef grs_iterator Param1T;
+            typedef Param2T Param4T;
+            typedef Param3T Param5T;
+
+            inline ReturnType const& operator()( ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
+            {
+
+                return a_segmentState;
+            };
+
+            inline ReturnType const& operator()(ParameterTypeQualifier<Param1T>::RefToConstT segmentId,
+                                                ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
+                                                ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState, //current's state (current's body force)
+                                                ParameterTypeQualifier<Param4T>::RefToArgT p_jointState2,
+                                                ParameterTypeQualifier<Param5T>::RefToConstT p_segmentState2); //current's child's state (child's total force)
+
+        private:
+            ReturnType a_segmentState;
+
+    };
+
     
     /**
      * \brief Version of DFSPolicy with KinematicChain using geometric relations semantics and std::vector as container
@@ -742,27 +796,9 @@ namespace kdle
             
             for (std::vector<Joint<grs::Pose<KDL::Vector, KDL::Rotation> > >::const_iterator iter = a_topology.jointsOfChain.begin(); iter != a_topology.jointsOfChain.end(); iter++)
             {
-                std::cout << a_op(iter, a_jointStateVectorIn[i], a_linkStateVectorIn[i]).X << std::endl;
+                a_op(iter, a_jointStateVectorIn[i], a_linkStateVectorIn[i]);
                 i++;
             }
-            return true;
-        };
-        
-        
-        template <typename OP>
-        inline static bool walk(KinematicChain<grs::Pose<KDL::Vector, KDL::Rotation> > const& a_topology,
-                                typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToConstT a_jointStateVectorIn,
-                                typename ParameterTypeQualifier<std::vector<typename OP::Param2T> >::RefToArgT a_jointStateVectorOut, //introduce a separate mutable state representation, now is used for testing
-                                typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToConstT a_linkStateVectorIn,
-                                typename ParameterTypeQualifier<std::vector<typename OP::Param3T> >::RefToArgT a_linkStateVectorOut,
-                                OP a_op)
-        {
-            
-            for (std::vector<Joint<grs::Pose<KDL::Vector, KDL::Rotation> > >::const_iterator iter = a_topology.jointsOfChain.begin(); iter != a_topology.jointsOfChain.end(); iter++)
-            {
-
-            }
-
             return true;
         };
 
