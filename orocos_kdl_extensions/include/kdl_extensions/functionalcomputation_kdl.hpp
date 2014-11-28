@@ -661,10 +661,11 @@ namespace kdle
                 return true;
             };
 
-    };
+    }; 
 
     
     typedef std::vector<Joint<grs::Pose<KDL::Vector, KDL::Rotation> > >::const_iterator grs_iterator;
+    
     template<>
     class transform<grs_iterator, pose>
     {
@@ -674,10 +675,10 @@ namespace kdle
         {
             NumberOfParams = 5
         };
-        typedef SegmentState ReturnType;
-        typedef kdl_tree_iterator Param1T;
-        typedef JointState Param2T;
-        typedef SegmentState Param3T;
+        typedef grs_iterator Param1T;
+        typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::CartesianSpace> ReturnType;
+        typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::JointSpace >    Param2T;
+        typedef ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::CartesianSpace> Param3T;
         typedef Param2T Param4T;
         typedef Param3T Param5T;
 
@@ -685,6 +686,11 @@ namespace kdle
                 ParameterTypeQualifier<Param2T>::RefToConstT p_jointState,
                 ParameterTypeQualifier<Param3T>::RefToConstT p_segmentState)
         {
+                std::cout << "Calling grs version of Pose with 3 args " << std::endl;
+                std::cout << segmentId->getName() << std::endl;
+                std::cout << segmentId->getUID() << std::endl;
+                std::cout << segmentId->getClassUID() << std::endl;
+                segmentId->getCurrentDistalToPredecessorDistalPose(p_jointState.q, a_segmentState.X);
             return a_segmentState;
         };
 
@@ -696,6 +702,7 @@ namespace kdle
                 ParameterTypeQualifier<Param4T>::RefToArgT p_jointState2,
                 ParameterTypeQualifier<Param5T>::RefToConstT p_segmentState2) //current's child's  or parent's state
         {
+            std::cout << "Calling grs version of Pose " << std::endl;
             return a_segmentState;
         };
 
@@ -735,12 +742,8 @@ namespace kdle
             
             for (std::vector<Joint<grs::Pose<KDL::Vector, KDL::Rotation> > >::const_iterator iter = a_topology.jointsOfChain.begin(); iter != a_topology.jointsOfChain.end(); iter++)
             {
-                std::cout << iter->getName() << std::endl;
-                std::cout << iter->getUID() << std::endl;
-                std::cout << iter->getClassUID() << std::endl;
-                iter->getCurrentDistalToPredecessorDistalPose(jointvalue, currentPose);
+                std::cout << a_op(iter, a_jointStateVectorIn[i], a_linkStateVectorIn[i]).X << std::endl;
                 i++;
-                std::cout << currentPose << std::endl;
             }
             return true;
         };

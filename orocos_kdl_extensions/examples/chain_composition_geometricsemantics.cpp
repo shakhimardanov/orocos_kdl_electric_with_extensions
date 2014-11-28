@@ -287,21 +287,21 @@ int main(int argc, char** argv)
         
     //~SEGMENT METADATA
     //Computational operation
-        kdle::accumulate<kdle::kdl_tree_iterator> forwardKinematics;
+        kdle::transform<kdle::grs_iterator, kdle::pose> forwardKinematics;
     //Traversal policy
         kdle::DFSPolicy< kdle::KinematicChain< grs::Pose<KDL::Vector, KDL::Rotation> > > policy;
-        std::vector<kdle::JointState> jstate;
+        std::vector<kdle::ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, kdle::StateSpaceType::JointSpace> > jstate;
         jstate.resize(mychain.getNrOfJoints());
-        jstate[0].q = KDL::PI / 3.0;
+        jstate[0].q.push_back(KDL::PI / 3.0);
         jstate[0].qdot = 0.2;
-        jstate[1].q = -KDL::PI / 3.0;
+        jstate[1].q.push_back(-KDL::PI / 3.0);
         jstate[1].qdot = 0.4;
-        jstate[2].q = KDL::PI / 4.0;
+        jstate[2].q.push_back(KDL::PI / 4.0);
         jstate[2].qdot = -0.2;
 
-        std::vector<kdle::SegmentState> lstate;
+        std::vector<kdle::ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, kdle::StateSpaceType::CartesianSpace> > lstate;
         lstate.resize(mychain.getNrOfJoints());
-        std::vector<kdle::SegmentState> lstate2;
+        std::vector<kdle::ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, kdle::StateSpaceType::CartesianSpace> > lstate2;
         lstate2.resize(mychain.getNrOfJoints());
     //Traversal operation
         kdle::traverseGraph(mychain, forwardKinematics, policy)(jstate, lstate, lstate2);

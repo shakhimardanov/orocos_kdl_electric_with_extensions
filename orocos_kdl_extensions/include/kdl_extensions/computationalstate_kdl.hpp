@@ -39,6 +39,7 @@
 #ifndef COMPUTATIONALSTATE_KDLTYPES_HPP
 #define	COMPUTATIONALSTATE_KDLTYPES_HPP
 
+#include <kdl_extensions/geometric_semantics_kdl.hpp>
 #include <kdl/frames_io.hpp>
 
 
@@ -49,51 +50,96 @@
 namespace kdle
 {
 
-//TODO: consider whether link local and global computational states
-// should be represented in the single data type, as Herman suggested
+    //TODO: consider whether link local and global computational states
+    // should be represented in the single data type, as Herman suggested
 
-//TODO: These has to be deprecated in the favor of Global and Local?
-class SegmentState
-{
-public:
-    SegmentState();
-    SegmentState(const SegmentState& copy);
-    SegmentState & operator=(const SegmentState& copy);
-    bool operator==(const SegmentState& instance);
-    bool operator!=(const SegmentState& instance);
+    //TODO: These has to be deprecated in the favor of Global and Local?
+    class SegmentState
+    {
+    public:
+        SegmentState();
+        SegmentState(const SegmentState& copy);
+        SegmentState & operator=(const SegmentState& copy);
+        bool operator==(const SegmentState& instance);
+        bool operator!=(const SegmentState& instance);
 
-    KDL::Frame X;
-    KDL::Frame Xtotal; //should this be in here or be computed in "accumulate" functor
-    KDL::Twist Xdot;
-    KDL::Twist Xdotdot;
-//    KDL::Wrench Fext; // Fext is independent of any other segment's Fext
-    KDL::Wrench F;
-    KDL::Twist Z; //supporting/driving joint unit twist/projection/Dof
-    KDL::Twist Vj;
-    unsigned int jointIndex; // supporting/driving joint name/index
-    std::string jointName;
-    std::string segmentName;
-    virtual ~SegmentState();
-};
+        KDL::Frame X;
+        KDL::Frame Xtotal; //should this be in here or be computed in "accumulate" functor
+        KDL::Twist Xdot;
+        KDL::Twist Xdotdot;
+    //    KDL::Wrench Fext; // Fext is independent of any other segment's Fext
+        KDL::Wrench F;
+        KDL::Twist Z; //supporting/driving joint unit twist/projection/Dof
+        KDL::Twist Vj;
+        unsigned int jointIndex; // supporting/driving joint name/index
+        std::string jointName;
+        std::string segmentName;
+        virtual ~SegmentState();
+    };
 
-//immutable state
+    //immutable state
 
-class JointState
-{
-public:
-    JointState();
-    JointState(const JointState& copy);
-    JointState & operator=(const JointState& copy);
-    double q;
-    double qdot;
-    double qdotdot;
-    double torque;
-    KDL::Wrench Fext; // this is a hack and should be put somewhere else
-    unsigned int jointIndex; //joint name/index
-    std::string jointName;
-    virtual ~JointState();
-};
+    class JointState
+    {
+    public:
+        JointState();
+        JointState(const JointState& copy);
+        JointState & operator=(const JointState& copy);
+        double q;
+        double qdot;
+        double qdotdot;
+        double torque;
+        KDL::Wrench Fext; // this is a hack and should be put somewhere else
+        unsigned int jointIndex; //joint name/index
+        std::string jointName;
+        virtual ~JointState();
+    };
 
+    enum class StateSpaceType :char
+    {
+        JointSpace = 'J',
+        CartesianSpace = 'C',
+        SensorSpace = 'S',
+    };
+
+    template <typename PoseT, typename TwistT, StateSpaceType spaceT>
+    class ComputationalState;
+
+    template <>
+    class ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::CartesianSpace>
+    {
+     public:
+        ComputationalState()=default;
+//        ComputationalState(const ComputationalState& copy);
+//        ComputationalState & operator=(const ComputationalState& copy);
+//        bool operator==(const ComputationalState& instance);
+//        bool operator!=(const ComputationalState& instance);
+
+        grs::Pose<KDL::Vector, KDL::Rotation> X;
+        grs::Twist<KDL::Vector, KDL::Vector> Xdot;
+        grs::Twist<KDL::Vector, KDL::Vector> Xdotdot;
+        grs::Twist<KDL::Vector, KDL::Vector> UnitXdot;
+        std::string segmentName;
+        ~ComputationalState()=default;   
+    };
+
+    template <>
+    class ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, StateSpaceType::JointSpace >
+    {
+     public:
+        ComputationalState()=default;
+//        ComputationalState(const ComputationalState& copy);
+//        ComputationalState & operator=(const ComputationalState& copy);
+//        bool operator==(const ComputationalState& instance);
+//        bool operator!=(const ComputationalState& instance);
+
+        std::vector<double> q;
+        double qdot;
+        double qdotdot;
+        double torque;
+        std::string jointName;
+        ~ComputationalState()=default;   
+    };
 
 };
 
