@@ -193,9 +193,17 @@ namespace kdle
     {
         public:
             AttachmentFrame()=default;
-            AttachmentFrame(typename ParameterTypeQualifier<PoseT>::RefToConstT pose, typename ParameterTypeQualifier<FrameType>::RefToConstT type):poseData(pose), tagData(type){};
+            AttachmentFrame(typename ParameterTypeQualifier<PoseT>::RefToConstT pose, typename ParameterTypeQualifier<FrameType>::RefToConstT type):poseData(pose), tagData(type)
+            {
+                std::string combinedName = poseData.getPoint().getName() + poseData.getOrientationFrame().getName() + poseData.getBody().getName() +
+                                           poseData.getRefPoint().getName() + poseData.getRefOrientationFrame().getName() + poseData.getRefBody().getName() + poseData.getCoordinateFrame().getName();
+                instanceID = uuid_generator(combinedName);
+            };
+            boost::uuids::uuid const& getUID() const {return instanceID;};
             PoseT poseData;
             FrameType tagData;
+        private:
+            boost::uuids::uuid instanceID;
     };
     
     /**
@@ -280,10 +288,14 @@ namespace kdle
             Joint()=default;
             Joint(std::string const& givenName, AttachmentFrame<PoseT> const& segmentJointFrame, Segment<PoseT> const& firstSegmentID, 
                     AttachmentFrame<PoseT> const& refSegmentJointFrame, Segment<PoseT> const& refSegmentID, JointProperties const& properties )
-                    :successorFrame(segmentJointFrame), predecessorFrame(refSegmentJointFrame), jointprops(properties), targetSegment(&firstSegmentID), refSegment(&refSegmentID)
+                    :successorFrame(segmentJointFrame), predecessorFrame(refSegmentJointFrame), jointprops(properties), targetSegment(&firstSegmentID), refSegment(&refSegmentID), isNotValid(false)
             {
                 classData.instanceName = givenName;
                 classData.instanceID = uuid_generator(classData.instanceName);
+                if(!isValid())
+                {
+                    isNotValid = true;
+                }
             };
             
             /**
@@ -362,7 +374,12 @@ namespace kdle
                         return "NONE";
                 }
             };
-            std::vector<Segment<PoseT> > const& getSegments() const{};
+            
+            std::vector<Segment<PoseT> > const& getSegments() const{ };
+            
+            AttachmentFrame<PoseT> const& getRefJointFrame() const{ return predecessorFrame; };
+            
+            AttachmentFrame<PoseT> const& getJointFrame() const{ return successorFrame; };
             
             //return the name, uuid, and classuuid
             std::string const& getName() const {return classData.instanceName;};
@@ -371,15 +388,17 @@ namespace kdle
             ~Joint(){};
             
         private:
-            struct MetaData classData;
-            static boost::uuids::uuid const modelID;
             AttachmentFrame<PoseT>  successorFrame;
             AttachmentFrame<PoseT>  predecessorFrame;
+            struct MetaData classData;
+            static boost::uuids::uuid const modelID;
             JointProperties jointprops;
             Segment<PoseT> const*  targetSegment;
             Segment<PoseT> const*  refSegment;
+            bool isNotValid;
             
         protected:
+            bool isValid() const;
             bool getPoseOfJointFramesImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT posetochange) const;
             bool getDistalToDistalPoseImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
             template <typename TwistT>
@@ -392,10 +411,24 @@ namespace kdle
     boost::uuids::uuid const Joint<PoseT>::modelID = uuid_generator("TypeNameJoint");
     
     template <typename PoseT>
+    bool Joint<PoseT>::isValid() const
+    {
+        if( successorFrame.poseData.getBody() != predecessorFrame.poseData.getBody() )
+        {
+            if( !((successorFrame.tagData == FrameType::JOINT) && (predecessorFrame.tagData == FrameType::JOINT)) )
+                return false;
+            else 
+                return true;
+        }
+        else
+            return false;
+    }
+    
+    template <typename PoseT>
     void Joint<PoseT>::getCurrentDistalToPredecessorDistalPose(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const
     {
         if(!getDistalToDistalPoseImpl(jointvalues, tipFramePose))
-            std::cout <<"Warning: can not return pose data " << std::endl;
+            std::cout <<"Warning: can not return pose data. Check whether the joint is correctly constructed " << std::endl;
         else
             std::cout << "Inside Joint DistalToDistal Pose Impl " << std::endl << tipFramePose <<std::endl;
         return;
@@ -405,7 +438,7 @@ namespace kdle
     void Joint<PoseT>::getPoseOfJointFrames(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT relativePose) const
     {
         if (!getPoseOfJointFramesImpl(jointvalues, relativePose))
-            std::cout <<"Warning: can not return pose data " << std::endl;
+            std::cout <<"Warning: can not return pose data. Check whether the joint is correctly constructed " << std::endl;
         else
             std::cout << "Inside Joint Pose Impl " << std::endl << relativePose <<std::endl;
         return;
@@ -417,7 +450,7 @@ namespace kdle
     void Joint<PoseT>::getCurrentDistalToPredecessorJointTwist(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const
     {
         if(!getCurrentDistalToPredecessorJointTwistImpl(jointvalues, jointtwistvalues, relativeTwist))
-            std::cout <<"Warning: can not return twist data " << std::endl;
+            std::cout <<"Warning: can not return twist data. Check whether the joint is correctly constructed " << std::endl;
         else
             std::cout << "Inside Joint DistalToDistal Twist Impl " << std::endl << relativeTwist <<std::endl;
         return;
@@ -428,7 +461,7 @@ namespace kdle
     void Joint<PoseT>::getTwistOfJointFrames(std::vector<double> const& jointtwistvalues, TwistT& relativeTwist) const
     {
         if(!getTwistOfJointFramesImpl(jointtwistvalues, relativeTwist))
-            std::cout <<"Warning: can not return twist data " << std::endl;
+            std::cout <<"Warning: can not return twist data. Check whether the joint is correctly constructed " << std::endl;
         else
             std::cout << "Inside Joint Twist Impl " << std::endl << relativeTwist <<std::endl;
         return;
@@ -440,7 +473,7 @@ namespace kdle
     {       
         //Constraint: Joint frame origins coincide
         //create position and orientation using semantics of provided ref and target joint frames
-        if(!((successorFrame.tagData == FrameType::JOINT) && (predecessorFrame.tagData == FrameType::JOINT)))
+        if(isNotValid)
         {
             return false;
         }
@@ -563,7 +596,7 @@ namespace kdle
         template <> inline
     bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getTwistOfJointFramesImpl(std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist) const
     {
-         if(!((successorFrame.tagData == FrameType::JOINT) && (predecessorFrame.tagData == FrameType::JOINT)))
+        if(isNotValid)
         {
             return false;
         }
@@ -700,6 +733,11 @@ namespace kdle
                 jointsOfChain = jointlist;
                 classData.instanceName = givenName;
                 classData.instanceID = uuid_generator(classData.instanceName);
+                isNotValid = false;
+                if(!isValid())
+                {
+                    isNotValid = true;
+                }
             };
             
             IteratorT addJoint(Joint<PoseT> const& newjoint);
@@ -721,32 +759,50 @@ namespace kdle
         private:
             struct MetaData classData;
             static boost::uuids::uuid const modelID;
+            bool isNotValid;
         
-        protected:
-            
+        protected:   
             /**
              * \brief  return true if the constructed chain is valid
              *
              */
-            bool isKinematicChainValid();
+            bool isValid() const;
     };
     
     template <typename PoseT, typename ContainerT>
     boost::uuids::uuid const KinematicChain<PoseT, ContainerT >::modelID = uuid_generator("TypeNameKinematicChain");
     
     template <typename PoseT, typename ContainerT>
-    bool KinematicChain<PoseT, ContainerT >::isKinematicChainValid()
-    { 
-        
-        return true;
+    bool KinematicChain<PoseT, ContainerT >::isValid() const
+    {
+        //put all joint frame uuids in a single array
+        std::vector<boost::uuids::uuid> listOfJointFrameUUIDs;
+        for(typename KinematicChain<PoseT>::IteratorT iter=jointsOfChain.begin(); iter!=jointsOfChain.end(); iter++)
+        {
+            listOfJointFrameUUIDs.push_back(iter->getJointFrame().getUID());
+            listOfJointFrameUUIDs.push_back(iter->getRefJointFrame().getUID());
+        }
+        //sort the array
+        std::sort(listOfJointFrameUUIDs.begin(), listOfJointFrameUUIDs.end());
+        unsigned int originalSize = listOfJointFrameUUIDs.size();
+        //find the consecutive duplicates in the sorted array and erase them
+        listOfJointFrameUUIDs.erase(std::unique(listOfJointFrameUUIDs.begin(), listOfJointFrameUUIDs.end()), listOfJointFrameUUIDs.end());
+        unsigned int newSize = listOfJointFrameUUIDs.size();
+        //if the new array size is different than the original then some joint frames were reused in joint construction 
+        if (originalSize != newSize)
+            return false;
+        else
+            return true;
     };
     
     
     template <typename PoseT, typename ContainerT>
     typename KinematicChain<PoseT, ContainerT >::IteratorT KinematicChain<PoseT, ContainerT >::addJoint(Joint<PoseT> const& newjoint)
     {
-        
-        return jointsOfChain.insert(jointsOfChain.end(), newjoint);
+        if(isNotValid)
+            std::cout << "Existing chain is not valid " << std::endl;
+        else
+            return jointsOfChain.insert(jointsOfChain.end(), newjoint);
     }
     
     
@@ -754,19 +810,31 @@ namespace kdle
     template <typename PoseT, typename ContainerT>
     typename KinematicChain<PoseT, ContainerT >::IteratorT KinematicChain<PoseT, ContainerT >::getJoint(std::string const& jointname) const
     {
+        if(isNotValid)
+            std::cout << "Existing chain is not valid " << std::endl;
+        else
+        {
+            
+        }
         
     }
     
     template <typename PoseT, typename ContainerT>
     unsigned int KinematicChain<PoseT, ContainerT >::getNrOfJoints()
     {
-        return jointsOfChain.size();
+        if(isNotValid)
+            std::cout << "Existing chain is not valid " << std::endl;
+        else
+            return jointsOfChain.size();
     }
     
     template <typename PoseT, typename ContainerT>
     unsigned int KinematicChain<PoseT, ContainerT >::getNrOfSegments()
     {
-        return jointsOfChain.size();
+        if(isNotValid)
+            std::cout << "Existing chain is not valid " << std::endl;
+        else
+            return jointsOfChain.size();
     }
     
     //friction, inertia, scale/ratio, offset, damping, elasticity
