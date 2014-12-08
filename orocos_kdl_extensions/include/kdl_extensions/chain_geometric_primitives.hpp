@@ -104,12 +104,12 @@ namespace kdle
             /**
         	 * \brief
         	 */
-            PoseT const& getCurrentDistalToCurrentProximalPose() const;
+            PoseT const& getPoseCurrentDistalToCurrentProximal() const;
 
             /**
         	 * \brief
         	 */
-            PoseT const& getCurrentDistalToPredecessorDistalPose() const;
+            PoseT const& getPoseCurrentDistalToPredecessorDistal() const;
             
             //return the name, uuid, and classuuid
             std::string const& getName() const {return classData.instanceName;};
@@ -127,40 +127,40 @@ namespace kdle
             static boost::uuids::uuid const modelID;
             
         protected:
-            bool getCurrentDistalToCurrentProximalPoseImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2rootpose) const;
-            bool getCurrentDistalToPredecessorDistalPoseImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2tippose) const;
+            bool getPoseCurrentDistalToCurrentProximalImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2rootpose) const;
+            bool getPoseCurrentDistalToPredecessorDistalImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2tippose) const;
     };
 
     template <typename PoseT>
     boost::uuids::uuid const Link<PoseT>::modelID = uuid_generator("TypeNameLink");
     
     template <typename PoseT>
-    PoseT const& Link<PoseT>::getCurrentDistalToCurrentProximalPose() const 
+    PoseT const& Link<PoseT>::getPoseCurrentDistalToCurrentProximal() const 
     {
-        if (!getCurrentDistalToCurrentProximalPoseImpl(tipToProximalFrame_q0))
+        if (!getPoseCurrentDistalToCurrentProximalImpl(tipToProximalFrame_q0))
             std::cout <<"Warning: can not return pose data " << std::endl;
         else
             return tipToProximalFrame_q0; 
     };
     
     template <typename PoseT>
-    PoseT const& Link<PoseT>::getCurrentDistalToPredecessorDistalPose() const 
+    PoseT const& Link<PoseT>::getPoseCurrentDistalToPredecessorDistal() const 
     {
-        if(!getCurrentDistalToPredecessorDistalPoseImpl(tipToDistalFrame_q0))
+        if(!getPoseCurrentDistalToPredecessorDistalImpl(tipToDistalFrame_q0))
             std::cout <<"Warning: can not return pose data " << std::endl;
         else
             return tipToDistalFrame_q0; 
     };
     
     template <typename PoseT>
-    bool Link<PoseT>::getCurrentDistalToCurrentProximalPoseImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT  tip2rootpose) const
+    bool Link<PoseT>::getPoseCurrentDistalToCurrentProximalImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT  tip2rootpose) const
     {
         tip2rootpose = tipFrame_q0;
         return true; 
     };
     
     template <typename PoseT>
-    bool Link<PoseT>::getCurrentDistalToPredecessorDistalPoseImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2tippose) const
+    bool Link<PoseT>::getPoseCurrentDistalToPredecessorDistalImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2tippose) const
     {
         tip2tippose = grs::compose(rootFrame_q0,tipFrame_q0);
         return true;
@@ -303,9 +303,9 @@ namespace kdle
         	 *
         	 * \param tipFramePose
         	 */
-            void getCurrentDistalToPredecessorDistalPose(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
+            void getPoseCurrentDistalToPredecessorDistal(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
             
-            void getCurrentDistalToPredecessorJointFramePose(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
+            void getPoseCurrentDistalToPredecessorJointFrame(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
             
             /**
         	 * \brief compute and return relative pose between two joint frames of two segments: current/successor joint frame and previous/predecessor joint frame
@@ -320,7 +320,7 @@ namespace kdle
         	 * \param jointtwistvalues is a vector of doubles for multiDoF, for 1 DoF it is of size 1
         	 */
             template <typename TwistT>
-            void getCurrentDistalToPredecessorJointTwist(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
+            void getTwistCurrentDistalToPredecessorJoint(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
             
             /**
         	 * \brief compute and return relative twist between to joint frames of two segments: current root and previous tip frames
@@ -402,10 +402,10 @@ namespace kdle
         protected:
             bool isValid() const;
             bool getPoseOfJointFramesImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT posetochange) const;
-            bool getDistalToDistalPoseImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
-            bool getDistalToJointFramePoseImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
+            bool getPoseDistalToDistalImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
+            bool getPoseDistalToJointFrameImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
             template <typename TwistT>
-            bool getCurrentDistalToPredecessorJointTwistImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
+            bool getTwistCurrentDistalToPredecessorJointImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
             template <typename TwistT>
             bool getTwistOfJointFramesImpl(std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
     };
@@ -428,9 +428,9 @@ namespace kdle
     }
     
     template <typename PoseT>
-    void Joint<PoseT>::getCurrentDistalToPredecessorDistalPose(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const
+    void Joint<PoseT>::getPoseCurrentDistalToPredecessorDistal(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const
     {
-        if(!getDistalToDistalPoseImpl(jointvalues, tipFramePose))
+        if(!getPoseDistalToDistalImpl(jointvalues, tipFramePose))
             std::cout <<"Warning: can not return pose data. Check whether the joint is correctly constructed " << std::endl;
         else
             std::cout << "Inside Joint DistalToDistal Pose Impl " << std::endl << tipFramePose <<std::endl;
@@ -438,9 +438,9 @@ namespace kdle
     }
     
     template <typename PoseT>
-    void Joint<PoseT>::getCurrentDistalToPredecessorJointFramePose(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const
+    void Joint<PoseT>::getPoseCurrentDistalToPredecessorJointFrame(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const
     {
-        if(!getDistalToJointFramePoseImpl(jointvalues, tipFramePose))
+        if(!getPoseDistalToJointFrameImpl(jointvalues, tipFramePose))
             std::cout <<"Warning: can not return pose data. Check whether the joint is correctly constructed " << std::endl;
         else
             std::cout << "Inside Distal to Predecessor Joint Pose Impl " << std::endl << tipFramePose <<std::endl;
@@ -460,9 +460,9 @@ namespace kdle
     
     template <typename PoseT>
         template <typename TwistT>
-    void Joint<PoseT>::getCurrentDistalToPredecessorJointTwist(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const
+    void Joint<PoseT>::getTwistCurrentDistalToPredecessorJoint(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const
     {
-        if(!getCurrentDistalToPredecessorJointTwistImpl(jointvalues, jointtwistvalues, relativeTwist))
+        if(!getTwistCurrentDistalToPredecessorJointImpl(jointvalues, jointtwistvalues, relativeTwist))
             std::cout <<"Warning: can not return twist data. Check whether the joint is correctly constructed " << std::endl;
         else
             std::cout << "Inside Joint DistalToRefJoint Twist Impl " << std::endl << relativeTwist <<std::endl;
@@ -587,7 +587,7 @@ namespace kdle
     
     //Specialization for two argument pose with KDL coordinate representation
     template<> inline
-    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getDistalToDistalPoseImpl(std::vector<double> const& jointvalues, grs::Pose<KDL::Vector, KDL::Rotation> &tipFramePose) const
+    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getPoseDistalToDistalImpl(std::vector<double> const& jointvalues, grs::Pose<KDL::Vector, KDL::Rotation> &tipFramePose) const
     {
         
         //target joint to ref joint
@@ -598,15 +598,15 @@ namespace kdle
         else
         {
             //target distal to ref distal
-            tipFramePose = grs::compose(grs::compose(predecessorFrame.poseData,refSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose().inverse2()),
-                           grs::compose(tipFramePose,grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2())));
+            tipFramePose = grs::compose(grs::compose(predecessorFrame.poseData,refSegment->getSegmentLink().getPoseCurrentDistalToCurrentProximal().inverse2()),
+                           grs::compose(tipFramePose,grs::compose(targetSegment->getSegmentLink().getPoseCurrentDistalToCurrentProximal(),successorFrame.poseData.inverse2())));
             return true;
         }
     }
   
     //Specialization for two argument pose with KDL coordinate representation
     template<> inline
-    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getDistalToJointFramePoseImpl(std::vector<double> const &jointvalues, grs::Pose<KDL::Vector, KDL::Rotation> &posetochange) const
+    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getPoseDistalToJointFrameImpl(std::vector<double> const &jointvalues, grs::Pose<KDL::Vector, KDL::Rotation> &posetochange) const
     {
         //target joint to ref joint
         if (!getPoseOfJointFramesImpl(jointvalues, posetochange))
@@ -616,7 +616,7 @@ namespace kdle
         else
         {
             //distal to target joint
-            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentTipToJointFramePose = grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2());
+            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentTipToJointFramePose = grs::compose(targetSegment->getSegmentLink().getPoseCurrentDistalToCurrentProximal(),successorFrame.poseData.inverse2());
             //distal to ref joint
             posetochange = grs::compose(posetochange,tempSegmentTipToJointFramePose);
             return true;
@@ -723,7 +723,7 @@ namespace kdle
     //Specialization for two argument vector with KDL coordinate representation
     template <> 
         template <> inline
-    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getCurrentDistalToPredecessorJointTwistImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist) const
+    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getTwistCurrentDistalToPredecessorJointImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist) const
     {
         if(!getTwistOfJointFramesImpl(jointtwistvalues, relativeTwist))
         {
@@ -734,7 +734,7 @@ namespace kdle
             //distal to proximal: targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose();
             //joint to proximal inverse: successorFrame.poseData.inverse2();
             //distal to target joint: grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2());
-            grs::Position<KDL::Vector> tempSegmentJointToTipFramePosition = grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2()).getPosition< KDL::Vector >().inverse();
+            grs::Position<KDL::Vector> tempSegmentJointToTipFramePosition = grs::compose(targetSegment->getSegmentLink().getPoseCurrentDistalToCurrentProximal(),successorFrame.poseData.inverse2()).getPosition< KDL::Vector >().inverse();
             
             //target joint to refjoint orientation
             grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentJointToRootFramePose;
@@ -743,7 +743,7 @@ namespace kdle
             
             //distal to refjoint orientation
             grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentDistalToRefJointFramePose;
-            getDistalToJointFramePoseImpl(jointvalues, tempSegmentDistalToRefJointFramePose);
+            getPoseDistalToJointFrameImpl(jointvalues, tempSegmentDistalToRefJointFramePose);
             grs::Orientation<KDL::Rotation> tempDistalToRefJointOrientation = tempSegmentDistalToRefJointFramePose.getOrientation<KDL::Rotation>();
             //put distal to targetjoint vector into refjoint coordinate frame
             if(tempSegmentJointToTipFramePosition.changeCoordinateFrame(tempJointToRefJointOrientation))
