@@ -305,6 +305,8 @@ namespace kdle
         	 */
             void getCurrentDistalToPredecessorDistalPose(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
             
+            void getCurrentDistalToPredecessorJointFramePose(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
+            
             /**
         	 * \brief compute and return relative pose between two joint frames of two segments: current/successor joint frame and previous/predecessor joint frame
         	 *
@@ -401,6 +403,7 @@ namespace kdle
             bool isValid() const;
             bool getPoseOfJointFramesImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT posetochange) const;
             bool getDistalToDistalPoseImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
+            bool getDistalToJointFramePoseImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
             template <typename TwistT>
             bool getCurrentDistalToPredecessorJointTwistImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
             template <typename TwistT>
@@ -435,6 +438,16 @@ namespace kdle
     }
     
     template <typename PoseT>
+    void Joint<PoseT>::getCurrentDistalToPredecessorJointFramePose(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const
+    {
+        if(!getDistalToJointFramePoseImpl(jointvalues, tipFramePose))
+            std::cout <<"Warning: can not return pose data. Check whether the joint is correctly constructed " << std::endl;
+        else
+            std::cout << "Inside Distal to Predecessor Joint Pose Impl " << std::endl << tipFramePose <<std::endl;
+        return;
+    }
+    
+    template <typename PoseT>
     void Joint<PoseT>::getPoseOfJointFrames(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT relativePose) const
     {
         if (!getPoseOfJointFramesImpl(jointvalues, relativePose))
@@ -452,7 +465,7 @@ namespace kdle
         if(!getCurrentDistalToPredecessorJointTwistImpl(jointvalues, jointtwistvalues, relativeTwist))
             std::cout <<"Warning: can not return twist data. Check whether the joint is correctly constructed " << std::endl;
         else
-            std::cout << "Inside Joint DistalToDistal Twist Impl " << std::endl << relativeTwist <<std::endl;
+            std::cout << "Inside Joint DistalToRefJoint Twist Impl " << std::endl << relativeTwist <<std::endl;
         return;
     }
             
@@ -591,6 +604,25 @@ namespace kdle
         }
     }
   
+    //Specialization for two argument pose with KDL coordinate representation
+    template<> inline
+    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getDistalToJointFramePoseImpl(std::vector<double> const &jointvalues, grs::Pose<KDL::Vector, KDL::Rotation> &posetochange) const
+    {
+        //target joint to ref joint
+        if (!getPoseOfJointFramesImpl(jointvalues, posetochange))
+        {
+            return false;
+        }
+        else
+        {
+            //distal to target joint
+            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentTipToJointFramePose = grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2());
+            //distal to ref joint
+            posetochange = grs::compose(posetochange,tempSegmentTipToJointFramePose);
+            return true;
+        }
+    }
+    
     //Specialization for two argument vector with KDL coordinate representation
     template <> 
         template <> inline
@@ -703,15 +735,24 @@ namespace kdle
             //joint to proximal inverse: successorFrame.poseData.inverse2();
             //distal to target joint: grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2());
             grs::Position<KDL::Vector> tempSegmentJointToTipFramePosition = grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2()).getPosition< KDL::Vector >().inverse();
-            //target joint to ref joint
+            
+            //target joint to refjoint orientation
             grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentJointToRootFramePose;
             getPoseOfJointFramesImpl(jointvalues, tempSegmentJointToRootFramePose);
-            
             grs::Orientation<KDL::Rotation> tempJointToRefJointOrientation = tempSegmentJointToRootFramePose.getOrientation<KDL::Rotation>();
-            //put distalToTarget joint vector into ref joint coordinate frame
+            
+            //distal to refjoint orientation
+            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentDistalToRefJointFramePose;
+            getDistalToJointFramePoseImpl(jointvalues, tempSegmentDistalToRefJointFramePose);
+            grs::Orientation<KDL::Rotation> tempDistalToRefJointOrientation = tempSegmentDistalToRefJointFramePose.getOrientation<KDL::Rotation>();
+            //put distal to targetjoint vector into refjoint coordinate frame
             if(tempSegmentJointToTipFramePosition.changeCoordinateFrame(tempJointToRefJointOrientation))
-            //change its reference point
-                    relativeTwist.changePointBody(tempSegmentJointToTipFramePosition);
+            {
+                //change its reference point
+                relativeTwist.changePointBody(tempSegmentJointToTipFramePosition);
+                //express it in distal's coordinate frame 
+                relativeTwist.changeCoordinateFrame(tempDistalToRefJointOrientation.inverse2());
+            }
             return true;
         }
     }
@@ -725,7 +766,9 @@ namespace kdle
     template <typename PoseT, typename ContainerT = std::vector< Joint<PoseT> > >
     class KinematicChain
     {
+        public:
             typedef typename ContainerT::const_iterator IteratorT;
+            
         public:
             KinematicChain()=default;
             KinematicChain(std::string const& givenName, ContainerT const& jointlist)
@@ -800,7 +843,7 @@ namespace kdle
     typename KinematicChain<PoseT, ContainerT >::IteratorT KinematicChain<PoseT, ContainerT >::addJoint(Joint<PoseT> const& newjoint)
     {
         if(isNotValid)
-            std::cout << "Existing chain is not valid " << std::endl;
+            std::cout << "Warning: Existing chain is not valid " << std::endl;
         else
             return jointsOfChain.insert(jointsOfChain.end(), newjoint);
     }
@@ -811,10 +854,15 @@ namespace kdle
     typename KinematicChain<PoseT, ContainerT >::IteratorT KinematicChain<PoseT, ContainerT >::getJoint(std::string const& jointname) const
     {
         if(isNotValid)
-            std::cout << "Existing chain is not valid " << std::endl;
+            std::cout << "Warning: Existing chain is not valid " << std::endl;
         else
         {
-            
+            for(typename KinematicChain<PoseT>::IteratorT iter=jointsOfChain.begin(); iter!=jointsOfChain.end(); iter++)
+            {
+               if(iter->getName() == jointname)
+                return iter;
+            }
+            std::cout << "Warning: Joint with such a name does not exist " << std::endl;
         }
         
     }
@@ -823,7 +871,7 @@ namespace kdle
     unsigned int KinematicChain<PoseT, ContainerT >::getNrOfJoints()
     {
         if(isNotValid)
-            std::cout << "Existing chain is not valid " << std::endl;
+            std::cout << "Warning: Existing chain is not valid " << std::endl;
         else
             return jointsOfChain.size();
     }
@@ -832,7 +880,7 @@ namespace kdle
     unsigned int KinematicChain<PoseT, ContainerT >::getNrOfSegments()
     {
         if(isNotValid)
-            std::cout << "Existing chain is not valid " << std::endl;
+            std::cout << "Warning: Existing chain is not valid " << std::endl;
         else
             return jointsOfChain.size();
     }
