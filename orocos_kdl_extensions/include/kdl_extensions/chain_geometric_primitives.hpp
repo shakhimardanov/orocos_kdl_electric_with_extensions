@@ -93,6 +93,94 @@ namespace kdle
         NONE,
     };
     
+     /**
+     * @brief constraints on how to qualify joint attachment frames
+     *
+     */
+    enum class SemanticConstraint : char
+    {
+        CoincidentJointFrames = 'C', // this indicates that joint frames initially  coincide
+        SameReferenceFrame = 'S', //this indicates requirements on additional segment info
+    };
+    
+    /**
+     * @brief A list of the frame types that can be attached to a segment.<br>
+     * Each frame type is unique and allows attachment of a particular geometric or dynamic primitives to a segment. <br>
+     * For instances a joint connecting two segments can only be specified by two joint attachment frames on these segments. <br>
+     * Another example, an inertia attachment frame type specifies w.r.t which frame an inertia of the rigid body is given.
+     */
+    enum class FrameType : char
+    {
+        JOINT='J',
+        INERTIA='I',
+        SHAPE='S',
+        BODY='B',
+    };
+    
+    /**
+     * @brief Redirects FrameType value to standard output
+     *
+     */
+    inline std::ostream& operator<<(std::ostream &out, FrameType tag )
+    {
+        return out << static_cast<char>(tag);
+    };
+    
+    /**
+     * @brief
+     *
+     */
+    template <typename PoseT>
+    class AttachmentFrame
+    {
+        public:
+            /**
+             * @brief
+             *
+             */
+            AttachmentFrame()=default;
+            
+            /**
+             * @brief
+             *
+             */
+            AttachmentFrame(typename ParameterTypeQualifier<PoseT>::RefToConstT pose, typename ParameterTypeQualifier<FrameType>::RefToConstT type):poseData(pose), tagData(type)
+            {
+                std::string combinedName = poseData.getPoint().getName() + poseData.getOrientationFrame().getName() + poseData.getBody().getName() +
+                                           poseData.getRefPoint().getName() + poseData.getRefOrientationFrame().getName() + poseData.getRefBody().getName() + poseData.getCoordinateFrame().getName();
+                instanceID = uuid_generator(combinedName);
+            };
+            
+            /**
+             * @brief
+             *
+             */
+            boost::uuids::uuid const& getUID() const {return instanceID;};
+            
+            /**
+             * @brief
+             *
+             */
+            PoseT poseData;
+            
+            /**
+             * @brief
+             *
+             */
+            FrameType tagData;
+        private:
+            boost::uuids::uuid instanceID;
+    };
+    
+    /**
+     * @brief
+     *
+     */
+    template <typename PoseT>
+    AttachmentFrame<PoseT> createAttachmentFrame(PoseT const& pose, FrameType const& type)
+    {
+        return AttachmentFrame<PoseT>(pose, type);
+    };
     
     /**
      * @brief A tuple of joint properties that include, in the given order, type from JointTypes, inertia, clockwise and counterclockwise limits
@@ -216,85 +304,6 @@ namespace kdle
         return true;
     };
 
-    /**
-     * @brief A list of the frame types that can be attached to a segment.<br>
-     * Each frame type is unique and allows attachment of a particular geometric or dynamic primitives to a segment. <br>
-     * For instances a joint connecting two segments can only be specified by two joint attachment frames on these segments. <br>
-     * Another example, an inertia attachment frame type specifies w.r.t which frame an inertia of the rigid body is given.
-     */
-    enum class FrameType : char
-    {
-        JOINT='J',
-        INERTIA='I',
-        SHAPE='S',
-        BODY='B',
-    };
-    
-    /**
-     * @brief Redirects FrameType value to standard output
-     *
-     */
-    inline std::ostream& operator<<(std::ostream &out, FrameType tag )
-    {
-        return out << static_cast<char>(tag);
-    };
-    
-    
-    /**
-     * @brief
-     *
-     */
-    template <typename PoseT>
-    class AttachmentFrame
-    {
-        public:
-            /**
-             * @brief
-             *
-             */
-            AttachmentFrame()=default;
-            
-            /**
-             * @brief
-             *
-             */
-            AttachmentFrame(typename ParameterTypeQualifier<PoseT>::RefToConstT pose, typename ParameterTypeQualifier<FrameType>::RefToConstT type):poseData(pose), tagData(type)
-            {
-                std::string combinedName = poseData.getPoint().getName() + poseData.getOrientationFrame().getName() + poseData.getBody().getName() +
-                                           poseData.getRefPoint().getName() + poseData.getRefOrientationFrame().getName() + poseData.getRefBody().getName() + poseData.getCoordinateFrame().getName();
-                instanceID = uuid_generator(combinedName);
-            };
-            
-            /**
-             * @brief
-             *
-             */
-            boost::uuids::uuid const& getUID() const {return instanceID;};
-            
-            /**
-             * @brief
-             *
-             */
-            PoseT poseData;
-            
-            /**
-             * @brief
-             *
-             */
-            FrameType tagData;
-        private:
-            boost::uuids::uuid instanceID;
-    };
-    
-    /**
-     * @brief
-     *
-     */
-    template <typename PoseT>
-    AttachmentFrame<PoseT> createAttachmentFrame(PoseT const& pose, FrameType const& type)
-    {
-        return AttachmentFrame<PoseT>(pose, type);
-    };
     
     /**
      * @brief  A segment specification requires existing link instance and a list of attachment frames
@@ -375,16 +384,6 @@ namespace kdle
     boost::uuids::uuid const Segment<PoseT>::modelID = uuid_generator("TypeNameSegment");
     
     /**
-     * @brief constraints on how to qualify joint attachment frames
-     *
-     */
-    enum class SemanticConstraint : char
-    {
-        CoincidentJointFrames = 'C', // this indicates that joint frames initially  coincide
-        SameReferenceFrame = 'S', //this indicates requirements on additional segment info
-    };
-    
-    /**
      * @brief A joint specification requires two segment instances and pose information of joint attachment frames on each of these segments
      *
      */
@@ -404,7 +403,7 @@ namespace kdle
              */
             Joint(std::string const& givenName, AttachmentFrame<PoseT> const& segmentJointFrame, Segment<PoseT> const& firstSegmentID, 
                     AttachmentFrame<PoseT> const& refSegmentJointFrame, Segment<PoseT> const& refSegmentID, JointProperties const& properties )
-                    :successorFrame(segmentJointFrame), predecessorFrame(refSegmentJointFrame), jointprops(properties), targetSegment(&firstSegmentID), refSegment(&refSegmentID), isNotValid(false)
+                    :successorFrame(segmentJointFrame), predecessorFrame(refSegmentJointFrame), jointprops(properties), isNotValid(false), targetSegment(&firstSegmentID), refSegment(&refSegmentID)
             {
                 classData.instanceName = givenName;
                 classData.instanceID = uuid_generator(classData.instanceName);
@@ -425,13 +424,7 @@ namespace kdle
              * @brief
              *
              */
-            void getPoseCurrentXToPredecessorRefJointFrame(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
-            
-            /**
-             * @brief
-             *
-             */
-            void getPoseCurrentXToPredecessorRefJointFrame(std::vector<double> const& jointvalues, AttachmentFrame<PoseT> const& segmentFrame, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
+            void getPoseCurrentDistalToPredecessorRefJointFrame(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
             
             /**
         	 * @brief compute and return relative pose between two joint frames of two segments: current/successor joint frame and previous/predecessor joint frame
@@ -446,15 +439,7 @@ namespace kdle
         	 * @param jointtwistvalues is a vector of doubles for multiDoF, for 1 DoF it is of size 1
         	 */
             template <typename TwistT>
-            void getTwistCurrentXToPredecessorJointFrame(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
-            
-            /**
-        	 * @brief compute and return relative twist between two segment link frames: current tip and previous tip frames
-        	 *
-        	 * @param jointtwistvalues is a vector of doubles for multiDoF, for 1 DoF it is of size 1
-        	 */
-            template <typename TwistT>
-            void getTwistCurrentXToPredecessorJointFrame(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, AttachmentFrame<PoseT> const& segmentFrame, TwistT &relativeTwist) const;
+            void getTwistCurrentDistalToPredecessorJointFrame(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const ;
             
             /**
         	 * @brief compute and return relative twist between to joint frames of two segments: current root and previous tip frames
@@ -511,11 +496,6 @@ namespace kdle
                 }
             };
             
-            /**
-             * @brief
-             *
-             */
-            std::vector<Segment<PoseT> > const& getSegments() const{ };
             
             /**
              * @brief
@@ -560,9 +540,10 @@ namespace kdle
             struct MetaData classData;
             static boost::uuids::uuid const modelID;
             JointProperties jointprops;
+            bool isNotValid;
+        public:
             Segment<PoseT> const*  targetSegment;
             Segment<PoseT> const*  refSegment;
-            bool isNotValid;
             
         protected:
             /**
@@ -587,14 +568,14 @@ namespace kdle
              * @brief
              *
              */
-            bool getPoseCurrentXToPredecessorRefJointFrameImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
+            bool getPoseCurrentDistalToPredecessorRefJointFrameImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
             
             /**
              * @brief
              *
              */
             template <typename TwistT>
-            bool getTwistCurrentXToPredecessorJointFrameImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
+            bool getTwistCurrentDistalToPredecessorJointFrameImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
             
             /**
              * @brief
@@ -632,9 +613,9 @@ namespace kdle
     }
     
     template <typename PoseT>
-    void Joint<PoseT>::getPoseCurrentXToPredecessorRefJointFrame(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const
+    void Joint<PoseT>::getPoseCurrentDistalToPredecessorRefJointFrame(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const
     {
-        if(!getPoseCurrentXToPredecessorRefJointFrameImpl(jointvalues, tipFramePose))
+        if(!getPoseCurrentDistalToPredecessorRefJointFrameImpl(jointvalues, tipFramePose))
             std::cout <<"Warning: can not return pose data. Check whether the joint is correctly constructed " << std::endl;
         else
             std::cout << "Inside Distal to Predecessor Joint Pose Impl " << std::endl << tipFramePose <<std::endl;
@@ -654,9 +635,9 @@ namespace kdle
     
     template <typename PoseT>
         template <typename TwistT>
-    void Joint<PoseT>::getTwistCurrentXToPredecessorJointFrame(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const
+    void Joint<PoseT>::getTwistCurrentDistalToPredecessorJointFrame(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const
     {
-        if(!getTwistCurrentXToPredecessorJointFrameImpl(jointvalues, jointtwistvalues, relativeTwist))
+        if(!getTwistCurrentDistalToPredecessorJointFrameImpl(jointvalues, jointtwistvalues, relativeTwist))
             std::cout <<"Warning: can not return twist data. Check whether the joint is correctly constructed " << std::endl;
         else
             std::cout << "Inside Joint DistalToRefJoint Twist Impl " << std::endl << relativeTwist <<std::endl;
@@ -800,7 +781,7 @@ namespace kdle
   
     //Specialization for two argument pose with KDL coordinate representation
     template<> inline
-    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getPoseCurrentXToPredecessorRefJointFrameImpl(std::vector<double> const &jointvalues, grs::Pose<KDL::Vector, KDL::Rotation> &posetochange) const
+    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getPoseCurrentDistalToPredecessorRefJointFrameImpl(std::vector<double> const &jointvalues, grs::Pose<KDL::Vector, KDL::Rotation> &posetochange) const
     {
         //target joint to ref joint
         if (!getPoseOfJointFramesImpl(jointvalues, posetochange))
@@ -917,7 +898,7 @@ namespace kdle
     //Specialization for two argument vector with KDL coordinate representation
     template <> 
         template <> inline
-    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getTwistCurrentXToPredecessorJointFrameImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist) const
+    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getTwistCurrentDistalToPredecessorJointFrameImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist) const
     {
         if(!getTwistOfJointFramesImpl(jointtwistvalues, relativeTwist))
         {
@@ -937,7 +918,7 @@ namespace kdle
             
             //distal to refjoint orientation
             grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentDistalToRefJointFramePose;
-            getPoseCurrentXToPredecessorRefJointFrameImpl(jointvalues, tempSegmentDistalToRefJointFramePose);
+            getPoseCurrentDistalToPredecessorRefJointFrameImpl(jointvalues, tempSegmentDistalToRefJointFramePose);
             grs::Orientation<KDL::Rotation> tempDistalToRefJointOrientation = tempSegmentDistalToRefJointFramePose.getOrientation<KDL::Rotation>();
             //put distal to targetjoint vector into refjoint coordinate frame
             if(tempSegmentJointToTipFramePosition.changeCoordinateFrame(tempJointToRefJointOrientation))
