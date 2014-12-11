@@ -47,6 +47,7 @@
 
 #include <vector>
 #include <tuple>
+#include <algorithm>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -144,12 +145,23 @@ namespace kdle
              * @brief
              *
              */
-            AttachmentFrame(typename ParameterTypeQualifier<PoseT>::RefToConstT pose, typename ParameterTypeQualifier<FrameType>::RefToConstT type):poseData(pose), tagData(type)
+            AttachmentFrame(typename ParameterTypeQualifier<PoseT>::RefToConstT pose, typename ParameterTypeQualifier<FrameType>::RefToConstT type):poseData(pose), tagData(type), inUse(false)
             {
                 std::string combinedName = poseData.getPoint().getName() + poseData.getOrientationFrame().getName() + poseData.getBody().getName() +
                                            poseData.getRefPoint().getName() + poseData.getRefOrientationFrame().getName() + poseData.getRefBody().getName() + poseData.getCoordinateFrame().getName();
+                
                 instanceID = uuid_generator(combinedName);
             };
+            
+            friend bool operator== (AttachmentFrame<PoseT> const& attfr1, AttachmentFrame<PoseT> const& attfr2) 
+            {
+                return ((attfr1.getUID() == attfr2.getUID()) && (attfr1.tagData == attfr2.tagData)) ;
+            }
+            
+            friend bool operator!= (AttachmentFrame<PoseT> const& attfr1, AttachmentFrame<PoseT> const& attfr2) 
+            {
+                return !(attfr1==attfr2);
+            }
             
             /**
              * @brief
@@ -168,6 +180,8 @@ namespace kdle
              *
              */
             FrameType tagData;
+            
+            bool inUse;
         private:
             boost::uuids::uuid instanceID;
     };
@@ -965,6 +979,8 @@ namespace kdle
                 {
                     isNotValid = true;
                 }
+                if(!isTargetToReferenceSequenceValid())
+                    isNotValid = true;
             };
             
             /**
@@ -1029,6 +1045,12 @@ namespace kdle
              *
              */
             bool isValid() const;
+            
+            /**
+             * @brief  return true if the constructed chain is valid
+             *
+             */
+            bool isTargetToReferenceSequenceValid() const;
     };
     
     template <typename PoseT, typename ContainerT>
@@ -1055,8 +1077,40 @@ namespace kdle
             return false;
         else
             return true;
-    };
+    }
     
+    template <typename PoseT, typename ContainerT>
+    bool KinematicChain<PoseT, ContainerT >::isTargetToReferenceSequenceValid() const
+    {
+        //create list of used joint frame ids
+        Segment<PoseT> const* rootSegment = jointsOfChain.begin()->refSegment;
+        std::vector<boost::uuids::uuid> listOfJointFrameUUIDs;
+        std::vector< Segment<PoseT> const* > listOfsegmentIds;
+        
+        for(typename KinematicChain<PoseT>::IteratorT iter=jointsOfChain.begin(); iter!=jointsOfChain.end(); iter++)
+        {
+            listOfJointFrameUUIDs.push_back(iter->getJointFrame().getUID());
+            listOfsegmentIds.push_back(iter->targetSegment);
+            listOfJointFrameUUIDs.push_back(iter->getRefJointFrame().getUID());
+            listOfsegmentIds.push_back(iter->refSegment);
+            
+        }
+        //sort the array
+        std::sort(listOfsegmentIds.begin(), listOfsegmentIds.end());
+        //find the consecutive duplicates in the sorted array and erase them
+        listOfsegmentIds.erase(std::unique(listOfsegmentIds.begin(), listOfsegmentIds.end()), listOfsegmentIds.end());
+        
+        std::cout << "SORTED ROOT SEGMENT " << listOfsegmentIds[0]->getName() << std::endl;
+                
+        for(unsigned int i=0; i<listOfsegmentIds.size(); i++)
+        {
+            if(listOfsegmentIds[i] == rootSegment)
+                std::swap(listOfsegmentIds[0], listOfsegmentIds[i]);
+        }
+        std::cout << "REAL ROOT SEGMENT " << listOfsegmentIds[0]->getName() << std::endl;
+        
+        return true;
+    }
     
     template <typename PoseT, typename ContainerT>
     typename KinematicChain<PoseT, ContainerT >::IteratorT KinematicChain<PoseT, ContainerT >::addJoint(Joint<PoseT> const& newjoint)
