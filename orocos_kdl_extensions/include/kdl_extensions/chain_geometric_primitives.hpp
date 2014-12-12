@@ -46,6 +46,7 @@
 #define _CHAIN_GEOMETRIC_PRIMITIVES_HPP_
 
 #include <vector>
+#include <map>
 #include <tuple>
 #include <algorithm>
 #include <boost/uuid/uuid.hpp>
@@ -181,7 +182,7 @@ namespace kdle
              */
             FrameType tagData;
             
-            bool inUse;
+            mutable bool inUse;
         private:
             boost::uuids::uuid instanceID;
     };
@@ -421,6 +422,8 @@ namespace kdle
             {
                 classData.instanceName = givenName;
                 classData.instanceID = uuid_generator(classData.instanceName);
+                refSegmentJointFrame.inUse = true;
+                segmentJointFrame.inUse = true;
                 if(!isValid())
                 {
                     isNotValid = true;
@@ -548,6 +551,7 @@ namespace kdle
              */
             ~Joint(){};
             
+     
         private:
             AttachmentFrame<PoseT>  successorFrame;
             AttachmentFrame<PoseT>  predecessorFrame;
@@ -1084,31 +1088,60 @@ namespace kdle
     {
         //create list of used joint frame ids
         Segment<PoseT> const* rootSegment = jointsOfChain.begin()->refSegment;
-        std::vector<boost::uuids::uuid> listOfJointFrameUUIDs;
-        std::vector< Segment<PoseT> const* > listOfsegmentIds;
+        std::multimap<Segment<PoseT> const*, boost::uuids::uuid> mapOfJointFrameUUIDs;
+        std::multimap<Segment<PoseT> const*, typename KinematicChain<PoseT>::IteratorT > kinematictree;
         
+        std::multimap<Segment<PoseT> const*, std::vector< Segment<PoseT> const*>, std::equal_to <Segment<PoseT>const* > > parentchildtree;
+        std::vector<Segment<PoseT >const* > treeElementIds;
+        treeElementIds.push_back(rootSegment);
+        
+        typedef typename std::multimap<Segment<PoseT> const*, boost::uuids::uuid>::const_iterator MultiMapIter;
+        typedef typename std::multimap<Segment<PoseT> const*, typename KinematicChain<PoseT>::IteratorT>::const_iterator TreeIter;
+        typedef typename std::multimap<Segment<PoseT> const*, std::vector< Segment<PoseT> const*>, std::equal_to <Segment<PoseT> const* > >::const_iterator parentchildIter;        
+
         for(typename KinematicChain<PoseT>::IteratorT iter=jointsOfChain.begin(); iter!=jointsOfChain.end(); iter++)
         {
-            listOfJointFrameUUIDs.push_back(iter->getJointFrame().getUID());
-            listOfsegmentIds.push_back(iter->targetSegment);
-            listOfJointFrameUUIDs.push_back(iter->getRefJointFrame().getUID());
-            listOfsegmentIds.push_back(iter->refSegment);
-            
+            treeElementIds.push_back(iter->targetSegment);
+            treeElementIds.push_back(iter->refSegment);
+            kinematictree.insert(std::make_pair(iter->targetSegment, iter));
+            kinematictree.insert(std::make_pair(iter->refSegment, iter));
         }
         //sort the array
-        std::sort(listOfsegmentIds.begin(), listOfsegmentIds.end());
+        std::sort(treeElementIds.begin(), treeElementIds.end());
         //find the consecutive duplicates in the sorted array and erase them
-        listOfsegmentIds.erase(std::unique(listOfsegmentIds.begin(), listOfsegmentIds.end()), listOfsegmentIds.end());
+        treeElementIds.erase(std::unique(treeElementIds.begin(), treeElementIds.end()), treeElementIds.end());
         
-        std::cout << "SORTED ROOT SEGMENT " << listOfsegmentIds[0]->getName() << std::endl;
-                
-        for(unsigned int i=0; i<listOfsegmentIds.size(); i++)
-        {
-            if(listOfsegmentIds[i] == rootSegment)
-                std::swap(listOfsegmentIds[0], listOfsegmentIds[i]);
+        //put root segment first
+        for(unsigned int i = 0; i<treeElementIds.size(); i++)
+        {   
+            if (treeElementIds[i] == rootSegment)
+                swap(treeElementIds[0],treeElementIds[i]);
         }
-        std::cout << "REAL ROOT SEGMENT " << listOfsegmentIds[0]->getName() << std::endl;
+
         
+        for(typename std::vector<Segment<PoseT >const* >::const_iterator iter = treeElementIds.begin(); iter!=treeElementIds.end(); iter++)
+        { 
+            unsigned j = 0;
+            std::vector< Segment<PoseT> const*> tempvector;
+            for(unsigned int i=0; i!=(*iter)->getAttachmentFrames().size(); i++)
+            {
+                if(((*iter)->getAttachmentFrames()[i].tagData == FrameType::JOINT) && ((*iter)->getAttachmentFrames()[i].inUse != false ))
+                    j++;
+            }
+            if((*iter) != rootSegment)
+                tempvector.resize(j-1);
+            else
+                tempvector.resize(j);
+            std::cout << "iter->refSegment"<<(*iter)->getName()<< " tempvector.resize(j) " << tempvector.size() << std::endl;
+            parentchildtree.insert(std::make_pair(*iter, tempvector));
+            
+        }
+        
+        for(parentchildIter iter = parentchildtree.begin(); iter!=parentchildtree.end(); iter++)
+        {
+            std::cout << "TreeElements " << iter->first->getName() << std::endl;
+        }
+
         return true;
     }
     
@@ -1155,7 +1188,21 @@ namespace kdle
         if(isNotValid)
             std::cout << "Warning: Existing chain is not valid " << std::endl;
         else
-            return jointsOfChain.size();
+        {
+            //put all joint frame uuids in a single array
+            std::vector<boost::uuids::uuid> listOfSegmentFrameUUIDs;
+            for(typename KinematicChain<PoseT>::IteratorT iter=jointsOfChain.begin(); iter!=jointsOfChain.end(); iter++)
+            {
+                listOfSegmentFrameUUIDs.push_back(iter->targetSegment->getUID());
+                listOfSegmentFrameUUIDs.push_back(iter->refSegment->getUID());
+            }
+            //sort the array
+            std::sort(listOfSegmentFrameUUIDs.begin(), listOfSegmentFrameUUIDs.end());
+            //find the consecutive duplicates in the sorted array and erase them
+            listOfSegmentFrameUUIDs.erase(std::unique(listOfSegmentFrameUUIDs.begin(), listOfSegmentFrameUUIDs.end()), listOfSegmentFrameUUIDs.end());
+            return listOfSegmentFrameUUIDs.size();
+        
+        }
     }
     
     //friction, inertia, scale/ratio, offset, damping, elasticity
