@@ -1,6 +1,6 @@
 - git:
     local-name: geometric_relations_semantics
-    uri: http://git.mech.kuleuven.be/robotics/geometric_relations_semantics.git
+    uri: https://gitlab.mech.kuleuven.be/rob-dsl/geometric-relations-semantics.git
     version: master
 
 
