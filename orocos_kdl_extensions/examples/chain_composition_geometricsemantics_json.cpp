@@ -76,42 +76,41 @@ void walkJSONTree(const Variant& inputData, std::vector<SemanticData>& semanticD
     if (inputData.IsMap())
     {
         // Maps are internally just std::map<std::string, Variant>
-        printf("Map inputData size: %d \n",inputData.Size());
+        printf("Map-inputData size: %d \n",inputData.Size());
         for (Variant::ConstMapIterator i=inputData.MapBegin(); i != inputData.MapEnd(); ++i)
         {
-            printf("Map element name: %s \n", i->first.c_str());
-            printf("Map element type: %d \n", i->second.GetType());
+            printf("Map-Property Name: %s \n", i->first.c_str());
+            printf("Map-Property Type: %d \n", i->second.GetType());
             if(i->second.IsList())
             {
-                printf("One of the elements is List with size: %d \n",i->second.Size());
+                printf("One of the Properties is a List with size: %d \n",i->second.Size());
                 for (Variant::ConstListIterator j = i->second.ListBegin(); j != i->second.ListEnd(); ++j)
                 {
-                    printf("List element type: %d \n", j->GetType());
+                    printf("A List Property type: %d \n", j->GetType());
                     if(j->IsMap())
                     {
+                        std::cout << "A List Property is a Map: " << std::endl;
                         walkJSONTree(*j, semanticData);
                     }
                 } 
             
             }
+            else if(i->second.IsString())
+            {
+                std::cout << "Property is a String: "<< i->second.AsString() << std::endl;
+
+            }
+            else if(i->second.IsFloat())
+            {
+                std::cout << "Property is a Float: " << std::endl;
+            }
             else
             {
-                std::cout << "Not a list " << std::endl;
+                std::cout << "Property is a Map: " << std::endl;
                 walkJSONTree(i->second, semanticData);
             }
         } 
     }
-    else if(inputData.IsString())
-    {
-        std::cout << "Element is String "<< inputData.AsString() << std::endl;
-        
-    }
-    else if(inputData.IsFloat())
-    {
-        std::cout << "Element is Float " << std::endl;
-    }
-
-        
     return;
 }
 
