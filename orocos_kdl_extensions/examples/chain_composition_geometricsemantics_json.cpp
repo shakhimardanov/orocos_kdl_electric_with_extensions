@@ -71,70 +71,106 @@ typedef struct
     KDL::Rotation joint_origin_orientation_coord;
 } SegmentJointFrameGeometricData;
 
-void walkJSONTree(const Variant& inputData, std::vector<SemanticData>& semanticData)
+void walkJSONTree(Variant const& inputData, std::vector<SemanticData>& semanticData)
 {
     if (inputData.IsMap())
     {
         // Maps are internally just std::map<std::string, Variant>
-        printf("Map-inputData size: %d \n",inputData.Size());
+        printf("Map size: %d \n",inputData.Size());
         for (Variant::ConstMapIterator i=inputData.MapBegin(); i != inputData.MapEnd(); ++i)
         {
-            printf("Map-Property Name: %s \n", i->first.c_str());
-            printf("Map-Property Type: %d \n", i->second.GetType());
-            if(i->second.IsList())
+            printf("Property Name: %s \n", i->first.c_str());
+            printf("Property Type: %d \n", i->second.GetType());
+            if(i->second.IsString())
             {
-                printf("One of the Properties is a List with size: %d \n",i->second.Size());
-                for (Variant::ConstListIterator j = i->second.ListBegin(); j != i->second.ListEnd(); ++j)
-                {
-                    printf("A List Property type: %d \n", j->GetType());
-                    if(j->IsMap())
-                    {
-                        std::cout << "A List Property is a Map: " << std::endl;
-                        walkJSONTree(*j, semanticData);
-                    }
-                } 
-            
-            }
-            else if(i->second.IsString())
-            {
-                std::cout << "Property is a String: "<< i->second.AsString() << std::endl;
+                std::cout << "Property is a String of VALUE: "<< i->second.AsString() << std::endl;
 
             }
             else if(i->second.IsFloat())
             {
-                std::cout << "Property is a Float: " << std::endl;
+                std::cout << "Property is a Float of VALUE: " << std::endl;
             }
             else
             {
-                std::cout << "Property is a Map: " << std::endl;
+                std::cout << "Property is a Map/List of VALUE: " << std::endl;
                 walkJSONTree(i->second, semanticData);
             }
         } 
     }
+    
+    if(inputData.IsList())
+    {
+        printf("Property is a List of SIZE: %d \n",inputData.Size());
+        for (Variant::ConstListIterator j = inputData.ListBegin(); j != inputData.ListEnd(); ++j)
+        {
+            printf("A List Property type: %d \n", j->GetType());
+//            if(j->IsMap())
+//            {
+//                std::cout << "A List Property is a Map: " << std::endl;
+                walkJSONTree(*j, semanticData);
+//            }
+        } 
+
+    }
     return;
 }
 
-void createMyTree(std::string const& inputModelFile, std::string const& inputSchemaFile)
+void walkJSONTree(Variant const& inputData,  std::vector<Agnode_t*>& nodeVector, std::vector<Agedge_t*>& edgeVector, Agraph_t *g)
 {
-    Variant v = libvariant::DeserializeJSONFile(inputModelFile.c_str());
-    libvariant::AdvSchemaLoader loader;                                                                    
-    libvariant::SchemaResult result = libvariant::SchemaValidate(std::string("file://").append(inputSchemaFile).c_str(), v, &loader);
-    std::vector<SemanticData> semantics;
-    if (!result.Error())
+    
+    if (inputData.IsMap())
     {
-       walkJSONTree(v, semantics);
+        
+        for (Variant::ConstMapIterator i=inputData.MapBegin(); i != inputData.MapEnd(); ++i)
+        {   
+
+//                agsafeset(nodeVector[0], "color", "red", "");
+//                agsafeset(nodeVector[0], "shape", "box", "");
+
+            if(i->second.IsString())
+            {
+                std::string tag = i->first;
+                tag.append(":");
+                tag.append(i->second.AsString());
+                Agnode_t* previousnode = nodeVector.back();
+                nodeVector.push_back(agnode( g, const_cast<char*>(tag.c_str()) ));
+                //fill in edge vector by iterating over joints in the tree
+                Agnode_t* currentnode = nodeVector.back();
+//                edgeVector.push_back(agedge(g, previousnode , currentnode));
+//                    agsafeset(edgeVector.back(), "label",  const_cast<char*>(i->second.AsString().c_str()), "");
+
+            }
+            else if(i->second.IsFloat())
+            {
+                std::string tag = i->first;
+                tag.append(":");
+                tag.append(i->second.AsString());
+                nodeVector.push_back(agnode( g, const_cast<char*>(tag.c_str()) ));
+            }
+            else
+            {
+                nodeVector.push_back(agnode( g, const_cast<char*>(i->first.c_str()) ));
+                walkJSONTree(i->second, nodeVector, edgeVector, g);
+            }
+        } 
     }
-    else
-        cout << result << endl;
-   
-//    libvariant::SerializeJSON(stdout, v, true);
+    
+    else if(inputData.IsList())
+    {
+//        nodeVector.push_back(agnode( g, const_cast<char*>(i->first.c_str()) ));
+        for (Variant::ConstListIterator j = inputData.ListBegin(); j != inputData.ListEnd(); ++j)
+        {
 
+          walkJSONTree(*j, nodeVector, edgeVector, g);
 
+        }
+    }
+    
+    return;
 }
 
-void drawMyTree(KDL::Tree& twoBranchTree)
+void drawTree(Variant const& inputData)
 {
-
     //graphviz stuff
     /****************************************/
     Agraph_t *g;
@@ -147,73 +183,12 @@ void drawMyTree(KDL::Tree& twoBranchTree)
 
     //create vector to hold nodes
     std::vector<Agnode_t*> nodeVector;
-    nodeVector.resize(twoBranchTree.getSegments().size());
-//    printf("size of segments in tree map %d\n", twoBranchTree.getSegments().size());
-//    printf("size of segments in tree %d\n", twoBranchTree.getNrOfSegments());
-
     //create vector to hold edges
     std::vector<Agedge_t*> edgeVector;
-    edgeVector.resize(twoBranchTree.getNrOfJoints() + 1);
-    int jointIndex = twoBranchTree.getNrOfJoints() + 1;
-//    printf("size of joint array %d %d\n", jointIndex, twoBranchTree.getNrOfJoints());
-
-    int segmentIndex = 0;
-    //    fill in the node vector by iterating over tree segments
-    for (KDL::SegmentMap::const_iterator iter = twoBranchTree.getSegments().begin(); iter != twoBranchTree.getSegments().end(); ++iter)
-
-    {
-        //it would have been very useful if one could access list of joints of a tree
-        //list of segments is already possible
-        int stringLength = iter->second.segment.getName().size();
-        char name[stringLength + 1];
-        strcpy(name, iter->second.segment.getName().c_str());
-        //q_nr returned is the same value for the root and the its child. this is a bug
-        nodeVector[iter->second.q_nr] = agnode(g, name);
-        agsafeset(nodeVector[iter->second.q_nr], "color", "red", "");
-        agsafeset(nodeVector[iter->second.q_nr], "shape", "box", "");
-        std::cout << "index parent " << iter->second.q_nr << std::endl;
-        std::cout << "name parent " << iter->second.segment.getName() << std::endl;
-        std::cout << "joint name parent " << iter->second.segment.getJoint().getName() << std::endl;
-        std::cout << "joint type parent " << iter->second.segment.getJoint().getType() << std::endl;
-        //        if (iter->second.segment.getJoint().getType() == Joint::None) //equals to joint type None
-        //        {
-        //            int stringLength = iter->second.segment.getJoint().getName().size();
-        //            char name[stringLength + 1];
-        //            strcpy(name, iter->second.segment.getJoint().getName().c_str());
-        //            edgeVector[iter->second.q_nr] = agedge(g, nodeVector[iter->second.q_nr], nodeVector[iter->second.q_nr]);
-        //            agsafeset(edgeVector[iter->second.q_nr], "label", name, "");
-        //        }
-        if (segmentIndex < twoBranchTree.getSegments().size())
-            segmentIndex++;
-
-    }
-
-    //fill in edge vector by iterating over joints in the tree
-    for (KDL::SegmentMap::const_iterator iter = twoBranchTree.getSegments().begin(); iter != twoBranchTree.getSegments().end(); ++iter)
-
-    {
-        //TODO: Fix node-edge connection relation
-        int stringLength = iter->second.segment.getJoint().getName().size();
-        std::cout << "Joint name " << iter->second.segment.getJoint().getName() << std::endl;
-        char name[stringLength + 1];
-        strcpy(name, iter->second.segment.getJoint().getName().c_str());
-        for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
-        {
-            edgeVector[iter->second.q_nr] = agedge(g, nodeVector[iter->second.q_nr], nodeVector[(*childIter)->second.q_nr]);
-            agsafeset(edgeVector[iter->second.q_nr], "label", name, "");
-        }
-
-        //            if (jointIndex != 0)
-        //            {
-        //                edgeVector[jointIndex] = agedge(g, nodeVector[segmentIndex], nodeVector[jointIndex]);
-        //                agsafeset(edgeVector[jointIndex], "label", name, "");
-        //            }
-
-    }
-
-
-
-    /* Compute a layout using layout engine from command line args */
+    
+    walkJSONTree(inputData, nodeVector, edgeVector, g);
+    
+   /* Compute a layout using layout engine from command line args */
     //  gvLayoutJobs(gvc, g);
     gvLayout(gvc, g, "dot");
 
@@ -229,6 +204,23 @@ void drawMyTree(KDL::Tree& twoBranchTree)
 
     gvFreeContext(gvc);
     /* close output file, free context, and return number of errors */
+    return;
+}
+
+void createMyTree(std::string const& inputModelFile, std::string const& inputSchemaFile, std::vector<SemanticData>& semanticData, bool const& plotOff=true)
+{
+    Variant v = libvariant::DeserializeJSONFile(inputModelFile.c_str());
+    libvariant::AdvSchemaLoader loader;                                                                    
+    libvariant::SchemaResult result = libvariant::SchemaValidate(std::string("file://").append(inputSchemaFile).c_str(), v, &loader);
+    
+    if (!result.Error())
+    {
+       walkJSONTree(v, semanticData);
+    }
+    else
+        cout << result << endl;
+    if(!plotOff)
+        drawTree(v);
     return;
 }
 
@@ -901,11 +893,13 @@ int main(int argc, char** argv)
     kdle::traverseGraph(mychain, forwardKinematics, policy)(jstate, lstate, lstate2);
 
 
-    KDL::Tree twoBranchTree("L0");
+    
     std::string filename("json-models/input-geometric-semantics-with-coordinates.json");
     std::string schemaname("/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/json-models/geometric-semantics-with-coordinates-dsl.json");
-    createMyTree(filename, schemaname);
-//    drawMyTree(twoBranchTree);
+
+    std::vector<SemanticData> semanticData;
+    createMyTree(filename, schemaname, semanticData, false);
+
 
     return 0;
 }
