@@ -75,93 +75,150 @@ void walkJSONTree(Variant const& inputData, std::vector<SemanticData>& semanticD
 {
     if (inputData.IsMap())
     {
-        // Maps are internally just std::map<std::string, Variant>
-        printf("Map size: %d \n",inputData.Size());
+        std::cout << "TOP: IT IS A MAP" << std::endl;
+        printf("Size: %d \n",inputData.Size());
+        std::cout  << std::endl;
         for (Variant::ConstMapIterator i=inputData.MapBegin(); i != inputData.MapEnd(); ++i)
         {
-            printf("Property Name: %s \n", i->first.c_str());
-            printf("Property Type: %d \n", i->second.GetType());
-            if(i->second.IsString())
+            if( (i->second.IsMap())||(i->second.IsList()) )
             {
-                std::cout << "Property is a String of VALUE: "<< i->second.AsString() << std::endl;
+                std::cout << "BOTTOM: IT IS A MAP/A LIST" << std::endl;
+                printf("Key: %s \n", i->first.c_str());
+                printf("Type: %d \n", i->second.GetType());
+                std::cout << "Value: " << std::endl<< std::endl;
+                walkJSONTree(i->second, semanticData);
+            }
+            else if(i->second.IsString())
+            {
+                std::cout << "BOTTOM: IT IS A STRING" << std::endl;
+                printf("Key: %s \n", i->first.c_str());
+                printf("Type: %d \n", i->second.GetType());
+                std::cout << "Value: "<< i->second.AsString() << std::endl<< std::endl;
 
             }
             else if(i->second.IsFloat())
             {
-                std::cout << "Property is a Float of VALUE: " << std::endl;
-            }
-            else
-            {
-                std::cout << "Property is a Map/List of VALUE: " << std::endl;
-                walkJSONTree(i->second, semanticData);
+                std::cout << "BOTTOM: IT IS A FLOAT" << std::endl;
+                printf("Key: %s \n", i->first.c_str());
+                printf("Type: %d \n", i->second.GetType());
+                std::cout << "Value: "<< i->second.AsString() << std::endl<< std::endl;
             }
         } 
     }
     
     if(inputData.IsList())
     {
-        printf("Property is a List of SIZE: %d \n",inputData.Size());
+        std::cout << "TOP: IT IS A LIST" << std::endl;
+        printf("Size: %d \n",inputData.Size());
         for (Variant::ConstListIterator j = inputData.ListBegin(); j != inputData.ListEnd(); ++j)
         {
-            printf("A List Property type: %d \n", j->GetType());
-//            if(j->IsMap())
-//            {
-//                std::cout << "A List Property is a Map: " << std::endl;
-                walkJSONTree(*j, semanticData);
-//            }
+            
+            printf("Type: %d \n", j->GetType());
+            std::cout  << std::endl;
+            walkJSONTree(*j, semanticData);
         } 
 
     }
     return;
 }
 
-void walkJSONTree(Variant const& inputData,  std::vector<Agnode_t*>& nodeVector, std::vector<Agedge_t*>& edgeVector, Agraph_t *g)
+void walkJSONTree(Variant const& inputData,  std::vector<Agnode_t*>& nodeVector, std::vector<Agedge_t*>& edgeVector, Agraph_t *g, int& nodecounter)
 {
-    
     if (inputData.IsMap())
     {
+        Agnode_t* tempnode;
+        tempnode = nodeVector.back();
+        nodecounter++;
+        std::cout << "TOP: IT IS A MAP" << std::endl;
         
         for (Variant::ConstMapIterator i=inputData.MapBegin(); i != inputData.MapEnd(); ++i)
         {   
 
-//                agsafeset(nodeVector[0], "color", "red", "");
-//                agsafeset(nodeVector[0], "shape", "box", "");
-
-            if(i->second.IsString())
+            if(i->second.IsMap())
             {
+                nodecounter++;
                 std::string tag = i->first;
+                std::ostringstream convert;
+                convert << nodecounter;
+                tag.append(":");
+                tag.append(convert.str());
+                
+                std::cout << "BOTTOM: IT IS A MAP" << std::endl;
+                Agnode_t* previousnode = nodeVector.back();
+                nodeVector.push_back(agnode( g, const_cast<char*>(tag.c_str()) ));
+                Agnode_t* currentnode = nodeVector.back();
+                agsafeset(currentnode, "color", "green", "");
+                agsafeset(currentnode, "shape", "circle", "");
+                edgeVector.push_back(agedge(g, tempnode , currentnode));
+                walkJSONTree(i->second, nodeVector, edgeVector, g, nodecounter);
+            }
+            else if(i->second.IsList())
+            {
+                nodecounter++;
+                std::string tag = i->first;
+                std::ostringstream convert;
+                convert << nodecounter;
+                tag.append(":");
+                tag.append(convert.str());
+                
+                std::cout << "BOTTOM: IT IS A LIST" << std::endl;
+                Agnode_t* previousnode = nodeVector.back();
+                nodeVector.push_back(agnode( g, const_cast<char*>(tag.c_str()) ));
+                Agnode_t* currentnode = nodeVector.back();
+                agsafeset(currentnode, "color", "blue", "");
+                agsafeset(currentnode, "shape", "oval", "");
+                edgeVector.push_back(agedge(g, tempnode , currentnode));
+                walkJSONTree(i->second, nodeVector, edgeVector, g, nodecounter);
+            }
+            else if(i->second.IsString())
+            {
+                nodecounter++;
+                std::cout << "BOTTOM: IT IS A STRING" << std::endl;
+                std::string tag = i->first;
+                std::ostringstream convert;
+                convert << nodecounter++;
+                
                 tag.append(":");
                 tag.append(i->second.AsString());
+                tag.append(convert.str());
                 Agnode_t* previousnode = nodeVector.back();
                 nodeVector.push_back(agnode( g, const_cast<char*>(tag.c_str()) ));
                 //fill in edge vector by iterating over joints in the tree
                 Agnode_t* currentnode = nodeVector.back();
-//                edgeVector.push_back(agedge(g, previousnode , currentnode));
-//                    agsafeset(edgeVector.back(), "label",  const_cast<char*>(i->second.AsString().c_str()), "");
+                agsafeset(currentnode, "color", "red", "");
+                agsafeset(currentnode, "shape", "box", "");
+
+                edgeVector.push_back(agedge(g, tempnode , currentnode));
+//                agsafeset(edgeVector.back(), "label",  const_cast<char*>(i->second.AsString().c_str()), "");
 
             }
             else if(i->second.IsFloat())
             {
+                nodecounter++;
+                std::cout << "BOTTOM: IT IS A FLOAT" << std::endl;
                 std::string tag = i->first;
+                std::ostringstream convert;
+                convert << nodecounter++;
                 tag.append(":");
                 tag.append(i->second.AsString());
+                tag.append(convert.str());
+                
                 nodeVector.push_back(agnode( g, const_cast<char*>(tag.c_str()) ));
+                Agnode_t* currentnode = nodeVector.back();
+                agsafeset(currentnode, "color", "red", "");
+                agsafeset(currentnode, "shape", "box", "");
             }
-            else
-            {
-                nodeVector.push_back(agnode( g, const_cast<char*>(i->first.c_str()) ));
-                walkJSONTree(i->second, nodeVector, edgeVector, g);
-            }
+            
         } 
     }
     
     else if(inputData.IsList())
     {
-//        nodeVector.push_back(agnode( g, const_cast<char*>(i->first.c_str()) ));
+        nodecounter++;
+        std::cout << "TOP: IT IS A LIST" << std::endl;
         for (Variant::ConstListIterator j = inputData.ListBegin(); j != inputData.ListEnd(); ++j)
         {
-
-          walkJSONTree(*j, nodeVector, edgeVector, g);
+          walkJSONTree(*j, nodeVector, edgeVector, g, nodecounter);
 
         }
     }
@@ -183,10 +240,11 @@ void drawTree(Variant const& inputData)
 
     //create vector to hold nodes
     std::vector<Agnode_t*> nodeVector;
+    nodeVector.push_back(agnode( g, "/" ));
     //create vector to hold edges
     std::vector<Agedge_t*> edgeVector;
-    
-    walkJSONTree(inputData, nodeVector, edgeVector, g);
+    int counter = 0;
+    walkJSONTree(inputData, nodeVector, edgeVector, g, counter);
     
    /* Compute a layout using layout engine from command line args */
     //  gvLayoutJobs(gvc, g);
@@ -896,6 +954,10 @@ int main(int argc, char** argv)
     
     std::string filename("json-models/input-geometric-semantics-with-coordinates.json");
     std::string schemaname("/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/json-models/geometric-semantics-with-coordinates-dsl.json");
+    
+    
+//    std::string filename("json-models/input-dsl-meta-model.json");
+//    std::string schemaname("/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/json-models/dsl-meta-model.json");
 
     std::vector<SemanticData> semanticData;
     createMyTree(filename, schemaname, semanticData, false);
