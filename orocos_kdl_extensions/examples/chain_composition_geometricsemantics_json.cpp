@@ -71,61 +71,44 @@ void walkJSONTree(Variant const& inputData, std::vector<SemanticData>& semanticD
 {
     if (inputData.IsMap())
     {
-//        std::cout << "TOP: IT IS A MAP" << std::endl;
-//        printf("Size: %d \n",inputData.Size());
-//        std::cout  << std::endl;
+        std::cout << "TOP: IT IS A MAP" << std::endl;
+        std::cout << "Size: "<< inputData.Size() << std::endl<<std::endl;
+        
         for (Variant::ConstMapIterator i=inputData.MapBegin(); i != inputData.MapEnd(); ++i)
         {
-            if(i->first == "@kinematics")
-            {
-                std::cout << "Value: "<<  std::endl<< std::endl;
-                if(i->first == "@kinematictype")
-                {
+            if( !(i->second.IsMap() || i->second.IsList()) )
+               switch (i->second.GetType())
+               {
+                case Variant::StringType:
+                    std::cout << "Key: " << i->first <<std::endl;
                     std::cout << "Value: "<< inputData.Get(i->first).AsString()<< std::endl<< std::endl;
-                }
-            }
-            
-            if(i->first == "@geometry")
+                    break;
+                case Variant::FloatType:
+                    std::cout << "Key: " << i->first <<std::endl;
+                    std::cout << "Value: "<< inputData.Get(i->first).AsDouble()<< std::endl<< std::endl;
+                    break;
+                case Variant::BoolType:
+                    std::cout << "Key: " << i->first <<std::endl;
+                    std::cout << "Value: "<< inputData.Get(i->first).AsBool()<< std::endl<< std::endl;
+                    break;
+               }
+            else
             {
-                if(i->first == "@geomtype")
-                {
-                    std::cout << "Value: "<< inputData.Get(i->first).AsString()<< std::endl<< std::endl;
-                }
-            }
-            if( (i->second.IsMap())||(i->second.IsList()) )
-            {
-//                printf("Type: %d \n", i->second.GetType());
-//                std::cout << "Value: " << std::endl<< std::endl;
+                std::cout << "Key: " << i->first <<std::endl;
                 walkJSONTree(i->second, semanticData);
-            }
-            else if(i->second.IsString())
-            {
-              
-//                std::cout << "BOTTOM: IT IS A STRING" << std::endl;
-//                printf("Key: %s \n", i->first.c_str());
-//                printf("Type: %d \n", i->second.GetType());
-//                std::cout << "Value: "<< inputData.Get(i->first).AsString()<< std::endl<< std::endl;
-
-            }
-            else if(i->second.IsFloat())
-            {
-//                std::cout << "BOTTOM: IT IS A FLOAT" << std::endl;
-//                printf("Key: %s \n", i->first.c_str());
-//                printf("Type: %d \n", i->second.GetType());
-//                std::cout << "Value: "<< i->second.AsString() << std::endl<< std::endl;
             }
         } 
     }
     
     if(inputData.IsList())
     {
-//        std::cout << "TOP: IT IS A LIST" << std::endl;
-//        printf("Size: %d \n",inputData.Size());
+        std::cout << "TOP: IT IS A LIST" << std::endl;
+        printf("Size: %d \n",inputData.Size());
         for (Variant::ConstListIterator j = inputData.ListBegin(); j != inputData.ListEnd(); ++j)
         {
             
-//            printf("Type: %d \n", j->GetType());
-//            std::cout  << std::endl;
+            printf("Type of the List element: %d \n", j->GetType());
+            std::cout  << std::endl;
             walkJSONTree(*j, semanticData);
         } 
 
@@ -169,7 +152,7 @@ void walkJSONTree(Variant const& inputData,  Agnode_t* node, Agedge_t* edgeVecto
                 
                 Agnode_t* currentnode = agnode( g, const_cast<char*>(tag.c_str()) );
                 agsafeset(currentnode, "color", "green", "");
-                agsafeset(currentnode, "shape", "circle", "");
+                agsafeset(currentnode, "shape", "oval", "");
                 edgeVector = agedge(g, parentnode , currentnode);
                 walkJSONTree(i->second, currentnode, edgeVector, g, nodecounter);
             }
@@ -220,7 +203,7 @@ void walkJSONTree(Variant const& inputData,  Agnode_t* node, Agedge_t* edgeVecto
                 //fill in edge vector by iterating over joints in the tree
                 Agnode_t* currentnode = agnode( g, const_cast<char*>(tag.c_str()) );
                 agsafeset(currentnode, "color", "red", "");
-                agsafeset(currentnode, "shape", "box", "");
+                agsafeset(currentnode, "shape", "oval", "");
 
                 edgeVector= agedge(g, parentnode , currentnode);
 //                agsafeset(edgeVector.back(), "label",  const_cast<char*>(i->second.AsString().c_str()), "");
@@ -280,7 +263,7 @@ void walkJSONTree(Variant const& inputData,  Agnode_t* node, Agedge_t* edgeVecto
                 //connect the parent and the child nodes
                 Agnode_t* currentnode = agnode( g, const_cast<char*>(tag.c_str()) );
                 agsafeset(currentnode, "color", "green", "");
-                agsafeset(currentnode, "shape", "circle", "");
+                agsafeset(currentnode, "shape", "oval", "");
                 edgeVector= agedge(g, parentnode , currentnode);
                 //go to top of the function
                 walkJSONTree(*j, currentnode, edgeVector, g, nodecounter);
@@ -430,8 +413,8 @@ void initSegmentFrameGeometry(SegmentGeometricData *segmentgeoms, const unsigned
 int main(int argc, char** argv)
 {
     
-    std::string filename("json-models/input-kinematics-dsl.json");
-    std::string schemaname("/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/json-models/kinematics-dsl.json");
+    std::string filename("json-models/kinematics/input-kinematics-dsl.json");
+    std::string schemaname("/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/json-models/kinematics/kinematics-dsl.json");
  
     std::vector<SemanticData> semanticData;
     if(!createTree(filename, schemaname, semanticData, false))
