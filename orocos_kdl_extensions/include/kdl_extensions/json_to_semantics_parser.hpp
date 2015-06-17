@@ -25,11 +25,11 @@ typedef struct
 using libvariant::Variant;
 //this function should be made a template which returns a kdle geometry (Pose, Twist)
 //based on the value of @geomtype
-grs::PoseCoordinatesSemantics geometryToKDL(Variant const& inputData, std::vector<SemanticData>& semanticData);
+grs::Pose<KDL::Frame> jsonToGeometry(Variant const& inputData, std::vector<SemanticData>& semanticData);
 
 //this function should be made a template which returns a kdle kinematics (Segment, Link)
 //based on the value of @kinematicstype
-void kinematicsToKDL();
+void jsonToKinematics(Variant const& inputData, std::vector<SemanticData>& semanticData,kdle::Segment<grs::Pose<KDL::Frame> >& segment);
 
 void walkJSONTree(Variant const& inputData, std::vector<SemanticData>& semanticData);
 

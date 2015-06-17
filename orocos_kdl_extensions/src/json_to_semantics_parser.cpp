@@ -1,8 +1,8 @@
-#include <kdl_extensions/json_to_semantics_parser.hpp>
 #include <iostream>
-
-#include "kdl_extensions/chain_geometric_primitives.hpp"
-
+#include <Eigen/Core>
+#include <kdl_extensions/chain_geometric_primitives.hpp>
+#include <kdl_extensions/json_to_semantics_parser.hpp>
+#include <kdl/frames_io.hpp>
 using namespace libvariant;
 using namespace std; 
 namespace grs = geometric_semantics;
@@ -11,20 +11,23 @@ namespace grs = geometric_semantics;
 
 //this function should be made a template which returns a kdle geometry (Pose, Twist)
 //based on the value of @geomtype
-grs::PoseCoordinatesSemantics  geometryToKDL(Variant const& inputData, std::vector<SemanticData>& semanticData)
+grs::Pose<KDL::Frame>  jsonToGeometry(Variant const& inputData, std::vector<SemanticData>& semanticData)
 {
-//    std::string geomname = inputData.At("name").AsString();
-//    std::cout << geomname << std::endl;
-//    std::string geomid = inputData.At("id").AsString();
-//    std::cout << geomid << std::endl;
-//    std::string dsltype = inputData.At("@dsltype").AsString();
-//    std::cout << dsltype << std::endl;
+    #ifdef VERBOSE_WALK
+        std::string geomname = inputData.At("name").AsString();
+        std::cout << geomname << std::endl;
+        std::string geomid = inputData.At("id").AsString();
+        std::cout << geomid << std::endl;
+        std::string dsltype = inputData.At("@dsltype").AsString();
+        std::cout << dsltype << std::endl;
+        std::cout << geomtype << std::endl;
+    #endif
     std::string geomtype = inputData.At("@geomtype").AsString();
-//    std::cout << geomtype << std::endl;
-    
+
     grs::Point refPoint, tarPoint;
     grs::Body refBody, tarBody;
     grs::OrientationFrame refFrame, tarFrame, coordFrame;
+    KDL::Frame T;
     
     if(geomtype == "Position")
     {
@@ -33,29 +36,33 @@ grs::PoseCoordinatesSemantics  geometryToKDL(Variant const& inputData, std::vect
         {
             if(i->first == "target")
             {
-                std::string pointname = i->second.Get("point").Get("@semantic_primitive").Get("name").AsString();
+                //point name is concatenated from its own name and the geometry's name it belongs.
+                std::string pointname = i->second.At("point").At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString());
                 tarPoint = grs::Point(pointname);
-                std::string bodyname = i->second.Get("body").Get("@semantic_primitive").Get("name").AsString();
+                //body name is concatenated from its own name and the geometry's name it belongs.
+                std::string bodyname = i->second.At("body").At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString());
                 tarBody = grs::Body(bodyname);
                 
             }
             if(i->first == "reference")
             {
-                std::string pointname = i->second.Get("point").Get("@semantic_primitive").Get("name").AsString();
+                std::string pointname = i->second.At("point").At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString());
                 refPoint = grs::Point(pointname);
-                std::string bodyname = i->second.Get("body").Get("@semantic_primitive").Get("name").AsString();
+                std::string bodyname = i->second.At("body").At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString());
                 refBody = grs::Body(bodyname);
             }
             if(i->first == "coordinateFrame")
             {
-                std::string name = i->second.Get("@semantic_primitive").Get("name").AsString();
+                std::string name = i->second.At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString());
                 coordFrame = grs::OrientationFrame(name);
             }
         }
          
         grs::PositionCoordinatesSemantics positionCoordSemantics(tarPoint,tarBody,refPoint,refBody,coordFrame);
-        cout << "    position =" << positionCoordSemantics << endl;
-        
+        #ifdef VERBOSE_WALK
+            cout << "    position =" << positionCoordSemantics << endl;
+        #endif
+
         Variant const coordinates = inputData.At("coordinates");
         for (Variant::ConstMapIterator i=coordinates.MapBegin(); i != coordinates.MapEnd(); ++i)
         {
@@ -70,29 +77,30 @@ grs::PoseCoordinatesSemantics  geometryToKDL(Variant const& inputData, std::vect
         {
             if(i->first == "target")
             {
-                std::string framename = i->second.Get("frame").Get("@semantic_primitive").Get("name").AsString();
+                std::string framename = i->second.At("frame").At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString());
                 tarFrame = grs::OrientationFrame(framename);
-                std::string bodyname = i->second.Get("body").Get("@semantic_primitive").Get("name").AsString();
+                std::string bodyname = i->second.At("body").At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString()); 
                 tarBody = grs::Body(bodyname);
                 
             }
             if(i->first == "reference")
             {
-                std::string framename = i->second.Get("frame").Get("@semantic_primitive").Get("name").AsString();
+                std::string framename = i->second.At("frame").At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString());
                 refFrame = grs::OrientationFrame(framename);
-                std::string bodyname = i->second.Get("body").Get("@semantic_primitive").Get("name").AsString();
+                std::string bodyname = i->second.At("body").At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString());
                 refBody = grs::Body(bodyname);
             }
             if(i->first == "coordinateFrame")
             {
-                std::string name = i->second.Get("@semantic_primitive").Get("name").AsString();
+                std::string name = i->second.At("@semantic_primitive").At("name").AsString() + inputData.At("name").AsString().append(inputData.At("name").AsString());
                 coordFrame = grs::OrientationFrame(name);
             }
         }
          
         grs::OrientationCoordinatesSemantics orientationCoordSemantics(tarFrame,tarBody,refFrame,refBody,coordFrame);
-        cout << "orientation =" << orientationCoordSemantics << endl;
-        
+        #ifdef VERBOSE_WALK
+            cout << "orientation =" << orientationCoordSemantics << endl;
+        #endif
         Variant const coordinates = inputData.At("coordinates");
         for (Variant::ConstMapIterator i=coordinates.MapBegin(); i != coordinates.MapEnd(); ++i)
         {
@@ -107,94 +115,118 @@ grs::PoseCoordinatesSemantics  geometryToKDL(Variant const& inputData, std::vect
         {
             if(i->first == "target")
             {
-                std::string pointname = i->second.Get("point").Get("@semantic_primitive").Get("name").AsString();
+                std::string pointname = i->second.At("point").At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString());
                 tarPoint = grs::Point(pointname);
-                std::string framename = i->second.Get("frame").Get("@semantic_primitive").Get("name").AsString();
+                std::string framename = i->second.At("frame").At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString()); 
                 tarFrame = grs::OrientationFrame(framename);
-                std::string bodyname = i->second.Get("body").Get("@semantic_primitive").Get("name").AsString();
+                std::string bodyname = i->second.At("body").At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString());
                 tarBody = grs::Body(bodyname);
                 
             }
             if(i->first == "reference")
             {
-                std::string pointname = i->second.Get("point").Get("@semantic_primitive").Get("name").AsString();
+                std::string pointname = i->second.At("point").At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString());
                 refPoint = grs::Point(pointname);
-                std::string framename = i->second.Get("frame").Get("@semantic_primitive").Get("name").AsString();
+                std::string framename = i->second.At("frame").At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString());
                 refFrame = grs::OrientationFrame(framename);
-                std::string bodyname = i->second.Get("body").Get("@semantic_primitive").Get("name").AsString();
+                std::string bodyname = i->second.At("body").At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString());
                 refBody = grs::Body(bodyname);
             }
             if(i->first == "coordinateFrame")
             {
-                std::string name = i->second.Get("@semantic_primitive").Get("name").AsString();
+                std::string name = i->second.At("@semantic_primitive").At("name").AsString().append(inputData.At("name").AsString());
                 coordFrame = grs::OrientationFrame(name);
             }
         }
-         
-//        grs::PoseCoordinatesSemantics poseCoordSemantics(tarPoint, tarFrame,tarBody, refPoint, refFrame,refBody,coordFrame);
-//        cout << "pose =" << poseCoordSemantics << endl;
         
         Variant const coordinates = inputData.At("coordinates");
+        
         for (Variant::ConstMapIterator i=coordinates.MapBegin(); i != coordinates.MapEnd(); ++i)
         {
             if(i->first == "rows")
             {
+                Eigen::Matrix<double, 4, 4 > Matrix4d;
+                
+                unsigned int matrixrow(0);
                 for (Variant::ConstListIterator k = i->second.ListBegin(); k != i->second.ListEnd(); ++k)
                 {
+                    unsigned int matrixcolumn(0);
                     for (Variant::ConstListIterator j = k->ListBegin(); j != k->ListEnd(); ++j)
                     {
-                        std::cout << "row = " << j->AsDouble() << std::endl;
+                        
+                        Matrix4d(matrixrow,matrixcolumn) = j->AsDouble();
+                        matrixcolumn++;
                     }
+                    matrixrow++;
+                }
+                
+                for(unsigned int i=0; i<3; i++)
+                {
+                    T.p.data[i] = Matrix4d(i,3);
+                }
+                
+                unsigned int k(0);
+                for(unsigned int i=0; i<3; i++)
+                {
+                    for(unsigned int j=0; j<3; j++)
+                    {
+                        T.M.data[k] = Matrix4d(i,j);
+                        k++;
+                    }
+                    k++;
                 }
             }
         }
     }
    
 
-    return grs::PoseCoordinatesSemantics(tarPoint, tarFrame,tarBody, refPoint, refFrame,refBody,coordFrame);
+    return grs::Pose<KDL::Frame>(grs::PoseCoordinatesSemantics(tarPoint, tarFrame,tarBody, refPoint, refFrame,refBody,coordFrame),T);
 }
 
 
 //this function should be made a template which returns a kdle kinematics (Segment, Link)
 //based on the value of @kinematicstype
-void  kinematicsToKDL(Variant const& inputData, std::vector<SemanticData>& semanticData)
+void jsonToKinematics(Variant const& inputData, std::vector<SemanticData>& semanticData, kdle::Segment<grs::Pose<KDL::Frame> >& segment)
 {
-//    std::string kinematicsname = inputData.At("name").AsString();
-//    std::string kinematicsid = inputData.At("id").AsString();
-//    std::string dsltype = inputData.At("@dsltype").AsString();
+
     std::string kinematicstype = inputData.At("@kinematicstype").AsString();
     std::cout << kinematicstype << std::endl;
     if(kinematicstype == "Segment")
     { 
-        grs::PoseCoordinatesSemantics rootFrame, tipFrame, jointFrame;
-        Variant const linksemantics = inputData.At("link").Get("@kinematics");
+        grs::Pose<KDL::Frame> rootFrame, tipFrame, jointFrame;
+        
+        Variant const linksemantics = inputData.At("link").At("@kinematics");
         for (Variant::ConstMapIterator i=linksemantics.MapBegin(); i != linksemantics.MapEnd(); ++i)
         {
             if(i->first == "rootFrame")
             {
-                rootFrame = geometryToKDL(i->second.Get("@geometry"), semanticData);
+                rootFrame = jsonToGeometry(i->second.At("@geometry"), semanticData);
                 std::cout << "rootFrame= " << rootFrame << std::endl;
                 
             }
             if(i->first == "tipFrame")
             {
-                tipFrame = geometryToKDL(i->second.Get("@geometry"), semanticData);
+                tipFrame = jsonToGeometry(i->second.At("@geometry"), semanticData);
                 std::cout << "tipFrame= " << tipFrame << std::endl;
             }
         }
         
+        kdle::Link< grs::Pose<KDL::Frame> > link(inputData.At("link").At("@kinematics").At("name").AsString(), rootFrame, tipFrame);
+        kdle::AttachmentFrame<grs::Pose<KDL::Frame> > attachedframe;
+        std::vector< kdle::AttachmentFrame<grs::Pose<KDL::Frame> > > frameList1;
+        
         Variant const attachmentframes = inputData.At("framelist");
         for (Variant::ConstListIterator k=attachmentframes.ListBegin(); k != attachmentframes.ListEnd(); ++k)
         {
-            jointFrame = geometryToKDL (k->Get("frame").Get("@geometry"), semanticData);
-            std::cout << "@frametype= "<< k->Get("@frametype").AsString() << std::endl;
-            std::cout << "frame= "<< jointFrame << std::endl;
-            
+            jointFrame = jsonToGeometry (k->At("frame").At("@geometry"), semanticData);
+            attachedframe = kdle::createAttachmentFrame(jointFrame, kdle::FrameType::JOINT);
+            frameList1.push_back(attachedframe);
         }
         
+        std::cout <<"Joint list size " << frameList1.size() << std::endl;
+       segment = kdle::Segment<grs::Pose<KDL::Frame> >(inputData.At("name").AsString(),link,frameList1);
     }
-    
-    return;
+     return ;
 }
 
 void walkJSONTree(Variant const& inputData, std::vector<SemanticData>& semanticData)
@@ -207,36 +239,10 @@ void walkJSONTree(Variant const& inputData, std::vector<SemanticData>& semanticD
         #endif
         for (Variant::ConstMapIterator i=inputData.MapBegin(); i != inputData.MapEnd(); ++i)
         {
-//            if( !(i->second.IsMap() || i->second.IsList()) )
-//               switch (i->second.GetType())
-//               {
-//                case Variant::StringType:
-//                    #ifdef VERBOSE_WALK
-//                        std::cout << "Key: " << i->first <<std::endl;
-//                        std::cout << "Value: "<< inputData.Get(i->first).AsString()<< std::endl<< std::endl;
-//                        std::cout << "Value: "<< inputData.At(i->first).AsString()<< std::endl<< std::endl;
-//                    #endif  
-//                    break;
-//                case Variant::FloatType:
-//                    #ifdef VERBOSE_WALK
-//                        std::cout << "Key: " << i->first <<std::endl;
-//                        std::cout << "Value: "<< inputData.Get(i->first).AsDouble()<< std::endl<< std::endl;
-//                    #endif  
-//                    break;
-//                case Variant::BoolType:
-//                    #ifdef VERBOSE_WALK
-//                        std::cout << "Key: " << i->first <<std::endl;
-//                        std::cout << "Value: "<< inputData.Get(i->first).AsBool()<< std::endl<< std::endl;
-//                    #endif
-//                    break;
-//               }
-//            else
-//            {
-//                std::cout << "Key: " << i->first <<std::endl;
-                if(i->first == "@kinematics")
-                    kinematicsToKDL(i->second, semanticData);
-                walkJSONTree(i->second, semanticData);
-//            }
+            kdle::Segment<grs::Pose<KDL::Frame> > segment;
+            if(i->first == "@kinematics")
+            jsonToKinematics(i->second, semanticData, segment);
+            walkJSONTree(i->second, semanticData);
         } 
     }
     
