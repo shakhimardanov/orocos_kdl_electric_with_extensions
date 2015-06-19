@@ -269,14 +269,14 @@ int main(int argc, char** argv)
         std::vector<double> jointvalue1(1,-M_PI/6.0);
         
         joint2.getPoseOfJointFrames(jointvalue, currentJointPose );
-        joint2.getCurrentDistalToPredecessorDistalPose(jointvalue, currentJointPose1 );
+        joint2.getPoseCurrentDistalToPredecessorDistal(jointvalue, currentJointPose1 );
         joint3.getPoseOfJointFrames(jointvalue1, currentJointPose1 );
-        joint3.getCurrentDistalToPredecessorDistalPose(jointvalue1, currentJointPose);
+        joint3.getPoseCurrentDistalToPredecessorDistal(jointvalue1, currentJointPose);
 
         joint2.getTwistOfJointFrames(jointtwistvalue, twisttemp);
-        joint2.getCurrentDistalToPredecessorJointTwist(jointvalue, jointtwistvalue, twisttemp);
+        joint2.getTwistCurrentDistalToPredecessorDistal(jointvalue, jointtwistvalue, twisttemp);
         joint3.getTwistOfJointFrames(jointtwistvalue1 ,twisttemp);
-        joint3.getCurrentDistalToPredecessorJointTwist(jointvalue1, jointtwistvalue1, twisttemp);
+        joint3.getTwistCurrentDistalToPredecessorJointFrame(jointvalue1, jointtwistvalue1, twisttemp);
         
         typedef std::vector< kdle::Joint< grs::Pose<KDL::Vector, KDL::Rotation> > > JointList;
         JointList jointlist;
