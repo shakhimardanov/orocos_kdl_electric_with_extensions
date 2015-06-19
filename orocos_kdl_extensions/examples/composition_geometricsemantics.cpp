@@ -36,15 +36,6 @@
 *                                                                             *
 *******************************************************************************/
 
-/* This example is a first attempt to construct a kinematic chain that has
- complete geometric semantics. The segment or joint primitives used in the 
- example are standard KDL primitives and do not take geometric semantics as
- parameters. Therefore, the semantics constraints are validated on poses and twists
- whose specific coordinates (e.g. PoseCoordinates using KDL::Frame) are then used
- to instantiate segment and joint models. Hence, many expressions  in this example 
- * still use such things as matrix multiplication. For an example that uses kinematic
- primitives with geometric semantics check the example chain_composition_geometricsemantics.cpp*/
-
 #define COMPARISON_TEST
 
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
@@ -75,6 +66,7 @@ namespace grs = geometric_semantics;
 
 using namespace std;
 using namespace KDL;
+//using namespace kdle;
 
 int main(int argc, char** argv)
 {
