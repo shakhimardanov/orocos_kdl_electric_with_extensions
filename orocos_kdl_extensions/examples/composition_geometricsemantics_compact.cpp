@@ -36,13 +36,21 @@
 *                                                                             *
 *******************************************************************************/
 
+/* This is a compact versoin of the composition_geometricsemantics_ver2.cpp example.
+ * It abstracts the semantic info for the complete kinematic chain into a class 
+ * of its own. This is then used with a set of functions to recursively instantiate
+ * the segments and the joints of the kinematic chain. This example is condensed, 
+ * thus a little difficult to follow, since it assumes that one is already knowledgeable
+ * with the API of geometric relations library.
+ */
+
+
 #include <graphviz/gvc.h>
 #include <graphviz/graph.h>
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
 #include <kdl/chainfksolverpos_recursive.hpp>
 #include <kdl/chainfksolvervel_recursive.hpp>
 #include <kdl/frames_io.hpp>
-//#include <kdl_extensions/functionalcomputation_kdl.hpp>
 #include <Position/Position.h>
 #include <Orientation/Orientation.h>
 #include <Pose/Pose.h>
@@ -67,7 +75,6 @@ namespace grs = geometric_semantics;
 
 using namespace std;
 using namespace KDL;
-//using namespace kdle;
 
 
 typedef struct
