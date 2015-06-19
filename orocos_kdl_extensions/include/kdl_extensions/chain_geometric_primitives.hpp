@@ -36,11 +36,19 @@
 *                                                                             *
 *******************************************************************************/
 
+/**
+ * @file
+ * @brief Chain specification
+ */
+
+
 #ifndef _CHAIN_GEOMETRIC_PRIMITIVES_HPP_
 #define _CHAIN_GEOMETRIC_PRIMITIVES_HPP_
 
 #include <vector>
+#include <map>
 #include <tuple>
+#include <algorithm>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -50,6 +58,25 @@
 
 namespace kdle
 {
+    // Metadata of the specification language: dsl uuid
+    static boost::uuids::uuid temp;
+    static boost::uuids::name_generator uuid_generator(temp);
+    static boost::uuids::uuid const metamodelID = uuid_generator("KDLE_DSL");
+    
+    // Metadata containg name and uuid of the language primitives (i.e. types)
+    struct MetaData
+    {
+        // type instance name
+        std::string instanceName;
+        // type instance uuid
+        boost::uuids::uuid instanceID;
+    };
+    
+    /**
+     * @brief A list of joint types. Includes 1-DoF (e.g REVOLUTE_X) or Multi-DoF (e.g SPHERICAL)
+     *
+     *
+     */
     enum class JointTypes : int
     { 
         REVOLUTE_AXIS = 0,
@@ -68,54 +95,190 @@ namespace kdle
         NONE,
     };
     
-    //should also include polarity of the joint, it defines forward and reverse relation between successor and predecessor segments
-    typedef std::tuple<JointTypes, double, double, double> JointProperties;
-    
-    // Metadata of the language
-    static boost::uuids::uuid temp;
-    static boost::uuids::name_generator uuid_generator(temp);
-    static boost::uuids::uuid const metamodelID = uuid_generator("KDLE_DSL");
-    
-    //Metadata containg name and uuid of the primitive
-    struct MetaData
+     /**
+     * @brief constraints on how to qualify joint attachment frames
+     *
+     */
+    enum class SemanticConstraint : char
     {
-        std::string instanceName;
-        boost::uuids::uuid instanceID;
-   
+        CoincidentJointFrames = 'C', // this indicates that joint frames initially  coincide
+        SameReferenceFrame = 'S', //this indicates requirements on additional segment info
     };
     
     /**
-     * \brief Link specification requires pose information on link base and tip frames
+     * @brief A list of the frame types that can be attached to a segment.<br>
+     * Each frame type is unique and allows attachment of a particular geometric or dynamic primitives to a segment. <br>
+     * For instances a joint connecting two segments can only be specified by two joint attachment frames on these segments. <br>
+     * Another example, an inertia attachment frame type specifies w.r.t which frame an inertia of the rigid body is given.
+     */
+    enum class FrameType : char
+    {
+        JOINT='J',
+        INERTIA='I',
+        SHAPE='S',
+        BODY='B',
+    };
+    
+    /**
+     * @brief Redirects FrameType value to standard output
+     *
+     */
+    inline std::ostream& operator<<(std::ostream &out, FrameType tag )
+    {
+        return out << static_cast<char>(tag);
+    };
+    
+    /**
+     * @brief
+     *
+     */
+    template <typename PoseT>
+    class AttachmentFrame
+    {
+        public:
+            /**
+             * @brief
+             *
+             */
+            AttachmentFrame()=default;
+            AttachmentFrame(const AttachmentFrame&)=default;   // prevent copying AttachmentFrame(const AttachmentFrame&) = delete
+            AttachmentFrame& operator=(const AttachmentFrame&)=default; //AttachmentFrame& operator=(const AttachmentFrame&) = delete;
+            ~AttachmentFrame()=default;
+            
+            /**
+             * @brief
+             *
+             */
+            AttachmentFrame(typename ParameterTypeQualifier<PoseT>::RefToConstT pose, typename ParameterTypeQualifier<FrameType>::RefToConstT type):poseData(pose), tagData(type), inUse(false)
+            {
+                std::string combinedName = poseData.getPoint().getName() + poseData.getOrientationFrame().getName() + poseData.getBody().getName() +
+                                           poseData.getRefPoint().getName() + poseData.getRefOrientationFrame().getName() + poseData.getRefBody().getName() + poseData.getCoordinateFrame().getName();
+                
+                instanceID = uuid_generator(combinedName);
+            };
+            
+            friend bool operator== (AttachmentFrame<PoseT> const& attfr1, AttachmentFrame<PoseT> const& attfr2) 
+            {
+                return ((attfr1.getUID() == attfr2.getUID()) && (attfr1.tagData == attfr2.tagData)) ;
+            }
+            
+            friend bool operator!= (AttachmentFrame<PoseT> const& attfr1, AttachmentFrame<PoseT> const& attfr2) 
+            {
+                return !(attfr1==attfr2);
+            }
+            
+            /**
+             * @brief
+             *
+             */
+            boost::uuids::uuid const& getUID() const {return instanceID;};
+            
+            /**
+             * @brief
+             *
+             */
+            PoseT poseData;
+            
+            /**
+             * @brief
+             *
+             */
+            FrameType tagData;
+            
+            mutable bool inUse;
+        private:
+            boost::uuids::uuid instanceID;
+    };
+    
+    /**
+     * @brief
+     *
+     */
+    template <typename PoseT>
+    AttachmentFrame<PoseT> createAttachmentFrame(PoseT const& pose, FrameType const& type)
+    {
+        return AttachmentFrame<PoseT>(pose, type);
+    };
+    
+    /**
+     * @brief A tuple of joint properties that include, in the given order, type from JointTypes, inertia, clockwise and counterclockwise limits
      *
      * 
+     */
+    //should also include polarity of the joint, it defines forward and reverse relation between successor and predecessor segments
+    typedef std::tuple<JointTypes, double, double, double> JointProperties;
+    
+    /**
+     * @brief Link is a geometric primitive defined through a constraining geometric relation between two poses, base and tip. <br>
+     * 
+     * Its specification requires semantic and coordinate representation data  on link base and tip poses. <br>
+     * Base pose is defined with respect to some world reference pose and tip pose is defined with respect to the base
      */
     template <typename PoseT>
     class Link
     {
         public:
+           /**
+            * @brief Default constructor auto generated by the compiler.
+            */
             Link()=default;
-            Link(const std::string &givenName, typename ParameterTypeQualifier<PoseT>::RefToConstT rootF, typename ParameterTypeQualifier<PoseT>::RefToConstT tipF)
+            Link(const Link&)=default;   // prevent copying Segment(const Segment&) = delete
+            Link& operator=(const Link&)=default; //Segment& operator=(const Segment&) = delete;
+            /**
+             * @brief
+             *
+             */
+            
+           /**
+            * @brief A constructor that link instance with the given name, base and tip frame specification.
+            * 
+            * @param givenName is a name of the link instance
+            * @param rootF pose of base frame of the link. PoseT can be any pose type from geometric relations semantics (e.g. Pose<KDL::Frame>)
+            * @param tipF pose of tip frame of the link. PoseT can be any pose type from geometric relations semantics (e.g. Pose<KDL::Vector, KDL::Rotation>)
+            */
+            Link(std::string const& givenName, typename ParameterTypeQualifier<PoseT>::RefToConstT rootF, typename ParameterTypeQualifier<PoseT>::RefToConstT tipF)
                 : rootFrame_q0(rootF), tipFrame_q0(tipF)
             {
                 classData.instanceName = givenName;
-                classData.instanceID = uuid_generator(classData.instanceName);               
+                classData.instanceID = uuid_generator(classData.instanceName);
             };
             
             /**
-        	 * \brief
+        	 * @brief returns relative pose of link tip (distal) frame to link base (proximal) frame
+             * 
+             * @return relative pose between two frames of the link. PoseT can be any pose type from geometric relations semantics (e.g. Pose<KDL::Vector, KDL::Rotation>)
         	 */
-            PoseT const& getCurrentDistalToCurrentProximalPose() const;
+            PoseT const& getPoseCurrentDistalToCurrentProximal() const;
 
             /**
-        	 * \brief
+        	 * @brief returns relative pose of link tip (distal) frame to world reference frame which is was used as construction time of the link.<br>
+             * Here the world frame becomes some predecessors tip (distal) frame.
+             * 
+             * @return relative pose tip frame of the link wrt to the world/base frame. PoseT can be any pose type from geometric relations semantics (e.g. Pose<KDL::Vector, KDL::Rotation>)
         	 */
-            PoseT const& getCurrentDistalToPredecessorDistalPose() const;
+            PoseT const& getPoseCurrentDistalToPredecessorDistal() const;
             
             //return the name, uuid, and classuuid
+            /**
+             * @return name of the link instance
+        	 */
             std::string const& getName() const {return classData.instanceName;};
+            
+            /**
+             * @return UID of the link instance
+        	 */
             boost::uuids::uuid const& getUID() const {return classData.instanceID;};
+            
+            /**
+             * @return UID of the link class
+        	 */
             boost::uuids::uuid const& getClassUID() const {return modelID;};
-            ~Link(){};
+            
+            /**
+             * @brief Default destructor auto generated by the compiler.
+             */
+            
+            ~Link()=default;
             
         private:
             PoseT rootFrame_q0;
@@ -127,96 +290,65 @@ namespace kdle
             static boost::uuids::uuid const modelID;
             
         protected:
-            bool getCurrentDistalToCurrentProximalPoseImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2rootpose) const;
-            bool getCurrentDistalToPredecessorDistalPoseImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2tippose) const;
+            bool getPoseCurrentDistalToCurrentProximalImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2rootpose) const;
+            bool getPoseCurrentDistalToPredecessorDistalImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2tippose) const;
     };
 
     template <typename PoseT>
     boost::uuids::uuid const Link<PoseT>::modelID = uuid_generator("TypeNameLink");
     
     template <typename PoseT>
-    PoseT const& Link<PoseT>::getCurrentDistalToCurrentProximalPose() const 
+    PoseT const& Link<PoseT>::getPoseCurrentDistalToCurrentProximal() const 
     {
-        if (!getCurrentDistalToCurrentProximalPoseImpl(tipToProximalFrame_q0))
+        if (!getPoseCurrentDistalToCurrentProximalImpl(tipToProximalFrame_q0))
             std::cout <<"Warning: can not return pose data " << std::endl;
         else
             return tipToProximalFrame_q0; 
     };
     
     template <typename PoseT>
-    PoseT const& Link<PoseT>::getCurrentDistalToPredecessorDistalPose() const 
+    PoseT const& Link<PoseT>::getPoseCurrentDistalToPredecessorDistal() const 
     {
-        if(!getCurrentDistalToPredecessorDistalPoseImpl(tipToDistalFrame_q0))
+        if(!getPoseCurrentDistalToPredecessorDistalImpl(tipToDistalFrame_q0))
             std::cout <<"Warning: can not return pose data " << std::endl;
         else
             return tipToDistalFrame_q0; 
     };
     
     template <typename PoseT>
-    bool Link<PoseT>::getCurrentDistalToCurrentProximalPoseImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT  tip2rootpose) const
+    bool Link<PoseT>::getPoseCurrentDistalToCurrentProximalImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT  tip2rootpose) const
     {
         tip2rootpose = tipFrame_q0;
         return true; 
     };
     
     template <typename PoseT>
-    bool Link<PoseT>::getCurrentDistalToPredecessorDistalPoseImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2tippose) const
+    bool Link<PoseT>::getPoseCurrentDistalToPredecessorDistalImpl(typename ParameterTypeQualifier<PoseT>::RefToArgT tip2tippose) const
     {
         tip2tippose = grs::compose(rootFrame_q0,tipFrame_q0);
         return true;
     };
+
     
     /**
-     * \brief Segment specification requires existing link instance and a list of attachment frames
-     *
-     */
-    enum class FrameType : char
-    {
-        JOINT='J',
-        INERTIA='I',
-        SHAPE='S',
-        BODY='B',
-    };
-    
-    inline std::ostream& operator<<(std::ostream &out, FrameType tag )
-    {
-        return out << static_cast<char>(tag);
-    };
-    
-    
-    /**
-     * \brief Segment specification requires existing link instance and a list of attachment frames
-     *
-     */
-    template <typename PoseT>
-    class AttachmentFrame
-    {
-        public:
-            AttachmentFrame()=default;
-            AttachmentFrame(typename ParameterTypeQualifier<PoseT>::RefToConstT pose, typename ParameterTypeQualifier<FrameType>::RefToConstT type):poseData(pose), tagData(type){};
-            PoseT poseData;
-            FrameType tagData;
-    };
-    
-    /**
-     * \brief Segment specification requires existing link instance and a list of attachment frames
-     *
-     */
-    template <typename PoseT>
-    AttachmentFrame<PoseT> createAttachmentFrame(PoseT const& pose, FrameType const& type)
-    {
-        return AttachmentFrame<PoseT>(pose, type);
-    };
-    
-    /**
-     * \brief Segment specification requires existing link instance and a list of attachment frames
+     * @brief  A segment specification requires existing link instance and a list of attachment frames
      *
      */
     template <typename PoseT>
     class Segment
     {
         public:
+            /**
+             * @brief
+             *
+             */
             Segment()=default;
+            Segment(const Segment&)=default;   // prevent copying Segment(const Segment&) = delete
+            Segment& operator=(const Segment&)=default; //Segment& operator=(const Segment&) = delete;
+            /**
+             * @brief
+             *
+             */
             Segment(std::string const& givenName, typename ParameterTypeQualifier< Link<PoseT> >::RefToConstT link, std::vector< AttachmentFrame<PoseT> > const& listOfFrames) : linkOfSegment(link), attachmentFrames(listOfFrames)
             {
                 classData.instanceName = givenName;
@@ -224,9 +356,9 @@ namespace kdle
             };
             
             /**
-        	 * \brief add attachment frames for joints
+        	 * @brief add attachment frames for joints
         	 *
-        	 * \param a list of joint attachment frame poses
+        	 * @param a list of joint attachment frame poses
         	 */
             std::vector< AttachmentFrame<PoseT> > const& getAttachmentFrames() const
             {  
@@ -234,9 +366,9 @@ namespace kdle
             };
 
             /**
-        	 * \brief add attachment frames for joints
+        	 * @brief add attachment frames for joints
         	 *
-        	 * \param a list of joint attachment frame poses
+        	 * @param a list of joint attachment frame poses
         	 */
             Link<PoseT> const& getSegmentLink() const
             {
@@ -244,11 +376,30 @@ namespace kdle
             };            
             
             //return the name, uuid, and classuuid
+            /**
+             * @brief
+             *
+             */
             std::string const& getName() const {return classData.instanceName;};
+            
+            /**
+             * @brief
+             *
+             */
             boost::uuids::uuid const& getUID() const {return classData.instanceID;};
+            
+            /**
+             * @brief
+             *
+             */
             boost::uuids::uuid const& getClassUID() const {return modelID;};
             
-            ~Segment(){};
+            /**
+             * @brief
+             *
+             */
+            ~Segment()=default;
+            
         private:
             struct MetaData classData;
             static boost::uuids::uuid const modelID;
@@ -260,71 +411,90 @@ namespace kdle
     boost::uuids::uuid const Segment<PoseT>::modelID = uuid_generator("TypeNameSegment");
     
     /**
-     * \brief constraints on how to qualify joint attachment frames
-     *
-     */
-    enum class SemanticConstraint : char
-    {
-        CoincidentJointFrames = 'C', // this indicates that joint frames initially  coincide
-        SameReferenceFrame = 'S', //this indicates requirements on additional segment info
-    };
-    
-    /**
-     * \brief Joint specification requires two segment instances and pose information of joint attachment frames on each of these segments
+     * @brief A joint specification requires two segment instances and pose information of joint attachment frames on each of these segments
      *
      */
     template <typename PoseT>
     class Joint
     {
         public:
+            /**
+             * @brief
+             *
+             */
             Joint()=default;
+            
+            /**
+             * @brief
+             *
+             */
             Joint(std::string const& givenName, AttachmentFrame<PoseT> const& segmentJointFrame, Segment<PoseT> const& firstSegmentID, 
                     AttachmentFrame<PoseT> const& refSegmentJointFrame, Segment<PoseT> const& refSegmentID, JointProperties const& properties )
-                    :successorFrame(segmentJointFrame), predecessorFrame(refSegmentJointFrame), jointprops(properties), targetSegment(&firstSegmentID), refSegment(&refSegmentID)
+                    :successorFrame(segmentJointFrame), predecessorFrame(refSegmentJointFrame), jointprops(properties), isNotValid(false), targetSegment(&firstSegmentID), refSegment(&refSegmentID)
             {
                 classData.instanceName = givenName;
                 classData.instanceID = uuid_generator(classData.instanceName);
+                refSegmentJointFrame.inUse = true;
+                segmentJointFrame.inUse = true;
+                if(!isValid())
+                {
+                    isNotValid = true;
+                }
             };
             
             /**
-        	 * \brief compute and return relative pose of the tip of the given segment with respect to its predecessor's tip frame
+        	 * @brief compute and return relative pose of the tip of the given segment with respect to its predecessor's tip frame
         	 *
-        	 * \param tipFramePose
+        	 * @param tipFramePose
         	 */
-            void getCurrentDistalToPredecessorDistalPose(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
+            void getPoseCurrentDistalToPredecessorDistal(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
             
             /**
-        	 * \brief compute and return relative pose between two joint frames of two segments: current/successor joint frame and previous/predecessor joint frame
+             * @brief
+             *
+             */
+            void getPoseCurrentDistalToPredecessorRefJointFrame(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
+            
+            /**
+        	 * @brief compute and return relative pose between two joint frames of two segments: current/successor joint frame and previous/predecessor joint frame
         	 *
-        	 * \param jointFramePose is a vector of doubles for multiDoF, for 1 DoF it is of size 1
+        	 * @param jointFramePose is a vector of doubles for multiDoF, for 1 DoF it is of size 1
         	 */
             void getPoseOfJointFrames(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT relativePose) const;
            
             /**
-        	 * \brief compute and return relative twist between two segment link frames: current tip and previous tip frames
+        	 * @brief compute and return relative twist between two segment link frames: current tip and previous tip frames
         	 *
-        	 * \param jointtwistvalues is a vector of doubles for multiDoF, for 1 DoF it is of size 1
+        	 * @param jointtwistvalues is a vector of doubles for multiDoF, for 1 DoF it is of size 1
         	 */
             template <typename TwistT>
-            void getCurrentDistalToPredecessorJointTwist(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
+            void getTwistCurrentDistalToPredecessorDistal(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const ;
             
             /**
-        	 * \brief compute and return relative twist between to joint frames of two segments: current root and previous tip frames
+        	 * @brief compute and return relative twist between two segment link frames: current tip and previous tip frames
         	 *
-        	 * \param jointFramePose is a vector of doubles for multiDoF, for 1 DoF it is of size 1
+        	 * @param jointtwistvalues is a vector of doubles for multiDoF, for 1 DoF it is of size 1
+        	 */
+            template <typename TwistT>
+            void getTwistCurrentDistalToPredecessorJointFrame(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const ;
+            
+            /**
+        	 * @brief compute and return relative twist between to joint frames of two segments: current root and previous tip frames
+        	 *
+        	 * @param jointFramePose is a vector of doubles for multiDoF, for 1 DoF it is of size 1
         	 */
             template <typename TwistT>
             void getTwistOfJointFrames(std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
             
             /**
-             * \brief return type of the joint, e.g 1 DoF rotational around Z axis
-             *
+             * @brief return type of the joint, e.g 1 DoF rotational around Z axis
+             * @return
              */
             JointTypes const& getType() const {return std::get<0>(jointprops); };
             
             /**
-             * \brief return string name of the type of the joint, e.g "REVOLUTE_Z" for 1 DoF rotational around Z axis
-             *
+             * @brief return string name of the type of the joint, e.g "REVOLUTE_Z" for 1 DoF rotational around Z axis
+             * @return
              */
             std::string const getTypeName() const 
             {
@@ -362,28 +532,100 @@ namespace kdle
                         return "NONE";
                 }
             };
-            std::vector<Segment<PoseT> > const& getSegments() const{};
+            
+            
+            /**
+             * @brief
+             *
+             */
+            AttachmentFrame<PoseT> const& getRefJointFrame() const{ return predecessorFrame; };
+            
+            /**
+             * @brief
+             *
+             */
+            AttachmentFrame<PoseT> const& getJointFrame() const{ return successorFrame; };
             
             //return the name, uuid, and classuuid
+            /**
+             * @brief
+             *
+             */
             std::string const& getName() const {return classData.instanceName;};
+            
+            /**
+             * @brief
+             *
+             */
             boost::uuids::uuid const& getUID() const {return classData.instanceID;};
+            
+            /**
+             * @brief
+             *
+             */
             boost::uuids::uuid const& getClassUID() const {return modelID;};
+            
+            /**
+             * @brief
+             *
+             */
             ~Joint(){};
             
+     
         private:
-            struct MetaData classData;
-            static boost::uuids::uuid const modelID;
             AttachmentFrame<PoseT>  successorFrame;
             AttachmentFrame<PoseT>  predecessorFrame;
+            struct MetaData classData;
+            static boost::uuids::uuid const modelID;
             JointProperties jointprops;
+            bool isNotValid;
+        public:
             Segment<PoseT> const*  targetSegment;
             Segment<PoseT> const*  refSegment;
             
         protected:
+            /**
+             * @brief
+             *
+             */
+            bool isValid() const;
+            
+            /**
+             * @brief
+             *
+             */
             bool getPoseOfJointFramesImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT posetochange) const;
-            bool getDistalToDistalPoseImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
+            
+            /**
+             * @brief
+             *
+             */
+            bool getPoseDistalToDistalImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
+            
+            /**
+             * @brief
+             *
+             */
+            bool getPoseCurrentDistalToPredecessorRefJointFrameImpl(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const;
+            
+            /**
+             * @brief
+             *
+             */
             template <typename TwistT>
-            bool getCurrentDistalToPredecessorJointTwistImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
+            bool getTwistDistalToDistalImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
+            
+            /**
+             * @brief
+             *
+             */
+            template <typename TwistT>
+            bool getTwistCurrentDistalToPredecessorJointFrameImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
+            
+            /**
+             * @brief
+             *
+             */
             template <typename TwistT>
             bool getTwistOfJointFramesImpl(std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const;
     };
@@ -392,12 +634,36 @@ namespace kdle
     boost::uuids::uuid const Joint<PoseT>::modelID = uuid_generator("TypeNameJoint");
     
     template <typename PoseT>
-    void Joint<PoseT>::getCurrentDistalToPredecessorDistalPose(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const
+    bool Joint<PoseT>::isValid() const
     {
-        if(!getDistalToDistalPoseImpl(jointvalues, tipFramePose))
-            std::cout <<"Warning: can not return pose data " << std::endl;
+        if( successorFrame.poseData.getBody() != predecessorFrame.poseData.getBody() )
+        {
+            if( !((successorFrame.tagData == FrameType::JOINT) && (predecessorFrame.tagData == FrameType::JOINT)) )
+                return false;
+            else 
+                return true;
+        }
+        else
+            return false;
+    }
+    
+    template <typename PoseT>
+    void Joint<PoseT>::getPoseCurrentDistalToPredecessorDistal(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const
+    {
+        if(!getPoseDistalToDistalImpl(jointvalues, tipFramePose))
+            std::cout <<"Warning: can not return pose data. Check whether the joint is correctly constructed " << std::endl;
         else
             std::cout << "Inside Joint DistalToDistal Pose Impl " << std::endl << tipFramePose <<std::endl;
+        return;
+    }
+    
+    template <typename PoseT>
+    void Joint<PoseT>::getPoseCurrentDistalToPredecessorRefJointFrame(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT tipFramePose) const
+    {
+        if(!getPoseCurrentDistalToPredecessorRefJointFrameImpl(jointvalues, tipFramePose))
+            std::cout <<"Warning: can not return pose data. Check whether the joint is correctly constructed " << std::endl;
+        else
+            std::cout << "Inside Distal to Predecessor Joint Pose Impl " << std::endl << tipFramePose <<std::endl;
         return;
     }
     
@@ -405,7 +671,7 @@ namespace kdle
     void Joint<PoseT>::getPoseOfJointFrames(std::vector<double> const& jointvalues, typename ParameterTypeQualifier<PoseT>::RefToArgT relativePose) const
     {
         if (!getPoseOfJointFramesImpl(jointvalues, relativePose))
-            std::cout <<"Warning: can not return pose data " << std::endl;
+            std::cout <<"Warning: can not return pose data. Check whether the joint is correctly constructed " << std::endl;
         else
             std::cout << "Inside Joint Pose Impl " << std::endl << relativePose <<std::endl;
         return;
@@ -414,12 +680,23 @@ namespace kdle
     
     template <typename PoseT>
         template <typename TwistT>
-    void Joint<PoseT>::getCurrentDistalToPredecessorJointTwist(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const
+    void Joint<PoseT>::getTwistCurrentDistalToPredecessorDistal(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const
     {
-        if(!getCurrentDistalToPredecessorJointTwistImpl(jointvalues, jointtwistvalues, relativeTwist))
-            std::cout <<"Warning: can not return twist data " << std::endl;
+        if(!getTwistDistalToDistalImpl(jointvalues, jointtwistvalues, relativeTwist))
+            std::cout <<"Warning: can not return twist data. Check whether the joint is correctly constructed " << std::endl;
         else
             std::cout << "Inside Joint DistalToDistal Twist Impl " << std::endl << relativeTwist <<std::endl;
+        return;
+    }
+        
+    template <typename PoseT>
+        template <typename TwistT>
+    void Joint<PoseT>::getTwistCurrentDistalToPredecessorJointFrame(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, TwistT &relativeTwist) const
+    {
+        if(!getTwistCurrentDistalToPredecessorJointFrameImpl(jointvalues, jointtwistvalues, relativeTwist))
+            std::cout <<"Warning: can not return twist data. Check whether the joint is correctly constructed " << std::endl;
+        else
+            std::cout << "Inside Joint DistalToRefJoint Twist Impl " << std::endl << relativeTwist <<std::endl;
         return;
     }
             
@@ -428,7 +705,7 @@ namespace kdle
     void Joint<PoseT>::getTwistOfJointFrames(std::vector<double> const& jointtwistvalues, TwistT& relativeTwist) const
     {
         if(!getTwistOfJointFramesImpl(jointtwistvalues, relativeTwist))
-            std::cout <<"Warning: can not return twist data " << std::endl;
+            std::cout <<"Warning: can not return twist data. Check whether the joint is correctly constructed " << std::endl;
         else
             std::cout << "Inside Joint Twist Impl " << std::endl << relativeTwist <<std::endl;
         return;
@@ -440,7 +717,7 @@ namespace kdle
     {       
         //Constraint: Joint frame origins coincide
         //create position and orientation using semantics of provided ref and target joint frames
-        if(!((successorFrame.tagData == FrameType::JOINT) && (predecessorFrame.tagData == FrameType::JOINT)))
+        if(isNotValid)
         {
             return false;
         }
@@ -541,7 +818,7 @@ namespace kdle
     
     //Specialization for two argument pose with KDL coordinate representation
     template<> inline
-    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getDistalToDistalPoseImpl(std::vector<double> const& jointvalues, grs::Pose<KDL::Vector, KDL::Rotation> &tipFramePose) const
+    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getPoseDistalToDistalImpl(std::vector<double> const& jointvalues, grs::Pose<KDL::Vector, KDL::Rotation> &tipFramePose) const
     {
         
         //target joint to ref joint
@@ -552,18 +829,37 @@ namespace kdle
         else
         {
             //target distal to ref distal
-            tipFramePose = grs::compose(grs::compose(predecessorFrame.poseData,refSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose().inverse2()),
-                           grs::compose(tipFramePose,grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2())));
+            tipFramePose = grs::compose(grs::compose(predecessorFrame.poseData,refSegment->getSegmentLink().getPoseCurrentDistalToCurrentProximal().inverse2()),
+                           grs::compose(tipFramePose,grs::compose(targetSegment->getSegmentLink().getPoseCurrentDistalToCurrentProximal(),successorFrame.poseData.inverse2()))); //current distal to ref joint
             return true;
         }
     }
   
+    //Specialization for two argument pose with KDL coordinate representation
+    template<> inline
+    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getPoseCurrentDistalToPredecessorRefJointFrameImpl(std::vector<double> const &jointvalues, grs::Pose<KDL::Vector, KDL::Rotation> &posetochange) const
+    {
+        //target joint to ref joint
+        if (!getPoseOfJointFramesImpl(jointvalues, posetochange))
+        {
+            return false;
+        }
+        else
+        {
+            //current distal to target joint
+            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentTipToJointFramePose = grs::compose(targetSegment->getSegmentLink().getPoseCurrentDistalToCurrentProximal(),successorFrame.poseData.inverse2());
+            //current distal to ref joint
+            posetochange = grs::compose(posetochange,tempSegmentTipToJointFramePose);
+            return true;
+        }
+    }
+    
     //Specialization for two argument vector with KDL coordinate representation
     template <> 
         template <> inline
     bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getTwistOfJointFramesImpl(std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist) const
     {
-         if(!((successorFrame.tagData == FrameType::JOINT) && (predecessorFrame.tagData == FrameType::JOINT)))
+        if(isNotValid)
         {
             return false;
         }
@@ -658,7 +954,7 @@ namespace kdle
     //Specialization for two argument vector with KDL coordinate representation
     template <> 
         template <> inline
-    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getCurrentDistalToPredecessorJointTwistImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist) const
+    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getTwistDistalToDistalImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist) const
     {
         if(!getTwistOfJointFramesImpl(jointtwistvalues, relativeTwist))
         {
@@ -669,16 +965,63 @@ namespace kdle
             //distal to proximal: targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose();
             //joint to proximal inverse: successorFrame.poseData.inverse2();
             //distal to target joint: grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2());
-            grs::Position<KDL::Vector> tempSegmentJointToTipFramePosition = grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2()).getPosition< KDL::Vector >().inverse();
-            //target joint to ref joint
+            grs::Position<KDL::Vector> tempSegmentJointToTipFramePosition = grs::compose(targetSegment->getSegmentLink().getPoseCurrentDistalToCurrentProximal(),successorFrame.poseData.inverse2()).getPosition< KDL::Vector >().inverse();
+            
+            //target joint to refjoint orientation
             grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentJointToRootFramePose;
             getPoseOfJointFramesImpl(jointvalues, tempSegmentJointToRootFramePose);
-            
             grs::Orientation<KDL::Rotation> tempJointToRefJointOrientation = tempSegmentJointToRootFramePose.getOrientation<KDL::Rotation>();
-            //put distalToTarget joint vector into ref joint coordinate frame
+            
+            //distal to refjoint orientation
+            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentDistalToDistalFramePose;
+            getPoseDistalToDistalImpl(jointvalues, tempSegmentDistalToDistalFramePose);
+            grs::Orientation<KDL::Rotation> tempDistalToRefJointOrientation = tempSegmentDistalToDistalFramePose.getOrientation<KDL::Rotation>();
+            //put distal to targetjoint vector into refjoint coordinate frame
             if(tempSegmentJointToTipFramePosition.changeCoordinateFrame(tempJointToRefJointOrientation))
-            //change its reference point
-                    relativeTwist.changePointBody(tempSegmentJointToTipFramePosition);
+            {
+                //change its reference point
+                relativeTwist.changePointBody(tempSegmentJointToTipFramePosition);
+                //express it in distal's coordinate frame 
+                relativeTwist.changeCoordinateFrame(tempDistalToRefJointOrientation.inverse2());
+            }
+            return true;
+        }
+    }
+    
+    
+    //Specialization for two argument vector with KDL coordinate representation
+    template <> 
+        template <> inline
+    bool Joint< grs::Pose<KDL::Vector, KDL::Rotation> >::getTwistCurrentDistalToPredecessorJointFrameImpl(std::vector<double> const& jointvalues, std::vector<double> const& jointtwistvalues, grs::Twist<KDL::Vector, KDL::Vector> &relativeTwist) const
+    {
+        if(!getTwistOfJointFramesImpl(jointtwistvalues, relativeTwist))
+        {
+            return false;
+        }
+        else
+        {
+            //distal to proximal: targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose();
+            //joint to proximal inverse: successorFrame.poseData.inverse2();
+            //distal to target joint: grs::compose(targetSegment->getSegmentLink().getCurrentDistalToCurrentProximalPose(),successorFrame.poseData.inverse2());
+            grs::Position<KDL::Vector> tempSegmentJointToTipFramePosition = grs::compose(targetSegment->getSegmentLink().getPoseCurrentDistalToCurrentProximal(),successorFrame.poseData.inverse2()).getPosition< KDL::Vector >().inverse();
+            
+            //target joint to refjoint orientation
+            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentJointToRootFramePose;
+            getPoseOfJointFramesImpl(jointvalues, tempSegmentJointToRootFramePose);
+            grs::Orientation<KDL::Rotation> tempJointToRefJointOrientation = tempSegmentJointToRootFramePose.getOrientation<KDL::Rotation>();
+            
+            //distal to refjoint orientation
+            grs::Pose<KDL::Vector, KDL::Rotation> tempSegmentDistalToRefJointFramePose;
+            getPoseCurrentDistalToPredecessorRefJointFrameImpl(jointvalues, tempSegmentDistalToRefJointFramePose);
+            grs::Orientation<KDL::Rotation> tempDistalToRefJointOrientation = tempSegmentDistalToRefJointFramePose.getOrientation<KDL::Rotation>();
+            //put distal to targetjoint vector into refjoint coordinate frame
+            if(tempSegmentJointToTipFramePosition.changeCoordinateFrame(tempJointToRefJointOrientation))
+            {
+                //change its reference point
+                relativeTwist.changePointBody(tempSegmentJointToTipFramePosition);
+                //express it in distal's coordinate frame 
+                relativeTwist.changeCoordinateFrame(tempDistalToRefJointOrientation.inverse2());
+            }
             return true;
         }
     }
@@ -686,67 +1029,217 @@ namespace kdle
  
    
     /**
-     * \brief  KinematicChain specification requires a sequence of  joint instances
+     * @brief  A kinematic chain specification requires a sequence of  joint instances
      *
      */
     template <typename PoseT, typename ContainerT = std::vector< Joint<PoseT> > >
     class KinematicChain
     {
-            typedef typename ContainerT::const_iterator IteratorT;
         public:
+            typedef typename ContainerT::const_iterator IteratorT;
+            
+        public:
+            /**
+             * @brief
+             *
+             */
             KinematicChain()=default;
+            
+            /**
+             * @brief
+             *
+             */
             KinematicChain(std::string const& givenName, ContainerT const& jointlist)
             {
                 jointsOfChain = jointlist;
                 classData.instanceName = givenName;
                 classData.instanceID = uuid_generator(classData.instanceName);
+                isNotValid = false;
+                if(!isValid())
+                {
+                    isNotValid = true;
+                }
+                if(!isTargetToReferenceSequenceValid())
+                    isNotValid = true;
             };
             
+            /**
+             * @brief
+             * @return
+             */
             IteratorT addJoint(Joint<PoseT> const& newjoint);
             
+            /**
+             * @brief
+             * @return
+             */
             IteratorT getJoint(std::string const& jointname) const;
             
+            /**
+             * @brief
+             * @return
+             */
             unsigned int getNrOfJoints();
             
+            /**
+             * @brief
+             * @return
+             */
             unsigned int getNrOfSegments();
             
             //return the name, uuid, and classuuid
+            /**
+             * @brief
+             *
+             */
             std::string const& getName() const {return classData.instanceName;};
+            
+            /**
+             * @brief
+             *
+             */
             boost::uuids::uuid const& getUID() const {return classData.instanceID;};
+            
+            /**
+             * @brief
+             *
+             */
             boost::uuids::uuid const& getClassUID() const {return modelID;};
             
+            /**
+             * @brief
+             *
+             */
             ~KinematicChain(){};
     
             ContainerT jointsOfChain;
         private:
             struct MetaData classData;
             static boost::uuids::uuid const modelID;
+            bool isNotValid;
         
-        protected:
+        protected:   
             
             /**
-             * \brief  return true if the constructed chain is valid
+             * @brief  return true if the constructed chain is valid
              *
              */
-            bool isKinematicChainValid();
+            bool isValid() const;
+            
+            /**
+             * @brief  return true if the constructed chain is valid
+             *
+             */
+            bool isTargetToReferenceSequenceValid() const;
     };
     
     template <typename PoseT, typename ContainerT>
     boost::uuids::uuid const KinematicChain<PoseT, ContainerT >::modelID = uuid_generator("TypeNameKinematicChain");
     
     template <typename PoseT, typename ContainerT>
-    bool KinematicChain<PoseT, ContainerT >::isKinematicChainValid()
-    { 
-        
-        return true;
-    };
+    bool KinematicChain<PoseT, ContainerT >::isValid() const
+    {
+        //put all joint frame uuids in a single array
+        std::vector<boost::uuids::uuid> listOfJointFrameUUIDs;
+        for(typename KinematicChain<PoseT>::IteratorT iter=jointsOfChain.begin(); iter!=jointsOfChain.end(); iter++)
+        {
+            listOfJointFrameUUIDs.push_back(iter->getJointFrame().getUID());
+            listOfJointFrameUUIDs.push_back(iter->getRefJointFrame().getUID());
+        }
+        //sort the array
+        std::sort(listOfJointFrameUUIDs.begin(), listOfJointFrameUUIDs.end());
+        unsigned int originalSize = listOfJointFrameUUIDs.size();
+        //find the consecutive duplicates in the sorted array and erase them
+        listOfJointFrameUUIDs.erase(std::unique(listOfJointFrameUUIDs.begin(), listOfJointFrameUUIDs.end()), listOfJointFrameUUIDs.end());
+        unsigned int newSize = listOfJointFrameUUIDs.size();
+        //if the new array size is different than the original then some joint frames were reused in joint construction 
+        if (originalSize != newSize)
+            return false;
+        else
+            return true;
+    }
     
+    template <typename PoseT, typename ContainerT>
+    bool KinematicChain<PoseT, ContainerT >::isTargetToReferenceSequenceValid() const
+    {
+        //create list of used joint frame ids
+        Segment<PoseT> const* rootSegment = jointsOfChain.begin()->refSegment;
+        std::multimap<Segment<PoseT> const*, boost::uuids::uuid, std::equal_to<Segment<PoseT>const* > > mapOfJointFrameUUIDs;
+        std::multimap<Segment<PoseT> const*, typename KinematicChain<PoseT>::IteratorT, std::equal_to<Segment<PoseT>const* > > kinematictree;
+        
+        std::multimap<Segment<PoseT> const*, std::vector< Segment<PoseT> const*>, std::equal_to<Segment<PoseT>const* > > parentchildtree;
+        std::vector<Segment<PoseT >const* > treeElementIds;
+        treeElementIds.push_back(rootSegment);
+        
+        typedef typename std::multimap<Segment<PoseT> const*, boost::uuids::uuid>::const_iterator MultiMapIter;
+        typedef typename std::multimap<Segment<PoseT> const*, typename KinematicChain<PoseT>::IteratorT, std::equal_to<Segment<PoseT> const* > >::const_iterator TreeIter;
+        typedef typename std::multimap<Segment<PoseT> const*, std::vector< Segment<PoseT> const*>, std::equal_to<Segment<PoseT> const* > >::const_iterator parentchildIter;        
+
+        for(typename KinematicChain<PoseT>::IteratorT iter=jointsOfChain.begin(); iter!=jointsOfChain.end(); iter++)
+        {
+            treeElementIds.push_back(iter->targetSegment);
+            treeElementIds.push_back(iter->refSegment);
+            kinematictree.insert(std::make_pair(iter->targetSegment, iter));
+            std::cout << "Chain Elements target frame " << iter->getJointFrame().getUID() << std::endl;
+            std::cout << "Chain Elements target segment " << iter->targetSegment->getName() << std::endl;
+            std::cout << "Chain Joint " << iter->getName() << std::endl;
+            kinematictree.insert(std::make_pair(iter->refSegment, iter));
+            std::cout << "Chain Elements ref" << iter->refSegment->getName() << std::endl;
+            std::cout << "Chain Elements ref frame " << iter->getRefJointFrame().getUID() << std::endl;
+        }
+        //sort the array
+        std::sort(treeElementIds.begin(), treeElementIds.end());
+        //find the consecutive duplicates in the sorted array and erase them
+        treeElementIds.erase(std::unique(treeElementIds.begin(), treeElementIds.end()), treeElementIds.end());
+        
+        //put root segment first
+        for(unsigned int i = 0; i<treeElementIds.size(); i++)
+        {   
+            if (treeElementIds[i] == rootSegment)
+                swap(treeElementIds[0],treeElementIds[i]);
+        }
+
+        
+        for(typename std::vector<Segment<PoseT >const* >::const_iterator iter = treeElementIds.begin(); iter!=treeElementIds.end(); iter++)
+        { 
+            unsigned j = 0;
+            std::vector< Segment<PoseT> const*> tempvector;
+            for(unsigned int i=0; i!=(*iter)->getAttachmentFrames().size(); i++)
+            {
+                if(((*iter)->getAttachmentFrames()[i].tagData == FrameType::JOINT) && ((*iter)->getAttachmentFrames()[i].inUse != false ))
+                {
+                    std::cout << "First joint frame in use " << (*iter)->getAttachmentFrames()[i].getUID() << std::endl;
+                    j++;
+                }
+            }
+            if((*iter) != rootSegment)
+                tempvector.resize(j-1);
+            else
+                tempvector.resize(j);
+            std::cout << "iter->refSegment"<<(*iter)->getName()<< " tempvector.resize(j) " << tempvector.size() << std::endl;
+            parentchildtree.insert(std::make_pair(*iter, tempvector));
+            
+        }
+        
+        for(parentchildIter iter = parentchildtree.begin(); iter!=parentchildtree.end(); iter++)
+        {
+            std::cout << "TreeElements " << iter->first->getName() << std::endl;
+        }
+        
+        for(TreeIter iter = kinematictree.begin(); iter!=kinematictree.end(); iter++)
+        {
+            std::cout << "Elements " << iter->first->getName() << std::endl;
+        }
+        return true;
+    }
     
     template <typename PoseT, typename ContainerT>
     typename KinematicChain<PoseT, ContainerT >::IteratorT KinematicChain<PoseT, ContainerT >::addJoint(Joint<PoseT> const& newjoint)
     {
-        
-        return jointsOfChain.insert(jointsOfChain.end(), newjoint);
+        if(isNotValid)
+            std::cout << "Warning: Existing chain is not valid " << std::endl;
+        else
+            return jointsOfChain.insert(jointsOfChain.end(), newjoint);
     }
     
     
@@ -754,19 +1247,50 @@ namespace kdle
     template <typename PoseT, typename ContainerT>
     typename KinematicChain<PoseT, ContainerT >::IteratorT KinematicChain<PoseT, ContainerT >::getJoint(std::string const& jointname) const
     {
+        if(isNotValid)
+            std::cout << "Warning: Existing chain is not valid " << std::endl;
+        else
+        {
+            for(typename KinematicChain<PoseT>::IteratorT iter=jointsOfChain.begin(); iter!=jointsOfChain.end(); iter++)
+            {
+               if(iter->getName() == jointname)
+                return iter;
+            }
+            std::cout << "Warning: Joint with such a name does not exist " << std::endl;
+        }
         
     }
     
     template <typename PoseT, typename ContainerT>
     unsigned int KinematicChain<PoseT, ContainerT >::getNrOfJoints()
     {
-        return jointsOfChain.size();
+        if(isNotValid)
+            std::cout << "Warning: Existing chain is not valid " << std::endl;
+        else
+            return jointsOfChain.size();
     }
     
     template <typename PoseT, typename ContainerT>
     unsigned int KinematicChain<PoseT, ContainerT >::getNrOfSegments()
     {
-        return jointsOfChain.size();
+        if(isNotValid)
+            std::cout << "Warning: Existing chain is not valid " << std::endl;
+        else
+        {
+            //put all joint frame uuids in a single array
+            std::vector<boost::uuids::uuid> listOfSegmentFrameUUIDs;
+            for(typename KinematicChain<PoseT>::IteratorT iter=jointsOfChain.begin(); iter!=jointsOfChain.end(); iter++)
+            {
+                listOfSegmentFrameUUIDs.push_back(iter->targetSegment->getUID());
+                listOfSegmentFrameUUIDs.push_back(iter->refSegment->getUID());
+            }
+            //sort the array
+            std::sort(listOfSegmentFrameUUIDs.begin(), listOfSegmentFrameUUIDs.end());
+            //find the consecutive duplicates in the sorted array and erase them
+            listOfSegmentFrameUUIDs.erase(std::unique(listOfSegmentFrameUUIDs.begin(), listOfSegmentFrameUUIDs.end()), listOfSegmentFrameUUIDs.end());
+            return listOfSegmentFrameUUIDs.size();
+        
+        }
     }
     
     //friction, inertia, scale/ratio, offset, damping, elasticity

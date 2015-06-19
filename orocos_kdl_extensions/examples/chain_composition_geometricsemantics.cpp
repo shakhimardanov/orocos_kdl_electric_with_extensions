@@ -35,6 +35,12 @@
 *       POSSIBILITY OF SUCH DAMAGE.                                           *
 *                                                                             *
 *******************************************************************************/
+
+/* This example show how geometric relations semantics library can be used with 
+ kdl extensions library. Here a kinematic chain instance uses geometric 
+ semantics library primitives. The constructed chain is then used kinematic or
+ dynamics computations which are defined using kdl extensions library*/
+
 #include <kdl_extensions/chain_geometric_primitives.hpp>
 #include <kdl_extensions/functionalcomputation_kdl.hpp>
 
@@ -263,14 +269,14 @@ int main(int argc, char** argv)
         std::vector<double> jointvalue1(1,-M_PI/6.0);
         
         joint2.getPoseOfJointFrames(jointvalue, currentJointPose );
-        joint2.getCurrentDistalToPredecessorDistalPose(jointvalue, currentJointPose1 );
+        joint2.getPoseCurrentDistalToPredecessorDistal(jointvalue, currentJointPose1 );
         joint3.getPoseOfJointFrames(jointvalue1, currentJointPose1 );
-        joint3.getCurrentDistalToPredecessorDistalPose(jointvalue1, currentJointPose);
+        joint3.getPoseCurrentDistalToPredecessorDistal(jointvalue1, currentJointPose);
 
         joint2.getTwistOfJointFrames(jointtwistvalue, twisttemp);
-        joint2.getCurrentDistalToPredecessorJointTwist(jointvalue, jointtwistvalue, twisttemp);
+        joint2.getTwistCurrentDistalToPredecessorDistal(jointvalue, jointtwistvalue, twisttemp);
         joint3.getTwistOfJointFrames(jointtwistvalue1 ,twisttemp);
-        joint3.getCurrentDistalToPredecessorJointTwist(jointvalue1, jointtwistvalue1, twisttemp);
+        joint3.getTwistCurrentDistalToPredecessorJointFrame(jointvalue1, jointtwistvalue1, twisttemp);
         
         typedef std::vector< kdle::Joint< grs::Pose<KDL::Vector, KDL::Rotation> > > JointList;
         JointList jointlist;
@@ -287,17 +293,20 @@ int main(int argc, char** argv)
         
     //~SEGMENT METADATA
     //Computational operation
-        kdle::transform<kdle::grs_iterator, kdle::pose> forwardKinematics;
+        typedef kdle::Composite< kdle::transform<kdle::grs_iterator, kdle::twist>, kdle::transform<kdle::grs_iterator, kdle::pose> > compositeOperationType;
+        kdle::transform<kdle::grs_iterator, kdle::pose> forwardPoseOperation;
+        kdle::transform<kdle::grs_iterator, kdle::twist> forwardTwistOperation;
+        compositeOperationType forwardKinematics = compose(forwardTwistOperation, forwardPoseOperation );
     //Traversal policy
         kdle::DFSPolicy< kdle::KinematicChain< grs::Pose<KDL::Vector, KDL::Rotation> > > policy;
         std::vector<kdle::ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, kdle::StateSpaceType::JointSpace> > jstate;
         jstate.resize(mychain.getNrOfJoints());
-        jstate[0].q.push_back(KDL::PI / 3.0);
-        jstate[0].qdot = 0.2;
-        jstate[1].q.push_back(-KDL::PI / 3.0);
-        jstate[1].qdot = 0.4;
+        jstate[0].q.push_back(KDL::PI/4.0);
+        jstate[0].qdot.push_back(0.8555);
+        jstate[1].q.push_back(-KDL::PI/6.0);
+        jstate[1].qdot.push_back(2.25);
         jstate[2].q.push_back(KDL::PI / 4.0);
-        jstate[2].qdot = -0.2;
+        jstate[2].qdot.push_back(-0.2);
 
         std::vector<kdle::ComputationalState<grs::Pose<KDL::Vector, KDL::Rotation>, grs::Twist<KDL::Vector, KDL::Vector>, kdle::StateSpaceType::CartesianSpace> > lstate;
         lstate.resize(mychain.getNrOfJoints());

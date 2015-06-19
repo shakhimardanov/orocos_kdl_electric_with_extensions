@@ -5,15 +5,27 @@
     </code-assistance-data>
     <data xmlns="http://www.netbeans.org/ns/make-project-private/1">
         <activeConfTypeElem>0</activeConfTypeElem>
-        <activeConfIndexElem>0</activeConfIndexElem>
+        <activeConfIndexElem>2</activeConfIndexElem>
     </data>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/include/kdl_extensions/functionalcomputation_kdltypes.hpp</file>
+            <file>file:/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/examples/composition_geometricsemantics.cpp</file>
+            <file>file:/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/examples/composition_geometricsemantics_ver2.cpp</file>
+            <file>file:/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/include/kdl_extensions/functionalcomputation_util.hpp</file>
+            <file>file:/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/examples/compositiontest.cpp</file>
+            <file>file:/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/examples/composition_geometricsemantics_compact.cpp</file>
+            <file>file:/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/include/kdl_extensions/functionalcomputation.hpp</file>
+        </group>
+    </open-files>
     <preferences xmlns="http://www.netbeans.org/ns/auxiliary-configuration-preferences/1">
         <module name="org-netbeans-modules-cnd-discovery">
-            <property name="rootFolder" value="/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/src*/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions"/>
-            <property name="libraries" value=""/>
-            <property name="executable" value="/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/bin/composition_geometricsemantics"/>
+            <property name="rootFolder" value="/home/azamat/programming/ros-electric/orocos_kinematics_dynamics*/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions*/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/include*/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl/src"/>
+            <property name="libraries" value="/home/azamat/programming/ros-electric/geometric_relations_semantics/geometric_semantics/lib/libgeometric_semantics.so;/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/jsonlib/gallen-libvariant-055488b93468/build/src/libVariant.so*/home/azamat/programming/ros-electric/geometric_relations_semantics/geometric_semantics/lib/libgeometric_semantics.so"/>
+            <property name="executable" value="/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/bin/chain_composition_geometricsemantics_json*/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/lib/libkdl_extensions.so*/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/bin/composition_geometricsemantics*/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/bin/composition_geometricsemantics_ver2"/>
+            <property name="folder" value="/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/include*/home/azamat/programming/ros-electric/orocos_kinematics_dynamics*/home/azamat/programming/ros-electric/geometric_relations_semantics/geometric_semantics/src*/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions"/>
         </module>
     </preferences>
 </project-private>

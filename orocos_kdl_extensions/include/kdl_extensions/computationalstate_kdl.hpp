@@ -110,11 +110,6 @@ namespace kdle
     {
      public:
         ComputationalState()=default;
-//        ComputationalState(const ComputationalState& copy);
-//        ComputationalState & operator=(const ComputationalState& copy);
-//        bool operator==(const ComputationalState& instance);
-//        bool operator!=(const ComputationalState& instance);
-
         grs::Pose<KDL::Vector, KDL::Rotation> X;
         grs::Twist<KDL::Vector, KDL::Vector> Xdot;
         grs::Twist<KDL::Vector, KDL::Vector> Xdotdot;
@@ -128,15 +123,10 @@ namespace kdle
     {
      public:
         ComputationalState()=default;
-//        ComputationalState(const ComputationalState& copy);
-//        ComputationalState & operator=(const ComputationalState& copy);
-//        bool operator==(const ComputationalState& instance);
-//        bool operator!=(const ComputationalState& instance);
-
         std::vector<double> q;
-        double qdot;
-        double qdotdot;
-        double torque;
+        std::vector<double> qdot;
+        std::vector<double> qdotdot;
+        std::vector<double> torque;
         std::string jointName;
         ~ComputationalState()=default;   
     };

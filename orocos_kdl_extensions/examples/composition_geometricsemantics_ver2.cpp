@@ -5,12 +5,17 @@
  * Created on December 21, 2011, 11:46 AM
  */
 
+/* This example is the same as the composition_geometricsemantics.cpp, with one 
+ * difference. In stead of directly using operation on some specific coordinate 
+ * representation, e.g matrix multiplication and inversion, it uses changeCoordinate, 
+ * changePoint and other similar methods, that are coordinate representation 
+ * independent and are provided by the geometric semantics library. (Maybe I should 
+ * completely remove the first version of this example)*/
 
 #include <kdl/chainidsolver_recursive_newton_euler.hpp>
 #include <kdl/chainfksolverpos_recursive.hpp>
 #include <kdl/chainfksolvervel_recursive.hpp>
 #include <kdl/frames_io.hpp>
-//#include <kdl_extensions/functionalcomputation_kdl.hpp>
 #include <Position/Position.h>
 #include <Orientation/Orientation.h>
 #include <Pose/Pose.h>
