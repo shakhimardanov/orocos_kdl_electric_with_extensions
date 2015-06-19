@@ -186,17 +186,21 @@ grs::Pose<KDL::Frame>  jsonToGeometry(Variant const& inputData, std::vector<Sema
 
 //this function should be made a template which returns a kdle kinematics (Segment, Link)
 //based on the value of @kinematicstype
-void jsonToKinematics(Variant const& inputData, std::vector<SemanticData>& semanticData, kdle::Segment<grs::Pose<KDL::Frame> >& segment)
+//void jsonToKinematics(Variant const& inputData, std::vector<SemanticData>& semanticData)
+kdle::Segment<grs::Pose<KDL::Frame> > jsonToKinematics(Variant const& inputData, std::vector<SemanticData>& semanticData)
 {
 
+    grs::Pose<KDL::Frame> rootFrame, tipFrame, jointFrame;
+    kdle::Link< grs::Pose<KDL::Frame> > link;
+    std::vector< kdle::AttachmentFrame<grs::Pose<KDL::Frame> > > frameList1;
+    
     std::string kinematicstype = inputData.At("@kinematicstype").AsString();
-    std::cout << kinematicstype << std::endl;
     if(kinematicstype == "Segment")
     { 
-        grs::Pose<KDL::Frame> rootFrame, tipFrame, jointFrame;
+        std::cout << kinematicstype << std::endl;
         
-        Variant const linksemantics = inputData.At("link").At("@kinematics");
-        for (Variant::ConstMapIterator i=linksemantics.MapBegin(); i != linksemantics.MapEnd(); ++i)
+        Variant const jointsemantics = inputData.At("link").At("@kinematics");
+        for (Variant::ConstMapIterator i=jointsemantics.MapBegin(); i != jointsemantics.MapEnd(); ++i)
         {
             if(i->first == "rootFrame")
             {
@@ -211,22 +215,64 @@ void jsonToKinematics(Variant const& inputData, std::vector<SemanticData>& seman
             }
         }
         
-        kdle::Link< grs::Pose<KDL::Frame> > link(inputData.At("link").At("@kinematics").At("name").AsString(), rootFrame, tipFrame);
-        kdle::AttachmentFrame<grs::Pose<KDL::Frame> > attachedframe;
-        std::vector< kdle::AttachmentFrame<grs::Pose<KDL::Frame> > > frameList1;
+        link = kdle::Link< grs::Pose<KDL::Frame> > (inputData.At("link").At("@kinematics").At("name").AsString(), rootFrame, tipFrame);
         
         Variant const attachmentframes = inputData.At("framelist");
         for (Variant::ConstListIterator k=attachmentframes.ListBegin(); k != attachmentframes.ListEnd(); ++k)
         {
             jointFrame = jsonToGeometry (k->At("frame").At("@geometry"), semanticData);
-            attachedframe = kdle::createAttachmentFrame(jointFrame, kdle::FrameType::JOINT);
-            frameList1.push_back(attachedframe);
+            std::cout <<"Joint pose= " << jointFrame << std::endl;
+            frameList1.push_back( kdle::createAttachmentFrame(jointFrame, kdle::FrameType::JOINT));
         }
         
-        std::cout <<"Joint list size " << frameList1.size() << std::endl;
-       segment = kdle::Segment<grs::Pose<KDL::Frame> >(inputData.At("name").AsString(),link,frameList1);
+        
+//        return;
     }
-     return ;
+    return kdle::Segment<grs::Pose<KDL::Frame> >(inputData.At("name").AsString(),link,frameList1);
+    
+    if(kinematicstype == "Joint")
+    {
+        std::cout << kinematicstype << std::endl;        
+        Variant const jointsemantics = inputData.At("@jointtype");
+        for (Variant::ConstMapIterator i=jointsemantics.MapBegin(); i != jointsemantics.MapEnd(); ++i)
+        {
+            if(i->first == "@constraint")
+            {
+                
+            }
+            if(i->first == "target")
+            {
+                std::string jointname= i->second.At("frameid").At("name").AsString();
+                std::string jointid= i->second.At("frameid").At("id").AsString();
+                std::cout << "targetframename= " << jointname << std::endl;
+                
+            }
+            if(i->first == "reference")
+            {
+                std::string jointname= i->second.At("frameid").At("name").AsString();
+                std::string jointid= i->second.At("frameid").At("id").AsString();
+                std::cout << "referenceframename= " << jointname << std::endl;
+            }
+        }
+    
+    }
+    
+    if(kinematicstype == "KinematicChain")
+    {
+        Variant const jointlist = inputData.At("jointlist");
+        for (Variant::ConstListIterator i=jointlist.ListBegin(); i != jointlist.ListEnd(); ++i)
+        {
+            if(i->At("isRoot").AsBool() == true)
+            {
+                std::string jointname = i->At("@jointid").At("name").AsString();
+            }
+            else
+            {
+            
+            }
+        }
+    
+    }
 }
 
 void walkJSONTree(Variant const& inputData, std::vector<SemanticData>& semanticData)
@@ -239,10 +285,14 @@ void walkJSONTree(Variant const& inputData, std::vector<SemanticData>& semanticD
         #endif
         for (Variant::ConstMapIterator i=inputData.MapBegin(); i != inputData.MapEnd(); ++i)
         {
-            kdle::Segment<grs::Pose<KDL::Frame> > segment;
             if(i->first == "@kinematics")
-            jsonToKinematics(i->second, semanticData, segment);
-            walkJSONTree(i->second, semanticData);
+            {
+            
+                kdle::Segment<grs::Pose<KDL::Frame> > segment = jsonToKinematics(i->second, semanticData);
+//                jsonToKinematics(i->second, semanticData);
+            }
+            else
+                walkJSONTree(i->second, semanticData);
         } 
     }
     
