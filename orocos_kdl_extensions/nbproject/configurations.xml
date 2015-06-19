@@ -23,7 +23,11 @@
     </logicalFolder>
     <df root="." name="orocos_kdl_extensions">
       <df name="examples">
+        <in>chain_composition_geometricsemantics.cpp</in>
+        <in>chain_composition_geometricsemantics_json.cpp</in>
         <in>composition_geometricsemantics.cpp</in>
+        <in>composition_geometricsemantics_compact.cpp</in>
+        <in>composition_geometricsemantics_ver2.cpp</in>
         <in>compositiontest.cpp</in>
       </df>
       <df name="include">
@@ -36,7 +40,9 @@
         </df>
       </df>
       <df name="src">
+        <in>computationalstate_kdl.cpp</in>
         <in>computationalstate_kdltypes.cpp</in>
+        <in>json_to_semantics_parser.cpp</in>
         <in>treeid_vereshchagin_composable.cpp</in>
       </df>
     </df>
@@ -44,7 +50,19 @@
                    displayName="tests"
                    projectFiles="true"
                    root="tests">
+      <itemPath>tests/accTwistOperationTest.cpp</itemPath>
+      <itemPath>tests/composeOperationTest.cpp</itemPath>
+      <itemPath>tests/fkposition.cpp</itemPath>
+      <itemPath>tests/fkposition2.cpp</itemPath>
+      <itemPath>tests/fkvelocity.cpp</itemPath>
+      <itemPath>tests/forceOperationTest.cpp</itemPath>
+      <itemPath>tests/inversedynamics.cpp</itemPath>
+      <itemPath>tests/inversedynamics2.cpp</itemPath>
+      <itemPath>tests/poseOperationTest.cpp</itemPath>
       <itemPath>tests/poseoperation4treelink-test.cpp</itemPath>
+      <itemPath>tests/testrunner.cpp</itemPath>
+      <itemPath>tests/traverseOperationTest.cpp</itemPath>
+      <itemPath>tests/twistOperationTest.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -75,63 +93,508 @@
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>bin/composition_geometricsemantics</executablePath>
-          <ccTool>
-            <incDir>
-              <pElem>../../geometric_relations_semantics/geometric_semantics/src/Pose</pElem>
-              <pElem>../orocos_kdl/install_dir/include/kdl</pElem>
-              <pElem>../../geometric_relations_semantics/geometric_semantics/src/LinearVelocity</pElem>
-              <pElem>../../geometric_relations_semantics/geometric_semantics/src/AngularVelocity</pElem>
-              <pElem>../../geometric_relations_semantics/geometric_semantics/src/Twist</pElem>
-              <pElem>/usr/include/c++/4.7</pElem>
-              <pElem>/usr/include/c++/4.7/bits</pElem>
-              <pElem>/usr/include/c++/4.7/ext</pElem>
-              <pElem>../../geometric_relations_semantics/geometric_semantics/src/Base</pElem>
-              <pElem>include/kdl_extensions</pElem>
-              <pElem>examples</pElem>
-              <pElem>/usr/lib/gcc/i486-linux-gnu/4.7/include</pElem>
-              <pElem>/usr/include/i386-linux-gnu/bits</pElem>
-              <pElem>/usr/local/include/graphviz</pElem>
-              <pElem>/usr/include/i386-linux-gnu/sys</pElem>
-              <pElem>/usr/include/c++/4.7/i486-linux-gnu/bits</pElem>
-              <pElem>../orocos_kdl/install_dir/include/kdl/utilities</pElem>
-              <pElem>/usr/include/c++/4.7/debug</pElem>
-              <pElem>/usr/include/eigen3/Eigen</pElem>
-              <pElem>/usr/include/eigen3/Eigen/src/Core/util</pElem>
-              <pElem>/usr/include/eigen3/Eigen/src/Core</pElem>
-              <pElem>/usr/include/eigen3/Eigen/src/plugins</pElem>
-              <pElem>../../geometric_relations_semantics/geometric_semantics/src/Position</pElem>
-              <pElem>../../geometric_relations_semantics/geometric_semantics/src/Wrench</pElem>
-              <pElem>../orocos_kdl/install_dir/include</pElem>
-              <pElem>include</pElem>
-              <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
-              <pElem>/usr/include/c++/4.7/i486-linux-gnu</pElem>
-              <pElem>/usr/include/i386-linux-gnu</pElem>
-              <pElem>/usr/include/eigen3</pElem>
-              <pElem>build</pElem>
-            </incDir>
-          </ccTool>
         </makeTool>
       </makefileType>
-      <item path="examples/composition_geometricsemantics.cpp"
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/AngularVelocity/AngularVelocity.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/AngularVelocity/AngularVelocity.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/AngularVelocity/AngularVelocityCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/AngularVelocity/AngularVelocityCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/AngularVelocity/AngularVelocityCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/AngularVelocity/AngularVelocitySemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Base/Primitives.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Force/Force.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Force/Force.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Force/ForceCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Force/ForceCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Force/ForceCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Force/ForceSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/LinearVelocity/LinearVelocity.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/LinearVelocity/LinearVelocity.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/LinearVelocity/LinearVelocityCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/LinearVelocity/LinearVelocityCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/LinearVelocity/LinearVelocityCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/LinearVelocity/LinearVelocitySemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Orientation/Orientation.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Orientation/Orientation.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Orientation/OrientationCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Orientation/OrientationCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Orientation/OrientationCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Orientation/OrientationSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Pose/Pose.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Pose/Pose.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Pose/PoseCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Pose/PoseCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Pose/PoseCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Pose/PoseSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Position/Position.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Position/Position.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Position/PositionCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Position/PositionCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Position/PositionCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Position/PositionSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Torque/Torque.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Torque/Torque.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Torque/TorqueCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Torque/TorqueCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Torque/TorqueCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Torque/TorqueSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Twist/Twist.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Twist/Twist.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Twist/TwistCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Twist/TwistCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Twist/TwistCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Twist/TwistSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Wrench/Wrench.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Wrench/Wrench.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Wrench/WrenchCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Wrench/WrenchCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Wrench/WrenchCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Wrench/WrenchSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/AngularVelocity/AngularVelocityCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/Force/ForceCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/LinearVelocity/LinearVelocityCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/Orientation/OrientationCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/Pose/PoseCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/Position/PositionCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/Torque/TorqueCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/Twist/TwistCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/Wrench/WrenchCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/chain.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/chainidsolver.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/chainidsolver_recursive_newton_euler.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/frameacc.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/frameacc.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/frames.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/frames.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/frames_io.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/framevel.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/framevel.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/jacobian.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/jntarray.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/jntarrayvel.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/joint.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/rigidbodyinertia.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/rotationalinertia.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/segment.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/tree.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/utilities/kdl-config.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/utilities/rall1d.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/utilities/rall2d.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/utilities/traits.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/utilities/utility.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/utilities/utility_io.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="/usr/share/cmake-2.8/Modules/CMakeCCompilerABI.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="/usr/share/cmake-2.8/Modules/CMakeCXXCompilerABI.cpp"
             ex="false"
             tool="1"
             flavor2="0">
       </item>
-      <folder path="orocos_kdl_extensions/src">
+      <item path="build/CMakeFiles/CompilerIdC/CMakeCCompilerId.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="build/CMakeFiles/CompilerIdCXX/CMakeCXXCompilerId.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="examples/chain_composition_geometricsemantics.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
         <ccTool>
-          <incDir>
-            <pElem>src</pElem>
-          </incDir>
         </ccTool>
-      </folder>
-      <folder path="tests">
+      </item>
+      <item path="examples/chain_composition_geometricsemantics_json.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
         <ccTool>
-          <incDir>
-            <pElem>tests</pElem>
-          </incDir>
         </ccTool>
-      </folder>
-      <folder path="usr/share/cmake-2.8/Modules">
+      </item>
+      <item path="examples/composition_geometricsemantics.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="examples/composition_geometricsemantics_compact.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="examples/composition_geometricsemantics_ver2.cpp"
+            ex="false"
+            tool="1"
+            flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="examples/compositiontest.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <folder path="Modules">
         <cTool>
           <incDir>
             <pElem>build/CMakeFiles/CMakeTmp</pElem>
@@ -143,7 +606,51 @@
           </incDir>
         </ccTool>
       </folder>
-      <item path="include/kdl_extensions/computationalstate_kdltypes.hpp"
+      <folder path="orocos_kdl_extensions">
+        <ccTool>
+          <incDir>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ROS_PACKAGE_NAME="orocos_kdl_extensions"</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="orocos_kdl_extensions/src">
+        <ccTool>
+          <preprocessorList>
+            <Elem>kdl_extensions_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="tests">
+        <ccTool>
+          <incDir>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build/tests</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ROS_PACKAGE_NAME="orocos_kdl_extensions"</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <item path="include/kdl_extensions/chain_geometric_primitives.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/kdl_extensions/computationalstate_kdl.hpp"
             ex="false"
             tool="3"
             flavor2="0">
@@ -153,7 +660,7 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="include/kdl_extensions/functionalcomputation_kdltypes.hpp"
+      <item path="include/kdl_extensions/functionalcomputation_kdl.hpp"
             ex="false"
             tool="3"
             flavor2="0">
@@ -162,6 +669,67 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="include/kdl_extensions/geometric_semantics_kdl.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/computationalstate_kdl.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/json_to_semantics_parser.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/accTwistOperationTest.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/composeOperationTest.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/fkposition.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/fkposition2.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/fkvelocity.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/forceOperationTest.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/inversedynamics.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/inversedynamics2.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/poseOperationTest.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/testrunner.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/traverseOperationTest.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/twistOperationTest.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
       </item>
     </conf>
     <conf name="UnitTests" type="0">
@@ -275,6 +843,660 @@
             ex="false"
             tool="1"
             flavor2="0">
+      </item>
+    </conf>
+    <conf name="JSONParserExample" type="0">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>GNU|GNU</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath>bin/chain_composition_geometricsemantics_json</executablePath>
+        </makeTool>
+      </makefileType>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/AngularVelocity/AngularVelocity.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/AngularVelocity/AngularVelocity.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/AngularVelocity/AngularVelocityCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/AngularVelocity/AngularVelocityCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/AngularVelocity/AngularVelocityCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/AngularVelocity/AngularVelocitySemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Base/Primitives.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Force/Force.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Force/Force.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Force/ForceCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Force/ForceCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Force/ForceCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Force/ForceSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/LinearVelocity/LinearVelocity.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/LinearVelocity/LinearVelocity.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/LinearVelocity/LinearVelocityCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/LinearVelocity/LinearVelocityCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/LinearVelocity/LinearVelocityCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/LinearVelocity/LinearVelocitySemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Orientation/Orientation.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Orientation/Orientation.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Orientation/OrientationCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Orientation/OrientationCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Orientation/OrientationCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Orientation/OrientationSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Pose/Pose.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Pose/Pose.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Pose/PoseCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Pose/PoseCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Pose/PoseCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Pose/PoseSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Position/Position.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Position/Position.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Position/PositionCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Position/PositionCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Position/PositionCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Position/PositionSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Torque/Torque.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Torque/Torque.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Torque/TorqueCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Torque/TorqueCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Torque/TorqueCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Torque/TorqueSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Twist/Twist.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Twist/Twist.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Twist/TwistCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Twist/TwistCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Twist/TwistCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Twist/TwistSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Wrench/Wrench.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Wrench/Wrench.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Wrench/WrenchCoordinates.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Wrench/WrenchCoordinates.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Wrench/WrenchCoordinatesSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics/src/Wrench/WrenchSemantics.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/AngularVelocity/AngularVelocityCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/Force/ForceCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/LinearVelocity/LinearVelocityCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/Orientation/OrientationCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/Pose/PoseCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/Position/PositionCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/Torque/TorqueCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/Twist/TwistCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../geometric_relations_semantics/geometric_semantics_kdl/src/Wrench/WrenchCoordinatesKDL.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/chain.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/chainidsolver.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/chainidsolver_recursive_newton_euler.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/frameacc.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/frameacc.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/frames.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/frames.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/frames_io.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/framevel.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/framevel.inl"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/jacobian.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/jntarray.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/jntarrayvel.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/joint.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/rigidbodyinertia.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/rotationalinertia.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/segment.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/tree.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/utilities/kdl-config.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/utilities/rall1d.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/utilities/rall2d.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/utilities/traits.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/utilities/utility.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../orocos_kdl/install_dir/include/kdl/utilities/utility_io.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="/usr/share/cmake-2.8/Modules/CMakeCCompilerABI.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="/usr/share/cmake-2.8/Modules/CMakeCXXCompilerABI.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="build/CMakeFiles/CompilerIdC/CMakeCCompilerId.c"
+            ex="false"
+            tool="0"
+            flavor2="0">
+      </item>
+      <item path="build/CMakeFiles/CompilerIdCXX/CMakeCXXCompilerId.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="examples/chain_composition_geometricsemantics.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="examples/chain_composition_geometricsemantics_json.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="examples/composition_geometricsemantics.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="examples/composition_geometricsemantics_compact.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="examples/composition_geometricsemantics_ver2.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="examples/compositiontest.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <folder path="Modules">
+        <cTool>
+          <incDir>
+            <pElem>build/CMakeFiles/CMakeTmp</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>build/CMakeFiles/CMakeTmp</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="orocos_kdl_extensions">
+        <ccTool>
+          <incDir>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ROS_PACKAGE_NAME="orocos_kdl_extensions"</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="orocos_kdl_extensions/src">
+        <ccTool>
+          <preprocessorList>
+            <Elem>kdl_extensions_EXPORTS</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <folder path="tests">
+        <ccTool>
+          <incDir>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build/tests</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>ROS_PACKAGE_NAME="orocos_kdl_extensions"</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <item path="include/kdl_extensions/chain_geometric_primitives.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/kdl_extensions/computationalstate_kdl.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/kdl_extensions/functionalcomputation.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/kdl_extensions/functionalcomputation_kdl.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/kdl_extensions/functionalcomputation_util.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/kdl_extensions/geometric_semantics_kdl.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/computationalstate_kdl.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/json_to_semantics_parser.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/accTwistOperationTest.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/composeOperationTest.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/fkposition.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/fkposition2.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/fkvelocity.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/forceOperationTest.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/inversedynamics.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/inversedynamics2.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/poseOperationTest.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/testrunner.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/traverseOperationTest.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/twistOperationTest.cpp" ex="false" tool="1" flavor2="0">
+        <ccTool>
+        </ccTool>
       </item>
     </conf>
   </confs>

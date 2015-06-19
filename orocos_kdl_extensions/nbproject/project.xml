@@ -7,8 +7,11 @@
             <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>
             <cpp-extensions>cpp</cpp-extensions>
-            <header-extensions>hpp,inl</header-extensions>
+            <header-extensions>hpp</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
+            <formatting>
+                <project-formatting-style>false</project-formatting-style>
+            </formatting>
             <make-dep-projects/>
             <sourceRootList>
                 <sourceRootElem>.</sourceRootElem>
@@ -20,6 +23,10 @@
                 </confElem>
                 <confElem>
                     <name>UnitTests</name>
+                    <type>0</type>
+                </confElem>
+                <confElem>
+                    <name>JSONParserExample</name>
                     <type>0</type>
                 </confElem>
             </confList>
