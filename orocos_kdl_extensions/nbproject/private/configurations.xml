@@ -14,14 +14,11 @@
         <df name="kdl_extensions">
           <in>chain_geometric_primitives.hpp</in>
           <in>computationalstate_kdl.hpp</in>
-          <in>computationalstate_kdltypes.hpp</in>
           <in>functionalcomputation.hpp</in>
           <in>functionalcomputation_kdl.hpp</in>
-          <in>functionalcomputation_kdltypes.hpp</in>
           <in>functionalcomputation_util.hpp</in>
           <in>geometric_semantics_kdl.hpp</in>
           <in>json_to_semantics_parser.hpp</in>
-          <in>treeid_vereshchagin_composable.hpp</in>
         </df>
       </df>
       <df name="src">

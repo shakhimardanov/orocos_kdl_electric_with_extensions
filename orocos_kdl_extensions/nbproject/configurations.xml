@@ -44,9 +44,7 @@
       </df>
       <df name="src">
         <in>computationalstate_kdl.cpp</in>
-        <in>computationalstate_kdltypes.cpp</in>
         <in>json_to_semantics_parser.cpp</in>
-        <in>treeid_vereshchagin_composable.cpp</in>
       </df>
     </df>
     <logicalFolder name="tests"
@@ -114,6 +112,11 @@
             tool="1"
             flavor2="0">
       </item>
+      <item path="/usr/share/cmake-2.8/Modules/CMakeCompilerABI.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="build/CMakeFiles/CompilerIdC/CMakeCCompilerId.c"
             ex="false"
             tool="0"
@@ -128,40 +131,28 @@
             ex="false"
             tool="1"
             flavor2="0">
-        <ccTool>
-        </ccTool>
       </item>
       <item path="examples/chain_composition_geometricsemantics_json.cpp"
             ex="false"
             tool="1"
             flavor2="0">
-        <ccTool>
-        </ccTool>
       </item>
       <item path="examples/composition_geometricsemantics.cpp"
             ex="false"
             tool="1"
             flavor2="0">
-        <ccTool>
-        </ccTool>
       </item>
       <item path="examples/composition_geometricsemantics_compact.cpp"
             ex="false"
             tool="1"
             flavor2="0">
-        <ccTool>
-        </ccTool>
       </item>
       <item path="examples/composition_geometricsemantics_ver2.cpp"
             ex="false"
             tool="1"
             flavor2="0">
-        <ccTool>
-        </ccTool>
       </item>
       <item path="examples/compositiontest.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
       </item>
       <folder path="Modules">
         <cTool>
@@ -214,7 +205,22 @@
           </preprocessorList>
         </ccTool>
       </folder>
+      <item path="include/kdl_extensions/chain_geometric_primitives.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/kdl_extensions/computationalstate_kdl.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="include/kdl_extensions/functionalcomputation.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/kdl_extensions/functionalcomputation_kdl.hpp"
             ex="false"
             tool="3"
             flavor2="0">
@@ -224,61 +230,55 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="include/kdl_extensions/geometric_semantics_kdl.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="include/kdl_extensions/json_to_semantics_parser.hpp"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/computationalstate_kdl.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
       </item>
       <item path="src/json_to_semantics_parser.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
       </item>
       <item path="tests/accTwistOperationTest.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
+      </item>
+      <item path="tests/accTwistOperationTest.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/composeOperationTest.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
+      </item>
+      <item path="tests/composeOperationTest.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/fkposition.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
       </item>
       <item path="tests/fkposition2.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
       </item>
       <item path="tests/fkvelocity.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
       </item>
       <item path="tests/forceOperationTest.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
+      </item>
+      <item path="tests/forceOperationTest.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/inversedynamics.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
       </item>
       <item path="tests/inversedynamics2.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
       </item>
       <item path="tests/poseOperationTest.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
+      </item>
+      <item path="tests/poseOperationTest.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/testrunner.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
       </item>
       <item path="tests/traverseOperationTest.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
+      </item>
+      <item path="tests/traverseOperationTest.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="tests/twistOperationTest.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-        </ccTool>
+      </item>
+      <item path="tests/twistOperationTest.hpp" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
     <conf name="AdvancedExample" type="0">
@@ -490,11 +490,6 @@
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>bin/chain_composition_geometricsemantics_json</executablePath>
-          <ccTool>
-            <incDir>
-              <pElem>jsonlib/gallen-libvariant-055488b93468/include</pElem>
-            </incDir>
-          </ccTool>
         </makeTool>
       </makefileType>
       <item path="/usr/share/cmake-2.8/Modules/CMakeCCompilerABI.c"
@@ -520,29 +515,41 @@
       <item path="examples/chain_composition_geometricsemantics.cpp"
             ex="false"
             tool="1"
-            flavor2="0">
+            flavor2="8">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="examples/chain_composition_geometricsemantics_json.cpp"
             ex="false"
             tool="1"
-            flavor2="0">
+            flavor2="8">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="examples/composition_geometricsemantics.cpp"
             ex="false"
             tool="1"
-            flavor2="0">
+            flavor2="8">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="examples/composition_geometricsemantics_compact.cpp"
             ex="false"
             tool="1"
-            flavor2="0">
+            flavor2="8">
+        <ccTool>
+        </ccTool>
       </item>
       <item path="examples/composition_geometricsemantics_ver2.cpp"
             ex="false"
             tool="1"
-            flavor2="0">
+            flavor2="8">
+        <ccTool>
+        </ccTool>
       </item>
-      <item path="examples/compositiontest.cpp" ex="false" tool="1" flavor2="0">
+      <item path="examples/compositiontest.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
       </item>
       <folder path="Modules">
         <cTool>
@@ -581,6 +588,49 @@
       </folder>
       <folder path="tests">
         <ccTool>
+          <preprocessorList>
+            <Elem>ROS_PACKAGE_NAME="orocos_kdl_extensions"</Elem>
+          </preprocessorList>
+        </ccTool>
+      </folder>
+      <item path="src/computationalstate_kdl.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="src/json_to_semantics_parser.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+        </ccTool>
+      </item>
+      <item path="tests/accTwistOperationTest.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>jsonlib/gallen-libvariant-055488b93468/include</pElem>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build/tests</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="tests/composeOperationTest.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>jsonlib/gallen-libvariant-055488b93468/include</pElem>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build/tests</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="tests/fkposition.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
           <incDir>
             <pElem>include</pElem>
             <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
@@ -590,48 +640,129 @@
             <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
             <pElem>build/tests</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>ROS_PACKAGE_NAME="orocos_kdl_extensions"</Elem>
-          </preprocessorList>
         </ccTool>
-      </folder>
-      <item path="include/kdl_extensions/functionalcomputation.hpp"
-            ex="false"
-            tool="3"
-            flavor2="0">
       </item>
-      <item path="include/kdl_extensions/functionalcomputation_util.hpp"
-            ex="false"
-            tool="3"
-            flavor2="0">
+      <item path="tests/fkposition2.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build/tests</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="src/computationalstate_kdl.cpp" ex="false" tool="1" flavor2="0">
+      <item path="tests/fkvelocity.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build/tests</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="src/json_to_semantics_parser.cpp" ex="false" tool="1" flavor2="0">
+      <item path="tests/forceOperationTest.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>jsonlib/gallen-libvariant-055488b93468/include</pElem>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build/tests</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="tests/accTwistOperationTest.cpp" ex="false" tool="1" flavor2="0">
+      <item path="tests/inversedynamics.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build/tests</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="tests/composeOperationTest.cpp" ex="false" tool="1" flavor2="0">
+      <item path="tests/inversedynamics2.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool>
+          <incDir>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build/tests</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="tests/fkposition.cpp" ex="false" tool="1" flavor2="0">
+      <item path="tests/poseOperationTest.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>jsonlib/gallen-libvariant-055488b93468/include</pElem>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build/tests</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="tests/fkposition2.cpp" ex="false" tool="1" flavor2="0">
+      <item path="tests/testrunner.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>jsonlib/gallen-libvariant-055488b93468/include</pElem>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build/tests</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="tests/fkvelocity.cpp" ex="false" tool="1" flavor2="0">
+      <item path="tests/traverseOperationTest.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>jsonlib/gallen-libvariant-055488b93468/include</pElem>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build/tests</pElem>
+          </incDir>
+        </ccTool>
       </item>
-      <item path="tests/forceOperationTest.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="tests/inversedynamics.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="tests/inversedynamics2.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="tests/poseOperationTest.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="tests/testrunner.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="tests/traverseOperationTest.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="tests/twistOperationTest.cpp" ex="false" tool="1" flavor2="0">
+      <item path="tests/twistOperationTest.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>jsonlib/gallen-libvariant-055488b93468/include</pElem>
+            <pElem>include</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics_kdl/src</pElem>
+            <pElem>../orocos_kdl/include</pElem>
+            <pElem>../orocos_kdl/install_dir/include</pElem>
+            <pElem>/usr/include/eigen3</pElem>
+            <pElem>../../geometric_relations_semantics/geometric_semantics/src</pElem>
+            <pElem>build/tests</pElem>
+          </incDir>
+        </ccTool>
       </item>
     </conf>
   </confs>
