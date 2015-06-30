@@ -36,9 +36,9 @@
  *                                                                             *
  *******************************************************************************/
 
-//#define VERBOSE_CHECK //switches on console output in kdl related methods
-#define VERBOSE_CHECK_MAIN // switches on console output in main
-#define VERBOSE_WALK 
+//#define VERBOSE_CHECK_KDLE //switches on console output in kdl related methods
+
+
 
 #include <kdl_extensions/functionalcomputation_kdl.hpp>
 #include <kdl_extensions/json_to_semantics_parser.hpp>
@@ -51,8 +51,9 @@ int main(int argc, char** argv)
     std::string filename("json-models/kinematics/input-kinematics-dsl.json");
     std::string schemaname("/home/azamat/programming/ros-electric/orocos_kinematics_dynamics/orocos_kdl_extensions/json-models/kinematics/kinematics-dsl.json");
     
-    std::vector<SemanticData> semanticData;
-    if(!createTree(filename, schemaname, semanticData, true))
+    kdle::KinematicChain< grs::Pose<KDL::Vector, KDL::Rotation> > mychain;
+    kdle::KinematicChain< grs::Pose<KDL::Frame> > mychain2;
+    if(!createTree(filename, schemaname, mychain2, true))
     {
         return 1;
     }

@@ -23,7 +23,7 @@ rosbuild_add_library(${PROJECT_NAME} include/kdl_extensions/functionalcomputatio
                     include/kdl_extensions/computationalstate_kdl.hpp src/computationalstate_kdl.cpp
                     include/kdl_extensions/functionalcomputation_kdl.hpp
                     include/kdl_extensions/chain_geometric_primitives.hpp
-                    include/kdl_extensions/json_to_semantics_parser.hpp src/json_to_semantics_parser.cpp
+                    include/kdl_extensions/json_to_semantics_parser.hpp
                     )
 
 rosbuild_add_compile_flags(${PROJECT_NAME} "-O0")

@@ -23,9 +23,7 @@
       </df>
       <df name="src">
         <in>computationalstate_kdl.cpp</in>
-        <in>computationalstate_kdltypes.cpp</in>
         <in>json_to_semantics_parser.cpp</in>
-        <in>treeid_vereshchagin_composable.cpp</in>
       </df>
     </df>
   </logicalFolder>

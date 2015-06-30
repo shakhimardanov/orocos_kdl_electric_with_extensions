@@ -153,7 +153,7 @@ namespace kdle
                 a_segmentState.jointName = p_jointState.jointName;
                 a_segmentState.segmentName = segmentId->first;
 
-                #ifdef VERBOSE_CHECK
+                #ifdef VERBOSE_CHECK_KDLE
                     std::cout << "Inside pose operation 3 argument function call" << std::endl;
                     std::cout << "Inside pose operation Transform value" << std::endl << a_segmentState.X << std::endl;
                     std::cout << "Inside pose operation Twist value" << a_segmentState.Xtotal << std::endl;
@@ -183,7 +183,7 @@ namespace kdle
                 a_segmentState.jointName = p_jointState.jointName;
                 a_segmentState.segmentName = segmentId->first;
 
-                #ifdef VERBOSE_CHECK
+                #ifdef VERBOSE_CHECK_KDLE
                     std::cout << "Inside pose operation 5 argument function call" << std::endl;
                     std::cout << "Inside pose operation Transform value" << std::endl << a_segmentState.X << std::endl;
                     std::cout << "Inside pose operation Twist value" << a_segmentState.Xtotal << std::endl;
@@ -228,7 +228,7 @@ namespace kdle
                 //do we check here for the index of a joint (whether the joint is first/root in the chain)
                 //if so, somehow an information about whether a segment is root or not should be sent here
                 a_segmentState.Xdot = a_segmentState.X.Inverse(p_segmentState.Xdot) + a_segmentState.Vj;
-                #ifdef VERBOSE_CHECK
+                #ifdef VERBOSE_CHECK_KDLE
                     std::cout << "Inside twist operation 3 argument function call" << std::endl;
                     std::cout << "Inside twist operation Transform value" << a_segmentState.X << std::endl;
                     std::cout << "Inside twist operation Twist value" << std::endl << a_segmentState.Xdot << std::endl;
@@ -254,7 +254,7 @@ namespace kdle
                 //if so, somehow an information about whether a segment is root or not should be sent here
                 a_segmentState.Xdot = a_segmentState.X.Inverse(p_segmentState.Xdot) + a_segmentState.Vj;
 
-                #ifdef VERBOSE_CHECK
+                #ifdef VERBOSE_CHECK_KDLE
                     std::cout << "Inside twist operation 5 argument function call" << std::endl;
                     std::cout << "Inside twist operation Transform value" << a_segmentState.X << std::endl;
                     std::cout << "Inside twist operation Twist value" << std::endl << a_segmentState.Xdot << std::endl;
@@ -291,7 +291,7 @@ namespace kdle
             {
                 a_segmentState = p_segmentState;
                 a_segmentState.Xdotdot = p_segmentState.X.Inverse(p_segmentState.Xdotdot) + p_segmentState.Z * p_jointState.qdotdot + p_segmentState.Xdot * p_segmentState.Vj;
-                #ifdef VERBOSE_CHECK
+                #ifdef VERBOSE_CHECK_KDLE
                     std::cout << "Inside accTwist operation 3 argument function call" << std::endl;
                     std::cout << "Inside acctwist operation Transform value" << a_segmentState.X << std::endl;
                     std::cout << "Inside acctwist operation Twist value" << a_segmentState.Xdot << std::endl;
@@ -310,7 +310,7 @@ namespace kdle
                 a_segmentState = p_segmentState;
                 a_segmentState.Xdotdot = p_segmentState.X.Inverse(p_segmentState.Xdotdot) + p_segmentState.Z * p_jointState.qdotdot + p_segmentState.Xdot * p_segmentState.Vj;
 
-                #ifdef VERBOSE_CHECK
+                #ifdef VERBOSE_CHECK_KDLE
                     std::cout << "Inside accTwist operation 5 argument function call" << std::endl;
                     std::cout << "Inside acctwist operation Transform value" << a_segmentState.X << std::endl;
                     std::cout << "Inside acctwist operation Twist value" << a_segmentState.Xdot << std::endl;
@@ -354,7 +354,7 @@ namespace kdle
                 a_segmentState = p_segmentState;
                 a_segmentState.F = segmentId->second.segment.getInertia() * a_segmentState.Xdotdot + a_segmentState.Xdot * (segmentId->second.segment.getInertia() * a_segmentState.Xdot) - p_jointState.Fext;
 
-                #ifdef VERBOSE_CHECK
+                #ifdef VERBOSE_CHECK_KDLE
                     std::cout << "Inside wrench operation 3 argument function call " << std::endl;
                     std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
                     std::cout << "Inside wrench operation Twist value " << a_segmentState.Xdot << std::endl;
@@ -374,7 +374,7 @@ namespace kdle
                 a_segmentState = p_segmentState;
                 a_segmentState.F = segmentId->second.segment.getInertia() * a_segmentState.Xdotdot + a_segmentState.Xdot * (segmentId->second.segment.getInertia() * a_segmentState.Xdot) - p_jointState.Fext;
 
-                #ifdef VERBOSE_CHECK
+                #ifdef VERBOSE_CHECK_KDLE
                     std::cout << "Inside wrench operation 5 argument fucntion call " << std::endl;
                     std::cout << "Inside wrench operation Transform value " << a_segmentState.X << std::endl;
                     std::cout << "Inside wrench operation Twist value " << a_segmentState.Xdot << std::endl;
@@ -465,7 +465,7 @@ namespace kdle
 
                 a_segmentState = p_segmentState;
 
-                #ifdef VERBOSE_CHECK
+                #ifdef VERBOSE_CHECK_KDLE
                     std::cout << "Inside wrench operation Input Wrench of current element (current's body wrench) " << std::endl << p_segmentState.F << std::endl << std::endl;
                     std::cout << "Inside wrench operation Input Wrench of a child (child's total wrench) " << std::endl << p_segmentState2.F << std::endl << std::endl;
                 #endif
@@ -473,7 +473,7 @@ namespace kdle
                 p_jointState2.torque = dot(p_segmentState2.Z, p_segmentState2.F);
                 a_segmentState.F = p_segmentState.F + p_segmentState2.X * p_segmentState2.F;
 
-                #ifdef VERBOSE_CHECK
+                #ifdef VERBOSE_CHECK_KDLE
                     std::cout << "Inside wrench operation updated Wrench of current element " << std::endl << a_segmentState.F << std::endl << std::endl;
                     std::cout << "Inside wrench operation computed Torque of current joint " << std::endl << p_jointState2.torque << std::endl << std::endl;
                 #endif
@@ -507,7 +507,7 @@ namespace kdle
                 for (KDL::SegmentMap::const_iterator iter = a_topology.getSegments().begin(); iter != a_topology.getSegments().end(); ++iter)
                 {
                     const KDL::TreeElement currentElement = iter->second;
-                    #ifdef VERBOSE_CHECK
+                    #ifdef VERBOSE_CHECK_KDLE
                                 std::cout << "Parent element name in current iteration " << currentElement.segment.getName() << std::endl;
                                 std::cout << "State vector input " << a_linkStateVectorIn[currentElement.q_nr].segmentName << std::endl;
                     #endif
@@ -516,7 +516,7 @@ namespace kdle
                     for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
                     {
 
-                        #ifdef VERBOSE_CHECK
+                        #ifdef VERBOSE_CHECK_KDLE
                                         std::cout << "Current element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
                                         std::cout << "Current joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
                         #endif
@@ -543,7 +543,7 @@ namespace kdle
                 {
                     const KDL::TreeElement currentElement = iter->second;
                     tempState = a_linkStateVectorIn[currentElement.q_nr];
-                    #ifdef VERBOSE_CHECK
+                    #ifdef VERBOSE_CHECK_KDLE
                                 std::cout << "Parent element name in current iteration " << currentElement.segment.getName() << std::endl;
                                 std::cout << "State vector input " << a_linkStateVectorIn[currentElement.q_nr].segmentName << std::endl;
                                 //            std::cout << "Parent Fext " << currentElement.q_nr << " " << a_linkStateVectorIn[currentElement.q_nr].Fext << std::endl;
@@ -552,7 +552,7 @@ namespace kdle
                     for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
                     {
 
-                        #ifdef VERBOSE_CHECK
+                        #ifdef VERBOSE_CHECK_KDLE
                                         std::cout << "Current element name in current iteration " << (*childIter)->second.segment.getName() << std::endl;
                                         std::cout << "Current joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
                         #endif
@@ -594,7 +594,7 @@ namespace kdle
             {
 
                 SegmentState tempState;
-                #ifdef VERBOSE_CHECK
+                #ifdef VERBOSE_CHECK_KDLE
                     std::cout << std::endl << "This is reverse iteration/inward" << std::endl;
                 #endif
                 //this is reverse/inward iterative walk
@@ -603,7 +603,7 @@ namespace kdle
                     const KDL::TreeElement currentElement = iter->second;
                     tempState = a_linkStateVectorIn[currentElement.q_nr];
 
-                    #ifdef VERBOSE_CHECK
+                    #ifdef VERBOSE_CHECK_KDLE
                         std::cout << "Current element name in current reverse iteration " << currentElement.segment.getName() << std::endl;
                         std::cout << "Current joint index and value in reverse iteration " << currentElement.q_nr << " " << a_jointStateVectorIn[currentElement.q_nr].q << std::endl;
                         std::cout << "Spatial BODY force on a current element " << a_linkStateVectorIn[currentElement.q_nr].F << std::endl;
@@ -612,7 +612,7 @@ namespace kdle
                     for (std::vector<KDL::SegmentMap::const_iterator>::const_iterator childIter = iter->second.children.begin(); childIter != iter->second.children.end(); childIter++)
                     {
 
-                        #ifdef VERBOSE_CHECK
+                        #ifdef VERBOSE_CHECK_KDLE
                             std::cout << "Child element name in current  reverse iteration " << (*childIter)->second.segment.getName() << std::endl;
                             std::cout << "Child joint index and value " << (*childIter)->second.q_nr << " " << a_jointStateVectorIn[(*childIter)->second.q_nr].q << std::endl;
                             std::cout << "Total spatial force on a child " << a_linkStateVectorOut[(*childIter)->second.q_nr].F << std::endl;
@@ -630,7 +630,7 @@ namespace kdle
                     if (iter->first != a_topology.getRootSegment()->first)
                         a_linkStateVectorOut[currentElement.q_nr] = tempState;
 
-                    #ifdef VERBOSE_CHECK
+                    #ifdef VERBOSE_CHECK_KDLE
                         std::cout << "Total Spatial force on a current element " << a_linkStateVectorOut[currentElement.q_nr].F << std::endl;
                         std::cout << "Torque on a current supporting joint " << a_jointStateVectorOut[currentElement.q_nr].torque << std::endl << std::endl;
                     #endif
