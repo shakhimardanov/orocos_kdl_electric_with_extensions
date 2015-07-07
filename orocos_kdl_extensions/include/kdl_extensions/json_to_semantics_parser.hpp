@@ -106,8 +106,7 @@ bool jsonToPose(Variant const& inputData, PoseT& geometricPrimitive)
 
     return true;
 }
-//this function should be made a template which returns a kdle kinematics (Segment, Link)
-//based on the value of @kinematicstype
+
 template <typename PoseT>
 bool jsonToSegment(Variant const& inputData, kdle::Segment<PoseT>& kinematicsPrimitive)
 {
@@ -116,104 +115,105 @@ bool jsonToSegment(Variant const& inputData, kdle::Segment<PoseT>& kinematicsPri
     kdle::Link< PoseT > link;
     std::vector< kdle::AttachmentFrame<PoseT> > frameList1;
     
-//    std::string kinematicstype = inputData.At("@kinematicstype").AsString();
-//    if(kinematicstype == "Segment")
-//    { 
-        std::cout << inputData.At("@kinematicstype").AsString() << std::endl;
-        
-        Variant const jointsemantics = inputData.At("link").At("@kinematics");
-        for (Variant::ConstMapIterator i=jointsemantics.MapBegin(); i != jointsemantics.MapEnd(); ++i)
+    std::cout << inputData.At("@kinematicstype").AsString() << std::endl;
+
+    Variant const jointsemantics = inputData.At("link").At("@kinematics");
+    for (Variant::ConstMapIterator i=jointsemantics.MapBegin(); i != jointsemantics.MapEnd(); ++i)
+    {
+        if(i->first == "rootFrame")
         {
-            if(i->first == "rootFrame")
-            {
-                jsonToPose(i->second.At("@geometry"), rootFrame);
-                std::cout << "rootFrame= " << rootFrame << std::endl;
-                
-            }
-            if(i->first == "tipFrame")
-            {
-                jsonToPose(i->second.At("@geometry"), tipFrame);
-                std::cout << "tipFrame= " << tipFrame << std::endl;
-            }
+            jsonToPose(i->second.At("@geometry"), rootFrame);
+            std::cout << "rootFrame= " << rootFrame << std::endl;
+
         }
-        
-        link = kdle::Link<PoseT> (inputData.At("link").At("@kinematics").At("name").AsString(), rootFrame, tipFrame);
-        
-        Variant const attachmentframes = inputData.At("framelist");
-        for (Variant::ConstListIterator k=attachmentframes.ListBegin(); k != attachmentframes.ListEnd(); ++k)
+        if(i->first == "tipFrame")
         {
-            jsonToPose (k->At("frame").At("@geometry"), jointFrame);
-            std::cout <<"Joint pose= " << jointFrame << std::endl;
-            frameList1.push_back( kdle::createAttachmentFrame(jointFrame, kdle::FrameType::JOINT));
+            jsonToPose(i->second.At("@geometry"), tipFrame);
+            std::cout << "tipFrame= " << tipFrame << std::endl;
         }
-//    }
-    
+    }
+
+    link = kdle::Link<PoseT> (inputData.At("link").At("@kinematics").At("name").AsString(), rootFrame, tipFrame);
+
+    Variant const attachmentframes = inputData.At("framelist");
+    for (Variant::ConstListIterator k=attachmentframes.ListBegin(); k != attachmentframes.ListEnd(); ++k)
+    {
+        jsonToPose (k->At("frame").At("@geometry"), jointFrame);
+        std::cout <<"Joint pose= " << jointFrame << std::endl;
+        frameList1.push_back( kdle::createAttachmentFrame(jointFrame, kdle::FrameType::JOINT));
+    }
     kinematicsPrimitive = kdle::Segment<PoseT>(inputData.At("name").AsString(),link,frameList1);  
+    return true;
+}
+
+
+template <typename PoseT>
+bool jsonToJoint(Variant const& inputData, std::map<std::string, PoseT>& segmentList, kdle::Joint<PoseT>& kinematicsPrimitive)
+{
+
+    std::cout << inputData.At("@kinematicstype").AsString() << std::endl;
+      
+    Variant const jointsemantics = inputData.At("@jointtype");
+    for (Variant::ConstMapIterator i=jointsemantics.MapBegin(); i != jointsemantics.MapEnd(); ++i)
+    {
+        if(i->first == "@constraint")
+        {
+
+        }
+        if(i->first == "target")
+        {
+            std::string jointname= i->second.At("frameid").At("name").AsString();
+            std::string jointid= i->second.At("frameid").At("id").AsString();
+            std::cout << "targetframename= " << jointname << std::endl;
+
+        }
+        if(i->first == "reference")
+        {
+            std::string jointname= i->second.At("frameid").At("name").AsString();
+            std::string jointid= i->second.At("frameid").At("id").AsString();
+            std::cout << "referenceframename= " << jointname << std::endl;
+        }
+    }
+
+    kinematicsPrimitive = kdle::Joint<PoseT>();  
     return true;
 }
 
 template <typename PoseT>
 bool jsonToCppModel(Variant const& inputData, kdle::KinematicChain<PoseT>& achain)
-{
-    if (inputData.IsMap())
-    {
-        #ifdef VERBOSE_CHECK_KDLE
-            std::cout << "TOP: IT IS A MAP" << std::endl;
-            std::cout << "Size: "<< inputData.Size() << std::endl<<std::endl;
-        #endif
-        for (Variant::ConstMapIterator i=inputData.MapBegin(); i != inputData.MapEnd(); ++i)
-        {
-            if( i->first == "@kinematics")
-            {
-                if(i->second.At("@kinematicstype").AsString() =="Segment")
-                {
-                    kdle::Segment<grs::Pose<KDL::Frame> > segment;
-                    jsonToSegment(i->second, segment);
-                }
-                else if(i->second.At("@kinematicstype").AsString() =="Joint")
-                {
-                    std::cout << kinematicstype << std::endl;        
-                    Variant const jointsemantics = inputData.At("@jointtype");
-                    for (Variant::ConstMapIterator i=jointsemantics.MapBegin(); i != jointsemantics.MapEnd(); ++i)
-                    {
-                        if(i->first == "@constraint")
-                        {
-
-                        }
-                        if(i->first == "target")
-                        {
-                            std::string jointname= i->second.At("frameid").At("name").AsString();
-                            std::string jointid= i->second.At("frameid").At("id").AsString();
-                            std::cout << "targetframename= " << jointname << std::endl;
-
-                        }
-                        if(i->first == "reference")
-                        {
-                            std::string jointname= i->second.At("frameid").At("name").AsString();
-                            std::string jointid= i->second.At("frameid").At("id").AsString();
-                            std::cout << "referenceframename= " << jointname << std::endl;
-                        }
-                    }
-                }
-            }
-            else
-                jsonToCppModel(i->second, achain);
-        } 
-    }
-    
+{    
     if(inputData.IsList())
     {
         #ifdef VERBOSE_CHECK_KDLE
             std::cout << "TOP: IT IS A LIST" << std::endl;
-            printf("Size: %d \n",inputData.Size());
+            printf("Number of Kinematic structures: %d \n",inputData.Size());
         #endif  
+        
+        std::vector< kdle::Segment<PoseT> > segments;
+        std::map<std::string, PoseT> segmentList;
+        
         for (Variant::ConstListIterator j = inputData.ListBegin(); j != inputData.ListEnd(); ++j)
         {
-            #ifdef VERBOSE_CHECK_KDLE
-                printf("Type of the List element: %d \n", j->GetType());
-                std::cout  << std::endl;
-            #endif
-            jsonToCppModel(*j, achain);
+            if (j->IsMap())
+            {
+                for (Variant::ConstMapIterator i=j->MapBegin(); i != j->MapEnd(); ++i)
+                {
+                    if( i->first == "@kinematics")
+                    {
+                        if(i->second.At("@kinematicstype").AsString() =="Segment")
+                        {
+                            kdle::Segment<grs::Pose<KDL::Frame> > segment;
+                            jsonToSegment(i->second, segment);
+                            segments.push_back(segment);
+                        }
+                        else if(i->second.At("@kinematicstype").AsString() =="Joint")
+                        {
+                            kdle::Joint<PoseT> joint;
+                            jsonToJoint(i->second, segmentList, joint);
+                        }
+                    }
+                } 
+            }
         } 
 
     }

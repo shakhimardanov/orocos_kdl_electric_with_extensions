@@ -296,7 +296,7 @@ namespace kdle
                     std::cout << "Inside acctwist operation Transform value" << a_segmentState.X << std::endl;
                     std::cout << "Inside acctwist operation Twist value" << a_segmentState.Xdot << std::endl;
                     std::cout << "Inside acctwist operation AccTwist value" << std::endl << a_segmentState.Xdotdot << std::endl;
-                    std::cout << "Inside acctwist operation Wrench value" << a_segmentState.F << std::endl;
+//                    std::cout << "Inside acctwist operation Wrench value" << a_segmentState.F << std::endl;
                 #endif
                 return a_segmentState;
             };
@@ -316,7 +316,7 @@ namespace kdle
                     std::cout << "Inside acctwist operation Twist value" << a_segmentState.Xdot << std::endl;
                     std::cout << "Inside acctwist operation AccTwist value" << std::endl << a_segmentState.Xdotdot << std::endl;
                     std::cout << "Inside acctwist operation Wrench value" << a_segmentState.F << std::endl;
-                    std::cout << "Inside acctwist operation Ext Wrench value" << a_segmentState.Fext << std::endl<< std::endl;
+//                    std::cout << "Inside acctwist operation Ext Wrench value" << a_segmentState.Fext << std::endl<< std::endl;
                 #endif
                 return a_segmentState;
             };

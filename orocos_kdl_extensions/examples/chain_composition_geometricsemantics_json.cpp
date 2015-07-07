@@ -36,7 +36,7 @@
  *                                                                             *
  *******************************************************************************/
 
-//#define VERBOSE_CHECK_KDLE //switches on console output in kdl related methods
+#define VERBOSE_CHECK_KDLE //switches on console output in kdl related methods
 
 
 
